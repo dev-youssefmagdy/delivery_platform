@@ -1,0 +1,84 @@
+# =============================================================================
+# Monorepo root .gitignore (backend/, customer_app/, driver_app/, packages/)
+# Sub-projects keep their own .gitignore files as well.
+# =============================================================================
+
+# --- Environment & secrets (never commit; SRS §29) ---------------------------
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+!**/storage/*.key.example
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+**/android/key.properties
+**/android/app/upload-keystore*
+*.mobileprovision
+*.provisionprofile
+google-services.json
+GoogleService-Info.plist
+service-account*.json
+**/firebase-adminsdk*.json
+auth.json
+
+# --- Laravel (backend/) -------------------------------------------------------
+backend/vendor/
+backend/node_modules/
+backend/public/build/
+backend/public/hot
+backend/public/storage
+backend/storage/*.key
+backend/storage/pail
+backend/storage/app/private/*
+backend/.phpunit.cache
+backend/.phpunit.result.cache
+backend/_ide_helper*.php
+backend/.phpstorm.meta.php
+
+# --- Flutter / Dart -------------------------------------------------------------
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+**/build/
+**/coverage/
+**/ios/Pods/
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/android/local.properties
+**/android/.gradle/
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+app.*.symbols
+app.*.map.json
+
+# --- Storage dumps, backups, databases -----------------------------------------
+*.sql
+*.sql.gz
+*.dump
+*.bak
+*.sqlite
+*.sqlite-journal
+backups/
+dumps/
+
+# --- IDE / OS -----------------------------------------------------------------
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.zed/
+.fleet/
+*.swp
+.DS_Store
+Thumbs.db
+*.log

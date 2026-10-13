@@ -3,7 +3,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
@@ -11,7 +14,10 @@
         "laravel/tinker": "^3.0"
     },
     "require-dev": {
+        "brianium/paratest": "^7.20",
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.13",
+        "laravel/boost": "^2.10",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",
@@ -46,7 +52,7 @@
         ],
         "test": [
             "@php artisan config:clear --ansi @no_additional_args",
-            "@php artisan test"
+            "@php artisan test --parallel"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
@@ -65,6 +71,20 @@
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "lint": [
+            "vendor/bin/pint --test"
+        ],
+        "lint:fix": [
+            "vendor/bin/pint"
+        ],
+        "analyse": [
+            "vendor/bin/phpstan analyse --no-progress --memory-limit=1G"
+        ],
+        "check": [
+            "@lint",
+            "@analyse",
+            "@test"
         ]
     },
     "extra": {
@@ -82,5 +102,12 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts-descriptions": {
+        "lint": "Check code style with Pint (no changes).",
+        "lint:fix": "Fix code style with Pint.",
+        "analyse": "Run Larastan/PHPStan static analysis.",
+        "test": "Run the PHPUnit suite in parallel against the MySQL testing DB.",
+        "check": "lint + analyse + test (milestone gate, backend PHP part)."
+    }
 }

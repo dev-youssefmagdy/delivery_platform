@@ -151,3 +151,84 @@
 **Context.** `.env.example` switched to MySQL/`ar`, but config fallbacks still said `sqlite`/`en`.
 **Decision.** `config/app.php` fallbacks `ar`/`ar`/`ar_EG`; `config/database.php` and `config/queue.php` default connection `mysql`.
 **Consequences.** A missing env var no longer silently selects SQLite or English.
+
+---
+
+## ADR-25 — P0.2 package versions · 2026-10-13 · Accepted
+
+**Context.** Plan §2.4/P0.2: verify Laravel 13 / PHP 8.3 support on Packagist before requiring; never `--ignore-platform-reqs`.
+**Decision.** All declare `illuminate/* ^13` (or framework-agnostic) and PHP ≤ 8.3: `laravel/sanctum` 4.3.3, `laravel/reverb` 1.12.0,
+`spatie/laravel-permission` 8.3.0 (PHP ^8.3, illuminate ^12|^13), `spatie/laravel-translatable` 6.14.1, `yajra/laravel-datatables-oracle`
+13.3.1, `yajra/laravel-datatables-html` 13.0.0, `pragmarx/google2fa` 9.1.0. `yajra/laravel-datatables-buttons` not added (CSV export is a
+queued job, Plan §5.4). Reverb requires `guzzlehttp/psr7 ^2.6`, so Composer (`-W`) downgraded `guzzlehttp/guzzle` 8.2 → 7.15.5,
+`psr7` 3.1 → 2.13.1, `promises` 3.0 → 2.5.3 (framework accepts both majors). Composer audit: no advisories.
+**Consequences.** Guzzle stays on 7.x until Reverb allows psr7 3. Published: `config/{sanctum,reverb,permission,broadcasting,cors}.php`,
+Sanctum + Spatie permission migrations (permission tables created now, used from P1.1 with guard `admin`).
+
+## ADR-26 — Exception rendering and domain exceptions · 2026-10-13 · Accepted
+
+**Context.** ADR-14 envelope for JSON/AJAX; normal pages for HTML; no leaks (SRS §20.7).
+**Decision.** `ApiExceptionRenderer` (invokable, `withExceptions()->render()`) handles requests that are `api/*` or `expectsJson()`;
+`HttpResponseException` is left to Laravel. Unexpected exceptions always return a generic `server_error`, even with `APP_DEBUG=true`
+(the cause is in the log with the request id). `DomainException` implements `HttpExceptionInterface` so HTML requests render the
+`errors/{status}` page, and it is in `dontReport` (expected outcomes, not bugs). Messages come from `api.errors.<code>`.
+**Consequences.** New domain codes need `ar` + `en` entries in `lang/*/api.php`; otherwise the generic status message is shown.
+
+## ADR-27 — Request context via Laravel Context · 2026-10-13 · Accepted
+
+**Context.** Audit rows need IP / user agent / request id, but services must not read `request()` (Plan §4.2).
+**Decision.** `CorrelationId` (first global middleware) stores `request_id` in `Context` (appears in every log line and queued job)
+and `ip`, `user_agent` as hidden context (never logged). `AuditLogger` reads Context.
+**Consequences.** Jobs dispatched from a request keep its request id; console-originated audit rows have null IP/request id.
+
+## ADR-28 — Idempotency semantics · 2026-10-13 · Accepted
+
+**Context.** Plan §4.4 / I9 leaves details open.
+**Decision.** Key required (UUID) on unsafe methods of `idempotent` routes; scope `(actor morph alias, actor id, route name, key)` with
+guests as `guest/0`; canonical request hash (method, path, recursively key-sorted input, uploaded file hashes); only **2xx** responses
+are stored (24 h) so validation failures can be retried with the same key; in-flight duplicates get 409 through an atomic lock on the
+`redis` cache store (`IDEMPOTENCY_LOCK_STORE`); the middleware runs after `Authenticate` (priority list). Rows pruned hourly.
+**Consequences.** Clients generate one key per user intent and reuse it across retries (Plan §6.2).
+
+## ADR-29 — Locale resolution order includes the session · 2026-10-13 · Accepted
+
+**Context.** Plan §4.4: user preference → Accept-Language → `ar`. The admin topbar (P0.3) needs a locale switcher.
+**Decision.** Order: user `HasLocalePreference` → session `locale` (only when a session exists, i.e. web/admin) → best `Accept-Language`
+primary-language match among `ar`/`en` → `ar`. Also sets Carbon locale and `Content-Language`.
+**Consequences.** Symfony test requests send `Accept-Language: en-us,en;q=0.5` by default, so feature tests that assert Arabic must
+send `Accept-Language: ar` (or empty).
+
+## ADR-30 — Money implementation details · 2026-10-13 · Accepted
+
+**Context.** ADR-04 needs concrete arithmetic and formatting rules.
+**Decision.** `Money` holds `int` minor units + `Currency` (code, exponent 0–4, symbols). Fractional steps (`multiplyBasisPoints`,
+`fromDecimal` with extra precision) use bcmath strings and round once with an explicit `RoundingMode` (default `HalfUp` = half away from
+zero; `HalfEven`, `Down`, `Up` available). `allocate(ratios)` gives floor shares and hands remaining units one by one to the earliest
+non-zero ratios, so Σparts = total. Overflow throws. `MoneyCast` maps `<key>_minor` + `currency` columns (configurable) and resolves the
+exponent through `CurrencyRegistry` (DB-backed, memoised). `MoneyFormatter` formats integers only: `ar` → Arabic-Indic digits and
+trailing symbol (`١٬٢٣٤٫٥٠ ج.م`), `en` → leading symbol (`EGP 1,234.50`); `latinDigits` option for Arabic.
+**Consequences.** Never pass floats to Money; parse user input with `Money::fromDecimal()`.
+
+## ADR-31 — Enforced morph map and strict models · 2026-10-13 · Accepted
+
+**Context.** Polymorphic columns (audit, tokens, permissions) must not store class names; silent attribute bugs should fail fast.
+**Decision.** `Relation::enforceMorphMap()` in `AppServiceProvider`; `Model::shouldBeStrict()` outside production (lazy-loading,
+missing-attribute and silently-discarded-attribute violations throw).
+**Consequences.** Every new model used polymorphically (including future `Admin`) must be added to the morph map; the generator (P0.3)
+should do it.
+
+## ADR-32 — Health probes outside repositories · 2026-10-13 · Accepted
+
+**Context.** "No queries outside repositories" vs. infrastructure probes.
+**Decision.** `HealthCheckService` runs `select 1`, Redis `PING` and queue `size()` directly: they are connectivity probes, not data
+access. Public `/api/v1/health` exposes statuses only; details (latency, heartbeat age, exception class) stay in `HealthReport::$details`.
+**Consequences.** Admin system page (P5.6) can show details behind a permission.
+
+## ADR-33 — Common tables shape · 2026-10-13 · Accepted
+
+**Context.** P0.2 step 7.
+**Decision.** `currencies(code char(3) unique, exponent, symbol_ar, symbol_en, active)`; `countries(iso2 unique, name json translatable,
+phone_code, currency_code → currencies.code FK, timezone, default_locale, active)`. Seeders are idempotent (`updateOrCreate`) and seed
+EGP (exponent 2, `ج.م`/`EGP`) and EG (`مصر`/`Egypt`, `+20`, `Africa/Cairo`, `ar`). The default demo-user seeding was removed (users
+change in P1.3). No `lock_version` yet; P1.2 adds it when these become admin-editable.
+**Consequences.** Country admin CRUD arrives with markets in P1.2.

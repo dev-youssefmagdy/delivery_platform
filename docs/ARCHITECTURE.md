@@ -79,6 +79,22 @@
 Rules: controllers call exactly one service method; no queries outside repositories (migrations/seeders excepted); enums for
 every status/type; policies for object-level authorization; resources per audience/disclosure stage.
 
+### 3.1 Implemented core (P0.2)
+
+| Concern | Implementation |
+|---|---|
+| Route files | `routes/api_v1.php` (`api` group + `api/v1` prefix + `api.v1.` names), `routes/admin.php` (`web` + `HandlePrecognitiveRequests`, prefix `config('admin.path')` / `ADMIN_PATH`, names `admin.`), `routes/website.php` (`web`), `routes/channels.php`, `routes/console.php`; all wired in `bootstrap/app.php` |
+| Middleware | Global: `CorrelationId` (first). `api` group: `ForceJsonResponse` (prepended), `throttle:api`, `SetLocale`. `web` group: `SetLocale` (after session). Aliases: `idempotent`, `locale`. Priority list puts `SetLocale` and `Idempotency` after `Authenticate` |
+| Request context | `CorrelationId` puts `request_id` in Laravel `Context` (logged on every line, propagated to queued jobs) and `ip`/`user_agent` as *hidden* context (not logged) for the audit logger, so services never read `request()` |
+| Envelope / errors | `App\Support\Http\ApiResponse` (only producer); `App\Exceptions\ApiExceptionRenderer` registered via `withExceptions()->render()` for `api/*` and `expectsJson()` requests; `DomainException` (→ `BusinessRuleViolation` 422, `ConflictException` 409, `ForbiddenActionException` 403) implements `HttpExceptionInterface` so HTML requests get normal status pages; domain exceptions are `dontReport` |
+| Repositories | `BaseRepositoryInterface`/`BaseRepository` (generic `@template TModel`), bindings in `RepositoryServiceProvider::$bindings`; module folders `Repositories/{Contracts,Eloquent}/<Module>/` |
+| Enums | `Enums/Contracts/{HasLabel,HasColor}`, `Enums/Concerns/EnumHelpers` (`values`, `options`, `labels`, `tryFromValue`, `fromLabel`, `inRule`), `Enums/Support/BadgeColor`, `Enums/Common/*` (`Locale`, `ActorType`, `Platform`, `AuditAction`, `QueueName`, `RateLimiterName`, `HealthStatus`); labels in `lang/{ar,en}/enums.php` |
+| Money | `App\Support\Money\{Money, Currency, RoundingMode, MoneyCast, MoneyFormatter, CurrencyRegistry, DatabaseCurrencyRegistry}` — integer minor units, bcmath for fractional steps, one explicit rounding (default half-up), `allocate()` conserves every minor unit, formatter never converts to float |
+| Audit | `admin_audit_logs` (append-only; model refuses update/delete; repository has only `append`), `AuditLogger::record()` / `recordChanges()`, `Support\Audit\Auditable` trait (`auditSnapshot()` minus hidden + `$auditExcluded`) |
+| Polymorphism | `Relation::enforceMorphMap()` in `AppServiceProvider`: every polymorphic model needs a stable alias (`user`, `currency`, `country`, `admin_audit_log`, `idempotency_key`) |
+| Integrations | `IntegrationServiceProvider` (area → contract → drivers map, empty) + `IntegrationGuard` refuses `fake`/`log` drivers outside `local`/`testing` at boot |
+| Health | `HealthCheckService` → `HealthReport` DTO (statuses + private details); `GET /api/v1/health`; `system:heartbeat` every minute |
+
 ## 4. Request flow example — accept an offer (planned, P2.4)
 
 1. `POST /api/v1/bookings/{booking}/offers/{offer}/accept` with `Idempotency-Key`.
@@ -115,11 +131,13 @@ the app is backgrounded.
 | Private disk | documents, proofs, attachments | signed routes + audit |
 | Public disk | CMS images | |
 
-## 7. Background processing (planned)
+## 7. Background processing
 
-Queues: `critical` (expiry, dispatch waves), `default`, `notifications`, `low`. Scheduler (`routes/console.php`):
-`offers:expire` and `bookings:expire-searches` every 5 s, `ledger:reconcile` nightly, heartbeat writer for the health page.
-All jobs idempotent.
+Queues (`App\Enums\Common\QueueName`): `critical` (expiry, dispatch waves), `default`, `notifications`, `low`; one worker
+command consumes them in priority order: `php artisan queue:work redis --queue=critical,default,notifications,low`.
+Scheduler (`routes/console.php`), implemented: `system:heartbeat` every minute (health page), `model:prune` hourly for
+`idempotency_keys`. Planned: `offers:expire` and `bookings:expire-searches` every 5 s, `ledger:reconcile` nightly.
+All jobs idempotent. Realtime: Laravel Reverb 1.12 installed (`php artisan reverb:start`), `BROADCAST_CONNECTION=reverb`.
 
 ## 8. Flutter architecture (planned, P0.4)
 

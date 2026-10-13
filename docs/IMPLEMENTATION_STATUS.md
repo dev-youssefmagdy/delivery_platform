@@ -8,7 +8,7 @@
 | ID | Milestone | Priority | Status | Updated |
 |---|---|---|---|---|
 | P0.1 | Repository audit, git, documentation spine, tooling baseline | P0 | ✅ | 2026-10-13 |
-| P0.2 | Backend core architecture | P0 | ❌ | — |
+| P0.2 | Backend core architecture | P0 | ✅ | 2026-10-13 |
 | P0.3 | Admin UI kit, AJAX/Precognition forms, DataTables, filters card, generator | P0 | ❌ | — |
 | P0.4 | Flutter foundation + shared package | P0 | ❌ | — |
 | P1.1 | Admin authentication, roles/permissions, admin users, audit log UI | P0 | ❌ | — |
@@ -51,6 +51,67 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P0.2 — Backend core architecture · ✅ 2026-10-13
+
+Branch `milestone/p0.2-backend-core` (from `main` @ `202dd48`), fast-forwarded into `main`.
+
+### What was built
+
+- **Packages** (ADR-25): sanctum 4.3.3, reverb 1.12.0, spatie/laravel-permission 8.3.0, spatie/laravel-translatable 6.14.1,
+  yajra datatables-oracle 13.3.1 + html 13.0.0, pragmarx/google2fa 9.1.0. Guzzle downgraded 8→7 (Reverb needs psr7 ^2).
+- **Structure:** Plan §4.1 folders (empty ones hold `.gitkeep`); `RepositoryServiceProvider` (`$bindings`), `IntegrationServiceProvider`
+  + `IntegrationGuard` (fake/log drivers refused outside local/testing), `config/integrations.php`.
+- **Base abstractions:** `BaseRepositoryInterface`/`BaseRepository`; `HasLabel`/`HasColor`/`EnumHelpers`/`BadgeColor`; common enums
+  (`Locale`, `ActorType`, `Platform`, `AuditAction`, `QueueName`, `RateLimiterName`, `HealthStatus`); Money VO set (ADR-30);
+  `ApiResponse` (success/created/error/paginated).
+- **Exceptions:** `DomainException` → `BusinessRuleViolation` (422) / `ConflictException` (409) / `ForbiddenActionException` (403);
+  `ApiExceptionRenderer` for validation, auth, authorization, not found, throttle (retry metadata), 405, 419, other HTTP, 500 (ADR-26).
+- **Middleware:** `CorrelationId` (global; Laravel Context), `SetLocale` (ADR-29), `Idempotency` (`idempotent`, table `idempotency_keys`,
+  ADR-28), `ForceJsonResponse` (api).
+- **Routes:** `api_v1.php`, `admin.php` (ADMIN_PATH, web + Precognition), `website.php` (replaces `web.php`), `channels.php`, `console.php`.
+- **Audit:** `admin_audit_logs` + `AdminAuditLog` (append-only) + `AuditLogRepository` (append only) + `AuditLogger` + `Auditable`.
+- **Common tables:** `currencies`, `countries` (+ factories, repositories, idempotent seeders EG/EGP), `DatabaseCurrencyRegistry`.
+- **i18n:** `lang/{ar,en}/{validation,auth,pagination,passwords,enums,api,admin}.php`; full Arabic validation file.
+- **Rate limiters:** api, otp-request, otp-verify, location, offers, public-forms, admin-login (`config/rate_limits.php`).
+- **Realtime/queues/scheduler:** Reverb configured (`BROADCAST_CONNECTION=reverb`, env documented; `reverb:start` verified),
+  named queues enum, `system:heartbeat` every minute, hourly `model:prune` for idempotency keys.
+- **Health:** `GET /api/v1/health` (db, redis, queue, scheduler; statuses only; 503 when failing).
+
+### Files touched
+
+Backend: `composer.json/lock`, `bootstrap/{app,providers}.php`, `config/{admin,idempotency,rate_limits,integrations,health,sanctum,reverb,
+permission,broadcasting,cors}.php`, `app/{Console,DTOs,Enums,Exceptions,Http,Integrations,Models,Providers,Repositories,Services,Support}/**`,
+`database/{migrations,factories,seeders}/**`, `lang/**`, `routes/**` (`web.php` removed), `.env.example`, `tests/**`
+(`tests/Unit/ExampleTest.php` removed). Docs: `ARCHITECTURE.md`, `API.md`, `INTEGRATIONS.md`, `DECISIONS.md` (ADR-25..33), this file.
+
+### Commands and results (run 2026-10-13)
+
+| Command | Result |
+|---|---|
+| `composer require -W laravel/sanctum laravel/reverb spatie/laravel-permission spatie/laravel-translatable yajra/laravel-datatables-oracle yajra/laravel-datatables-html pragmarx/google2fa` | OK; "No security vulnerability advisories found" |
+| `php artisan migrate --seed` (local MySQL) | OK — 6 new migrations, Currency/Country seeders |
+| `vendor/bin/pint --test` | passed |
+| `vendor/bin/phpstan analyse` (level 6) | passed, 0 errors |
+| `php artisan test --parallel` | passed — 97 tests, 376 assertions |
+| `npm run build` | built OK |
+| `curl /api/v1/health` (artisan serve) | `{"success":true,…"status":"ok","checks":{"database":"ok","redis":"ok","queue":"ok","scheduler":"ok"}}` |
+| `php artisan reverb:start --port=8089` | "Starting server on 0.0.0.0:8089" |
+
+Tests added: `Unit/Support/Money/{MoneyTest,MoneyFormatterTest}`, `Unit/Enums/EnumHelpersTest`, `Unit/Integrations/IntegrationGuardTest`,
+`Feature/Api/{ApiEnvelopeTest,IdempotencyTest,HealthEndpointTest}`, `Feature/Support/{LocaleNegotiationTest,AuditLoggerTest,RoutingTest,
+CommonReferenceDataTest,RateLimitersTest}`.
+
+### Known gaps / notes
+
+- No real endpoints besides health; `routes/admin.php` and `routes/channels.php` are empty until P0.3/P1.1/P2.2.
+- `tests/Concurrency/` exists but is not a PHPUnit suite yet (P2.9 adds the process-pool race tests).
+- Vite entries `admin`/`website` are not split yet (P0.3). Rate limits are config-driven; settings-driven in P1.2.
+- `Model::shouldBeStrict()` is on outside production (ADR-31).
+
+### Next steps
+
+P0.3 — Admin UI kit (and P0.4 Flutter foundation, which may run in parallel).
 
 ## P0.1 — Repository audit, git, documentation spine, tooling baseline · ✅ 2026-10-13
 

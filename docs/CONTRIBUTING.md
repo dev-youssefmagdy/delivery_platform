@@ -54,3 +54,15 @@ Never claim a check passed unless you saw it pass.
 
 Never commit `.env`, keystores, `*.p12`, provisioning profiles, private keys, Firebase service-account JSON, DB dumps or user
 documents. Use `.env.example` with documented placeholders.
+
+## Core conventions added in P0.2
+
+- Throw `BusinessRuleViolation::make('<code>', field: '<field>')`, `ConflictException` or `ForbiddenActionException` for expected
+  domain errors and add `errors.<code>` to `lang/ar/api.php` **and** `lang/en/api.php`.
+- Return JSON only through `App\Support\Http\ApiResponse`.
+- New repository → interface in `Repositories/Contracts/<Module>/`, implementation extending `BaseRepository`, binding in
+  `RepositoryServiceProvider::$bindings`.
+- New polymorphic model → alias in `Relation::enforceMorphMap()` (`AppServiceProvider`).
+- New enum → `use EnumHelpers`, implement `HasLabel` (and `HasColor` when shown as a badge), labels in `lang/{ar,en}/enums.php`.
+- Money → `Money`/`MoneyCast` with `*_minor` + `currency` columns; never floats.
+- Sensitive actions → `AuditLogger::record()` with `auditSnapshot()` before/after.

@@ -1,7 +1,8 @@
 # API Conventions & Endpoint Reference
 
 > Conventions are binding from P0.2 onward (ADR-14, SRS §20). Endpoints are added to §8 by the milestone that ships them.
-> **Status:** no API endpoints exist yet (P0.1). `routes/api_v1.php` arrives in P0.2.
+> **Status (P0.2):** conventions below are implemented (`ApiResponse`, `ApiExceptionRenderer`, middleware `CorrelationId`,
+> `SetLocale`, `ForceJsonResponse`, `idempotent`). Routes live in `backend/routes/api_v1.php` (prefix `api/v1`, names `api.v1.*`).
 
 ## 1. Versioning and base URL
 
@@ -29,7 +30,7 @@ Every API response and every admin AJAX response is produced by `App\Support\Htt
 | `success` | `true` for 2xx, `false` otherwise |
 | `message` | Localized human message (Arabic default, per `Accept-Language`) |
 | `data` | Resource object/list, or `null` |
-| `meta` | Pagination, request id, extra context |
+| `meta` | Pagination, extra context; **error** responses always carry `meta.request_id` |
 | `errors` | Field → list of messages; `_code` holds the stable machine code for domain errors |
 
 ## 3. Errors
@@ -43,7 +44,15 @@ Every API response and every admin AJAX response is produced by `App\Support\Htt
 | 409 | State conflict / optimistic lock / race lost | `booking_already_assigned`, `stale_version` |
 | 422 | Validation or business rule violation | `validation_failed`, `offer_expired`, `idempotency_key_reused` |
 | 429 | Rate limited; includes `Retry-After` header and `meta.retry_after` | `too_many_requests` |
-| 5xx | Server error; never leaks SQL, stack traces, paths or secrets | `server_error` |
+| 405 | Method not allowed | `method_not_allowed` |
+| 419 | CSRF token / session expired (admin AJAX) | `session_expired` |
+| 5xx | Server error; never leaks SQL, stack traces, paths, exception messages or secrets (also when `APP_DEBUG=true`) | `server_error`, `service_unavailable` (503) |
+
+Implemented error codes (P0.2): `validation_failed`, `unauthenticated`, `forbidden`, `not_found`, `method_not_allowed`,
+`session_expired`, `too_many_requests`, `service_unavailable`, `server_error`, `idempotency_key_required`,
+`idempotency_key_invalid`, `idempotency_key_reused`, `idempotency_request_in_progress`. Other HTTP errors fall back to
+`http_<status>`. Messages for domain codes come from `lang/{ar,en}/api.php` → `errors.<code>`; a code without a translation
+gets the generic message for its status.
 
 Validation example:
 
@@ -57,8 +66,10 @@ Validation example:
 }
 ```
 
-Domain errors are thrown as `BusinessRuleViolation::make('<code>', field: '<field>')` (422) or `ConflictException` (409) and
-rendered like validation errors so admin forms and apps display them inline.
+Domain errors are thrown as `BusinessRuleViolation::make('<code>', field: '<field>')` (422), `ConflictException` (409) or
+`ForbiddenActionException` (403) and rendered like validation errors (the field gets the message) so admin forms and apps
+display them inline. They are not reported to the error log. On HTML (admin/website) requests they render the normal error
+page for their status.
 
 ## 4. Authentication
 
@@ -71,23 +82,53 @@ rendered like validation errors so admin forms and apps display them inline.
 
 | Header | Direction | Purpose |
 |---|---|---|
-| `Accept-Language` | request | `ar` (default) or `en`; user preference wins when authenticated |
-| `X-Request-Id` | both | Correlation id; generated if absent, echoed in response and `meta.request_id` |
+| `Accept-Language` | request | `ar` (default) or `en`. Order: authenticated user preference → session `locale` (web/admin only) → best `Accept-Language` match → `ar` |
+| `Content-Language` | response | Locale actually used |
+| `X-Request-Id` | both | Correlation id; accepted if it matches `[A-Za-z0-9._:-]{8,128}`, otherwise a UUID is generated. Echoed on every response and in `meta.request_id` of errors; added to every log line (Laravel Context) |
 | `Idempotency-Key` | request | UUID; required on critical writes (§7) |
+| `Idempotent-Replayed` | response | `true` when the body is a stored replay |
 | `X-App-Version`, `X-Platform` | request | App version gating (P5.6) |
 
 ## 6. Pagination, filtering, sorting
 
 - Length-aware: `?page=2&per_page=20` (max 100) → `meta.pagination = { current_page, per_page, total, last_page }`.
-- Cursor (feeds/history): `?cursor=…` → `meta.pagination = { next_cursor, prev_cursor, per_page }`.
+- Length-aware responses add `type: "page"`.
+- Cursor (feeds/history): `?cursor=…` → `meta.pagination = { type: "cursor", next_cursor, prev_cursor, per_page }`.
+- Produced by `ApiResponse::paginated($paginator, ResourceClass::class)`.
 - Filters: `?filter[status]=completed`, sorting: `?sort=-created_at`. Only allowlisted keys are accepted; unknown keys are ignored.
 
 ## 7. Idempotency
 
 Required on: booking creation, offer submission, offer acceptance, provider job transitions, payments/refunds, payout operations.
-The `idempotent` middleware stores `(actor, route, key) → status + body` for 24 h and replays the stored response. Reusing a
-key with a different payload hash returns `422 idempotency_key_reused`.
+The `idempotent` middleware (`App\Http\Middleware\Idempotency`, table `idempotency_keys`):
+
+- applies to unsafe methods only; a missing key → `422 idempotency_key_required`, a non-UUID → `422 idempotency_key_invalid`;
+- scope is `(actor morph type + id, route name, key)`; guests share the scope `guest/0` (critical routes are authenticated);
+- the request hash covers method, path, input with keys sorted recursively, and uploaded file contents;
+- the first **2xx** response is stored for `IDEMPOTENCY_TTL_HOURS` (24) and replayed verbatim with `Idempotent-Replayed: true`;
+  non-2xx responses are not stored, so the client can fix and retry with the same key;
+- same key + different payload → `422 idempotency_key_reused`;
+- same key while the first request is still running → `409 idempotency_request_in_progress` (Redis atomic lock,
+  `IDEMPOTENCY_LOCK_STORE`, `IDEMPOTENCY_LOCK_SECONDS`);
+- expired rows are deleted hourly by `model:prune`.
+
+## 7a. Rate limits
+
+Named limiters (`App\Enums\Common\RateLimiterName`, limits in `config/rate_limits.php` / `RATE_LIMIT_*` env): `api`
+(120/min per user or IP, applied to the whole `api` group), `otp-request` (3/min and 10/h per phone **and** per IP),
+`otp-verify` (5/min per phone+IP), `location` (30/min per user), `offers` (20/min per user), `public-forms` (5/min per IP),
+`admin-login` (5/min per email+IP). Exceeding a limit → `429 too_many_requests` with `Retry-After` and `meta.retry_after`.
 
 ## 8. Endpoints
 
-_None yet._ Each milestone appends a table: method, path, auth/ability, idempotent?, request fields, response resource, error codes.
+Each milestone appends a table: method, path, auth/ability, idempotent?, request fields, response resource, error codes.
+
+### 8.1 System (P0.2)
+
+| Method | Path | Auth | Idempotent | Response | Errors |
+|---|---|---|---|---|---|
+| GET | `/api/v1/health` | public (throttle `api`) | — | `200` `data = { status: "ok", checks: { database, redis, queue, scheduler } }`, each check `ok`/`failing` | `503 service_unavailable` with the same object in `meta` |
+
+The public health response never contains latencies, error messages, connection names or heartbeat ages; those details are
+kept in `HealthReport::$details` for the admin system page (P5.6). The scheduler check fails when the `system:heartbeat`
+cache key is older than `HEALTH_HEARTBEAT_MAX_AGE` (180 s). Laravel's own `/up` liveness route also exists.

@@ -319,6 +319,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'هذا الحقل مطلوب'**
   String get validationRequired;
+
+  /// No description provided for @actionCheckAgain.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحقق مرة أخرى'**
+  String get actionCheckAgain;
+
+  /// No description provided for @supportContactLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدعم'**
+  String get supportContactLabel;
+
+  /// No description provided for @forceUpdateRequiredVersion.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإصدار المطلوب: {version}'**
+  String forceUpdateRequiredVersion(String version);
 }
 
 class _AppLocalizationsDelegate

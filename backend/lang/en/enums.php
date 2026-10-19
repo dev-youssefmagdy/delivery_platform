@@ -198,5 +198,39 @@ return [
         'system_integration_admin' => 'System / Integration Administrator',
     ],
 
+    'digits_preference' => [
+        'auto' => 'Follow the language',
+        'western' => 'Western digits (0-9)',
+        'arabic_indic' => 'Arabic-Indic digits (٠-٩)',
+    ],
+
+    'setting_group' => [
+        'localization' => 'Language & market',
+        'support' => 'Support contacts',
+        'otp' => 'Verification codes',
+        'booking' => 'Bookings & offers',
+        'dispatch' => 'Dispatch',
+        'providers' => 'Providers',
+        'safety' => 'Safety & privacy',
+        'apps' => 'Mobile apps',
+        'security' => 'Admin security',
+        'rate_limits' => 'Rate limits',
+    ],
+
+    'content_status' => [
+        'draft' => 'Draft',
+        'published' => 'Published',
+        'archived' => 'Archived',
+    ],
+
+    'policy_type' => [
+        'terms' => 'Terms and conditions',
+        'privacy' => 'Privacy policy',
+        'driver_terms' => 'Driver terms',
+        'coupon_rules' => 'Coupon rules',
+        'restricted_goods' => 'Restricted goods',
+        'cancellation' => 'Cancellation policy',
+    ],
+
     // @admin-module:enums
 ];

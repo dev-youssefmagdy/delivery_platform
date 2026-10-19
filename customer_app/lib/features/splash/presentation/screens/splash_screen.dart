@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../../core/providers.dart';
+import '../../../app_config/presentation/providers/app_config_providers.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -24,7 +25,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     _timer = Timer(ref.read(splashDurationProvider), _continue);
   }
 
-  void _continue() {
+  Future<void> _continue() async {
+    // Let the startup config (maintenance / update rules, market) arrive
+    // first, but never block the app on it: errors fall back to the cache.
+    try {
+      await ref
+          .read(appConfigProvider.future)
+          .timeout(ref.read(configWaitProvider));
+    } on Object {
+      // Unavailable config is handled by the gate (fails open).
+    }
     if (!mounted) return;
     context.go(
       destinationAfterSplash(

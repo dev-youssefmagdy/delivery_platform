@@ -4,10 +4,12 @@ namespace App\Services\Admin;
 
 use App\DTOs\Admin\MfaEnrolmentData;
 use App\Enums\Common\AuditAction;
+use App\Enums\Settings\SettingKey;
 use App\Exceptions\BusinessRuleViolation;
 use App\Models\Admin;
 use App\Repositories\Contracts\Admin\AdminRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Services\Settings\SettingsService;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -21,7 +23,7 @@ use PragmaRX\Google2FA\Google2FA;
 
 /**
  * TOTP multi-factor authentication (ADR-06): enrolment with QR + confirmation code, one-time recovery codes,
- * replay protection (a time step is accepted once), enforcement per role (config admin.auth.mfa.required_roles).
+ * replay protection (a time step is accepted once), enforcement per role (typed setting admin_mfa_required_roles).
  * The TOTP secret is encrypted at rest; recovery codes are stored only as keyed hashes.
  */
 final class AdminMfaService
@@ -35,6 +37,7 @@ final class AdminMfaService
         private readonly DatabaseManager $db,
         private readonly Google2FA $totp,
         private readonly Session $session,
+        private readonly SettingsService $settings,
     ) {}
 
     /**
@@ -43,7 +46,7 @@ final class AdminMfaService
     public function isRequiredFor(Admin $admin): bool
     {
         /** @var list<string> $required */
-        $required = (array) config('admin.auth.mfa.required_roles', []);
+        $required = array_map('strval', $this->settings->list(SettingKey::AdminMfaRequiredRoles));
 
         return $required !== [] && $admin->getRoleNames()->intersect($required)->isNotEmpty();
     }

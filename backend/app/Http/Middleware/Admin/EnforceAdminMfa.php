@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Admins whose role requires MFA (config admin.auth.mfa.required_roles) can only reach the security screens
+ * Admins whose role requires MFA (typed setting admin_mfa_required_roles) can only reach the security screens
  * until they have enrolled.
  */
 final class EnforceAdminMfa

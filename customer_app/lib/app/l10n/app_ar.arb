@@ -1,7 +1,9 @@
 {
   "@@locale": "ar",
   "appName": "عميل المنصة",
-  "@appName": {"description": "Customer app display name"},
+  "@appName": {
+    "description": "Customer app display name"
+  },
   "splashLoading": "جارٍ التحميل…",
   "languageTitle": "اختر لغتك",
   "languageSubtitle": "يمكنك تغيير اللغة لاحقًا من الإعدادات.",
@@ -31,12 +33,28 @@
   "errorSessionExpiredTitle": "انتهت الجلسة",
   "errorSessionExpiredBody": "سجّل الدخول مرة أخرى للمتابعة.",
   "errorRequestId": "رقم المرجع: {id}",
-  "@errorRequestId": {"placeholders": {"id": {"type": "String"}}},
+  "@errorRequestId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "emptyTitle": "لا توجد بيانات",
   "loadingLabel": "جارٍ التحميل",
   "maintenanceTitle": "التطبيق تحت الصيانة",
   "maintenanceBody": "سنعود قريبًا. نعتذر عن الإزعاج.",
   "forceUpdateTitle": "تحديث مطلوب",
   "forceUpdateBody": "يرجى تحديث التطبيق إلى أحدث إصدار للمتابعة.",
-  "validationRequired": "هذا الحقل مطلوب"
+  "validationRequired": "هذا الحقل مطلوب",
+  "actionCheckAgain": "تحقق مرة أخرى",
+  "supportContactLabel": "الدعم",
+  "forceUpdateRequiredVersion": "الإصدار المطلوب: {version}",
+  "@forceUpdateRequiredVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  }
 }

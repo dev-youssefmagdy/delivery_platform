@@ -1,7 +1,5 @@
 import 'package:platform_core/platform_core.dart';
 
-import '../dtos/app_config_dto.dart';
-
 class AppConfigRemoteDataSource {
   const AppConfigRemoteDataSource(this._api);
 
@@ -9,7 +7,8 @@ class AppConfigRemoteDataSource {
 
   static const path = '/config/app';
 
-  Future<AppConfigDto> fetch() async {
+  /// The envelope's `data` object, untouched (so it can be cached verbatim).
+  Future<Map<String, dynamic>> fetch() async {
     final result = await _api.get(path);
     final data = result.data;
     if (data is! Map) {
@@ -19,6 +18,6 @@ class AppConfigRemoteDataSource {
         message: null,
       );
     }
-    return AppConfigDto.fromJson(Map<String, dynamic>.from(data));
+    return Map<String, dynamic>.from(data);
   }
 }

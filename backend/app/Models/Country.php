@@ -18,6 +18,7 @@ use Spatie\Translatable\HasTranslations;
  * @property string $timezone
  * @property string $default_locale
  * @property bool $active
+ * @property int $lock_version
  */
 class Country extends Model
 {
@@ -31,7 +32,7 @@ class Country extends Model
     /** @var list<string> */
     public array $translatable = ['name'];
 
-    protected $fillable = ['iso2', 'name', 'phone_code', 'currency_code', 'timezone', 'default_locale', 'active'];
+    protected $fillable = ['iso2', 'name', 'phone_code', 'currency_code', 'timezone', 'default_locale', 'active', 'lock_version'];
 
     /**
      * @return BelongsTo<Currency, $this>
@@ -42,12 +43,20 @@ class Country extends Model
     }
 
     /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'lock_version' => 0,
+    ];
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
             'active' => 'boolean',
+            'lock_version' => 'integer',
         ];
     }
 }

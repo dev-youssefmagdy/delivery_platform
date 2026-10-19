@@ -198,5 +198,39 @@ return [
         'system_integration_admin' => 'مسؤول النظام والتكامل',
     ],
 
+    'digits_preference' => [
+        'auto' => 'اتباع اللغة',
+        'western' => 'أرقام غربية (0-9)',
+        'arabic_indic' => 'أرقام هندية عربية (٠-٩)',
+    ],
+
+    'setting_group' => [
+        'localization' => 'اللغة والسوق',
+        'support' => 'جهات الدعم',
+        'otp' => 'رموز التحقق',
+        'booking' => 'الحجوزات والعروض',
+        'dispatch' => 'الإرسال',
+        'providers' => 'مقدمو الخدمة',
+        'safety' => 'الأمان والخصوصية',
+        'apps' => 'تطبيقات الجوال',
+        'security' => 'أمان المشرفين',
+        'rate_limits' => 'حدود الطلبات',
+    ],
+
+    'content_status' => [
+        'draft' => 'مسودة',
+        'published' => 'منشور',
+        'archived' => 'مؤرشف',
+    ],
+
+    'policy_type' => [
+        'terms' => 'الشروط والأحكام',
+        'privacy' => 'سياسة الخصوصية',
+        'driver_terms' => 'شروط السائقين',
+        'coupon_rules' => 'قواعد القسائم',
+        'restricted_goods' => 'البضائع المحظورة',
+        'cancellation' => 'سياسة الإلغاء',
+    ],
+
     // @admin-module:enums
 ];

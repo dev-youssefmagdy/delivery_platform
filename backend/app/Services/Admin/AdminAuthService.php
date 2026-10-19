@@ -6,11 +6,13 @@ use App\DTOs\Admin\LoginData;
 use App\Enums\Admin\AdminLoginOutcome;
 use App\Enums\Admin\AdminLoginStep;
 use App\Enums\Common\AuditAction;
+use App\Enums\Settings\SettingKey;
 use App\Exceptions\BusinessRuleViolation;
 use App\Models\Admin;
 use App\Repositories\Contracts\Admin\AdminLoginEventRepositoryInterface;
 use App\Repositories\Contracts\Admin\AdminRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Services\Settings\SettingsService;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
@@ -35,13 +37,14 @@ final class AdminAuthService
         private readonly AuditLogger $audit,
         private readonly AuthFactory $auth,
         private readonly Session $session,
+        private readonly SettingsService $settings,
     ) {}
 
     public function attempt(LoginData $data): AdminLoginStep
     {
         $email = mb_strtolower(trim($data->email));
         $throttleKey = $this->throttleKey($email);
-        $maxAttempts = (int) config('rate_limits.admin-login.per_minute', 5);
+        $maxAttempts = $this->settings->int(SettingKey::RateLimitAdminLoginPerMinute);
 
         if (RateLimiter::tooManyAttempts($throttleKey, $maxAttempts)) {
             $this->record(AdminLoginOutcome::Throttled, $email);
@@ -55,7 +58,7 @@ final class AdminAuthService
         $passwordOk = Hash::check($data->password, $admin instanceof Admin ? $admin->password : Hash::make(Str::random(32)));
 
         if (! $admin instanceof Admin || ! $passwordOk || ! $admin->isActive()) {
-            RateLimiter::hit($throttleKey, (int) config('admin.auth.login.lockout_seconds', 900));
+            RateLimiter::hit($throttleKey, $this->settings->int(SettingKey::AdminLoginLockoutSeconds));
             $this->record($admin instanceof Admin && $passwordOk ? AdminLoginOutcome::AccountSuspended : AdminLoginOutcome::InvalidCredentials, $email, $admin);
 
             // One generic message for unknown email, wrong password and suspended accounts.
@@ -116,7 +119,7 @@ final class AdminAuthService
 
             if ($attempts >= (int) config('admin.auth.mfa.max_attempts', 5)) {
                 $this->session->forget(self::PENDING_KEY);
-                RateLimiter::hit($this->throttleKey(mb_strtolower($admin->email)), (int) config('admin.auth.login.lockout_seconds', 900));
+                RateLimiter::hit($this->throttleKey(mb_strtolower($admin->email)), $this->settings->int(SettingKey::AdminLoginLockoutSeconds));
 
                 throw BusinessRuleViolation::make('mfa_session_expired', 'code');
             }

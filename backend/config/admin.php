@@ -19,9 +19,12 @@ return [
 
     /*
     | Admin authentication (ADR-06, P1.1). `mfa.required_roles` lists the AdminRole values whose holders MUST
-    | enrol TOTP MFA before using the panel (moves to the typed setting `admin_mfa_required_roles` in P1.2).
-    | Empty env value = nobody is forced. Failed logins lock an email+IP pair for `login.lockout_seconds` after
-    | `rate_limits.admin-login.per_minute` failures.
+    | enrol TOTP MFA before using the panel. Empty env value = nobody is forced. Failed logins lock an email+IP
+    | pair for `login.lockout_seconds` after `rate_limits.admin-login.per_minute` failures.
+    |
+    | Since P1.2 `mfa.required_roles`, `login.lockout_seconds` and the rate limits are typed platform settings
+    | (SettingKey::AdminMfaRequiredRoles, AdminLoginLockoutSeconds, RateLimit*) edited in Admin > Settings. The values
+    | here are only the DEFAULTS used until an admin overrides them (ADR-55).
     */
     'auth' => [
         'mfa' => [

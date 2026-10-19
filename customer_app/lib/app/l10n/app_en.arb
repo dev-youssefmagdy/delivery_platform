@@ -36,5 +36,15 @@
   "maintenanceBody": "We will be back soon. Sorry for the inconvenience.",
   "forceUpdateTitle": "Update required",
   "forceUpdateBody": "Please update the app to the latest version to continue.",
-  "validationRequired": "This field is required"
+  "validationRequired": "This field is required",
+  "actionCheckAgain": "Check again",
+  "supportContactLabel": "Support",
+  "forceUpdateRequiredVersion": "Required version: {version}",
+  "@forceUpdateRequiredVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  }
 }

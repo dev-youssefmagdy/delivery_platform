@@ -55,14 +55,16 @@ final class AppConfigRepositoryProvider
 }
 
 String _$appConfigRepositoryHash() =>
-    r'dd6d8ca471290c140f15ad36f1b6318ac1d106c0';
+    r'94f06540e4d724c1cde311d9366eeb9b691ca81d';
 
-/// Startup config. Not consumed by a screen until P1.2 ships the endpoint.
+/// Startup config: fetched from the server, falling back to the last good
+/// copy. Invalidate to refresh (app resume, "check again").
 
 @ProviderFor(appConfig)
 final appConfigProvider = AppConfigProvider._();
 
-/// Startup config. Not consumed by a screen until P1.2 ships the endpoint.
+/// Startup config: fetched from the server, falling back to the last good
+/// copy. Invalidate to refresh (app resume, "check again").
 
 final class AppConfigProvider
     extends
@@ -72,14 +74,15 @@ final class AppConfigProvider
           FutureOr<AppConfig>
         >
     with $FutureModifier<AppConfig>, $FutureProvider<AppConfig> {
-  /// Startup config. Not consumed by a screen until P1.2 ships the endpoint.
+  /// Startup config: fetched from the server, falling back to the last good
+  /// copy. Invalidate to refresh (app resume, "check again").
   AppConfigProvider._()
     : super(
         from: null,
         argument: null,
-        retry: null,
+        retry: _noAutoRetry,
         name: r'appConfigProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -98,4 +101,143 @@ final class AppConfigProvider
   }
 }
 
-String _$appConfigHash() => r'b2c44579d7aeafb470c084281f2e8a129bc15619';
+String _$appConfigHash() => r'81e2624ce7f918a4ddc513cfe09e13d4405ce9b7';
+
+/// Installed app version (`pubspec` version without the build number).
+/// Overridden in tests.
+
+@ProviderFor(appVersion)
+final appVersionProvider = AppVersionProvider._();
+
+/// Installed app version (`pubspec` version without the build number).
+/// Overridden in tests.
+
+final class AppVersionProvider
+    extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
+    with $FutureModifier<String>, $FutureProvider<String> {
+  /// Installed app version (`pubspec` version without the build number).
+  /// Overridden in tests.
+  AppVersionProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appVersionProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appVersionHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<String> create(Ref ref) {
+    return appVersion(ref);
+  }
+}
+
+String _$appVersionHash() => r'c805f17092c94aa3f6b30a3eed1bb098e4cb56c6';
+
+/// Maintenance / forced-update decision for this install. Open while the
+/// config or version is still loading or unavailable (never blocks on errors).
+
+@ProviderFor(appGate)
+final appGateProvider = AppGateProvider._();
+
+/// Maintenance / forced-update decision for this install. Open while the
+/// config or version is still loading or unavailable (never blocks on errors).
+
+final class AppGateProvider
+    extends $FunctionalProvider<AppGateStatus, AppGateStatus, AppGateStatus>
+    with $Provider<AppGateStatus> {
+  /// Maintenance / forced-update decision for this install. Open while the
+  /// config or version is still loading or unavailable (never blocks on errors).
+  AppGateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appGateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appGateHash();
+
+  @$internal
+  @override
+  $ProviderElement<AppGateStatus> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AppGateStatus create(Ref ref) {
+    return appGate(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AppGateStatus value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AppGateStatus>(value),
+    );
+  }
+}
+
+String _$appGateHash() => r'cf8de12c96b93c0dee41297aff2aff6e583d4f66';
+
+/// Money formatting for the current language, with the server's digit style
+/// and default-currency symbols. Screens format every amount through this.
+
+@ProviderFor(moneyFormatter)
+final moneyFormatterProvider = MoneyFormatterProvider._();
+
+/// Money formatting for the current language, with the server's digit style
+/// and default-currency symbols. Screens format every amount through this.
+
+final class MoneyFormatterProvider
+    extends $FunctionalProvider<MoneyFormatter, MoneyFormatter, MoneyFormatter>
+    with $Provider<MoneyFormatter> {
+  /// Money formatting for the current language, with the server's digit style
+  /// and default-currency symbols. Screens format every amount through this.
+  MoneyFormatterProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'moneyFormatterProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$moneyFormatterHash();
+
+  @$internal
+  @override
+  $ProviderElement<MoneyFormatter> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  MoneyFormatter create(Ref ref) {
+    return moneyFormatter(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MoneyFormatter value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<MoneyFormatter>(value),
+    );
+  }
+}
+
+String _$moneyFormatterHash() => r'92754e96dd4fce361bef0c49d7dbf430c107da0a';

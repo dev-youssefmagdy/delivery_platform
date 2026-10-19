@@ -12,6 +12,8 @@ use App\Repositories\Contracts\Common\CountryRepositoryInterface;
 use App\Repositories\Contracts\Common\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\Common\IdempotencyKeyRepositoryInterface;
 use App\Repositories\Contracts\Demo\DemoItemRepositoryInterface;
+use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
+use App\Repositories\Contracts\Settings\SettingsRepositoryInterface;
 use App\Repositories\Eloquent\Admin\AdminExportRepository;
 use App\Repositories\Eloquent\Admin\AdminLoginEventRepository;
 use App\Repositories\Eloquent\Admin\AdminRepository;
@@ -22,6 +24,8 @@ use App\Repositories\Eloquent\Common\CountryRepository;
 use App\Repositories\Eloquent\Common\CurrencyRepository;
 use App\Repositories\Eloquent\Common\IdempotencyKeyRepository;
 use App\Repositories\Eloquent\Demo\DemoItemRepository;
+use App\Repositories\Eloquent\Policy\PolicyVersionRepository;
+use App\Repositories\Eloquent\Settings\SettingsRepository;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -43,6 +47,8 @@ class RepositoryServiceProvider extends ServiceProvider
         CurrencyRepositoryInterface::class => CurrencyRepository::class,
         IdempotencyKeyRepositoryInterface::class => IdempotencyKeyRepository::class,
         DemoItemRepositoryInterface::class => DemoItemRepository::class,
+        SettingsRepositoryInterface::class => SettingsRepository::class,
+        PolicyVersionRepositoryInterface::class => PolicyVersionRepository::class,
         // @admin-module:bindings
     ];
 }

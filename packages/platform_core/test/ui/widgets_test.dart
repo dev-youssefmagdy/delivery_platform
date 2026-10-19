@@ -16,6 +16,30 @@ const dirs = [TextDirection.rtl, TextDirection.ltr];
 void main() {
   for (final dir in dirs) {
     group('shared widgets $dir', () {
+      testWidgets('BlockingNotice shows details and fires its action', (
+        t,
+      ) async {
+        var taps = 0;
+        await t.pumpWidget(
+          host(
+            BlockingNotice(
+              icon: Icons.construction_rounded,
+              title: 'Maintenance',
+              message: 'Back soon',
+              details: const ['Support: +20 100 000 0000'],
+              actionLabel: 'Check again',
+              onAction: () => taps++,
+            ),
+            dir: dir,
+          ),
+        );
+        expect(find.text('Maintenance'), findsOneWidget);
+        expect(find.text('Back soon'), findsOneWidget);
+        expect(find.text('Support: +20 100 000 0000'), findsOneWidget);
+        await t.tap(find.text('Check again'));
+        expect(taps, 1);
+      });
+
       testWidgets('AppButton fires, and loading disables', (t) async {
         var taps = 0;
         await t.pumpWidget(

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $symbol_ar
  * @property string $symbol_en
  * @property bool $active
+ * @property int $lock_version
  */
 class Currency extends Model
 {
@@ -23,12 +24,27 @@ class Currency extends Model
     /** @use HasFactory<CurrencyFactory> */
     use HasFactory;
 
-    protected $fillable = ['code', 'exponent', 'symbol_ar', 'symbol_en', 'active'];
+    protected $fillable = ['code', 'exponent', 'symbol_ar', 'symbol_en', 'active', 'lock_version'];
 
     public function toValue(): CurrencyValue
     {
         return new CurrencyValue($this->code, $this->exponent, ['ar' => $this->symbol_ar, 'en' => $this->symbol_en]);
     }
+
+    /**
+     * Select option label: "EGP — ج.م / EGP".
+     */
+    public function optionLabel(): string
+    {
+        return $this->code.' — '.($this->symbol_ar === $this->symbol_en ? $this->symbol_en : $this->symbol_ar.' / '.$this->symbol_en);
+    }
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'lock_version' => 0,
+    ];
 
     /**
      * @return array<string, string>
@@ -38,6 +54,7 @@ class Currency extends Model
         return [
             'exponent' => 'integer',
             'active' => 'boolean',
+            'lock_version' => 'integer',
         ];
     }
 }

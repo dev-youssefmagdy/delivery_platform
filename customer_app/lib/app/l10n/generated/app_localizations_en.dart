@@ -129,4 +129,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get validationRequired => 'This field is required';
+
+  @override
+  String get actionCheckAgain => 'Check again';
+
+  @override
+  String get supportContactLabel => 'Support';
+
+  @override
+  String forceUpdateRequiredVersion(String version) {
+    return 'Required version: $version';
+  }
 }

@@ -46,5 +46,15 @@
   "maintenanceBody": "سنعود قريبًا. نعتذر عن الإزعاج.",
   "forceUpdateTitle": "تحديث مطلوب",
   "forceUpdateBody": "يرجى تحديث التطبيق إلى أحدث إصدار للمتابعة.",
-  "validationRequired": "هذا الحقل مطلوب"
+  "validationRequired": "هذا الحقل مطلوب",
+  "actionCheckAgain": "تحقق مرة أخرى",
+  "supportContactLabel": "الدعم",
+  "forceUpdateRequiredVersion": "الإصدار المطلوب: {version}",
+  "@forceUpdateRequiredVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  }
 }

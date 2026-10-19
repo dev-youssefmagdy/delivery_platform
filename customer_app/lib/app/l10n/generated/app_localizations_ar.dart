@@ -122,4 +122,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get validationRequired => 'هذا الحقل مطلوب';
+
+  @override
+  String get actionCheckAgain => 'تحقق مرة أخرى';
+
+  @override
+  String get supportContactLabel => 'الدعم';
+
+  @override
+  String forceUpdateRequiredVersion(String version) {
+    return 'الإصدار المطلوب: $version';
+  }
 }

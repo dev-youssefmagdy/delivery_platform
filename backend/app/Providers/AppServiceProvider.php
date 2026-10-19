@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Enums\Common\RateLimiterName;
+use App\Enums\Settings\SettingKey;
 use App\Models\Admin;
 use App\Models\AdminAuditLog;
 use App\Models\AdminExport;
@@ -10,8 +11,11 @@ use App\Models\Country;
 use App\Models\Currency;
 use App\Models\DemoItem;
 use App\Models\IdempotencyKey;
+use App\Models\PlatformSetting;
+use App\Models\PolicyVersion;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Settings\SettingsService;
 use App\Support\Money\CurrencyRegistry;
 use App\Support\Money\DatabaseCurrencyRegistry;
 use App\Support\Money\MoneyFormatter;
@@ -56,6 +60,8 @@ class AppServiceProvider extends ServiceProvider
             'idempotency_key' => IdempotencyKey::class,
             'admin_export' => AdminExport::class,
             'demo_item' => DemoItem::class,
+            'platform_setting' => PlatformSetting::class,
+            'policy_version' => PolicyVersion::class,
             // @admin-module:morph-map
         ]);
 
@@ -66,19 +72,29 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Named limiters (Plan §4.4). Limits come from config/rate_limits.php.
+     * Named limiters (Plan §4.4). Limits are typed settings (SettingKey::RateLimit*), defaulting to config/rate_limits.php.
      */
     private function configureRateLimiting(): void
     {
-        $perMinute = static fn (RateLimiterName $name): int => (int) config("rate_limits.{$name->value}.per_minute", 60);
+        // Limits are typed platform settings (defaults come from config/rate_limits.php); read per request, cached.
+        $settings = static fn (SettingKey $key): int => app(SettingsService::class)->int($key);
+        $perMinute = static fn (RateLimiterName $name): int => $settings(match ($name) {
+            RateLimiterName::Api => SettingKey::RateLimitApiPerMinute,
+            RateLimiterName::OtpRequest => SettingKey::RateLimitOtpRequestPerMinute,
+            RateLimiterName::OtpVerify => SettingKey::RateLimitOtpVerifyPerMinute,
+            RateLimiterName::Location => SettingKey::RateLimitLocationPerMinute,
+            RateLimiterName::Offers => SettingKey::RateLimitOffersPerMinute,
+            RateLimiterName::PublicForms => SettingKey::RateLimitPublicFormsPerMinute,
+            RateLimiterName::AdminLogin => SettingKey::RateLimitAdminLoginPerMinute,
+        });
         $actor = static fn (Request $request): string => (string) ($request->user()?->getAuthIdentifier() ?? 'ip:'.$request->ip());
 
         RateLimiter::for(RateLimiterName::Api->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::Api))->by($actor($request)));
 
-        RateLimiter::for(RateLimiterName::OtpRequest->value, static function (Request $request) use ($perMinute): array {
+        RateLimiter::for(RateLimiterName::OtpRequest->value, static function (Request $request) use ($perMinute, $settings): array {
             $phone = 'phone:'.hash('sha256', (string) $request->input('phone'));
             $ip = 'ip:'.$request->ip();
-            $perHour = (int) config('rate_limits.otp-request.per_hour', 10);
+            $perHour = $settings(SettingKey::RateLimitOtpRequestPerHour);
 
             return [
                 Limit::perMinute($perMinute(RateLimiterName::OtpRequest))->by($phone),

@@ -530,5 +530,296 @@ return [
         ],
     ],
 
+    'settings' => [
+        'menu' => 'Settings',
+        'title' => 'Settings',
+        'subtitle' => 'Platform-wide business rules. Changes apply immediately and are recorded in the audit log.',
+        'read_only' => 'You can view the settings but not change them.',
+        'saved' => '":group" settings saved.',
+        'unchanged' => 'Nothing changed.',
+        'units' => [
+            'seconds' => 'seconds',
+            'minutes' => 'minutes',
+            'km' => 'km',
+            'per_minute' => 'per minute',
+            'per_hour' => 'per hour',
+        ],
+        'keys' => [
+            'default_country' => [
+                'label' => 'Default country',
+                'description' => 'Country preselected in phone inputs and used for market defaults.',
+            ],
+            'default_locale' => [
+                'label' => 'Default language',
+                'description' => 'Language used for new installs and when the user has no preference.',
+            ],
+            'supported_locales' => [
+                'label' => 'Supported languages',
+                'description' => 'Languages offered in the apps. The default language must be included.',
+            ],
+            'default_currency' => [
+                'label' => 'Default currency',
+                'description' => 'Currency used for fares, wallets and reports unless a market overrides it.',
+            ],
+            'digits_preference' => [
+                'label' => 'Digit style',
+                'description' => 'Show Western (0-9) or Arabic-Indic digits, or follow the language.',
+            ],
+            'support_phone' => [
+                'label' => 'Support phone',
+                'description' => 'Shown to customers and drivers. Leave empty to hide it.',
+            ],
+            'support_email' => [
+                'label' => 'Support email',
+                'description' => 'Shown to customers and drivers. Leave empty to hide it.',
+            ],
+            'support_whatsapp' => [
+                'label' => 'Support WhatsApp number',
+                'description' => 'International format, for example +201000000000. Leave empty to hide it.',
+            ],
+            'otp_length' => [
+                'label' => 'OTP length',
+                'description' => 'Number of digits in the verification code.',
+            ],
+            'otp_ttl_seconds' => [
+                'label' => 'OTP validity',
+                'description' => 'How long a code stays valid.',
+            ],
+            'otp_resend_cooldown_seconds' => [
+                'label' => 'OTP resend cooldown',
+                'description' => 'Minimum wait before another code can be requested. Must be shorter than the validity.',
+            ],
+            'otp_max_attempts' => [
+                'label' => 'OTP maximum attempts',
+                'description' => 'Wrong entries allowed before the code is locked.',
+            ],
+            'booking_search_ttl_seconds' => [
+                'label' => 'Booking search duration',
+                'description' => 'How long a request keeps searching for offers before it expires.',
+            ],
+            'offer_ttl_seconds' => [
+                'label' => 'Offer validity',
+                'description' => 'How long a provider offer stays valid. Cannot exceed the search duration.',
+            ],
+            'max_offers_per_provider_per_booking' => [
+                'label' => 'Offers per provider per request',
+                'description' => 'Maximum active offers one provider may submit for a single request.',
+            ],
+            'max_offer_revisions' => [
+                'label' => 'Maximum offer revisions',
+                'description' => 'How many times a provider may revise an offer (0 disables revisions).',
+            ],
+            'rating_customer_by_provider_enabled' => [
+                'label' => 'Providers can rate customers',
+                'description' => 'When off, only customers rate providers.',
+            ],
+            'dispatch_radius_steps_km' => [
+                'label' => 'Dispatch radius steps',
+                'description' => 'Search radius per wave, ascending and separated by commas (for example 2, 4, 7).',
+            ],
+            'dispatch_batch_size' => [
+                'label' => 'Dispatch batch size',
+                'description' => 'Providers notified in each wave.',
+            ],
+            'dispatch_wave_interval_seconds' => [
+                'label' => 'Wave interval',
+                'description' => 'Wait before widening the search to the next radius.',
+            ],
+            'location_stale_after_seconds' => [
+                'label' => 'Stale location threshold',
+                'description' => 'A provider location older than this is marked stale.',
+            ],
+            'auto_redispatch_on_provider_cancel' => [
+                'label' => 'Re-dispatch after provider cancellation',
+                'description' => 'Automatically search again when the selected provider cancels.',
+            ],
+            'provider_single_active_job' => [
+                'label' => 'One active job per provider',
+                'description' => 'Providers cannot hold two active bookings at once.',
+            ],
+            'provider_cash_debt_limit_minor' => [
+                'label' => 'Provider cash debt limit',
+                'description' => 'Commission owed on cash jobs above which a provider cannot go online.',
+            ],
+            'ride_pin_required' => [
+                'label' => 'Ride PIN required',
+                'description' => 'The customer gives a PIN to the provider to start the trip.',
+            ],
+            'share_link_ttl_minutes' => [
+                'label' => 'Trip share link validity',
+                'description' => 'How long a shared live-trip link stays active.',
+            ],
+            'direct_phone_exposure' => [
+                'label' => 'Allow direct phone numbers',
+                'description' => 'When off, customers and providers cannot see each other\'s real numbers.',
+            ],
+            'min_app_version_customer' => [
+                'label' => 'Minimum customer app version',
+                'description' => 'Format 1.2.3. Older versions are asked to update.',
+            ],
+            'min_app_version_driver' => [
+                'label' => 'Minimum driver app version',
+                'description' => 'Format 1.2.3. Older versions are asked to update.',
+            ],
+            'force_update_customer' => [
+                'label' => 'Force customer app update',
+                'description' => 'Block versions below the minimum until they update.',
+            ],
+            'force_update_driver' => [
+                'label' => 'Force driver app update',
+                'description' => 'Block versions below the minimum until they update.',
+            ],
+            'maintenance_mode_apps' => [
+                'label' => 'Maintenance mode (mobile apps)',
+                'description' => 'Both apps show a maintenance screen instead of the service.',
+            ],
+            'admin_mfa_required_roles' => [
+                'label' => 'Roles that must use two-step verification',
+                'description' => 'Admins holding any of these roles must enrol before using the panel.',
+            ],
+            'admin_login_lockout_seconds' => [
+                'label' => 'Admin sign-in lock-out',
+                'description' => 'How long an email and IP pair stays blocked after too many failed sign-ins.',
+            ],
+            'rate_limit_api_per_minute' => [
+                'label' => 'General API requests',
+                'description' => 'Per user, or per IP for guests.',
+            ],
+            'rate_limit_otp_request_per_minute' => [
+                'label' => 'OTP requests per minute',
+                'description' => 'Per phone number and per IP.',
+            ],
+            'rate_limit_otp_request_per_hour' => [
+                'label' => 'OTP requests per hour',
+                'description' => 'Per phone number and per IP.',
+            ],
+            'rate_limit_otp_verify_per_minute' => [
+                'label' => 'OTP verifications',
+                'description' => 'Per phone number and IP.',
+            ],
+            'rate_limit_location_per_minute' => [
+                'label' => 'Location updates',
+                'description' => 'Per provider.',
+            ],
+            'rate_limit_offers_per_minute' => [
+                'label' => 'Offer submissions',
+                'description' => 'Per provider.',
+            ],
+            'rate_limit_public_forms_per_minute' => [
+                'label' => 'Public form submissions',
+                'description' => 'Per IP (contact and recruitment forms).',
+            ],
+            'rate_limit_admin_login_per_minute' => [
+                'label' => 'Failed admin sign-ins before lock-out',
+                'description' => 'Failures per email and IP before the lock-out starts.',
+            ],
+        ],
+    ],
+
+    'countries' => [
+        'menu' => 'Countries',
+        'title' => 'Countries',
+        'subtitle' => 'Markets the platform operates in: currency, timezone, phone code and language defaults.',
+        'create_title' => 'New country',
+        'edit_title' => 'Edit country',
+        'show_title' => 'Country',
+        'search_placeholder' => 'ISO code or name…',
+        'created' => 'Country created.',
+        'updated' => 'Country updated.',
+        'deleted' => 'Country deleted.',
+        'sections' => [
+            'identity' => 'Identity',
+            'market' => 'Market defaults',
+            'market_hint' => 'Used for phone inputs, timezones and money formatting in this market.',
+        ],
+        'fields' => [
+            'iso2' => 'ISO code',
+            'name' => 'Name',
+            'phone_code' => 'Phone code',
+            'currency' => 'Currency',
+            'timezone' => 'Timezone',
+            'default_locale' => 'Default language',
+            'active' => 'Active',
+        ],
+        'hints' => [
+            'iso2' => 'Two letters (ISO 3166-1 alpha-2), for example EG. Cannot be changed later.',
+            'iso2_immutable' => 'The ISO code cannot be changed.',
+            'phone_code' => 'International dialling code, for example +20.',
+            'active' => 'Inactive countries are not offered to users.',
+        ],
+    ],
+
+    'currencies' => [
+        'menu' => 'Currencies',
+        'title' => 'Currencies',
+        'subtitle' => 'Currencies and their minor-unit exponent. Money is stored in integer minor units.',
+        'create_title' => 'New currency',
+        'edit_title' => 'Edit currency',
+        'show_title' => 'Currency',
+        'search_placeholder' => 'Code or symbol…',
+        'created' => 'Currency created.',
+        'updated' => 'Currency updated.',
+        'deleted' => 'Currency deleted.',
+        'sections' => [
+            'definition' => 'Definition',
+            'definition_hint' => 'The code and the number of decimal places cannot be changed once created, because stored amounts depend on them.',
+        ],
+        'fields' => [
+            'code' => 'Code',
+            'exponent' => 'Decimal places',
+            'symbol_ar' => 'Symbol (Arabic)',
+            'symbol_en' => 'Symbol (English)',
+            'active' => 'Active',
+        ],
+        'hints' => [
+            'code' => 'Three letters (ISO 4217), for example EGP.',
+            'exponent' => 'Digits after the decimal point: 2 for EGP (1 pound = 100 piastres), 0 for JPY.',
+            'immutable' => 'Cannot be changed.',
+            'active' => 'Inactive currencies cannot be chosen for new countries or as the default.',
+        ],
+    ],
+
+    'policy_versions' => [
+        'menu' => 'Policy versions',
+        'title' => 'Policy versions',
+        'subtitle' => 'Terms, privacy and other policies. Publishing creates a new immutable version that users must accept.',
+        'create_title' => 'New policy draft',
+        'edit_title' => 'Edit policy draft',
+        'show_title' => 'Policy version',
+        'search_placeholder' => 'Title…',
+        'created' => 'Draft saved.',
+        'updated' => 'Draft updated.',
+        'deleted' => 'Draft deleted.',
+        'published' => 'Policy version published.',
+        'save_draft' => 'Save draft',
+        'draft_notice' => 'This is a draft. It is not visible to users until it is published.',
+        'immutable_notice' => 'Published and archived versions cannot be edited, because users accepted this exact text.',
+        'no_translation' => 'No translation.',
+        'sections' => [
+            'document' => 'Document',
+            'document_hint' => 'Arabic is required; English is optional.',
+        ],
+        'fields' => [
+            'type' => 'Policy',
+            'title' => 'Title',
+            'content' => 'Text',
+            'version' => 'Version',
+            'status' => 'Status',
+            'published_at' => 'Published at',
+            'published_by' => 'Published by',
+            'change_note' => 'Change note',
+        ],
+        'hints' => [
+            'change_note' => 'Internal summary of what changed since the previous version.',
+        ],
+        'actions' => [
+            'publish' => 'Publish',
+        ],
+        'confirm' => [
+            'publish_title' => 'Publish this policy version?',
+            'publish_message' => 'It becomes the current version, the previous published version is archived, and users will be asked to accept it. This cannot be undone. The reason is stored in the audit log.',
+        ],
+    ],
+
     // @admin-module:lang
 ];

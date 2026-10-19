@@ -180,3 +180,50 @@ their own account; others need the listed permission (Appendix A). All writes ac
 | GET | `/admin/audit-logs`, `/admin/audit-logs/{id}` | `audit_logs.view` | DataTable JSON (no payloads) / diff page | `403` |
 | GET | `/admin/login-activity` | `login_activity.view` | DataTable JSON | `403` |
 | GET | `/admin/lookups/admins?q=` | any admin | `[{ id, text }]` (names only) | — |
+
+Domain codes added in P1.2 (all `422`): `country_iso_taken`, `country_iso_immutable`, `country_is_default`, `country_currency_unusable`, `currency_code_taken`,
+`currency_code_immutable`, `currency_exponent_immutable`, `currency_in_use`, `policy_not_editable`, `policy_not_deletable`, `policy_not_publishable`,
+`policy_arabic_required`, `setting_default_locale_unsupported`, `setting_otp_cooldown_exceeds_ttl`, `setting_offer_ttl_exceeds_search_ttl`,
+`setting_radius_steps_not_ascending`.
+
+### 8.4 Settings, markets, policy versions and public config (P1.2)
+
+Admin (session + CSRF, all writes accept Precognition):
+
+| Method | Path | Access | Response | Errors |
+|---|---|---|---|---|
+| GET | `/admin/settings[?tab=<group>]` | `settings.view` (fields read-only without `settings.manage`) | page, one tab per group (`localization`, `support`, `otp`, `booking`, `dispatch`, `providers`, `safety`, `apps`, `security`, `rate_limits`) | `403` |
+| PUT | `/admin/settings/{group}` | `settings.manage` | `data.redirect` to the tab; unchanged save answers "nothing changed"; body `settings[<key>]` (+ hidden `fingerprint`) | `422` field errors keyed `settings.<key>` or a `setting_*` code, `409 stale_version`, `404` unknown group |
+| GET + writes | `/admin/countries`, `/admin/currencies` (+ show/create/edit/activity); DELETE | `markets.manage` | DataTable JSON; writes -> `AdminFormResponse`; delete takes an optional reason | `409 stale_version`, `422 country_* / currency_*` |
+| GET + writes | `/admin/policy-versions` (+ show/create/edit/activity); DELETE (drafts) | `policies.manage` | DataTable JSON; writes -> `AdminFormResponse` | `409 stale_version`, `403` for non-drafts, `422 policy_*` |
+| POST | `/admin/policy-versions/{id}/publish` | `policies.publish` | `data.reload_table` / `data.reload`; **reason mandatory** | `422`, `403` (not a draft) |
+
+Public (no authentication, throttle `api`, `Cache-Control: public, max-age=30`, `ETag` / `If-None-Match` -> `304`, `Vary: Accept-Language`):
+
+| Method | Path | Response |
+|---|---|---|
+| GET | `/api/v1/config/app` | see below |
+| GET | `/api/v1/locales` | `data = [{ code, name (native), direction: "rtl"\|"ltr", is_default }]` for the supported locales |
+
+`data` of `/config/app` (no secrets; empty `policies` / `features` are `{}`):
+
+```json
+{
+  "default_locale": "ar",
+  "locales": ["ar", "en"],
+  "country": { "iso2": "EG", "phone_code": "+20", "timezone": "Africa/Cairo" },
+  "currency": { "code": "EGP", "exponent": 2, "symbol": { "ar": "ج.م", "en": "EGP" } },
+  "digits_preference": "auto",
+  "support": { "phone": null, "email": null, "whatsapp": null },
+  "maintenance": false,
+  "apps": {
+    "customer": { "min_version": "1.0.0", "force_update": false },
+    "provider": { "min_version": "1.0.0", "force_update": false }
+  },
+  "policies": { "terms": { "id": "<uuid>", "version": 3, "published_at": "2026-10-19T10:00:00Z" } },
+  "features": {}
+}
+```
+
+`digits_preference` is `auto` (follow the language), `western` or `arabic_indic`. A client must block only when `maintenance` is true, or when `apps.<own>.force_update`
+is true and its version is below `apps.<own>.min_version` (customer app = `customer`, driver app = `provider`). Unknown keys are ignored (Section 1).

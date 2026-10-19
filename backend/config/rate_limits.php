@@ -2,7 +2,8 @@
 
 /*
 | Named rate limiters (Plan §4.4, SRS §20.7). Values are per-minute unless stated. They are registered in
-| AppServiceProvider and will become editable through platform settings in P1.2.
+| AppServiceProvider. Since P1.2 these values are only the DEFAULTS of the typed settings SettingKey::RateLimit*
+| (edited in Admin > Settings > Rate limits).
 */
 return [
     'api' => [

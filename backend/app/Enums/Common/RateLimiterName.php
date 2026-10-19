@@ -5,7 +5,7 @@ namespace App\Enums\Common;
 use App\Enums\Concerns\EnumHelpers;
 
 /**
- * Named rate limiters registered in AppServiceProvider; limits live in config/rate_limits.php.
+ * Named rate limiters registered in AppServiceProvider; limits are typed settings (SettingKey::RateLimit*) whose defaults live in config/rate_limits.php.
  * Use as route middleware: `throttle:`.RateLimiterName::OtpRequest->value.
  */
 enum RateLimiterName: string

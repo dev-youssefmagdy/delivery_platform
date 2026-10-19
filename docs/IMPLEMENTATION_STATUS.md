@@ -12,7 +12,7 @@
 | P0.3 | Admin UI kit, AJAX/Precognition forms, DataTables, filters card, generator | P0 | ✅ | 2026-10-19 |
 | P0.4 | Flutter foundation + shared package | P0 | ✅ | 2026-10-19 |
 | P1.1 | Admin authentication, roles/permissions, admin users, audit log UI | P0 | ✅ | 2026-10-19 |
-| P1.2 | Settings, markets, locales, policy versions, app config API | P0 | ❌ | — |
+| P1.2 | Settings, markets, locales, policy versions, app config API | P0 | ✅ | 2026-10-19 |
 | P1.3 | Identity API: OTP, users, profiles, devices, consents, deletion | P0 | ❌ | — |
 | P1.4 | Service catalog, vehicle categories, form schemas, versioned snapshots | P0 | ❌ | — |
 | P1.5 | Geography: cities, service zones, availability, maps adapter | P0 | ❌ | — |
@@ -49,6 +49,57 @@
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+
+---
+
+## P1.2 — Settings, markets, locales, policy versions, app config API · ✅ 2026-10-19
+
+Branch `milestone/p1.2-settings-markets-config` (from `main` @ `8d78b63`), fast-forwarded into `main`.
+
+### What was built
+
+- **Typed settings (ADR-10, ADR-55):** `SettingKey` enum (42 keys: type, default, rules, group, admin input, bounds, unit; never sensitive), `SettingGroup` (10 tabs), `SettingType`, `SettingInput`, `DigitsPreference`; `platform_settings` table, `SettingsRepository`, `SettingsService` (typed `get/string/int/bool/list`, cached forever and busted on write, `set()` and `updateGroup()` validate against `SettingKey::rules()`, run in a transaction under row locks, one audit row per changed key with before/after, cross-field rules, per-tab fingerprint -> `409 stale_version`).
+- **Admin Settings screen:** one tab per group, fields generated from the enum (`admin/settings/_field.blade.php` has no per-key markup), `<x-admin.form>` with Precognition using the same rules, read-only view for `settings.view` without `settings.manage`, active tab kept after save.
+- **Carry-over from P1.1:** `admin_mfa_required_roles`, `admin_login_lockout_seconds` and the eight rate limits (`rate_limit_*`) are settings now; the old config/env values are their defaults. `AdminMfaService`, `AdminAuthService` and the named limiters in `AppServiceProvider` read the settings.
+- **Markets:** Countries and Currencies admin modules (hand-written to the generator shape, ADR-56): filters cards, `lock_version`, audit, ISO code / currency code / exponent immutable, default country or used/default currency cannot be deactivated or deleted, registry and app-config caches busted. Permission `markets.manage` (Appendix A has no separate view permission).
+- **Policy versions:** `policy_versions` (uuid, type `PolicyType`, per-type version assigned at publish, ar/en title + text, `ContentStatus`), admin module with draft CRUD, publish (reason, `policies.publish`, per-type lock, previous version archived, row frozen), listing filters, content tab per locale, activity tab (ADR-57).
+- **API:** `GET /api/v1/config/app` (market, locales, currency + exponent + symbols, digits preference, support contacts, maintenance, per-app min version / force update, current policy versions, feature-flag placeholder) and `GET /api/v1/locales`; public, `Cache-Control: public, max-age=30` + `ETag` (304), assembled payload cached and busted by every writer (ADR-58). docs/API.md 8.4.
+- **Flutter (both apps + platform_core):** `appConfigProvider` wired: startup fetch with last-good cache in `SharedPreferences` (fallback on any non-cancel failure), DTO aligned to the real response (freezed/json regenerated), `AppGate` in the `MaterialApp.router` builder shows real maintenance and forced-update screens (`BlockingNotice`, `evaluateAppGate`, version compare in platform_core), refetch on app resume and "Check again", splash waits (max 4 s) for the config, server default language until the user chooses, language picker limited to the supported locales, `moneyFormatterProvider` (server digit style + currency symbols). ARB `ar`/`en` and generated l10n updated (ADR-59).
+
+### Files touched
+
+Backend: `app/{Enums/{Settings,Policy,Content},DTOs/{Settings,Markets,Policy,Config},Models/{PlatformSetting,PolicyVersion,Country,Currency},Services/{Settings,Markets,Policy,Config},Repositories/{Contracts,Eloquent}/{Settings,Policy,Common},Http/{Controllers/{Admin/{Settings,Markets,Policy},Api/V1/Common/ConfigController.php},Requests/Admin/{Settings,Markets,Policy},Resources/Api/V1/Config},DataTables/Admin/{Markets,Policy},Policies,Support/Config,Support/Money/CurrencyRegistry.php}`, `app/Services/Admin/{AdminAuthService,AdminMfaService}.php`, `app/Providers/{App,Repository}ServiceProvider.php`, `config/{admin,admin_menu,rate_limits}.php`, `routes/{api_v1.php,admin/{settings,countries,currencies,policy-versions}.php}`, 3 migrations, `database/factories/PolicyVersionFactory.php`, `lang/{ar,en}/{admin,api,enums}.php`, `resources/views/admin/{settings,countries,currencies,policy-versions}`, `tests/Feature/{Settings,Api/AppConfigEndpointTest.php,Admin/{Settings,Markets,Policy}}`.
+Flutter: `packages/platform_core/lib/src/{config/{app_gate,installed_version}.dart,ui/blocking_notice.dart}`, `customer_app` and `driver_app`: `lib/{app/{app.dart,l10n},core/providers.dart,features/{app_config,language,splash}}`, `test/{helpers.dart,features/app_config}`. Docs: ADR-55..59, API 8.4, INTEGRATIONS, this file.
+
+### Commands and results (2026-10-19)
+
+| Command | Result |
+|---|---|
+| `php artisan migrate` (local MySQL + testing DB) | OK (3 new migrations) |
+| `vendor/bin/pint --test` | passed |
+| `vendor/bin/phpstan analyse` (level 6) | passed, 0 errors |
+| `php artisan test --parallel` | passed - 291 tests, 2542 assertions (was 214 / 1570) |
+| `npm run build` / `npx vitest run` | built OK / 12 passed (admin JS untouched) |
+| `scripts/browser-smoke.sh` | passed (login form, Chrome headless) |
+| `platform_core`: `dart format --output=none --set-exit-if-changed .`, `flutter analyze`, `flutter test` | clean / no issues / 54 passed (new: version parsing/compare, gate rule, `BlockingNotice`) |
+| `customer_app`: same three commands | clean / no issues / 38 passed |
+| `driver_app`: same three commands | clean / no issues / 39 passed |
+
+Tests added: backend 77 (`SettingKeyTest`, `SettingsServiceTest`, `ConfigMovedToSettingsTest`, `SettingsAdminTest`, `CountryAdminTest`, `CurrencyAdminTest`, `PolicyVersionAdminTest`, `AppConfigEndpointTest`); `RateLimitersTest` and `LocaleNegotiationTest` now use `RefreshDatabase` because every API request reads the (cached) rate-limit settings. Flutter: repository mapping against the exact server payload, cache fallback, per-app rule, gate widget tests (maintenance, forced update, up-to-date, not forced, check again, fail-open), server default language, money formatter.
+
+### Known gaps / notes
+
+- Dual approval for policy publishing (Appendix B "optional") is not implemented; publishing needs `policies.publish` plus a reason.
+- No export on Countries/Currencies/Policy versions (tiny reference data); there is no `markets.view` or `policies.view` permission in Appendix A, so the module permission (`markets.manage`, `policies.manage`) also gates viewing.
+- The forced-update screen has no store link (no store URL setting exists, and no dead buttons); it offers "Check again". Soft (non-forced) updates are not shown in the app.
+- Category-level overrides of these settings come with P1.4 (`CategoryPolicyResolver`); most dispatch/offer/OTP keys are stored and served but consumed by later milestones (P1.3 OTP, P2.x booking/dispatch).
+- Policy texts are not served by the API yet (the config lists current ids/versions); P1.3 consent screen needs `GET /policies/{type}` (or the website, P5.5).
+- The Flutter client does not send `If-None-Match` (the shared `ApiClient` treats 304 as an error); it relies on the cached last-good copy. Server ETag works for any HTTP client.
+- `settings.manage` can set the rate limits to 1/min; the lower bounds are intentionally permissive but never 0.
+
+### Next steps
+
+P1.3 - identity API (OTP, users, profiles, devices, consents). It consumes `otp_*` settings, `GET /config/app` policy versions (`user_consents.policy_version_id` -> `policy_versions.id`), `SettingsService::int/bool`, and the rate-limit settings for `otp-request` / `otp-verify`.
 
 ---
 
@@ -93,7 +144,7 @@ Tests added (88): `Feature/Admin/Auth/{AdminLoginTest,AdminMfaTest,AdminPassword
 
 ### Known gaps / notes
 
-- `ADMIN_MFA_REQUIRED_ROLES`, password policy length, lockout seconds and rate limits are config/env for now; P1.2 moves MFA-required roles to the typed setting `admin_mfa_required_roles`.
+- `ADMIN_MFA_REQUIRED_ROLES`, lockout seconds and rate limits moved to typed settings in P1.2 (config values are the defaults); the password policy length is still config.
 - "Allowed IP controls" (SRS §16.16) are not implemented; not part of the P1.1 prompt.
 - Invitation / reset emails are sent synchronously through the configured mailer (`log` locally); production needs a real mailer. The notification inbox (bell) arrives with P3.6.
 - Changing an admin's email in the panel does not re-verify it; roles of a logged-in admin take effect on their next request.

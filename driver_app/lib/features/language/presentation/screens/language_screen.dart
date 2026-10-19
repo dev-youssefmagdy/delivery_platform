@@ -6,6 +6,7 @@ import 'package:platform_core/platform_core.dart';
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../../core/providers.dart';
+import '../../../app_config/presentation/providers/app_config_providers.dart';
 
 /// Language picker. Arabic is preselected; a choice applies immediately (the
 /// whole UI flips RTL/LTR) and is persisted.
@@ -19,9 +20,15 @@ class LanguageScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final current = ref.watch(localeProvider).languageCode;
+    final offered =
+        ref.watch(appConfigProvider).value?.languageCodes ??
+        supportedLanguageCodes;
     final options = [
-      ('ar', l10n.languageArabicName),
-      ('en', l10n.languageEnglishName),
+      for (final (code, name) in [
+        ('ar', l10n.languageArabicName),
+        ('en', l10n.languageEnglishName),
+      ])
+        if (offered.contains(code) || code == current) (code, name),
     ];
     return Scaffold(
       appBar: AppBar(title: Text(l10n.languageTitle)),

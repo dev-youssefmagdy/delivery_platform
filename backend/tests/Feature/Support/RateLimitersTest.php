@@ -3,6 +3,7 @@
 namespace Tests\Feature\Support;
 
 use App\Enums\Common\RateLimiterName;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
@@ -12,6 +13,8 @@ use Tests\TestCase;
  */
 class RateLimitersTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_every_named_limiter_is_registered(): void
     {
         foreach (RateLimiterName::cases() as $name) {

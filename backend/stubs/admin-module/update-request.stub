@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Http\Requests\Admin\{{ module }};
+
+use App\Models\{{ model }};
+use Illuminate\Support\Facades\Gate;
+
+class Update{{ model }}Request extends Store{{ model }}Request
+{
+    public function authorize(): bool
+    {
+        ${{ modelVar }} = $this->route('{{ modelVar }}');
+
+        return ${{ modelVar }} instanceof {{ model }} && Gate::allows('update', ${{ modelVar }});
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function rules(): array
+    {
+        return parent::rules() + [
+            'lock_version' => ['required', 'integer', 'min:0'],
+        ];
+    }
+}

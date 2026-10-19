@@ -18,6 +18,7 @@
 | Object storage | Laravel filesystem (S3-compatible) | P2.1 | `local` private disk | S3-compatible bucket | `FILESYSTEM_DISK`, `AWS_*` (already in `.env.example`) | not configured yet |
 | Phone relay / masking | `PhoneRelay` | P3.7 (optional, P2 scope) | `log` | TBD | `PHONE_RELAY_DRIVER`, `PHONE_RELAY_API_KEY` | not configured yet |
 | File scanning | `FileScanner` | P2.1 | `fake` (always clean, local/testing only) | TBD (ClamAV / cloud AV) | `FILE_SCANNER_DRIVER`, `CLAMAV_HOST` | not configured yet |
+| Admin map tiles (Leaflet) | none (browser fetches tiles) | P0.3 | OpenStreetMap tiles (dev only; respect OSM tile policy) | TBD tile provider or self-hosted tiles | `ADMIN_MAP_TILE_URL`, `ADMIN_MAP_ATTRIBUTION`, `ADMIN_MAP_DEFAULT_LAT/LNG/ZOOM` | configured (OSM default) |
 | Crash reporting / analytics | — | P6.4 | none | TBD | — | not configured yet |
 
 ## Credential checklist for production

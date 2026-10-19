@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Models;
+
+{{#status}}
+use App\Enums\{{ module }}\{{ statusEnum }};
+{{/status}}
+use App\Support\Audit\Auditable;
+use Database\Factories\{{ model }}Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+{{#translatable}}
+use Spatie\Translatable\HasTranslations;
+{{/translatable}}
+
+/**
+ * @property int $id
+{{ docProperties }}
+ * @property int $lock_version
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
+class {{ model }} extends Model
+{
+    use Auditable;
+
+    /** @use HasFactory<{{ model }}Factory> */
+    use HasFactory;
+{{#translatable}}
+
+    use HasTranslations;
+
+    /** @var list<string> */
+    public array $translatable = [{{ translatableList }}];
+{{/translatable}}
+
+    protected $fillable = [{{ fillable }}];
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+{{#status}}
+        'status' => '{{ statusDefault }}',
+{{/status}}
+        'lock_version' => 0,
+    ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+{{#status}}
+            'status' => {{ statusEnum }}::class,
+{{/status}}
+            'lock_version' => 'integer',
+        ];
+    }
+}

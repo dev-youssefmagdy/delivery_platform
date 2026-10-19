@@ -232,3 +232,93 @@ phone_code, currency_code → currencies.code FK, timezone, default_locale, acti
 EGP (exponent 2, `ج.م`/`EGP`) and EG (`مصر`/`Egypt`, `+20`, `Africa/Cairo`, `ar`). The default demo-user seeding was removed (users
 change in P1.3). No `lock_version` yet; P1.2 adds it when these become admin-editable.
 **Consequences.** Country admin CRUD arrives with markets in P1.2.
+
+## ADR-34 — P0.3 front-end packages (pinned) · 2026-10-19 · Accepted
+
+**Context.** Plan P0.3 step 1: pin exact versions; Node on this host is 20.20.
+**Decision.** Exact pins: alpinejs 3.17.3 (+ @alpinejs/focus 3.17.3), axios 1.20.0, jquery 3.7.1 (DataTables 2 targets jQuery 3),
+datatables.net 2.3.8 + datatables.net-responsive 3.0.8 (latest 2.x/3.x; DataTables 3 exists but the Plan specifies 2.x), tom-select
+2.6.2, flatpickr 4.6.13 (+ bundled `ar` locale), leaflet 1.9.4, leaflet-draw 1.0.4, chart.js 4.5.1, @fontsource/ibm-plex-sans-arabic
+5.3.0 (SIL OFL 1.1, self-hosted, Arabic + Latin). Dev: vitest 4.1.11 + jsdom 29.1.1 (vitest 5 / jsdom 30 need Node ≥ 22). The
+`bunny` CDN font of the skeleton was removed (no third-party font requests). Two Vite entries: `admin` (css/admin.css,
+js/admin/app.js) and `website` (css/website.css, js/website/app.js); Tom Select, flatpickr, Leaflet(+draw) and Chart.js are
+lazy-loaded chunks. `npm install --save-exact` hit an npm 10 arborist bug for vitest peers; pins were written to package.json and
+installed with `npm install`.
+**Consequences.** Upgrading to Node 22 later allows vitest 5. No DataTables CSS package: the skin is Tailwind in admin.css.
+
+## ADR-35 — `yajra/laravel-datatables-buttons` for the DataTable service class · 2026-10-19 · Accepted
+
+**Context.** Plan §5.4: `AdminDataTable` extends Yajra `DataTable`; that service class lives in the buttons package (ADR-25 deferred it).
+**Decision.** Require `yajra/laravel-datatables-buttons` ^13.2 (v13.2.1; Laravel 13 / PHP 8.3). Its synchronous print/csv/excel/pdf
+actions are disabled (`$actions = []`); exports use the queued `AdminExportService`. No maatwebsite/excel.
+`config/datatables.php` published: `error => throw` (errors go through the envelope renderer), `max_length => 100`. Yajra's
+debug payload (`queries`, `input`) is stripped in `AdminDataTable::ajax()` even with `APP_DEBUG=true`.
+
+## ADR-36 — DataTable options as JSON, not inline scripts; allowlist by rebuilding columns · 2026-10-19 · Accepted
+
+**Context.** Yajra's HTML builder emits inline `<script>`; client-sent `columns[i][orderable/searchable/name]` are trusted by Yajra.
+**Decision.** `<x-admin.datatable>` renders `<table data-admin-table data-options data-language>`; `core/datatables.js` initialises
+it (CSP-friendly, works in AJAX-loaded modals/tabs). `AdminDataTable` rebuilds the request's `columns`/`order`/`search` from the
+server column definitions (ordering/searching default **off** in `column()`), so forged column names or orderable flags never reach
+the query. Filters use `filters[...]` from the filters card, not per-column search. `FilterData` contract (`fromRequest`,
+`activeCount`, `toArray`) + `ParsesFilterInput` (tolerant parsers: invalid filter values are ignored, never 500/422).
+**Consequences.** Every listing declares orderable columns explicitly.
+
+## ADR-37 — Queued exports with polling (no notifications table yet) · 2026-10-19 · Accepted
+
+**Context.** Plan §5.4: CSV export is queued, permissioned, audited, delivered via a signed link "in the admin notifications" — but
+there is no Admin notifiable until P1.1 and the notifications platform is P3.6.
+**Decision.** `admin_exports` table + `AdminExportService` (queue → audit `exported` → `GenerateAdminExport` on queue `low` → CSV
+with BOM on the private `ADMIN_EXPORTS_DISK`, formula cells prefixed with `'`). The listing polls `GET /admin/exports/{uuid}`
+and shows a toast with the signed (24 h) owner-only download link. Rows/files are pruned after 7 days (`model:prune`, hourly).
+**Consequences.** P3.6 additionally posts the signed link to the admin notification inbox; the polling flow stays.
+
+## ADR-38 — DataTables protocol responses are the only admin JSON outside ApiResponse · 2026-10-19 · Accepted
+
+**Context.** ADR-14 says all AJAX JSON goes through `ApiResponse`; DataTables requires its own shape (`draw`, `recordsTotal`, …).
+**Decision.** Listing data responses use the Yajra shape; every error (403/419/500 …) on those endpoints still uses the envelope
+(exception renderer). Everything else (forms, confirm actions, lookups, exports) uses `ApiResponse` / `AdminFormResponse`.
+
+## ADR-39 — Admin authorization before P1.1 · 2026-10-19 · Accepted
+
+**Context.** P0.3 needs policies, `can:` routes and contract tests, but the Admin model/guard is P1.1.
+**Decision.** Policies type-hint `Illuminate\Contracts\Auth\Access\Authorizable` and call `$admin->can(<AdminPermission value>)`
+(Spatie answers from P1.1). The full Appendix A catalog is the `AdminPermission` enum (labels composed from group + action
+translations). Raw permission checks outside policies use `AdminAccess::allows()`. Tests use `Tests\Support\TestAdmin` through
+`Tests\Concerns\InteractsWithAdmin` (`actingAsAdmin`, `assertGuestBlocked` = 403 for now, `datatable()`, `precognitive()`); P1.1
+changes only that trait. Temporary `AllowLocalGuestAccess` middleware (admin group, before `Authorize` in the priority list) grants
+every ability to guests **only** when `APP_ENV=local` and `ADMIN_LOCAL_GUEST_ACCESS=true`; it is inert in testing/production and is
+deleted in P1.1. The locale switcher stores the session key; persisting it on the admin is P1.1.
+
+## ADR-40 — Admin form protocol details · 2026-10-19 · Accepted
+
+**Context.** Plan §5.3 leaves transport details open.
+**Decision.** Transport is always `POST` + `FormData` (`_method` spoofing) for both the Precognition call and the real submit, so
+files are validated before submit. A Precognition response that is not `204`/`Precognition-Success` is treated as a failure (a
+missing middleware must never execute a write during "validation"). Client checks use constraint validation with messages from
+`admin.js.validation.*` (panel language, not browser language). `ajax-form:validated` exposes `detail.proceed()/cancel()` for async
+hooks (built-in `confirm="…"`); `ajax-form:submit` is cancelable. Live validation is debounced 400 ms, only for touched fields,
+with stale responses discarded. Success instructions come from `AdminFormResponse` (`redirect`, `reload_table[]`, `close_modal`,
+`reset`, `reload`, `replace_html`); toasts survive redirects via sessionStorage. Confirm actions reuse the same protocol: the global
+confirm dialog is itself an `<x-admin.form>` with a mandatory-reason textarea.
+
+## ADR-41 — `make:admin-module` conventions · 2026-10-19 · Accepted
+
+**Context.** Plan §5.5.
+**Decision.** Stubs in `backend/stubs/admin-module/*.stub` with `{{ key }}` placeholders and `{{#flag}}…{{/flag}}` sections
+(`status`, `translatable`). Module routes go to `routes/admin/<kebab-plural>.php` (auto-loaded by `routes/admin.php`); shared files are
+edited at `// @admin-module:<marker>` comments (bindings, morph-map, permissions, menu, lang, permission-groups, enums, lookups) with
+idempotent de-duplication and Pint-compatible import sorting. Every module gets `lock_version` optimistic locking (409
+`stale_version`), audit on create/update/delete, `Destroy<Model>Request` with optional reason, an Activity tab (audit timeline via
+`AuditTrailService`) and a Feature test implementing the Admin Module Contract. Verified: two generated modules (translatable +
+status, and plain) pass Pint, PHPStan and their generated tests unmodified (18 tests) on a full copy of the app.
+**Consequences.** Arabic strings default to the English ones unless `--title-ar/--singular-ar` are given (the command warns).
+
+## ADR-42 — Demo Item proof module is env-gated · 2026-10-19 · Accepted
+
+**Context.** P0.3 step 8.
+**Decision.** `DemoItem` (generated, then extended) is registered only when `ADMIN_DEMO_ENABLED=true` and `APP_ENV` is local/testing
+(route file returns early, `EnsureDemoModuleEnabled` 404s at runtime, menu entry has `environments`). It uses every component:
+7 filter types, all form fields (money, translatable, remote select, file, map point, polygon, key-value, repeater …), quick-create
+modal, drawer quick view, archive with mandatory reason, delete confirm, edit confirm, export, stat tiles, tabs with a lazy activity tab.
+**Consequences.** Remove or keep disabled before production; it carries a `demo_items` table migration (harmless when unused).

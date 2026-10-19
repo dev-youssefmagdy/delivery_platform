@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Http\Controllers\Admin\{{ module }};
+
+use App\DataTables\Admin\{{ module }}\{{ modelPlural }}DataTable;
+use App\DTOs\{{ module }}\{{ model }}Data;
+use App\DTOs\{{ module }}\{{ model }}FilterData;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Requests\Admin\{{ module }}\Destroy{{ model }}Request;
+use App\Http\Requests\Admin\{{ module }}\Store{{ model }}Request;
+use App\Http\Requests\Admin\{{ module }}\Update{{ model }}Request;
+use App\Models\{{ model }};
+use App\Services\{{ module }}\{{ model }}Service;
+use App\Services\Admin\AdminExportService;
+use App\Services\Audit\AuditTrailService;
+use App\Support\Http\AdminFormResponse;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
+
+/**
+ * Admin CRUD for {{ model }}. Authorization: route `can:` middleware (policy) + FormRequests.
+ */
+final class {{ model }}Controller extends AdminController
+{
+    public function __construct(private readonly {{ model }}Service $service) {}
+
+    public function index({{ modelPlural }}DataTable $table): mixed
+    {
+        return $table->render('admin.{{ viewDir }}.index');
+    }
+
+    public function create(): View
+    {
+        return view('admin.{{ viewDir }}.create');
+    }
+
+    public function store(Store{{ model }}Request $request): AdminFormResponse
+    {
+        ${{ modelVar }} = $this->service->create({{ model }}Data::fromRequest($request), $this->actor());
+
+        return $this->formResponse(__('admin.{{ langKey }}.created'))->redirect(route('admin.{{ routeName }}.show', ${{ modelVar }}));
+    }
+
+    public function show({{ model }} ${{ modelVar }}): View
+    {
+        return view('admin.{{ viewDir }}.show', ['{{ modelVar }}' => ${{ modelVar }}]);
+    }
+
+    public function activity({{ model }} ${{ modelVar }}, AuditTrailService $trail): View
+    {
+        return view('admin.partials.activity', ['logs' => $trail->latestFor(${{ modelVar }})]);
+    }
+
+    public function edit({{ model }} ${{ modelVar }}): View
+    {
+        return view('admin.{{ viewDir }}.edit', ['{{ modelVar }}' => ${{ modelVar }}]);
+    }
+
+    public function update(Update{{ model }}Request $request, {{ model }} ${{ modelVar }}): AdminFormResponse
+    {
+        $this->service->update(${{ modelVar }}, {{ model }}Data::fromRequest($request), $this->actor());
+
+        return $this->formResponse(__('admin.{{ langKey }}.updated'))->redirect(route('admin.{{ routeName }}.show', ${{ modelVar }}));
+    }
+
+    public function destroy(Destroy{{ model }}Request $request, {{ model }} ${{ modelVar }}): AdminFormResponse
+    {
+        $this->service->delete(${{ modelVar }}, $this->actor(), $request->reason());
+
+        $response = $this->formResponse(__('admin.{{ langKey }}.deleted'))->reloadTable({{ modelPlural }}DataTable::TABLE_ID);
+
+        return $request->boolean('from_show') ? $response->redirect(route('admin.{{ routeName }}.index')) : $response;
+    }
+
+    public function export(Request $request, {{ modelPlural }}DataTable $table, AdminExportService $exports): AdminFormResponse
+    {
+        $export = $exports->queue($table, {{ model }}FilterData::fromRequest($request)->toArray(), $this->actor());
+
+        return $this->formResponse(__('admin.exports.queued'))->with('status_url', route('admin.exports.show', $export));
+    }
+}

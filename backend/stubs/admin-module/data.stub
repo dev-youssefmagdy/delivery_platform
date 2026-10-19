@@ -1,0 +1,52 @@
+<?php
+
+namespace App\DTOs\{{ module }};
+
+{{#status}}
+use App\Enums\{{ module }}\{{ statusEnum }};
+{{/status}}
+use App\Http\Requests\Admin\{{ module }}\Store{{ model }}Request;
+use App\Http\Requests\Admin\{{ module }}\Update{{ model }}Request;
+
+/**
+ * Validated input for creating/updating a {{ model }}.
+ */
+final readonly class {{ model }}Data
+{
+    public function __construct(
+{{ dtoProperties }}
+{{#status}}
+        public {{ statusEnum }} $status,
+{{/status}}
+        public ?int $lockVersion = null,
+    ) {}
+
+    public static function fromRequest(Store{{ model }}Request|Update{{ model }}Request $request): self
+    {
+        /** @var array<string, mixed> $data */
+        $data = $request->validated();
+
+        return new self(
+{{ dtoFromRequest }}
+{{#status}}
+            status: {{ statusEnum }}::from((string) $data['status']),
+{{/status}}
+            lockVersion: isset($data['lock_version']) ? (int) $data['lock_version'] : null,
+        );
+    }
+
+    /**
+     * Model attributes (lock_version is managed by the service).
+     *
+     * @return array<string, mixed>
+     */
+    public function attributes(): array
+    {
+        return [
+{{ dtoAttributes }}
+{{#status}}
+            'status' => $this->status,
+{{/status}}
+        ];
+    }
+}

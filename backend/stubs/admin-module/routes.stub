@@ -1,0 +1,20 @@
+<?php
+
+use App\Http\Controllers\Admin\{{ module }}\{{ model }}Controller;
+use App\Models\{{ model }};
+use Illuminate\Support\Facades\Route;
+
+/*
+| {{ model }} admin routes (make:admin-module). Loaded by routes/admin.php inside the admin group.
+*/
+Route::prefix('{{ routeName }}')->name('{{ routeName }}.')->controller({{ model }}Controller::class)->group(function (): void {
+    Route::get('/', 'index')->name('index')->can('viewAny', {{ model }}::class);
+    Route::get('create', 'create')->name('create')->can('create', {{ model }}::class);
+    Route::post('/', 'store')->name('store')->can('create', {{ model }}::class);
+    Route::post('export', 'export')->name('export')->can('export', {{ model }}::class);
+    Route::get('{{{ modelVar }}}', 'show')->whereNumber('{{ modelVar }}')->name('show')->can('view', '{{ modelVar }}');
+    Route::get('{{{ modelVar }}}/activity', 'activity')->whereNumber('{{ modelVar }}')->name('activity')->can('view', '{{ modelVar }}');
+    Route::get('{{{ modelVar }}}/edit', 'edit')->whereNumber('{{ modelVar }}')->name('edit')->can('update', '{{ modelVar }}');
+    Route::put('{{{ modelVar }}}', 'update')->whereNumber('{{ modelVar }}')->name('update')->can('update', '{{ modelVar }}');
+    Route::delete('{{{ modelVar }}}', 'destroy')->whereNumber('{{ modelVar }}')->name('destroy')->can('delete', '{{ modelVar }}');
+});

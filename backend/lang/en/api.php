@@ -38,5 +38,10 @@ return [
         'idempotency_key_invalid' => 'The Idempotency-Key header must be a valid UUID.',
         'idempotency_key_reused' => 'This idempotency key was already used with a different payload.',
         'idempotency_request_in_progress' => 'An identical request is already in progress. Please wait.',
+        'stale_version' => 'This record was changed by someone else. Reload the page and try again.',
+        'export_not_ready' => 'This export is not available for download.',
+        'export_failed' => 'The export could not be generated.',
+        'code_taken' => 'This code is already in use.',
+        'demo_item_archived' => 'Archived items cannot be changed.',
     ],
 ];

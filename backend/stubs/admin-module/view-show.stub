@@ -1,0 +1,30 @@
+<x-admin.layouts.app :title="__('admin.{{ langKey }}.show_title')">
+    <x-admin.page-header
+        :title="{{ showTitle }}"
+        :breadcrumbs="[['label' => __('admin.{{ langKey }}.title'), 'url' => route('admin.{{ routeName }}.index')], ['label' => '#'.${{ modelVar }}->id]]"
+    >
+        @can('update', ${{ modelVar }})
+            <x-admin.button variant="secondary" icon="pencil" :href="route('admin.{{ routeName }}.edit', ${{ modelVar }})">{{ __('admin.common.edit') }}</x-admin.button>
+        @endcan
+        @can('delete', ${{ modelVar }})
+            <x-admin.confirm-action :url="route('admin.{{ routeName }}.destroy', ['{{ modelVar }}' => ${{ modelVar }}, 'from_show' => 1])" method="DELETE" :title="__('admin.confirm.delete_title')" :message="__('admin.confirm.delete_message')" icon="trash">{{ __('admin.common.delete') }}</x-admin.confirm-action>
+        @endcan
+    </x-admin.page-header>
+
+    <x-admin.card :padding="false" class="p-5">
+        <x-admin.tabs :tabs="['details' => __('admin.common.details'), 'activity' => ['label' => __('admin.common.activity'), 'url' => route('admin.{{ routeName }}.activity', ${{ modelVar }})]]">
+            <x-admin.tabs.panel id="details">
+                <x-admin.detail-list>
+                    <x-admin.detail-list.item label="#" :value="${{ modelVar }}->id" />
+{{ showFields }}
+{{#status}}
+                    <x-admin.detail-list.item :label="__('admin.{{ langKey }}.fields.status')"><x-admin.badge :value="${{ modelVar }}->status" /></x-admin.detail-list.item>
+{{/status}}
+                    <x-admin.detail-list.item :label="__('admin.common.created_at')" :value="${{ modelVar }}->created_at->copy()->setTimezone(config('admin.display_timezone'))->format('Y-m-d H:i')" />
+                    <x-admin.detail-list.item :label="__('admin.common.updated_at')" :value="${{ modelVar }}->updated_at->copy()->setTimezone(config('admin.display_timezone'))->format('Y-m-d H:i')" />
+                </x-admin.detail-list>
+            </x-admin.tabs.panel>
+            <x-admin.tabs.panel id="activity" :url="route('admin.{{ routeName }}.activity', ${{ modelVar }})" />
+        </x-admin.tabs>
+    </x-admin.card>
+</x-admin.layouts.app>

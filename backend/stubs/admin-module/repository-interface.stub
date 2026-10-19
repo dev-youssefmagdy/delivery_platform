@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Repositories\Contracts\{{ module }};
+
+use App\DTOs\{{ module }}\{{ model }}FilterData;
+use App\Models\{{ model }};
+use App\Repositories\Contracts\BaseRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
+
+/**
+ * @extends BaseRepositoryInterface<{{ model }}>
+ */
+interface {{ model }}RepositoryInterface extends BaseRepositoryInterface
+{
+    /**
+     * Listing query (DataTable + CSV export) with the filters card applied.
+     *
+     * @return Builder<{{ model }}>
+     */
+    public function datatableQuery({{ model }}FilterData $filters): Builder;
+}

@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Http\Requests\Admin\{{ module }};
+
+{{#status}}
+use App\Enums\{{ module }}\{{ statusEnum }};
+{{/status}}
+use App\Models\{{ model }};
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
+{{#status}}
+use Illuminate\Validation\Rule;
+{{/status}}
+
+class Store{{ model }}Request extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return Gate::allows('create', {{ model }}::class);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function rules(): array
+    {
+        return [
+{{ rules }}
+{{#status}}
+            'status' => ['required', Rule::enum({{ statusEnum }}::class)],
+{{/status}}
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+{{ attributeNames }}
+{{#status}}
+            'status' => __('admin.{{ langKey }}.fields.status'),
+{{/status}}
+        ];
+    }
+}

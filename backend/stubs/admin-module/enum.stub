@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Enums\{{ module }};
+
+use App\Enums\Concerns\EnumHelpers;
+use App\Enums\Contracts\HasColor;
+use App\Enums\Contracts\HasLabel;
+use App\Enums\Support\BadgeColor;
+
+enum {{ statusEnum }}: string implements HasColor, HasLabel
+{
+    use EnumHelpers;
+
+    case Draft = 'draft';
+    case Active = 'active';
+    case Inactive = 'inactive';
+
+    public function label(): string
+    {
+        return __("enums.{{ statusEnumSnake }}.{$this->value}");
+    }
+
+    public function color(): BadgeColor
+    {
+        return match ($this) {
+            self::Draft => BadgeColor::Neutral,
+            self::Active => BadgeColor::Success,
+            self::Inactive => BadgeColor::Warning,
+        };
+    }
+}

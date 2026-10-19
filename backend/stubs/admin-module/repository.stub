@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Repositories\Eloquent\{{ module }};
+
+use App\DTOs\{{ module }}\{{ model }}FilterData;
+{{#status}}
+use App\Enums\{{ module }}\{{ statusEnum }};
+{{/status}}
+use App\Models\{{ model }};
+use App\Repositories\Contracts\{{ module }}\{{ model }}RepositoryInterface;
+use App\Repositories\Eloquent\BaseRepository;
+use Illuminate\Database\Eloquent\Builder;
+
+/**
+ * @extends BaseRepository<{{ model }}>
+ */
+final class {{ model }}Repository extends BaseRepository implements {{ model }}RepositoryInterface
+{
+    public function __construct({{ model }} $model)
+    {
+        parent::__construct($model);
+    }
+
+    public function datatableQuery({{ model }}FilterData $filters): Builder
+    {
+        return $this->query()
+            ->when($filters->search, static function (Builder $query, string $search): void {
+                $like = '%'.addcslashes($search, '%_\\').'%';
+{{ searchClause }}
+            })
+{{#status}}
+            ->when($filters->statuses !== [], static fn (Builder $query) => $query->whereIn(
+                'status',
+                array_map(static fn ({{ statusEnum }} $status): string => $status->value, $filters->statuses),
+            ))
+{{/status}}
+            ->when($filters->createdFrom, static fn (Builder $query, $from) => $query->where('created_at', '>=', $from->startOfDay()))
+            ->when($filters->createdTo, static fn (Builder $query, $to) => $query->where('created_at', '<=', $to->endOfDay()));
+    }
+}

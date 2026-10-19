@@ -1,18 +1,21 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { bunny } from 'laravel-vite-plugin/fonts';
 import tailwindcss from '@tailwindcss/vite';
 
+/*
+| Two independent entries (Plan §5.1): the admin panel and the public website share no CSS/JS.
+| Heavy admin libraries (Leaflet, flatpickr, Tom Select, Chart.js) are lazy-loaded by the modules that need them.
+*/
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
+            input: [
+                'resources/css/admin.css',
+                'resources/js/admin/app.js',
+                'resources/css/website.css',
+                'resources/js/website/app.js',
             ],
+            refresh: true,
         }),
         tailwindcss(),
     ],

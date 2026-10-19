@@ -17,4 +17,17 @@ interface CountryRepositoryInterface extends BaseRepositoryInterface
      * @return Collection<int, Country>
      */
     public function active(): Collection;
+
+    /**
+     * Remote-select search by ISO code or name (any locale).
+     *
+     * @return Collection<int, Country>
+     */
+    public function lookup(string $term, int $limit): Collection;
+
+    /**
+     * @param list<int|string> $ids
+     * @return Collection<int, Country>
+     */
+    public function findManyByIds(array $ids): Collection;
 }

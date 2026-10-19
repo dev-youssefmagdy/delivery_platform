@@ -1,0 +1,13 @@
+<x-admin.layouts.app :title="__('admin.{{ langKey }}.create_title')">
+    <x-admin.page-header
+        :title="__('admin.{{ langKey }}.create_title')"
+        :breadcrumbs="[['label' => __('admin.{{ langKey }}.title'), 'url' => route('admin.{{ routeName }}.index')], ['label' => __('admin.common.create')]]"
+    />
+
+    <x-admin.card>
+        <x-admin.form :action="route('admin.{{ routeName }}.store')" method="POST">
+            @include('admin.{{ viewDir }}._form', ['model' => null])
+            <x-admin.form.actions :cancel="route('admin.{{ routeName }}.index')" />
+        </x-admin.form>
+    </x-admin.card>
+</x-admin.layouts.app>

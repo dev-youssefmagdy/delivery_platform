@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Policies;
+
+use App\Enums\Admin\AdminPermission;
+use App\Models\{{ model }};
+use Illuminate\Contracts\Auth\Access\Authorizable;
+
+/**
+ * Object-level authorization for {{ model }} (permissions: {{ permGroup }}.*).
+ */
+class {{ model }}Policy
+{
+    public function viewAny(Authorizable $admin): bool
+    {
+        return $admin->can(AdminPermission::{{ permView }}->value);
+    }
+
+    public function view(Authorizable $admin, {{ model }} ${{ modelVar }}): bool
+    {
+        return $admin->can(AdminPermission::{{ permView }}->value);
+    }
+
+    public function create(Authorizable $admin): bool
+    {
+        return $admin->can(AdminPermission::{{ permManage }}->value);
+    }
+
+    public function update(Authorizable $admin, {{ model }} ${{ modelVar }}): bool
+    {
+        return $admin->can(AdminPermission::{{ permManage }}->value);
+    }
+
+    public function delete(Authorizable $admin, {{ model }} ${{ modelVar }}): bool
+    {
+        return $admin->can(AdminPermission::{{ permManage }}->value);
+    }
+
+    public function export(Authorizable $admin): bool
+    {
+        return $admin->can(AdminPermission::{{ permExport }}->value);
+    }
+}

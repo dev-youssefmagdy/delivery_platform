@@ -24,6 +24,8 @@
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
         <env name="APP_LOCALE" value="ar"/>
+        <env name="ADMIN_DEMO_ENABLED" value="true"/>
+        <env name="ADMIN_LOCAL_GUEST_ACCESS" value="false"/>
         <env name="APP_FALLBACK_LOCALE" value="ar"/>
         <env name="DB_CONNECTION" value="mysql"/>
         <env name="DB_DATABASE" value="delivery_platform_testing"/>

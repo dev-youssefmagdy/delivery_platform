@@ -1,0 +1,492 @@
+@import 'tailwindcss';
+@import 'tom-select/dist/css/tom-select.css';
+@import 'flatpickr/dist/flatpickr.css';
+
+/*
+| Admin panel stylesheet (Plan §5.1). Tailwind 4 + design tokens. Logical properties only (RTL/LTR).
+| Font: IBM Plex Sans Arabic (SIL OFL 1.1, self-hosted via @fontsource) — Arabic + Latin glyphs.
+*/
+@import '@fontsource/ibm-plex-sans-arabic/400.css';
+@import '@fontsource/ibm-plex-sans-arabic/500.css';
+@import '@fontsource/ibm-plex-sans-arabic/600.css';
+@import '@fontsource/ibm-plex-sans-arabic/700.css';
+
+@source '../views/admin/**/*.blade.php';
+@source '../views/components/admin/**/*.blade.php';
+@source '../js/admin/**/*.js';
+@source '../../app/View/Components/Admin/**/*.php';
+@source '../../app/DataTables/Admin/**/*.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* Brand (teal-blue) */
+    --color-brand-50: oklch(0.97 0.02 200);
+    --color-brand-100: oklch(0.94 0.04 200);
+    --color-brand-200: oklch(0.88 0.07 200);
+    --color-brand-300: oklch(0.8 0.1 200);
+    --color-brand-400: oklch(0.7 0.12 205);
+    --color-brand-500: oklch(0.6 0.12 210);
+    --color-brand-600: oklch(0.52 0.11 215);
+    --color-brand-700: oklch(0.45 0.1 218);
+    --color-brand-800: oklch(0.38 0.08 220);
+    --color-brand-900: oklch(0.32 0.06 222);
+    --color-brand-950: oklch(0.22 0.04 225);
+
+    --radius-control: 0.5rem;
+    --radius-card: 0.875rem;
+
+    --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.06);
+    --shadow-overlay: 0 20px 40px -12px rgb(15 23 42 / 0.25);
+
+    --spacing-sidebar: 16rem;
+    --spacing-sidebar-collapsed: 4.5rem;
+}
+
+/* Semantic colours (badges, alerts, buttons) */
+@theme inline {
+    --color-success-50: var(--color-emerald-50);
+    --color-success-100: var(--color-emerald-100);
+    --color-success-600: var(--color-emerald-600);
+    --color-success-700: var(--color-emerald-700);
+    --color-warning-50: var(--color-amber-50);
+    --color-warning-100: var(--color-amber-100);
+    --color-warning-600: var(--color-amber-600);
+    --color-warning-700: var(--color-amber-700);
+    --color-danger-50: var(--color-rose-50);
+    --color-danger-100: var(--color-rose-100);
+    --color-danger-600: var(--color-rose-600);
+    --color-danger-700: var(--color-rose-700);
+    --color-info-50: var(--color-sky-50);
+    --color-info-100: var(--color-sky-100);
+    --color-info-600: var(--color-sky-600);
+    --color-info-700: var(--color-sky-700);
+    --color-neutral-50: var(--color-slate-50);
+    --color-neutral-100: var(--color-slate-100);
+    --color-neutral-600: var(--color-slate-600);
+    --color-neutral-700: var(--color-slate-700);
+}
+
+@layer base {
+    html {
+        @apply bg-slate-50 text-slate-800 antialiased;
+        font-feature-settings: 'kern';
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-brand-500;
+    }
+
+    [dir='rtl'] .ltr-only {
+        direction: ltr;
+        unicode-bidi: isolate;
+    }
+}
+
+@layer components {
+    /* ---------- Buttons ---------- */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-(--radius-control) border border-transparent px-4 py-2 text-sm font-medium whitespace-nowrap transition select-none disabled:cursor-not-allowed disabled:opacity-60;
+    }
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+    .btn-lg {
+        @apply px-5 py-2.5 text-base;
+    }
+    .btn-primary {
+        @apply bg-brand-600 text-white shadow-sm hover:bg-brand-700 active:bg-brand-800;
+    }
+    .btn-secondary {
+        @apply border-slate-300 bg-white text-slate-700 shadow-sm hover:bg-slate-50;
+    }
+    .btn-danger {
+        @apply bg-danger-600 text-white shadow-sm hover:bg-danger-700;
+    }
+    .btn-success {
+        @apply bg-success-600 text-white shadow-sm hover:bg-success-700;
+    }
+    .btn-warning {
+        @apply bg-warning-600 text-white shadow-sm hover:bg-warning-700;
+    }
+    .btn-ghost {
+        @apply text-slate-600 hover:bg-slate-100 hover:text-slate-900;
+    }
+    .btn-link {
+        @apply px-0 text-brand-700 underline-offset-4 hover:underline;
+    }
+    .btn[data-loading] .btn-label {
+        @apply opacity-70;
+    }
+    .btn .btn-spinner {
+        @apply hidden;
+    }
+    .btn[data-loading] .btn-spinner {
+        @apply inline-block;
+    }
+    .btn[data-loading] .btn-icon {
+        @apply hidden;
+    }
+
+    .icon-btn {
+        @apply inline-flex size-8 items-center justify-center rounded-(--radius-control) text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50;
+    }
+    .icon-btn-danger {
+        @apply hover:bg-danger-50 hover:text-danger-700;
+    }
+
+    /* ---------- Cards ---------- */
+    .card {
+        @apply rounded-(--radius-card) border border-slate-200 bg-white shadow-(--shadow-card);
+    }
+    .card-header {
+        @apply flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-3.5;
+    }
+    .card-body {
+        @apply p-5;
+    }
+    .card-footer {
+        @apply flex items-center justify-end gap-2 border-t border-slate-100 px-5 py-3;
+    }
+
+    /* ---------- Badges ---------- */
+    .badge {
+        @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap ring-1 ring-inset;
+    }
+    .badge-dot {
+        @apply size-1.5 rounded-full bg-current;
+    }
+    .badge-neutral {
+        @apply bg-neutral-50 text-neutral-700 ring-slate-200;
+    }
+    .badge-info {
+        @apply bg-info-50 text-info-700 ring-sky-200;
+    }
+    .badge-success {
+        @apply bg-success-50 text-success-700 ring-emerald-200;
+    }
+    .badge-warning {
+        @apply bg-warning-50 text-warning-700 ring-amber-200;
+    }
+    .badge-danger {
+        @apply bg-danger-50 text-danger-700 ring-rose-200;
+    }
+    .badge-primary {
+        @apply bg-brand-50 text-brand-700 ring-brand-200;
+    }
+
+    /* ---------- Alerts ---------- */
+    .alert {
+        @apply flex gap-3 rounded-(--radius-card) border p-4 text-sm;
+    }
+    .alert-info {
+        @apply border-sky-200 bg-info-50 text-info-700;
+    }
+    .alert-success {
+        @apply border-emerald-200 bg-success-50 text-success-700;
+    }
+    .alert-warning {
+        @apply border-amber-200 bg-warning-50 text-warning-700;
+    }
+    .alert-danger {
+        @apply border-rose-200 bg-danger-50 text-danger-700;
+    }
+
+    /* ---------- Forms ---------- */
+    .form-label {
+        @apply mb-1.5 block text-sm font-medium text-slate-700;
+    }
+    .form-required {
+        @apply text-danger-600;
+    }
+    .form-hint {
+        @apply mt-1.5 text-xs text-slate-500;
+    }
+    .form-control {
+        @apply block w-full rounded-(--radius-control) border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-xs transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-3 focus:ring-brand-500/20 focus:outline-none disabled:bg-slate-100 disabled:text-slate-500;
+    }
+    textarea.form-control {
+        @apply min-h-24;
+    }
+    select.form-control {
+        @apply pe-9;
+    }
+    .form-control.is-invalid,
+    .is-invalid .form-control,
+    .is-invalid .ts-control {
+        @apply border-danger-600 focus:border-danger-600 focus:ring-rose-500/20;
+    }
+    .form-error {
+        @apply mt-1.5 text-xs font-medium text-danger-700 empty:hidden;
+    }
+    .form-check {
+        @apply size-4 rounded border-slate-300 text-brand-600 accent-brand-600 focus:ring-brand-500;
+    }
+    .input-group {
+        @apply flex items-stretch;
+    }
+    .input-group > .form-control {
+        @apply rounded-none first:rounded-s-(--radius-control) last:rounded-e-(--radius-control);
+    }
+    .input-addon {
+        @apply inline-flex items-center border border-slate-300 bg-slate-50 px-3 text-sm text-slate-500 first:rounded-s-(--radius-control) first:border-e-0 last:rounded-e-(--radius-control) last:border-s-0;
+    }
+
+    /* Toggle switch */
+    .toggle {
+        @apply relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full bg-slate-300 transition peer-checked:bg-brand-600 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-500 peer-disabled:opacity-50;
+    }
+    .toggle::after {
+        content: '';
+        @apply absolute start-0.5 size-5 rounded-full bg-white shadow transition;
+    }
+    .peer:checked + .toggle::after {
+        transform: translateX(1.25rem);
+    }
+    [dir='rtl'] .peer:checked + .toggle::after {
+        transform: translateX(-1.25rem);
+    }
+
+    /* ---------- Tabs ---------- */
+    .tab-list {
+        @apply flex gap-1 overflow-x-auto border-b border-slate-200;
+    }
+    .tab {
+        @apply relative -mb-px inline-flex items-center gap-2 border-b-2 border-transparent px-3 py-2 text-sm font-medium whitespace-nowrap text-slate-500 hover:text-slate-800;
+    }
+    .tab[aria-selected='true'] {
+        @apply border-brand-600 text-brand-700;
+    }
+    .tab-error-dot {
+        @apply hidden size-1.5 rounded-full bg-danger-600;
+    }
+    .tab[data-has-error] .tab-error-dot {
+        @apply inline-block;
+    }
+    .tab[data-has-error] {
+        @apply text-danger-700;
+    }
+
+    /* ---------- Overlays ---------- */
+    .overlay-backdrop {
+        @apply fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-[1px];
+    }
+    .modal-panel {
+        @apply relative w-full rounded-(--radius-card) bg-white shadow-(--shadow-overlay);
+    }
+    .drawer-panel {
+        @apply fixed inset-y-0 end-0 z-50 flex w-full max-w-xl flex-col bg-white shadow-(--shadow-overlay);
+    }
+
+    /* ---------- Toasts ---------- */
+    .toast {
+        @apply pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-(--radius-card) border bg-white p-4 text-sm shadow-(--shadow-overlay);
+    }
+    .toast-success {
+        @apply border-emerald-200;
+    }
+    .toast-error {
+        @apply border-rose-200;
+    }
+    .toast-warning {
+        @apply border-amber-200;
+    }
+    .toast-info {
+        @apply border-sky-200;
+    }
+
+    /* ---------- Skeleton ---------- */
+    .skeleton {
+        @apply animate-pulse rounded bg-slate-200;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .nav-link {
+        @apply flex items-center gap-3 rounded-(--radius-control) px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white;
+    }
+    .nav-link[aria-current='page'] {
+        @apply bg-white/10 text-white;
+    }
+}
+
+/* ---------- DataTables 2 skin ---------- */
+@layer components {
+    div.dt-container {
+        @apply text-sm;
+    }
+    div.dt-container .dt-layout-row {
+        @apply flex flex-wrap items-center justify-between gap-3 py-2;
+    }
+    div.dt-container .dt-layout-row.dt-layout-table {
+        @apply block overflow-x-auto py-0;
+    }
+    div.dt-container .dt-layout-cell {
+        @apply flex items-center gap-2;
+    }
+    div.dt-container .dt-length,
+    div.dt-container .dt-search {
+        @apply flex items-center gap-2 text-slate-600;
+    }
+    div.dt-container .dt-input {
+        @apply rounded-(--radius-control) border border-slate-300 bg-white px-2.5 py-1.5 text-sm focus:border-brand-500 focus:ring-3 focus:ring-brand-500/20 focus:outline-none;
+    }
+    div.dt-container .dt-search .dt-input {
+        @apply w-56;
+    }
+    div.dt-container .dt-info {
+        @apply text-slate-500;
+    }
+    div.dt-container .dt-paging nav {
+        @apply flex items-center gap-1;
+    }
+    div.dt-container .dt-paging .dt-paging-button {
+        @apply inline-flex min-w-8 items-center justify-center rounded-(--radius-control) px-2.5 py-1.5 text-slate-600 hover:bg-slate-100;
+    }
+    div.dt-container .dt-paging .dt-paging-button.current {
+        @apply bg-brand-600 text-white hover:bg-brand-600;
+    }
+    div.dt-container .dt-paging .dt-paging-button.disabled {
+        @apply cursor-not-allowed opacity-40 hover:bg-transparent;
+    }
+    div.dt-container .dt-paging .ellipsis {
+        @apply px-1 text-slate-400;
+    }
+    table.admin-table {
+        @apply w-full border-separate border-spacing-0 text-sm;
+    }
+    table.admin-table thead th {
+        @apply border-b border-slate-200 bg-slate-50 px-4 py-3 text-start text-xs font-semibold tracking-wide text-slate-500 uppercase;
+    }
+    table.admin-table tbody td {
+        @apply border-b border-slate-100 px-4 py-3 align-middle text-slate-700;
+    }
+    table.admin-table tbody tr:hover td {
+        @apply bg-slate-50/70;
+    }
+    table.admin-table td.dt-empty {
+        @apply py-0 text-center;
+    }
+    table.admin-table th.dt-orderable-asc,
+    table.admin-table th.dt-orderable-desc {
+        @apply cursor-pointer select-none hover:text-slate-800;
+    }
+    table.admin-table th .dt-column-order {
+        @apply ms-1 inline-block w-3 text-slate-400;
+    }
+    table.admin-table th.dt-orderable-asc .dt-column-order::before,
+    table.admin-table th.dt-ordering-asc .dt-column-order::before {
+        content: '▲';
+        @apply text-[0.6rem];
+    }
+    table.admin-table th.dt-ordering-desc .dt-column-order::before {
+        content: '▼';
+        @apply text-[0.6rem] text-brand-600;
+    }
+    table.admin-table th.dt-ordering-asc .dt-column-order::before {
+        @apply text-brand-600;
+    }
+    table.admin-table th.dt-orderable-desc:not(.dt-orderable-asc) .dt-column-order::before {
+        content: '▼';
+        @apply text-[0.6rem];
+    }
+    div.dt-container .dt-processing {
+        @apply absolute inset-x-0 top-12 z-10 mx-auto w-fit rounded-(--radius-control) bg-white px-4 py-2 text-slate-600 shadow-(--shadow-card);
+    }
+    div.dt-container .dt-processing > div:last-child {
+        @apply hidden;
+    }
+    div.dt-container {
+        @apply relative;
+    }
+    /* Responsive child rows */
+    table.admin-table.dtr-inline.collapsed > tbody > tr > td.dtr-control {
+        @apply cursor-pointer ps-9;
+        position: relative;
+    }
+    table.admin-table.dtr-inline.collapsed > tbody > tr > td.dtr-control::before {
+        content: '+';
+        @apply absolute start-3 top-1/2 inline-flex size-4 -translate-y-1/2 items-center justify-center rounded-full bg-brand-600 text-xs leading-none text-white;
+    }
+    table.admin-table.dtr-inline.collapsed > tbody > tr.dtr-expanded > td.dtr-control::before {
+        content: '−';
+    }
+    table.admin-table ul.dtr-details {
+        @apply w-full space-y-2;
+    }
+    table.admin-table ul.dtr-details > li {
+        @apply flex justify-between gap-4 border-b border-slate-100 pb-2;
+    }
+    table.admin-table .dtr-title {
+        @apply font-medium text-slate-500;
+    }
+    td.dt-actions {
+        @apply whitespace-nowrap;
+    }
+}
+
+/* ---------- Tom Select skin ---------- */
+@layer components {
+    .ts-wrapper .ts-control {
+        @apply min-h-[2.375rem] rounded-(--radius-control) border-slate-300 px-3 py-1.5 text-sm shadow-xs;
+    }
+    .ts-wrapper.focus .ts-control {
+        @apply border-brand-500 shadow-none ring-3 ring-brand-500/20;
+    }
+    .ts-wrapper.multi .ts-control > div {
+        @apply rounded bg-brand-50 px-2 py-0.5 text-brand-800;
+    }
+    .ts-dropdown {
+        @apply z-50 mt-1 rounded-(--radius-control) border-slate-200 text-sm shadow-(--shadow-overlay);
+    }
+    .ts-dropdown .active {
+        @apply bg-brand-50 text-brand-800;
+    }
+    [dir='rtl'] .ts-wrapper.single .ts-control {
+        padding-inline-end: 2rem;
+        padding-inline-start: 0.75rem;
+    }
+    [dir='rtl'] .ts-wrapper.single .ts-control::after {
+        right: auto;
+        left: 15px;
+    }
+}
+
+/* ---------- flatpickr skin ---------- */
+@layer components {
+    .flatpickr-calendar {
+        @apply rounded-(--radius-card) font-sans shadow-(--shadow-overlay);
+    }
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange {
+        @apply border-brand-600 bg-brand-600;
+    }
+    .flatpickr-day.inRange {
+        @apply border-brand-100 bg-brand-100;
+        box-shadow: none;
+    }
+    [dir='rtl'] .flatpickr-calendar {
+        direction: rtl;
+    }
+}
+
+/* ---------- Leaflet ---------- */
+@layer components {
+    .map-canvas {
+        @apply h-72 w-full overflow-hidden rounded-(--radius-control) border border-slate-300;
+        direction: ltr;
+    }
+    .map-canvas .leaflet-control-container {
+        @apply text-xs;
+    }
+    .map-canvas .leaflet-bar a {
+        @apply text-slate-700;
+    }
+}

@@ -132,3 +132,22 @@ Each milestone appends a table: method, path, auth/ability, idempotent?, request
 The public health response never contains latencies, error messages, connection names or heartbeat ages; those details are
 kept in `HealthReport::$details` for the admin system page (P5.6). The scheduler check fails when the `system:heartbeat`
 cache key is older than `HEALTH_HEARTBEAT_MAX_AGE` (180 s). Laravel's own `/up` liveness route also exists.
+
+### 8.2 Admin AJAX endpoints (P0.3)
+
+Session-authenticated (`web` + CSRF), under `ADMIN_PATH` (default `/admin`), all in the ADR-14 envelope via `ApiResponse` except
+the DataTables protocol responses (ADR-38). Every admin write route accepts `Precognition: true` (+ optional
+`Precognition-Validate-Only: <field>`): `204` + `Precognition-Success: true` when valid, `422 validation_failed` otherwise,
+without running the controller. Admin authentication arrives in P1.1; until then guests get `403 forbidden`.
+
+| Method | Path | Ability | Response | Errors |
+|---|---|---|---|---|
+| POST | `/admin/locale` | any admin | `data.reload = true` (session `locale` set) | `422` |
+| GET | `/admin/lookups/{lookup}?q=&ids[]=` | lookup permission (null = any admin) | `data = [{ id, text, meta }]`, max `admin.lookup_limit` (20) | `404 not_found` (unknown lookup), `403`, `422` |
+| GET | `/admin/exports/{uuid}` | owner of the export | `data = { uuid, status, status_label, rows, finished, download_url }` (signed URL once completed) | `403 forbidden` |
+| GET | `/admin/exports/{uuid}/download` (signed) | owner | CSV (UTF-8 BOM, formula cells neutralised) | `403 invalid signature / export_not_ready / forbidden` |
+| GET | `/admin/<module>` (XHR + JSON) | `<module>.view` | Yajra DataTables JSON (`draw`, `recordsTotal`, `recordsFiltered`, `data`); `filters[...]` as query params | `403` |
+| POST | `/admin/<module>/export` | `<module>.export` | `data.status_url`; audit `exported` | `403` |
+| POST/PUT/DELETE | module writes | per policy | `AdminFormResponse`: `data = { redirect?, reload_table?: [ids], close_modal?, reset?, reload?, replace_html?: {selector: html} }` | `422` (incl. `errors._code` domain codes such as `code_taken`), `409 stale_version`, `403` |
+
+Domain codes added: `stale_version` (409), `export_not_ready` (403), `export_failed`, `code_taken` (422), `demo_item_archived` (422).

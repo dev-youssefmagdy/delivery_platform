@@ -38,5 +38,10 @@ return [
         'idempotency_key_invalid' => 'يجب أن تكون ترويسة Idempotency-Key معرف UUID صحيحًا.',
         'idempotency_key_reused' => 'تم استخدام مفتاح منع التكرار هذا مع بيانات مختلفة.',
         'idempotency_request_in_progress' => 'طلب مماثل قيد التنفيذ حاليًا. يرجى الانتظار.',
+        'stale_version' => 'عدّل شخص آخر هذا السجل. أعد تحميل الصفحة وحاول مرة أخرى.',
+        'export_not_ready' => 'ملف التصدير غير متاح للتنزيل.',
+        'export_failed' => 'تعذّر إنشاء ملف التصدير.',
+        'code_taken' => 'هذا الرمز مستخدم بالفعل.',
+        'demo_item_archived' => 'لا يمكن تعديل العناصر المؤرشفة.',
     ],
 ];

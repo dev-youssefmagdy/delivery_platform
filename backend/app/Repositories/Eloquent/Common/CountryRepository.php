@@ -26,4 +26,23 @@ final class CountryRepository extends BaseRepository implements CountryRepositor
     {
         return $this->query()->where('active', true)->orderBy('iso2')->get();
     }
+
+    public function lookup(string $term, int $limit): Collection
+    {
+        $like = '%'.addcslashes($term, '%_\\').'%';
+
+        return $this->query()
+            ->when($term !== '', static fn ($query) => $query->where(static fn ($inner) => $inner
+                ->where('iso2', 'like', $like)
+                ->orWhere('name->ar', 'like', $like)
+                ->orWhere('name->en', 'like', $like)))
+            ->orderBy('iso2')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function findManyByIds(array $ids): Collection
+    {
+        return $this->query()->whereKey($ids)->orderBy('iso2')->get();
+    }
 }

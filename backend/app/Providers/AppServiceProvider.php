@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Enums\Common\RateLimiterName;
 use App\Models\AdminAuditLog;
+use App\Models\AdminExport;
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\DemoItem;
 use App\Models\IdempotencyKey;
 use App\Models\User;
 use App\Support\Money\CurrencyRegistry;
@@ -46,6 +48,9 @@ class AppServiceProvider extends ServiceProvider
             'country' => Country::class,
             'admin_audit_log' => AdminAuditLog::class,
             'idempotency_key' => IdempotencyKey::class,
+            'admin_export' => AdminExport::class,
+            'demo_item' => DemoItem::class,
+            // @admin-module:morph-map
         ]);
 
         $this->configureRateLimiting();

@@ -1,0 +1,7 @@
+{{-- Shared create/edit fields. $model: ?\App\Models\{{ model }} --}}
+<x-admin.form.section :title="__('admin.{{ langKey }}.sections.basic')">
+{{ formFields }}
+{{#status}}
+    <x-admin.form.enum-select name="status" :label="__('admin.{{ langKey }}.fields.status')" :enum="\App\Enums\{{ module }}\{{ statusEnum }}::class" :value="$model?->status" required />
+{{/status}}
+</x-admin.form.section>

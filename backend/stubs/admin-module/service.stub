@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Services\{{ module }};
+
+use App\DTOs\{{ module }}\{{ model }}Data;
+use App\Enums\Common\AuditAction;
+use App\Exceptions\ConflictException;
+use App\Models\{{ model }};
+use App\Repositories\Contracts\{{ module }}\{{ model }}RepositoryInterface;
+use App\Services\Audit\AuditLogger;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\DatabaseManager;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+/**
+ * {{ model }} business rules: every write runs in a transaction and is audited; updates use optimistic locking
+ * (lock_version → 409 stale_version).
+ */
+final class {{ model }}Service
+{
+    public function __construct(
+        private readonly {{ model }}RepositoryInterface ${{ modelPluralVar }},
+        private readonly AuditLogger $audit,
+        private readonly DatabaseManager $db,
+    ) {}
+
+    public function create({{ model }}Data $data, ?Authenticatable $actor): {{ model }}
+    {
+        return $this->db->transaction(function () use ($data, $actor): {{ model }} {
+            ${{ modelVar }} = $this->{{ modelPluralVar }}->create($data->attributes());
+
+            $this->audit->record(AuditAction::Created, ${{ modelVar }}, $actor, after: ${{ modelVar }}->auditSnapshot());
+
+            return ${{ modelVar }};
+        });
+    }
+
+    public function update({{ model }} ${{ modelVar }}, {{ model }}Data $data, ?Authenticatable $actor): {{ model }}
+    {
+        return $this->db->transaction(function () use (${{ modelVar }}, $data, $actor): {{ model }} {
+            $locked = $this->{{ modelPluralVar }}->lockById(${{ modelVar }}->getKey()) ?? throw (new ModelNotFoundException)->setModel({{ model }}::class);
+
+            if ($data->lockVersion !== null && $data->lockVersion !== $locked->lock_version) {
+                throw ConflictException::make('stale_version');
+            }
+
+            $before = $locked->auditSnapshot();
+            $this->{{ modelPluralVar }}->update($locked, $data->attributes() + ['lock_version' => $locked->lock_version + 1]);
+
+            $this->audit->recordChanges(AuditAction::Updated, $locked, $actor, $before, $locked->auditSnapshot());
+
+            return $locked;
+        });
+    }
+
+    public function delete({{ model }} ${{ modelVar }}, ?Authenticatable $actor, ?string $reason = null): void
+    {
+        $this->db->transaction(function () use (${{ modelVar }}, $actor, $reason): void {
+            $before = ${{ modelVar }}->auditSnapshot();
+            $this->{{ modelPluralVar }}->delete(${{ modelVar }});
+
+            $this->audit->record(AuditAction::Deleted, ${{ modelVar }}, $actor, before: $before, reason: $reason);
+        });
+    }
+}

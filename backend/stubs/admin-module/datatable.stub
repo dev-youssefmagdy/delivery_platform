@@ -1,0 +1,72 @@
+<?php
+
+namespace App\DataTables\Admin\{{ module }};
+
+use App\DataTables\Admin\AdminDataTable;
+use App\DTOs\{{ module }}\{{ model }}FilterData;
+use App\Enums\Admin\AdminPermission;
+use App\Models\{{ model }};
+use App\Repositories\Contracts\{{ module }}\{{ model }}RepositoryInterface;
+use App\Support\Admin\Tables\TableAction;
+use Illuminate\Database\Eloquent\Builder;
+use Yajra\DataTables\EloquentDataTable;
+
+/**
+ * {{ model }} listing (filters: search, {{#status}}statuses, {{/status}}created_at range).
+ */
+final class {{ modelPlural }}DataTable extends AdminDataTable
+{
+    public const TABLE_ID = '{{ tableId }}';
+
+    public function __construct(private readonly {{ model }}RepositoryInterface ${{ modelPluralVar }})
+    {
+        parent::__construct();
+    }
+
+    public function tableId(): string
+    {
+        return self::TABLE_ID;
+    }
+
+    /**
+     * @return Builder<{{ model }}>
+     */
+    public function query(): Builder
+    {
+        return $this->{{ modelPluralVar }}->datatableQuery({{ model }}FilterData::fromRequest($this->filterRequest()));
+    }
+
+    public function exportPermission(): AdminPermission
+    {
+        return AdminPermission::{{ permExport }};
+    }
+
+    protected function columns(): array
+    {
+        return [
+            $this->column('id', '#', orderable: true),
+            $this->column('{{ display }}', __('admin.{{ langKey }}.fields.{{ display }}')),
+{{#status}}
+            $this->column('status', __('admin.{{ langKey }}.fields.status'), orderable: true),
+{{/status}}
+            $this->column('created_at', __('admin.common.created_at'), orderable: true),
+            $this->actionsColumnDefinition(),
+        ];
+    }
+
+    protected function configure(EloquentDataTable $table): void
+    {
+{{#translatable}}
+        $this->translatedColumn($table, '{{ display }}');
+{{/translatable}}
+{{#status}}
+        $this->enumBadgeColumn($table, 'status');
+{{/status}}
+        $this->dateColumn($table, 'created_at');
+        $this->actionsColumn($table, fn ({{ model }} ${{ modelVar }}): array => [
+            TableAction::view(route('admin.{{ routeName }}.show', ${{ modelVar }}), ${{ modelVar }}),
+            TableAction::edit(route('admin.{{ routeName }}.edit', ${{ modelVar }}), ${{ modelVar }}),
+            TableAction::delete(route('admin.{{ routeName }}.destroy', ${{ modelVar }}), ${{ modelVar }}, self::TABLE_ID),
+        ]);
+    }
+}

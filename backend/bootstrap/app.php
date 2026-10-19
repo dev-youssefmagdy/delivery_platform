@@ -2,11 +2,13 @@
 
 use App\Exceptions\ApiExceptionRenderer;
 use App\Exceptions\DomainException;
+use App\Http\Middleware\Admin\AllowLocalGuestAccess;
 use App\Http\Middleware\CorrelationId;
 use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\Idempotency;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -26,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->name('api.v1.')
                 ->group(base_path('routes/api_v1.php'));
 
-            Route::middleware(['web', HandlePrecognitiveRequests::class])
+            Route::middleware(['web', HandlePrecognitiveRequests::class, AllowLocalGuestAccess::class])
                 ->prefix(config('admin.path'))
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
@@ -47,6 +49,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Locale (user preference) and idempotency (actor scope) need the authenticated user.
         $middleware->appendToPriorityList(Authenticate::class, SetLocale::class);
         $middleware->appendToPriorityList(Authenticate::class, Idempotency::class);
+
+        // The temporary local guest scaffolding (P0.3 → removed in P1.1) must run before route `can:` checks.
+        $middleware->prependToPriorityList(Authorize::class, AllowLocalGuestAccess::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->dontReport([DomainException::class]);

@@ -1,0 +1,3 @@
+// Bundle id is configurable per environment: override APP_BUNDLE_ID here or
+// via `xcodebuild APP_BUNDLE_ID=...`. No signing material is committed.
+APP_BUNDLE_ID = com.deliveryplatform.customer

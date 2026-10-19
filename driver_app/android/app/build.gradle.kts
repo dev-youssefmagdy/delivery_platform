@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.driver_app"
+    namespace = "com.deliveryplatform.driver"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,11 +15,13 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.driver_app"
+        // Configurable per environment: ./gradlew -PappId=com.acme.driver or
+        // `flutter build apk --android-project-arg=appId=...` (see docs/SETUP.md).
+        applicationId = (project.findProperty("appId") as String?) ?: "com.deliveryplatform.driver"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // Minimum supported Android: 7.0 (API 24).
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
@@ -31,8 +33,8 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // No signing material is committed. Release signing is wired in P6.4;
+            // until then release builds use the debug key so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }

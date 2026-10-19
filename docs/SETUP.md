@@ -66,11 +66,18 @@ Production process management (supervisor/systemd), TLS and reverse proxy are do
 ```bash
 cd customer_app                 # or driver_app
 flutter pub get
-flutter run                     # API base URL configuration arrives in P0.4 (--dart-define)
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000/api/v1 --dart-define=FLAVOR=dev
 dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test
 ```
 
-`packages/platform_core` (shared package) is created in P0.4.
+`packages/platform_core` is the shared package (path dependency of both apps); run the same three checks there. Build-time
+configuration (all optional, defaults target the Android emulator): `API_BASE_URL`, `REVERB_HOST`, `REVERB_PORT`, `REVERB_KEY`,
+`REVERB_SCHEME`, `MAP_TILE_URL`, `FLAVOR` (`dev|staging|prod`). Use `10.0.2.2` for the host machine from the Android emulator.
+
+Code generation (committed output): `dart run build_runner build --delete-conflicting-outputs` and `flutter gen-l10n`.
+Android application id: Gradle property `appId` (e.g. `appId=com.acme.customer` in `~/.gradle/gradle.properties`; default `com.deliveryplatform.customer|driver`);
+iOS bundle id: edit `ios/Flutter/AppConfig.xcconfig`. Minimum OS: Android 7.0 (API 24), iOS 15.0. Android licenses must be
+accepted (`flutter doctor --android-licenses`) before `flutter build apk`.
 
 ## 5. Whole-repo gate
 

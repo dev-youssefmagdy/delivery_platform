@@ -1,0 +1,50 @@
+{
+  "@@locale": "ar",
+  "appName": "سائق المنصة",
+  "@appName": {
+    "description": "Customer app display name"
+  },
+  "splashLoading": "جارٍ التحميل…",
+  "languageTitle": "اختر لغتك",
+  "languageSubtitle": "يمكنك تغيير اللغة لاحقًا من الإعدادات.",
+  "languageArabicName": "العربية",
+  "languageEnglishName": "English",
+  "actionContinue": "متابعة",
+  "actionSkip": "تخطي",
+  "actionNext": "التالي",
+  "actionGetStarted": "ابدأ الآن",
+  "actionRetry": "إعادة المحاولة",
+  "onboarding1Title": "استقبل الطلبات",
+  "onboarding1Body": "اعمل متى شئت واستقبل طلبات قريبة منك.",
+  "onboarding2Title": "قدّم عرضك",
+  "onboarding2Body": "اقبل سعر العميل أو اقترح سعرًا مناسبًا لك.",
+  "onboarding3Title": "اربح بشفافية",
+  "onboarding3Body": "تابع أرباحك وعمولتك بوضوح في كل رحلة.",
+  "authTitle": "تسجيل الدخول",
+  "authUnavailableTitle": "تسجيل الدخول غير متاح بعد",
+  "authUnavailableBody": "سيتوفر الدخول برقم الهاتف وتسجيل السائقين في تحديث قادم.",
+  "homeTitle": "الرئيسية",
+  "homeChangeLanguage": "تغيير اللغة",
+  "offlineBanner": "لا يوجد اتصال بالإنترنت",
+  "errorGenericTitle": "حدث خطأ ما",
+  "errorGenericBody": "تعذّر إكمال الطلب. حاول مرة أخرى.",
+  "errorOfflineTitle": "لا يوجد اتصال",
+  "errorOfflineBody": "تحقق من اتصالك بالإنترنت ثم أعد المحاولة.",
+  "errorSessionExpiredTitle": "انتهت الجلسة",
+  "errorSessionExpiredBody": "سجّل الدخول مرة أخرى للمتابعة.",
+  "errorRequestId": "رقم المرجع: {id}",
+  "@errorRequestId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "emptyTitle": "لا توجد بيانات",
+  "loadingLabel": "جارٍ التحميل",
+  "maintenanceTitle": "التطبيق تحت الصيانة",
+  "maintenanceBody": "سنعود قريبًا. نعتذر عن الإزعاج.",
+  "forceUpdateTitle": "تحديث مطلوب",
+  "forceUpdateBody": "يرجى تحديث التطبيق إلى أحدث إصدار للمتابعة.",
+  "validationRequired": "هذا الحقل مطلوب"
+}

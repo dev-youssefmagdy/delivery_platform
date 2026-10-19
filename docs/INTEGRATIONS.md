@@ -21,6 +21,16 @@
 | Admin map tiles (Leaflet) | none (browser fetches tiles) | P0.3 | OpenStreetMap tiles (dev only; respect OSM tile policy) | TBD tile provider or self-hosted tiles | `ADMIN_MAP_TILE_URL`, `ADMIN_MAP_ATTRIBUTION`, `ADMIN_MAP_DEFAULT_LAT/LNG/ZOOM` | configured (OSM default) |
 | Crash reporting / analytics | — | P6.4 | none | TBD | — | not configured yet |
 
+## Flutter build-time configuration (P0.4)
+
+| `--dart-define` | Default | Purpose |
+|---|---|---|
+| `API_BASE_URL` | `http://10.0.2.2:8000/api/v1` | REST base (also derives the `/broadcasting/auth` origin) |
+| `REVERB_HOST` / `REVERB_PORT` / `REVERB_SCHEME` | `10.0.2.2` / `8080` / `http` | Reverb websocket endpoint |
+| `REVERB_KEY` | empty | Public Reverb app key (never the secret) |
+| `MAP_TILE_URL` | OSM tile URL | flutter_map tile template; production needs a licensed provider |
+| `FLAVOR` | `dev` | `dev`, `staging` or `prod` |
+
 ## Credential checklist for production
 
 - [ ] SMS provider account + sender id approved for the launch market

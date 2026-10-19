@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Platform Customer";
+"CFBundleName" = "Platform Customer";
+"NSLocationWhenInUseUsageDescription" = "We need your location to show the map and set pickup and destination.";

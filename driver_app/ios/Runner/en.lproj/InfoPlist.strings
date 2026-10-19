@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Platform Driver";
+"CFBundleName" = "Platform Driver";
+"NSLocationWhenInUseUsageDescription" = "We need your location to show you to nearby customers and track trips.";

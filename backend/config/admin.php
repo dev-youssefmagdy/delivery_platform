@@ -18,11 +18,48 @@ return [
     'default_currency' => env('ADMIN_DEFAULT_CURRENCY', 'EGP'),
 
     /*
-    | Temporary scaffolding until admin authentication lands (P1.1): in the `local` environment only, guests
-    | are granted every admin ability so the UI kit can be exercised in a browser. Never active in any other
-    | environment (enforced in AllowLocalGuestAccess). P1.1 removes this switch.
+    | Admin authentication (ADR-06, P1.1). `mfa.required_roles` lists the AdminRole values whose holders MUST
+    | enrol TOTP MFA before using the panel (moves to the typed setting `admin_mfa_required_roles` in P1.2).
+    | Empty env value = nobody is forced. Failed logins lock an email+IP pair for `login.lockout_seconds` after
+    | `rate_limits.admin-login.per_minute` failures.
     */
-    'local_guest_access' => (bool) env('ADMIN_LOCAL_GUEST_ACCESS', false),
+    'auth' => [
+        'mfa' => [
+            'required_roles' => array_values(array_filter(array_map('trim', explode(',', (string) env(
+                'ADMIN_MFA_REQUIRED_ROLES',
+                'super_admin,finance_manager,finance_payout_officer,system_integration_admin',
+            ))))),
+            'issuer' => env('ADMIN_MFA_ISSUER', env('APP_NAME', 'Delivery Platform')),
+            'recovery_codes' => 8,
+            'window' => 1,
+            'pending_ttl_seconds' => 300,
+            'max_attempts' => 5,
+        ],
+        'login' => [
+            'lockout_seconds' => (int) env('ADMIN_LOGIN_LOCKOUT_SECONDS', 900),
+        ],
+        'password' => [
+            'min_length' => 12,
+        ],
+        'sessions' => [
+            'touch_after_seconds' => 60,
+        ],
+    ],
+
+    /*
+    | Dashboard placeholder sections (shown with "available after …" until their milestone ships real data).
+    | An entry is listed only to admins holding its permission.
+    */
+    'dashboard' => [
+        'sections' => [
+            ['permission' => 'bookings.view', 'title' => 'admin.dashboard.sections.bookings', 'available_after' => 'admin.dashboard.after.bookings'],
+            ['permission' => 'drivers.view', 'title' => 'admin.dashboard.sections.providers', 'available_after' => 'admin.dashboard.after.providers'],
+            ['permission' => 'customers.view', 'title' => 'admin.dashboard.sections.customers', 'available_after' => 'admin.dashboard.after.customers'],
+            ['permission' => 'finance.view', 'title' => 'admin.dashboard.sections.finance', 'available_after' => 'admin.dashboard.after.finance'],
+            ['permission' => 'support.view', 'title' => 'admin.dashboard.sections.support', 'available_after' => 'admin.dashboard.after.support'],
+            ['permission' => 'reports.view', 'title' => 'admin.dashboard.sections.reports', 'available_after' => 'admin.dashboard.after.reports'],
+        ],
+    ],
 
     /*
     | The "Demo Item" proof module (P0.3). Routes are registered only when enabled AND the environment is
@@ -47,6 +84,7 @@ return [
     */
     'lookups' => [
         'countries' => App\Support\Admin\Lookups\CountryLookup::class,
+        'admins' => App\Support\Admin\Lookups\AdminLookup::class,
         // @admin-module:lookups
     ],
 

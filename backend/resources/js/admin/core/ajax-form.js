@@ -1,6 +1,6 @@
 import { http as defaultHttp, normalizeError } from './http.js';
 import { toast as defaultToast } from './toast.js';
-import { t } from './config.js';
+import { config, t } from './config.js';
 import { clearErrors, clearFieldError, errorsForKey, renderErrors, summaryMessage } from './form-errors.js';
 import { clientValidate } from './client-validation.js';
 import { applyInstructions } from './response-instructions.js';
@@ -25,6 +25,14 @@ import { nameToKey, revealAndFocus } from './dom.js';
  * field, debounced 400 ms, a precognitive request with `Precognition-Validate-Only: <field>`.
  */
 const instances = new WeakMap();
+
+function redirectToLogin() {
+    const url = config().loginUrl;
+
+    if (url && typeof window !== 'undefined') {
+        window.setTimeout(() => window.location.assign(url), 1200);
+    }
+}
 
 export class AjaxForm {
     constructor(form, { http = defaultHttp, toast = defaultToast, liveDelay = 400 } = {}) {
@@ -229,6 +237,11 @@ export class AjaxForm {
                 break;
             case error.status === 419:
                 this.toast.error(t('http.419'), { action: reload, timeout: 0 });
+                break;
+            case error.status === 401:
+                // The admin session ended (expired, revoked or suspended): back to the login page.
+                this.toast.error(t('http.401'), { timeout: 0 });
+                redirectToLogin();
                 break;
             case error.status === 403 || error.status === 404:
                 this.toast.error(error.message);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Common\AuditAction;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use LogicException;
 
 /**
@@ -37,6 +38,16 @@ class AdminAuditLog extends Model
     {
         static::updating(static fn (): never => throw new LogicException('Audit log entries are append-only.'));
         static::deleting(static fn (): never => throw new LogicException('Audit log entries are append-only.'));
+    }
+
+    /**
+     * The acting admin; meaningful only when `actor_type` is `admin` (other actor types share the id space).
+     *
+     * @return BelongsTo<Admin, $this>
+     */
+    public function actorAdmin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'actor_id')->withTrashed();
     }
 
     /**

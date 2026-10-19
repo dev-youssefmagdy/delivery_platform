@@ -2,13 +2,15 @@
 
 use App\Exceptions\ApiExceptionRenderer;
 use App\Exceptions\DomainException;
-use App\Http\Middleware\Admin\AllowLocalGuestAccess;
+use App\Http\Middleware\Admin\DeclareAdminAccess;
+use App\Http\Middleware\Admin\EnforceAdminMfa;
+use App\Http\Middleware\Admin\EnsureAdminSession;
+use App\Http\Middleware\Admin\UseAdminGuard;
 use App\Http\Middleware\CorrelationId;
 use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\Idempotency;
 use App\Http\Middleware\SetLocale;
-use Illuminate\Auth\Middleware\Authenticate;
-use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -28,7 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->name('api.v1.')
                 ->group(base_path('routes/api_v1.php'));
 
-            Route::middleware(['web', HandlePrecognitiveRequests::class, AllowLocalGuestAccess::class])
+            Route::middleware(['web', HandlePrecognitiveRequests::class])
                 ->prefix(config('admin.path'))
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
@@ -38,20 +40,29 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend(CorrelationId::class);
 
         $middleware->api(prepend: [ForceJsonResponse::class], append: [SetLocale::class]);
-        $middleware->web(append: [SetLocale::class]);
+        $middleware->web(prepend: [UseAdminGuard::class], append: [SetLocale::class]);
         $middleware->throttleApi();
 
         $middleware->alias([
             'idempotent' => Idempotency::class,
             'locale' => SetLocale::class,
+            'admin.session' => EnsureAdminSession::class,
+            'admin.mfa' => EnforceAdminMfa::class,
+            'admin.access' => DeclareAdminAccess::class,
         ]);
 
-        // Locale (user preference) and idempotency (actor scope) need the authenticated user.
-        $middleware->appendToPriorityList(Authenticate::class, SetLocale::class);
-        $middleware->appendToPriorityList(Authenticate::class, Idempotency::class);
+        // Signed-out admins go to the admin login; signed-in admins hitting a guest page go to the panel.
+        $middleware->redirectGuestsTo(static fn (Request $request): string => route('admin.login'));
+        $middleware->redirectUsersTo(static fn (Request $request): string => route('admin.home'));
 
-        // The temporary local guest scaffolding (P0.3 → removed in P1.1) must run before route `can:` checks.
-        $middleware->prependToPriorityList(Authorize::class, AllowLocalGuestAccess::class);
+        // Locale (user preference), idempotency (actor scope), admin session tracking and the MFA gate need the
+        // authenticated user, so they run right after authentication and before route `can:` checks. The
+        // default priority list names the AuthenticatesRequests contract, not the Authenticate class. Every insert
+        // lands directly after it, so the last one listed runs first: session, MFA, locale, idempotency.
+        $middleware->appendToPriorityList(AuthenticatesRequests::class, Idempotency::class);
+        $middleware->appendToPriorityList(AuthenticatesRequests::class, SetLocale::class);
+        $middleware->appendToPriorityList(AuthenticatesRequests::class, EnforceAdminMfa::class);
+        $middleware->appendToPriorityList(AuthenticatesRequests::class, EnsureAdminSession::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->dontReport([DomainException::class]);

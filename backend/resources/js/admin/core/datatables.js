@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import DataTable from 'datatables.net';
 import 'datatables.net-responsive';
-import { csrfToken } from './config.js';
+import { config, csrfToken } from './config.js';
 import { serializeFields } from './dom.js';
 import { toast } from './toast.js';
 
@@ -31,6 +31,16 @@ function handleXhrError(xhr) {
     }
 
     const body = xhr.responseJSON || {};
+
+    if (xhr.status === 401) {
+        toast.error(body.message, { timeout: 0 });
+
+        if (config().loginUrl) {
+            window.setTimeout(() => window.location.assign(config().loginUrl), 1200);
+        }
+
+        return;
+    }
 
     if (xhr.status === 419) {
         toast.error(body.message, { action: { label: document.documentElement.dataset.reloadLabel || '↻', onClick: () => window.location.reload() }, timeout: 0 });

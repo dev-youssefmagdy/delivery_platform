@@ -7,8 +7,8 @@
         'csrf' => csrf_token(),
         'i18n' => trans('admin.js'),
         'maps' => config('admin.maps'),
+        'loginUrl' => route('admin.login'),
     ];
-    $localGuest = app()->environment('local') && config('admin.local_guest_access') === true && auth()->guest();
 @endphp
 <!DOCTYPE html>
 <html lang="{{ $locale->value }}" dir="{{ $locale->direction() }}" class="h-full" data-reload-label="{{ __('admin.common.reload') }}">
@@ -31,10 +31,6 @@
             <x-admin.topbar />
 
             <main id="admin-main" tabindex="-1" class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-                @if ($localGuest)
-                    <x-admin.alert type="warning" class="mb-6">{{ __('admin.layout.local_guest_notice') }}</x-admin.alert>
-                @endif
-
                 {{ $slot }}
             </main>
         </div>

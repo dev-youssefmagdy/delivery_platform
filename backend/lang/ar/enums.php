@@ -48,6 +48,11 @@ return [
         'logged_out' => 'تسجيل خروج',
         'login_failed' => 'فشل تسجيل الدخول',
         'overridden' => 'تجاوز يدوي',
+        'mfa_enabled' => 'تفعيل التحقق بخطوتين',
+        'mfa_disabled' => 'إيقاف التحقق بخطوتين',
+        'mfa_reset' => 'إعادة تعيين التحقق بخطوتين',
+        'password_changed' => 'تغيير كلمة المرور',
+        'session_revoked' => 'إنهاء جلسة',
     ],
 
     'health_status' => [
@@ -162,6 +167,35 @@ return [
         'popular' => 'شائع',
         'seasonal' => 'موسمي',
         'limited' => 'محدود',
+    ],
+
+    'admin_status' => [
+        'active' => 'نشط',
+        'suspended' => 'موقوف',
+    ],
+
+    'admin_login_outcome' => [
+        'success' => 'تم تسجيل الدخول',
+        'invalid_credentials' => 'بيانات اعتماد غير صحيحة',
+        'account_suspended' => 'حساب موقوف',
+        'mfa_failed' => 'رمز تحقق خاطئ',
+        'throttled' => 'محظور (محاولات كثيرة)',
+        'logout' => 'تم تسجيل الخروج',
+    ],
+
+    'admin_role' => [
+        'super_admin' => 'المشرف الأعلى',
+        'operations_admin' => 'مدير العمليات',
+        'dispatch_agent' => 'موظف التوزيع والتشغيل المباشر',
+        'driver_verification_officer' => 'مسؤول التحقق من السائقين',
+        'customer_support_agent' => 'موظف دعم العملاء',
+        'safety_incident_officer' => 'مسؤول السلامة والحوادث',
+        'finance_manager' => 'مدير المالية',
+        'finance_payout_officer' => 'مسؤول مدفوعات المالية',
+        'marketing_coupon_manager' => 'مدير التسويق والكوبونات',
+        'content_cms_editor' => 'محرر المحتوى',
+        'read_only_auditor' => 'محلل / مدقق للقراءة فقط',
+        'system_integration_admin' => 'مسؤول النظام والتكامل',
     ],
 
     // @admin-module:enums

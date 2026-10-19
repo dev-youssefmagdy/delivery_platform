@@ -17,7 +17,8 @@ class CountryFactory extends Factory
     public function definition(): array
     {
         return [
-            'iso2' => strtoupper(fake()->unique()->lexify('??')),
+            // Never starts with E so it cannot collide with the seeded Egypt (EG).
+            'iso2' => fake()->unique()->regexify('[A-DF-Z][A-Z]'),
             'name' => ['ar' => fake()->country(), 'en' => fake('en_US')->country()],
             'phone_code' => '+'.fake()->numberBetween(1, 999),
             'currency_code' => fn (): string => Currency::factory()->create()->code,

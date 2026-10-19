@@ -11,7 +11,7 @@
 | P0.2 | Backend core architecture | P0 | ✅ | 2026-10-13 |
 | P0.3 | Admin UI kit, AJAX/Precognition forms, DataTables, filters card, generator | P0 | ✅ | 2026-10-19 |
 | P0.4 | Flutter foundation + shared package | P0 | ✅ | 2026-10-19 |
-| P1.1 | Admin authentication, roles/permissions, admin users, audit log UI | P0 | ❌ | — |
+| P1.1 | Admin authentication, roles/permissions, admin users, audit log UI | P0 | ✅ | 2026-10-19 |
 | P1.2 | Settings, markets, locales, policy versions, app config API | P0 | ❌ | — |
 | P1.3 | Identity API: OTP, users, profiles, devices, consents, deletion | P0 | ❌ | — |
 | P1.4 | Service catalog, vehicle categories, form schemas, versioned snapshots | P0 | ❌ | — |
@@ -49,6 +49,61 @@
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+
+---
+
+## P1.1 — Admin authentication, roles/permissions, admin users, audit log UI · ✅ 2026-10-19
+
+Branch `milestone/p1.1-admin-identity-access` (from `main` @ `b1b7685`), fast-forwarded into `main`.
+
+### What was built
+
+- **Identity:** `admins` (uuid, soft deletes, `AdminStatus`, `lock_version`, encrypted MFA secret + hashed recovery codes, nullable persisted `locale`), `admin` session guard + `admins` password broker, `Admin` model on guard `admin`, `Role` (Spatie subclass: `is_system`, ar/en `label`, `lock_version`), morph aliases `admin`/`role`, `Gate::before` for Super Admin (ADR-46).
+- **Permissions:** `AdminPermission` (Appendix A, already complete), new `AdminRole` enum (12 SRS roles + Appendix B defaults), idempotent `PermissionSeeder` (enum -> Spatie, guard `admin`, removes stale) and non-destructive `RoleSeeder`, both in `DatabaseSeeder` (ADR-50). `php artisan admin:create` (interactive, no default credentials, ADR-51).
+- **Auth screens** (auth layout, `<x-admin.form>` AJAX + Precognition): login (generic error, per email+IP lockout, `Throttled` events), TOTP challenge (TOTP or one-time recovery code, replay-proof), forgot/reset password, logout; "My account" page: profile + language, password change, MFA enrolment with SVG QR + manual key + recovery codes (shown once), regenerate/disable with password, own active sessions with revoke / revoke-others (ADR-47/48). MFA enforced for the roles in `ADMIN_MFA_REQUIRED_ROLES`.
+- **Audit/Login activity:** `admin_login_events` (append-only) + `admin_sessions`; login/logout/failed logins and MFA/password/session changes are audited (new `AuditAction` cases).
+- **Modules (Admin Module Contract, ADR-53):** Admin users (CRUD by invitation email, roles, suspend/reactivate with reason, MFA reset with reason, soft delete, activity tab, ADR-49 safety rules), Roles (CRUD + grouped permission matrix with select-all per group, system roles protected), Audit logs (read-only, filters per Appendix C, show page with before/after diff viewer, secrets masked), Login activity (read-only, filters). New components `x-admin.permission-matrix`, `x-admin.diff-viewer`; icons key/pause/play/lock-closed/clipboard.
+- **Dashboard placeholder** (`admin.dashboard`): the admin's roles/permission count/MFA state, quick links to permitted modules, and "available after ..." empty states for areas they may see; no numbers. `/admin` goes to it, else to the first permitted menu item, else an empty page. Sidebar entries (Appendix D "System" group + Dashboard) are permission-aware.
+- **Carry-over from P0.3:** `Tests\Concerns\InteractsWithAdmin` now creates real `Admin` records with direct Spatie permissions and guests are redirected to the login page (module tests untouched; `TestAdmin` deleted); `AllowLocalGuestAccess` and `ADMIN_LOCAL_GUEST_ACCESS` removed everywhere; permissions seeded from the enum on guard `admin`; `admin` in the morph map; the chosen locale is persisted on the admin; module routes live in `routes/admin/*.php`.
+- **Fixes found on the way:** middleware priority list used the wrong class so `SetLocale`/`Idempotency` ran after route `can:` checks (ADR-48); `CountryFactory` iso2 could collide with the seeded `EG` (flaky `AdminKitTest`); admin JS handles 401 (session ended) with a toast and a redirect to the login page.
+- **Real-browser check:** `scripts/browser-smoke.sh` / `make browser-smoke` (headless Chrome over CDP, no new dependency, ADR-54).
+
+### Files touched
+
+Backend: `app/{Models,Enums/Admin,DTOs/Admin,Services/Admin,Repositories/{Contracts,Eloquent}/Admin,Http/{Controllers/Admin/{Auth,Security,Admins,Roles,Audit},Middleware/Admin,Requests/Admin/*},Policies,DataTables/Admin/{Admins,Roles,Audit},Notifications/Admin,Support/{Auth,Admin/Lookups},Console/Commands/CreateAdmin.php}`,
+`app/Providers/{App,Repository}ServiceProvider.php`, `bootstrap/app.php`, `config/{auth,admin,admin_menu,permission}.php`, `routes/admin.php` + `routes/admin/{auth,security,admins,roles,audit-logs}.php`,
+`database/{migrations/2026_10_19_120000_create_admins_table.php,factories/AdminFactory.php,seeders/{Permission,Role,Database}Seeder.php}`, `lang/{ar,en}/{admin,api,enums}.php`,
+`resources/views/{admin/{auth,security,admins,roles,audit-logs,login-activity,dashboard},components/admin/{permission-matrix,diff-viewer,layouts,topbar}}`, `resources/js/admin/core/{ajax-form,datatables}.js`, `composer.json/lock` (+ `bacon/bacon-qr-code`), `.env.example`, `phpunit.xml`,
+`tests/{Concerns,Support,Feature/Admin/**,Browser}`. Root: `scripts/browser-smoke.sh`, `Makefile`. Docs: ADR-46..54, API 8.3, SETUP, INTEGRATIONS, this file.
+
+### Commands and results (2026-10-19)
+
+| Command | Result |
+|---|---|
+| `composer require bacon/bacon-qr-code` | OK (3.1), no security advisories |
+| `php artisan migrate:fresh --seed` (local MySQL) | OK (1 new migration, Permission/Role seeders) |
+| `vendor/bin/pint --test` | passed |
+| `vendor/bin/phpstan analyse` (level 6) | passed, 0 errors |
+| `php artisan test --parallel` | passed - 214 tests, 1570 assertions (was 126 / 654) |
+| `npm run build` | built OK |
+| `npx vitest run` | 12 passed (1 new: 401 handling) |
+| `scripts/browser-smoke.sh` (Chrome 155 headless) | 14/14 checks passed: empty submit sends nothing; server (Precognition) errors block the real submit; wrong password = validation call then submit with one generic error; valid login lands on `/admin/dashboard`; logout |
+
+Tests added (88): `Feature/Admin/Auth/{AdminLoginTest,AdminMfaTest,AdminPasswordResetTest}`, `Feature/Admin/Security/AdminSecurityTest`, `Feature/Admin/Admins/AdminUsersAdminTest`, `Feature/Admin/Roles/RolesAdminTest`, `Feature/Admin/Audit/AuditLogsAdminTest`, `Feature/Admin/{AdminRouteAuthorizationGuardTest,AdminAccessSeedingTest,AdminDashboardTest,CreateAdminCommandTest}`.
+
+### Known gaps / notes
+
+- `ADMIN_MFA_REQUIRED_ROLES`, password policy length, lockout seconds and rate limits are config/env for now; P1.2 moves MFA-required roles to the typed setting `admin_mfa_required_roles`.
+- "Allowed IP controls" (SRS §16.16) are not implemented; not part of the P1.1 prompt.
+- Invitation / reset emails are sent synchronously through the configured mailer (`log` locally); production needs a real mailer. The notification inbox (bell) arrives with P3.6.
+- Changing an admin's email in the panel does not re-verify it; roles of a logged-in admin take effect on their next request.
+- Login events / sessions have no retention pruning yet (P6.2). Audit rows for failed logins use `actor_type = system`.
+- The browser smoke check is not in `scripts/check.sh` (needs Chrome + MySQL); only the login form is covered end to end in a browser; other forms are covered by Vitest and PHPUnit.
+- The unrelated `docs/DECISIONS.md` ADR-39 text still describes `AllowLocalGuestAccess`; ADR-46/52 supersede it.
+
+### Next steps
+
+P1.2 - typed settings (include `admin_mfa_required_roles`, rate-limit and lockout values), markets, policy versions, `GET /api/v1/config/app`.
 
 ---
 

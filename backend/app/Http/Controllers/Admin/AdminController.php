@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Support\Http\AdminFormResponse;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\AuthenticationException;
 
 /**
  * Base for admin controllers: thin actions (authorize → DTO → one service call → view / AdminFormResponse).
@@ -13,11 +14,13 @@ use Illuminate\Contracts\Auth\Authenticatable;
 abstract class AdminController extends Controller
 {
     /**
-     * The acting admin (null only in the local guest-access scaffolding before P1.1).
+     * The acting admin for write actions (audit actor).
      */
-    protected function actor(): ?Authenticatable
+    protected function actor(): Admin
     {
-        return auth()->user();
+        $admin = auth('admin')->user();
+
+        return $admin instanceof Admin ? $admin : throw new AuthenticationException('Unauthenticated.', ['admin'], route('admin.login'));
     }
 
     protected function formResponse(?string $message = null): AdminFormResponse

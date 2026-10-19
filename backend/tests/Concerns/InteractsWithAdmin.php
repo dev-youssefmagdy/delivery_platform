@@ -3,39 +3,47 @@
 namespace Tests\Concerns;
 
 use App\Enums\Admin\AdminPermission;
+use App\Models\Admin;
 use Illuminate\Testing\TestResponse;
-use Tests\Support\TestAdmin;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 /**
  * Admin test helpers shared by every admin module test (reference: Admin Module Contract, Plan §5.6).
- * P1.1 swaps TestAdmin for the real Admin model/guard and makes guests redirect to the login page; only this
- * trait changes, the module tests stay as they are.
+ * Admins are real `Admin` records on the `admin` guard holding the requested permissions directly (Spatie);
+ * guests are redirected to the admin login page.
  */
 trait InteractsWithAdmin
 {
     /**
      * @param list<AdminPermission|string> $permissions
+     * @param array<string, mixed> $attributes
      */
-    protected function actingAsAdmin(array $permissions = []): TestAdmin
+    protected function actingAsAdmin(array $permissions = [], array $attributes = []): Admin
     {
-        $admin = new TestAdmin(array_map(
-            static fn (AdminPermission|string $permission): string => $permission instanceof AdminPermission ? $permission->value : $permission,
-            $permissions,
-        ));
+        $admin = Admin::factory()->create($attributes);
 
-        $this->actingAs($admin);
+        foreach ($permissions as $permission) {
+            $name = $permission instanceof AdminPermission ? $permission->value : $permission;
+            Permission::findOrCreate($name, 'admin');
+            $admin->givePermissionTo($name);
+        }
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $this->actingAs($admin, 'admin');
 
         return $admin;
     }
 
     /**
-     * Until P1.1 there is no admin login: guests fail authorization (403). P1.1: assertRedirect(route('admin.login')).
+     * Guests are sent to the admin login page.
      *
      * @param TestResponse<\Symfony\Component\HttpFoundation\Response> $response
      */
     protected function assertGuestBlocked(TestResponse $response): void
     {
-        $response->assertForbidden();
+        $response->assertRedirect(route('admin.login'));
     }
 
     /**

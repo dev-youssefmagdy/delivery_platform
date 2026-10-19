@@ -1,4 +1,4 @@
-{{-- Topbar: mobile menu, locale switcher (session; persisted per admin from P1.1), notifications, profile. --}}
+{{-- Topbar: mobile menu, locale switcher (persisted on the admin), notifications, account menu. --}}
 @php
     $user = auth()->user();
     $currentLocale = app()->getLocale();
@@ -48,9 +48,22 @@
 
     <div class="flex items-center gap-2 border-s border-slate-200 ps-3">
         @if ($user)
-            <x-admin.user-chip :name="(string) ($user->name ?? $user->email ?? '')" :subtitle="$user->email ?? null" />
-        @else
-            <x-admin.user-chip :name="__('admin.layout.guest')" />
+            <x-admin.dropdown align="end" :label="__('admin.layout.account_menu')" width="w-56">
+                <x-slot:trigger>
+                    <span class="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-slate-50">
+                        <x-admin.user-chip :name="(string) ($user->name ?? $user->email ?? '')" :subtitle="$user->email ?? null" />
+                        <x-admin.icon name="chevron-down" class="size-4 text-slate-500" />
+                    </span>
+                </x-slot:trigger>
+
+                <x-admin.dropdown.item :href="route('admin.security.index')" icon="user">{{ __('admin.layout.my_account') }}</x-admin.dropdown.item>
+                <x-admin.form :action="route('admin.logout')" :live-validation="false" class="block">
+                    <button type="submit" role="menuitem" class="flex w-full items-center gap-2.5 px-4 py-2 text-start text-sm text-danger-700 hover:bg-slate-50">
+                        <x-admin.icon name="logout" class="size-4" />
+                        <span>{{ __('admin.layout.sign_out') }}</span>
+                    </button>
+                </x-admin.form>
+            </x-admin.dropdown>
         @endif
     </div>
 </header>

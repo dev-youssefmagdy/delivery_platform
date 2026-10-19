@@ -76,13 +76,6 @@ class AdminKitTest extends TestCase
         $this->assertSame([], app(AdminMenu::class)->visibleGroups(), 'demo entry hidden outside local/testing');
     }
 
-    public function test_local_guest_access_is_inert_outside_the_local_environment(): void
-    {
-        config(['admin.local_guest_access' => true]);
-
-        $this->get(route('admin.demo-items.index'))->assertForbidden();
-    }
-
     public function test_queued_export_generates_a_csv_downloadable_only_by_its_owner(): void
     {
         Storage::fake('local');
@@ -106,10 +99,8 @@ class AdminKitTest extends TestCase
 
         $this->get(route('admin.exports.download', $export))->assertForbidden();
 
-        $this->actingAsAdmin([AdminPermission::DemoItemsExport]);
-        $this->assertNotSame($admin, auth()->user());
-        $other = new \Tests\Support\TestAdmin([], id: 99);
-        $this->actingAs($other);
+        $other = $this->actingAsAdmin([AdminPermission::DemoItemsExport]);
+        $this->assertNotSame($admin->getKey(), $other->getKey());
         $this->getJson($statusUrl)->assertForbidden();
     }
 

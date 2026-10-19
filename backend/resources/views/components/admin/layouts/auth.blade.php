@@ -1,7 +1,7 @@
 @props(['title' => null, 'subtitle' => null])
 @php
     $locale = \App\Enums\Common\Locale::tryFromValue(app()->getLocale()) ?? \App\Enums\Common\Locale::default();
-    $adminConfig = ['locale' => $locale->value, 'dir' => $locale->direction(), 'csrf' => csrf_token(), 'i18n' => trans('admin.js'), 'maps' => config('admin.maps')];
+    $adminConfig = ['locale' => $locale->value, 'dir' => $locale->direction(), 'csrf' => csrf_token(), 'i18n' => trans('admin.js'), 'maps' => config('admin.maps'), 'loginUrl' => route('admin.login')];
 @endphp
 <!DOCTYPE html>
 <html lang="{{ $locale->value }}" dir="{{ $locale->direction() }}" class="h-full">
@@ -36,6 +36,17 @@
 
                 {{ $slot }}
             </div>
+        </div>
+
+        <div class="mt-6 flex justify-center gap-4 text-sm text-white/80">
+            @foreach (\App\Enums\Common\Locale::cases() as $switch)
+                @if ($switch !== $locale)
+                    <x-admin.form :action="route('admin.locale.update')" :live-validation="false">
+                        <input type="hidden" name="locale" value="{{ $switch->value }}">
+                        <button type="submit" lang="{{ $switch->value }}" class="underline decoration-white/40 underline-offset-4 hover:text-white">{{ $switch->label() }}</button>
+                    </x-admin.form>
+                @endif
+            @endforeach
         </div>
     </div>
 

@@ -42,6 +42,16 @@ npm run build                   # or: npm run dev
 php artisan serve               # http://localhost:8000  (or: composer dev)
 ```
 
+First admin (there are no default credentials):
+
+```bash
+php artisan db:seed                 # reference data + admin permissions + the 12 system roles (idempotent)
+php artisan admin:create            # asks for name, email and password (interactive only); role super_admin by default
+```
+
+Sign in at `/admin/login`. Roles in `ADMIN_MFA_REQUIRED_ROLES` (Super Admin by default) must enrol an authenticator app at the
+first sign-in. With `MAIL_MAILER=log`, invitation and password-reset links are written to `storage/logs/laravel.log`.
+
 Checks:
 
 ```bash
@@ -84,6 +94,7 @@ accepted (`flutter doctor --android-licenses`) before `flutter build apk`.
 ```bash
 make check                      # = scripts/check.sh all (backend + every Flutter app/package)
 make check-backend | make check-flutter
+make browser-smoke              # real-browser check of the admin login form (needs Chrome + Node >= 20.10; not in the gate)
 ```
 
 ## 6. Laravel Boost (AI tooling)

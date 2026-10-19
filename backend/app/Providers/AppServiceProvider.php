@@ -3,20 +3,24 @@
 namespace App\Providers;
 
 use App\Enums\Common\RateLimiterName;
+use App\Models\Admin;
 use App\Models\AdminAuditLog;
 use App\Models\AdminExport;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\DemoItem;
 use App\Models\IdempotencyKey;
+use App\Models\Role;
 use App\Models\User;
 use App\Support\Money\CurrencyRegistry;
 use App\Support\Money\DatabaseCurrencyRegistry;
 use App\Support\Money\MoneyFormatter;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -44,6 +48,8 @@ class AppServiceProvider extends ServiceProvider
          */
         Relation::enforceMorphMap([
             'user' => User::class,
+            'admin' => Admin::class,
+            'role' => Role::class,
             'currency' => Currency::class,
             'country' => Country::class,
             'admin_audit_log' => AdminAuditLog::class,
@@ -52,6 +58,9 @@ class AppServiceProvider extends ServiceProvider
             'demo_item' => DemoItem::class,
             // @admin-module:morph-map
         ]);
+
+        // Super Admin passes every ability check (Plan Appendix B); every other admin is checked by Spatie.
+        Gate::before(static fn (Authorizable $user): ?bool => $user instanceof Admin && $user->isSuperAdmin() ? true : null);
 
         $this->configureRateLimiting();
     }
@@ -88,7 +97,9 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for(RateLimiterName::PublicForms->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::PublicForms))->by('ip:'.$request->ip()));
 
-        RateLimiter::for(RateLimiterName::AdminLogin->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::AdminLogin))
-            ->by(mb_strtolower((string) $request->input('email')).'|'.$request->ip()));
+        // Validation-only (Precognition) calls are not login attempts, so they are not counted.
+        RateLimiter::for(RateLimiterName::AdminLogin->value, static fn (Request $request): Limit => $request->isPrecognitive()
+            ? Limit::none()
+            : Limit::perMinute($perMinute(RateLimiterName::AdminLogin))->by(mb_strtolower((string) $request->input('email')).'|'.$request->ip()));
     }
 }

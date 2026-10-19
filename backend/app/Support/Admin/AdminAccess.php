@@ -2,21 +2,24 @@
 
 namespace App\Support\Admin;
 
-use Illuminate\Contracts\Auth\Access\Authorizable;
-use Illuminate\Support\Facades\Gate;
+use App\Models\Admin;
 
 /**
- * Checks a raw permission name (AdminPermission value) for the current admin. Authenticated admins answer via
- * their own can() (Spatie from P1.1); guests only pass through Gate::before (the temporary local scaffolding).
+ * Checks raw permission names (AdminPermission values) for the signed-in admin; guests have no permissions.
+ * Super Admin passes through Gate::before, everybody else through Spatie.
  */
 final class AdminAccess
 {
     public static function allows(string ...$permissions): bool
     {
-        $user = auth()->user();
+        $admin = auth('admin')->user();
+
+        if (! $admin instanceof Admin) {
+            return false;
+        }
 
         foreach ($permissions as $permission) {
-            if ($user instanceof Authorizable ? $user->can($permission) : Gate::allows($permission)) {
+            if ($admin->can($permission)) {
                 return true;
             }
         }

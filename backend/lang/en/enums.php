@@ -48,6 +48,11 @@ return [
         'logged_out' => 'Logged out',
         'login_failed' => 'Login failed',
         'overridden' => 'Overridden',
+        'mfa_enabled' => 'Two-step verification enabled',
+        'mfa_disabled' => 'Two-step verification disabled',
+        'mfa_reset' => 'Two-step verification reset',
+        'password_changed' => 'Password changed',
+        'session_revoked' => 'Session revoked',
     ],
 
     'health_status' => [
@@ -162,6 +167,35 @@ return [
         'popular' => 'Popular',
         'seasonal' => 'Seasonal',
         'limited' => 'Limited',
+    ],
+
+    'admin_status' => [
+        'active' => 'Active',
+        'suspended' => 'Suspended',
+    ],
+
+    'admin_login_outcome' => [
+        'success' => 'Signed in',
+        'invalid_credentials' => 'Invalid credentials',
+        'account_suspended' => 'Suspended account',
+        'mfa_failed' => 'Wrong verification code',
+        'throttled' => 'Blocked (too many attempts)',
+        'logout' => 'Signed out',
+    ],
+
+    'admin_role' => [
+        'super_admin' => 'Super Admin',
+        'operations_admin' => 'Operations Admin',
+        'dispatch_agent' => 'Dispatch / Live Operations Agent',
+        'driver_verification_officer' => 'Driver Verification Officer',
+        'customer_support_agent' => 'Customer Support Agent',
+        'safety_incident_officer' => 'Safety & Incident Officer',
+        'finance_manager' => 'Finance Manager',
+        'finance_payout_officer' => 'Finance Payout Officer',
+        'marketing_coupon_manager' => 'Marketing / Coupon Manager',
+        'content_cms_editor' => 'Content / CMS Editor',
+        'read_only_auditor' => 'Analyst / Read-only Auditor',
+        'system_integration_admin' => 'System / Integration Administrator',
     ],
 
     // @admin-module:enums

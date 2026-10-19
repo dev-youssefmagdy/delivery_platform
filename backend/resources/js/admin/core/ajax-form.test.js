@@ -192,4 +192,25 @@ describe('AjaxForm protocol', () => {
         expect(form.querySelector('[data-error-for="name"]').textContent).toBe('Too short.');
         expect(form.querySelector('[data-error-summary]').textContent).toBe('');
     });
+
+    it('shows a toast and goes to the login page when the session ended (401)', async () => {
+        vi.useFakeTimers();
+        const assign = vi.fn();
+        const original = window.location;
+        Object.defineProperty(window, 'location', { configurable: true, value: { ...original, assign } });
+        setConfig({ locale: 'en', loginUrl: 'https://example.test/admin/login', i18n: { http: { 401: 'Your session ended.' } } });
+
+        const form = buildForm();
+        const http = { request: vi.fn(() => Promise.reject({ response: { status: 401, headers: {}, data: { success: false, message: 'Please sign in first.', errors: { _code: 'unauthenticated' }, meta: {} } } })) };
+        const toast = fakeToast();
+
+        const result = await new AjaxForm(form, { http, toast }).run();
+        await vi.advanceTimersByTimeAsync(1500);
+        vi.useRealTimers();
+        Object.defineProperty(window, 'location', { configurable: true, value: original });
+
+        expect(result.ok).toBe(false);
+        expect(toast.error).toHaveBeenCalledWith('Your session ended.', expect.objectContaining({ timeout: 0 }));
+        expect(assign).toHaveBeenCalledWith('https://example.test/admin/login');
+    });
 });

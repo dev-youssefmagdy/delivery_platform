@@ -30,6 +30,11 @@ enum AuditAction: string implements HasColor, HasLabel
     case LoggedOut = 'logged_out';
     case LoginFailed = 'login_failed';
     case Overridden = 'overridden';
+    case MfaEnabled = 'mfa_enabled';
+    case MfaDisabled = 'mfa_disabled';
+    case MfaReset = 'mfa_reset';
+    case PasswordChanged = 'password_changed';
+    case SessionRevoked = 'session_revoked';
 
     public function label(): string
     {
@@ -41,8 +46,8 @@ enum AuditAction: string implements HasColor, HasLabel
         return match ($this) {
             self::Created, self::Approved, self::Reactivated, self::Restored, self::Published, self::LoggedIn => BadgeColor::Success,
             self::Deleted, self::Rejected, self::Suspended, self::LoginFailed => BadgeColor::Danger,
-            self::Overridden, self::StatusChanged => BadgeColor::Warning,
-            self::Updated, self::Exported => BadgeColor::Info,
+            self::Overridden, self::StatusChanged, self::MfaReset, self::MfaDisabled => BadgeColor::Warning,
+            self::Updated, self::Exported, self::MfaEnabled, self::PasswordChanged, self::SessionRevoked => BadgeColor::Info,
             default => BadgeColor::Neutral,
         };
     }

@@ -258,6 +258,38 @@ return [
         'cancellation' => 'سياسة الإلغاء',
     ],
 
+    'zone_status' => [
+        'draft' => 'مسودة',
+        'active' => 'نشطة',
+        'suspended' => 'معلّقة',
+    ],
+
+    'saved_place_type' => [
+        'home' => 'المنزل',
+        'work' => 'العمل',
+        'other' => 'أخرى',
+    ],
+
+    'location_precision' => [
+        'exact' => 'عنوان دقيق',
+        'street' => 'شارع',
+        'approximate' => 'تقريبي',
+    ],
+
+    'availability_reason' => [
+        'available' => 'متاحة',
+        'not_in_zone' => 'غير متوفرة في هذه المنطقة',
+        'zone_closed' => 'المنطقة مغلقة في هذا الوقت',
+        'category_closed' => 'الخدمة مغلقة في هذا الوقت',
+        'override_closed' => 'مغلقة في هذا الوقت داخل هذه المنطقة',
+    ],
+
+    'maps_provider_status' => [
+        'ok' => 'تعمل',
+        'not_configured' => 'غير مهيأة',
+        'unavailable' => 'غير متاحة',
+    ],
+
     'service_family_kind' => [
         'passenger_city' => 'رحلات الركاب داخل المدينة',
         'intercity' => 'رحلات بين المدن',

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platform_core/platform_core.dart';
 
 import '../../../../core/providers.dart';
+import '../../../map/presentation/providers/map_providers.dart';
 
 final catalogRepositoryProvider = Provider<CatalogRepository>(
   (ref) => CatalogRepository(ref.watch(apiClientProvider)),
@@ -32,9 +33,11 @@ Duration? _noAutoRetry(int retryCount, Object error) => null;
 /// Failures show the retry state of the picker; no hidden automatic retries.
 final catalogProvider = FutureProvider<CatalogData>((ref) async {
   final repository = ref.watch(catalogRepositoryProvider);
+  // With a pickup the server returns only what its zone offers right now.
+  final pickup = ref.watch(pickupPointProvider);
   final results = await Future.wait<Object>([
     repository.families(),
-    repository.categories(),
+    repository.categories(lat: pickup?.latitude, lng: pickup?.longitude),
   ]);
   return CatalogData(
     families: results[0] as List<ServiceFamilyInfo>,

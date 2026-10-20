@@ -9,11 +9,15 @@ use App\Http\Controllers\Api\V1\Common\ConfigController;
 use App\Http\Controllers\Api\V1\Common\HealthController;
 use App\Http\Controllers\Api\V1\Common\MediaController;
 use App\Http\Controllers\Api\V1\Common\PolicyController;
+use App\Http\Controllers\Api\V1\Geo\PlaceController;
+use App\Http\Controllers\Api\V1\Geo\RouteController;
+use App\Http\Controllers\Api\V1\Geo\ServiceAreaController;
 use App\Http\Controllers\Api\V1\Me\AccountDeletionController;
 use App\Http\Controllers\Api\V1\Me\ConsentController;
 use App\Http\Controllers\Api\V1\Me\DeviceController;
 use App\Http\Controllers\Api\V1\Me\MeController;
 use App\Http\Controllers\Api\V1\Me\PhotoController;
+use App\Http\Controllers\Api\V1\Me\SavedPlaceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,11 +34,21 @@ Route::middleware('cache.headers:public;max_age=30;etag')->group(function (): vo
     Route::get('locales', [ConfigController::class, 'locales'])->name('locales');
 });
 
-// Service catalog (P1.4): public, only active entries with a published version. Zone availability arrives in P1.5.
+// Service catalog (P1.4): public, only active entries with a published version. With lat/lng the list is filtered
+// by the serving zone's availability matrix and opening hours (P1.5).
 Route::middleware('cache.headers:public;max_age=30;etag')->group(function (): void {
     Route::get('service-families', [CatalogController::class, 'families'])->name('catalog.families');
     Route::get('service-categories', [CatalogController::class, 'categories'])->name('catalog.categories');
     Route::get('vehicle-categories', [CatalogController::class, 'vehicleCategories'])->name('catalog.vehicle-categories');
+});
+
+// Geography (P1.5). Resolving a position is public; anything that spends maps quota needs a signed-in app.
+Route::get('service-areas/resolve', [ServiceAreaController::class, 'resolve'])->name('service-areas.resolve');
+
+Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen', 'account.active', 'throttle:60,1'])->group(function (): void {
+    Route::get('places/search', [PlaceController::class, 'search'])->name('places.search');
+    Route::get('places/reverse', [PlaceController::class, 'reverse'])->name('places.reverse');
+    Route::get('routes/estimate', [RouteController::class, 'estimate'])->name('routes.estimate');
 });
 
 // Current policy text for the consent screens (P1.3). Only types that have a published version resolve.
@@ -72,6 +86,14 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
         Route::post('photo', [PhotoController::class, 'store'])->name('photo.store');
         Route::post('consents', [ConsentController::class, 'store'])->name('consents.store');
         Route::post('devices', [DeviceController::class, 'store'])->name('devices.store');
+
+        // Customer-only (a driver token gets 403).
+        Route::middleware('ability:customer')->group(function (): void {
+            Route::get('saved-places', [SavedPlaceController::class, 'index'])->name('saved-places.index');
+            Route::post('saved-places', [SavedPlaceController::class, 'store'])->name('saved-places.store');
+            Route::put('saved-places/{place}', [SavedPlaceController::class, 'update'])->whereUuid('place')->name('saved-places.update');
+            Route::delete('saved-places/{place}', [SavedPlaceController::class, 'destroy'])->whereUuid('place')->name('saved-places.destroy');
+        });
         Route::post('account-deletion-requests', [AccountDeletionController::class, 'store'])
             ->middleware('idempotent')->name('account-deletion-requests.store');
     });

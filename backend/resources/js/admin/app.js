@@ -12,6 +12,7 @@ import { filtersCard } from './core/filters-card.js';
 import { initSelects } from './core/remote-select.js';
 import { initDatePickers } from './core/date-pickers.js';
 import { initMaps } from './core/maps.js';
+import { initZoneOverlap } from './core/zone-overlap.js';
 import { initCharts } from './core/charts.js';
 import { initExports } from './core/exports.js';
 import { askConfirm, confirmDialog, initConfirmActions } from './core/confirm-action.js';
@@ -33,6 +34,7 @@ const Admin = {
         initSelects(root);
         initDatePickers(root);
         initMaps(root);
+        initZoneOverlap(root);
         initCharts(root);
     },
 };

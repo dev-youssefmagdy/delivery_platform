@@ -20,6 +20,8 @@ export 'src/forms/dynamic_form_strings.dart';
 export 'src/forms/form_logic.dart';
 export 'src/forms/photo_field_handler.dart';
 export 'src/forms/form_schema.dart';
+export 'src/geo/geo_models.dart';
+export 'src/geo/geo_repository.dart';
 export 'src/identity/auth_stage.dart';
 export 'src/identity/identity_models.dart';
 export 'src/identity/identity_repository.dart';

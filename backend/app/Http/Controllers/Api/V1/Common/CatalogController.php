@@ -26,7 +26,17 @@ final class CatalogController extends Controller
 
     public function categories(ListServiceCategoriesRequest $request): JsonResponse
     {
-        return ApiResponse::success(data: ServiceCategoryResource::collection($this->catalog->categories($request->bookingType(), $request->familyId())));
+        $listing = $this->catalog->categories($request->bookingType(), $request->familyId(), $request->point());
+
+        return ApiResponse::success(
+            data: ServiceCategoryResource::collection($listing->categories),
+            meta: $listing->area === null ? [] : ['service_area' => [
+                'in_service_area' => $listing->area->inServiceArea(),
+                'zone_id' => $listing->area->zone?->id,
+                'city_id' => $listing->area->city?->id,
+                'restricted_pickup' => $listing->area->restrictedPickup(),
+            ]],
+        );
     }
 
     public function vehicleCategories(ListVehicleCategoriesRequest $request): JsonResponse

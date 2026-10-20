@@ -18,6 +18,10 @@ use App\Repositories\Contracts\Common\CountryRepositoryInterface;
 use App\Repositories\Contracts\Common\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\Common\IdempotencyKeyRepositoryInterface;
 use App\Repositories\Contracts\Demo\DemoItemRepositoryInterface;
+use App\Repositories\Contracts\Geography\CityRepositoryInterface;
+use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
+use App\Repositories\Contracts\Geography\ServiceZoneRepositoryInterface;
+use App\Repositories\Contracts\Geography\ZoneServiceCategoryRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccessTokenRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
 use App\Repositories\Contracts\Identity\CustomerProfileRepositoryInterface;
@@ -43,6 +47,10 @@ use App\Repositories\Eloquent\Common\CountryRepository;
 use App\Repositories\Eloquent\Common\CurrencyRepository;
 use App\Repositories\Eloquent\Common\IdempotencyKeyRepository;
 use App\Repositories\Eloquent\Demo\DemoItemRepository;
+use App\Repositories\Eloquent\Geography\CityRepository;
+use App\Repositories\Eloquent\Geography\SavedPlaceRepository;
+use App\Repositories\Eloquent\Geography\ServiceZoneRepository;
+use App\Repositories\Eloquent\Geography\ZoneServiceCategoryRepository;
 use App\Repositories\Eloquent\Identity\AccessTokenRepository;
 use App\Repositories\Eloquent\Identity\AccountDeletionRequestRepository;
 use App\Repositories\Eloquent\Identity\CustomerProfileRepository;
@@ -88,6 +96,10 @@ class RepositoryServiceProvider extends ServiceProvider
         ServiceFamilyRepositoryInterface::class => ServiceFamilyRepository::class,
         ServiceFormSchemaRepositoryInterface::class => ServiceFormSchemaRepository::class,
         VehicleCategoryRepositoryInterface::class => VehicleCategoryRepository::class,
+        CityRepositoryInterface::class => CityRepository::class,
+        ServiceZoneRepositoryInterface::class => ServiceZoneRepository::class,
+        ZoneServiceCategoryRepositoryInterface::class => ZoneServiceCategoryRepository::class,
+        SavedPlaceRepositoryInterface::class => SavedPlaceRepository::class,
         // @admin-module:bindings
     ];
 }

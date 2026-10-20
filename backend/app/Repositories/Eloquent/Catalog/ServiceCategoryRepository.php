@@ -92,7 +92,12 @@ final class ServiceCategoryRepository extends BaseRepository implements ServiceC
         return $category->load(['family', 'vehicleCategories', 'publishedVersion']);
     }
 
-    public function publicList(?BookingType $bookingType, ?int $familyId): Collection
+    public function allOrdered(): Collection
+    {
+        return $this->query()->orderBy('sort_order')->orderBy('id')->get();
+    }
+
+    public function publicList(?BookingType $bookingType, ?int $familyId, ?int $zoneId = null): Collection
     {
         return $this->query()
             ->where('active', true)
@@ -101,6 +106,8 @@ final class ServiceCategoryRepository extends BaseRepository implements ServiceC
             ->with(['family', 'publishedVersion.formSchema'])
             ->when($bookingType, static fn (Builder $query, BookingType $type) => $query->whereJsonContains('allowed_booking_types', $type->value))
             ->when($familyId, static fn (Builder $query, int $id) => $query->where('service_family_id', $id))
+            ->when($zoneId !== null, static fn (Builder $query) => $query->whereIn('id', static fn ($links) => $links
+                ->select('service_category_id')->from('zone_service_category')->where('service_zone_id', $zoneId)->where('active', true)))
             ->orderBy('sort_order')->orderBy('id')
             ->get();
     }

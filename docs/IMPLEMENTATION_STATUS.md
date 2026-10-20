@@ -15,7 +15,7 @@
 | P1.2 | Settings, markets, locales, policy versions, app config API | P0 | ✅ | 2026-10-19 |
 | P1.3 | Identity API: OTP, users, profiles, devices, consents, deletion | P0 | ✅ | 2026-10-20 |
 | P1.4 | Service catalog, vehicle categories, form schemas, versioned snapshots | P0 | ✅ | 2026-10-20 |
-| P1.5 | Geography: cities, service zones, availability, maps adapter | P0 | ❌ | — |
+| P1.5 | Geography: cities, service zones, availability, maps adapter | P0 | ✅ | 2026-10-21 |
 | P1.6 | Customers admin module | P0 | ❌ | — |
 | P2.1 | Provider onboarding, vehicles, documents, verification | P0 | ❌ | — |
 | P2.2 | Availability, live location, eligibility, dispatch engine | P0 | ❌ | — |
@@ -51,6 +51,41 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P1.5 — Geography: cities, service zones, availability, maps adapter · ✅ 2026-10-21
+
+Branch `milestone/p1.5-geography` (from `main` @ `0ab6844`), fast-forwarded into `main`.
+
+### What was built
+
+- **Schema (ADR-69):** `cities` (country, name, timezone, `center` POINT), `service_zones` (city, name, `polygon` POLYGON + spatial index, `ZoneStatus`, `operating_hours`, `restricted_pickup`, notes, `is_demo`), `zone_service_category` (active, overrides), `saved_places` (uuid, point, address snapshot). Models in the morph map, repositories bound, casts `GeoPointCast`/`GeoPolygonCast`, `Support\Geo` (`GeoPoint`, `GeoPolygon`, `OperatingHours`, `Distance`, `WkbReader`).
+- **Services:** `GeoService` (resolve point -> city, zone, categories with availability/reason/opens_at), `CityService`, `ServiceZoneService` (overlap warning, polygon validity, activation/suspension guards, availability matrix), `MapsService`, `RouteEstimateService`, `CoveragePreviewService`, `SavedPlaceService`.
+- **Maps adapter (ADR-71):** `MapsProvider` + `osrm_nominatim`, `google`, `fake` drivers, caching decorator, error mapping to `maps_unavailable` / `route_not_found`. Real drivers are tested against faked HTTP only (no credentials). Env vars in docs/INTEGRATIONS.md.
+- **Admin (`service_areas.manage`, contract modules):** Cities (generator, activate/deactivate with reason), Service zones (Leaflet polygon draw component, live overlap warning `zone-overlap.js`, operating-hours repeater, show page with map, availability matrix tab with overrides, overlaps tab, activate/suspend with reason), Coverage preview (point or two-point trip, resolved zone, categories, route estimate), `cities` lookup, menu entries, collapsed filters cards (Appendix C: city, status, category availability).
+- **API (docs/API.md 8.7):** `GET /service-areas/resolve`, `/places/search`, `/places/reverse`, `/routes/estimate`, `/me/saved-places` CRUD; `GET /service-categories?lat&lng` now filters by the zone matrix and hours (`ServiceCategoryRepositoryInterface::publicList($zoneId)`).
+- **Seed:** `GeographySeeder` (Cairo + Giza demo zones, flagged `is_demo`, labelled demo, skipped when `GEO_SEED_DEMO` is false / production).
+- **Flutter:** platform_core `GeoRepository` + models + enums; customer_app map panel on home (flutter_map, rationale-first permission, manual fallback), debounced place search, pin adjust, swap, saved places, outside-area and error states, catalog request by pickup; ARB ar/en regenerated (ADR-72).
+
+### Commands and results (2026-10-21)
+
+| Command | Result |
+|---|---|
+| `php artisan migrate` (local MySQL) | OK (`create_geography_tables`) |
+| `vendor/bin/pint --test` | passed |
+| `vendor/bin/phpstan analyse` (level 6) | passed, 0 errors |
+| `php artisan test --parallel` | 497 tests: 496 passed on the full run; the one failure (a P1.4 test asserting the old no-zone `lat/lng` behaviour) was updated and re-run green (7/7). New: geo unit, GeoService, maps drivers (Http::fake, cache, guard), admin cities/zones/coverage contract tests, API endpoints, saved places IDOR, seeder |
+| `vitest run` | 4 files, 17 tests passed |
+| `npm run build` | built OK |
+| `scripts/browser-smoke.sh` | passed (admin JS touched) |
+| platform_core / customer_app / driver_app: `dart format --set-exit-if-changed`, `flutter analyze`, `flutter test` | clean / no issues / platform_core 149, customer_app 86, driver_app 45 passed |
+
+### Known gaps / notes for P1.6 and later
+
+- OSRM/Nominatim and Google drivers are untested against live services; the public OSM servers are development only.
+- No active-bookings guard when suspending a zone (no bookings yet): P2.3 must add it (ADR-70).
+- Customer admin (P1.6) can show saved places via `SavedPlaceRepositoryInterface::forUser` (PII: gate with `customers.view_pii`).
+- Dispatch (P2.2) should use `GeoService::resolve` + zone overrides (`dispatch_radius_steps_km`, fare bounds) for pricing/dispatch; pricing (P2.3) must apply `min/max_fare_minor` overrides.
+- Map default center is a constant (Cairo); the Flutter map shows flutter_map's OSM policy warning with the default tile URL.
 
 ## P1.4 — Service catalog, vehicle categories, form schemas, versioned snapshots · ✅ 2026-10-20
 

@@ -11,6 +11,11 @@ import '../features/auth/presentation/screens/otp_screen.dart';
 import '../features/auth/presentation/screens/profile_screen.dart';
 import '../features/catalog/presentation/screens/service_details_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
+import '../features/map/presentation/providers/map_providers.dart';
+import '../features/map/presentation/screens/map_screen_args.dart';
+import '../features/map/presentation/screens/pin_adjust_screen.dart';
+import '../features/map/presentation/screens/place_search_screen.dart';
+import '../features/map/presentation/screens/saved_places_screen.dart';
 import '../features/language/presentation/screens/language_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
@@ -26,6 +31,9 @@ abstract final class Routes {
   static const accountStatus = '/account-status';
   static const home = '/home';
   static const serviceDetails = '/service-details';
+  static const placeSearch = '/place-search';
+  static const pinAdjust = '/pin-adjust';
+  static const savedPlaces = '/saved-places';
 }
 
 /// Where the splash screen sends the user.
@@ -60,7 +68,12 @@ const _signedInOnly = {
 const _signedOutOnly = {Routes.auth, Routes.otp, Routes.onboarding};
 
 /// Screens pushed on top of home: only for a fully set-up account.
-const _readyOnly = {Routes.serviceDetails};
+const _readyOnly = {
+  Routes.serviceDetails,
+  Routes.placeSearch,
+  Routes.pinAdjust,
+  Routes.savedPlaces,
+};
 
 /// Pure redirect rules (unit tested). Returns null to stay.
 String? computeRedirect({required String location, required AuthStage stage}) {
@@ -114,6 +127,26 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.serviceDetails,
         builder: (_, _) => const ServiceDetailsScreen(),
+      ),
+      GoRoute(
+        path: Routes.placeSearch,
+        builder: (_, state) => PlaceSearchScreen(
+          args:
+              state.extra as PlaceSearchArgs? ??
+              const PlaceSearchArgs(mode: PlaceSearchMode.destination),
+        ),
+      ),
+      GoRoute(
+        path: Routes.pinAdjust,
+        builder: (_, state) => PinAdjustScreen(
+          args:
+              state.extra as PinAdjustArgs? ??
+              const PinAdjustArgs(initial: defaultMapCenter),
+        ),
+      ),
+      GoRoute(
+        path: Routes.savedPlaces,
+        builder: (_, _) => const SavedPlacesScreen(),
       ),
     ],
   );

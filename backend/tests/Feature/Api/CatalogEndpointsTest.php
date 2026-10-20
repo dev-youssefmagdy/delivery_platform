@@ -102,7 +102,11 @@ class CatalogEndpointsTest extends TestCase
 
         $this->getJson('/api/v1/service-categories?booking_type=parcel')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $parcel->id);
         $this->getJson('/api/v1/service-categories?service_family_id='.$ride->service_family_id)->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $ride->id);
-        $this->getJson('/api/v1/service-categories?lat=30.04&lng=31.23&booking_type=on_demand')->assertOk()->assertJsonCount(1, 'data');
+        // With a position only the serving zone's categories are returned (details: GeographyEndpointsTest).
+        $this->getJson('/api/v1/service-categories?lat=30.04&lng=31.23&booking_type=on_demand')->assertOk()->assertJsonCount(0, 'data');
+        $zone = \App\Models\ServiceZone::factory()->create();
+        \App\Models\ZoneServiceCategory::query()->create(['service_zone_id' => $zone->id, 'service_category_id' => $ride->id, 'active' => true]);
+        $this->getJson('/api/v1/service-categories?lat=30.04&lng=31.23&booking_type=on_demand')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $ride->id);
         $this->getJson('/api/v1/service-categories?booking_type=teleport')->assertStatus(422)->assertJsonValidationErrors(['booking_type']);
         $this->getJson('/api/v1/service-categories?lat=95&lng=31')->assertStatus(422)->assertJsonValidationErrors(['lat']);
         $this->getJson('/api/v1/service-categories?lat=30')->assertStatus(422)->assertJsonValidationErrors(['lng']);

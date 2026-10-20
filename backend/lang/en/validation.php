@@ -169,6 +169,9 @@ return [
     'ulid' => 'The :attribute field must be a valid ULID.',
     'uuid' => 'The :attribute field must be a valid UUID.',
 
+    'coordinates' => 'The :attribute must be a valid location.',
+    'coordinates_pair' => 'The :attribute must be a coordinate pair formatted as "lat,lng".',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

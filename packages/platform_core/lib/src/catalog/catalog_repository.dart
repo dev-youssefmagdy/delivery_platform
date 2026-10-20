@@ -14,8 +14,8 @@ class CatalogRepository {
   Future<List<ServiceFamilyInfo>> families() async =>
       _list(await api.get('/service-families'), ServiceFamilyInfo.fromJson);
 
-  /// Zone availability (`lat`/`lng`) is wired with the geography milestone
-  /// (P1.5); until then the server returns every active category.
+  /// With [lat]/[lng] the server returns only the categories the serving zone
+  /// offers right now (empty outside every service zone).
   Future<List<ServiceCategoryInfo>> categories({
     BookingType? bookingType,
     int? familyId,

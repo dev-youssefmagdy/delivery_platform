@@ -8,6 +8,7 @@ use App\Models\AccountDeletionRequest;
 use App\Models\Admin;
 use App\Models\AdminAuditLog;
 use App\Models\AdminExport;
+use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\CustomerProfile;
@@ -18,14 +19,17 @@ use App\Models\PlatformSetting;
 use App\Models\PolicyVersion;
 use App\Models\ProviderProfile;
 use App\Models\Role;
+use App\Models\SavedPlace;
 use App\Models\ServiceCategory;
 use App\Models\ServiceCategoryVersion;
 use App\Models\ServiceFamily;
 use App\Models\ServiceFormSchema;
+use App\Models\ServiceZone;
 use App\Models\User;
 use App\Models\UserConsent;
 use App\Models\UserDevice;
 use App\Models\VehicleCategory;
+use App\Models\ZoneServiceCategory;
 use App\Services\Settings\SettingsService;
 use App\Support\Auth\PhoneNumber;
 use App\Support\Money\CurrencyRegistry;
@@ -85,6 +89,10 @@ class AppServiceProvider extends ServiceProvider
             'service_category_version' => ServiceCategoryVersion::class,
             'service_form_schema' => ServiceFormSchema::class,
             'vehicle_category' => VehicleCategory::class,
+            'city' => City::class,
+            'service_zone' => ServiceZone::class,
+            'zone_service_category' => ZoneServiceCategory::class,
+            'saved_place' => SavedPlace::class,
             // @admin-module:morph-map
         ]);
 

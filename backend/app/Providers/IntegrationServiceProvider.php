@@ -3,6 +3,11 @@
 namespace App\Providers;
 
 use App\Integrations\IntegrationGuard;
+use App\Integrations\Maps\Contracts\MapsProvider;
+use App\Integrations\Maps\Drivers\CachingMapsProvider;
+use App\Integrations\Maps\Drivers\FakeMapsProvider;
+use App\Integrations\Maps\Drivers\GoogleMapsProvider;
+use App\Integrations\Maps\Drivers\OsrmNominatimMapsProvider;
 use App\Integrations\Sms\Contracts\SmsGateway;
 use App\Integrations\Sms\Drivers\LogSmsGateway;
 use App\Integrations\Sms\Drivers\SmsMisrGateway;
@@ -23,6 +28,11 @@ class IntegrationServiceProvider extends ServiceProvider
      */
     protected array $integrations = [
         'sms' => [SmsGateway::class, ['log' => LogSmsGateway::class, 'smsmisr' => SmsMisrGateway::class]],
+        'maps' => [MapsProvider::class, [
+            'fake' => FakeMapsProvider::class,
+            'osrm_nominatim' => OsrmNominatimMapsProvider::class,
+            'google' => GoogleMapsProvider::class,
+        ]],
     ];
 
     public function register(): void
@@ -38,6 +48,11 @@ class IntegrationServiceProvider extends ServiceProvider
                 return $this->app->make($drivers[$driver]);
             });
         }
+
+        // Real providers answer through a cache of successful results; the offline fake needs none.
+        $this->app->extend(MapsProvider::class, static fn (MapsProvider $provider, $app): MapsProvider => $provider instanceof FakeMapsProvider
+            ? $provider
+            : new CachingMapsProvider($provider, $app->make('cache.store')));
     }
 
     public function boot(): void

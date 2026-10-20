@@ -464,4 +464,205 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get formPickTime => 'Select time';
+
+  @override
+  String get mapPickupLabel => 'Pickup';
+
+  @override
+  String get mapDestinationLabel => 'Destination';
+
+  @override
+  String get mapPickupHint => 'Where from?';
+
+  @override
+  String get mapDestinationHint => 'Where to?';
+
+  @override
+  String get mapSwap => 'Swap pickup and destination';
+
+  @override
+  String get mapMyLocation => 'My location';
+
+  @override
+  String get mapCurrentLocation => 'Current location';
+
+  @override
+  String get mapPinnedLocation => 'Pinned location';
+
+  @override
+  String get mapApproximate =>
+      'Approximate position. The exact address is not confirmed.';
+
+  @override
+  String get mapLocating => 'Finding your location…';
+
+  @override
+  String get mapRationaleTitle => 'Use your location?';
+
+  @override
+  String get mapRationaleBody =>
+      'We use your location to set your pickup point and show the services near you. You can also search for an address instead.';
+
+  @override
+  String get mapRationaleAllow => 'Allow location';
+
+  @override
+  String get mapRationaleNotNow => 'Not now';
+
+  @override
+  String get mapPermissionDenied =>
+      'Location is off. Allow it, or choose your pickup manually.';
+
+  @override
+  String get mapPermissionBlocked =>
+      'Location is blocked for this app. Open settings to allow it, or choose your pickup manually.';
+
+  @override
+  String get mapServiceDisabled =>
+      'Your device location is switched off. Turn it on, or choose your pickup manually.';
+
+  @override
+  String get mapLocateFailed =>
+      'We could not get your position. Choose your pickup manually.';
+
+  @override
+  String get mapOpenSettings => 'Open settings';
+
+  @override
+  String get mapChoosePickup => 'Choose pickup manually';
+
+  @override
+  String get mapOutsideTitle => 'Outside our service area';
+
+  @override
+  String get mapOutsideBody =>
+      'We do not serve this pickup location yet. Choose another pickup point.';
+
+  @override
+  String get mapAreaCheckFailed =>
+      'We could not check service availability here.';
+
+  @override
+  String get mapRestrictedPickup =>
+      'Pickups here may be restricted. Follow the posted pickup points.';
+
+  @override
+  String mapServing(String city) {
+    return 'Serving $city';
+  }
+
+  @override
+  String get mapsUnavailable =>
+      'Maps are temporarily unavailable. Please try again shortly.';
+
+  @override
+  String get searchPickupTitle => 'Choose pickup';
+
+  @override
+  String get searchDestinationTitle => 'Choose destination';
+
+  @override
+  String get searchPlaceTitle => 'Find a place';
+
+  @override
+  String get searchFieldHint => 'Search for a place or address';
+
+  @override
+  String get searchMinChars => 'Type at least 2 characters to search.';
+
+  @override
+  String get searchEmptyTitle => 'No places found';
+
+  @override
+  String get searchEmptyBody =>
+      'Try another name, or choose the point on the map.';
+
+  @override
+  String get searchOnMap => 'Choose on map';
+
+  @override
+  String get searchUseCurrent => 'Use current location';
+
+  @override
+  String get searchSavedHeader => 'Saved places';
+
+  @override
+  String get searchResultsHeader => 'Results';
+
+  @override
+  String get searchUnavailable =>
+      'Search is temporarily unavailable. You can still choose a point on the map.';
+
+  @override
+  String get pinInstruction => 'Move the map to place the pin';
+
+  @override
+  String get pinConfirm => 'Confirm location';
+
+  @override
+  String get pinResolving => 'Finding the address…';
+
+  @override
+  String get pinNoAddress => 'No address found for this point.';
+
+  @override
+  String get pinLookupFailed =>
+      'Address lookup is unavailable. You can still use this point.';
+
+  @override
+  String get pinOutside => 'This point is outside our service area.';
+
+  @override
+  String get savedPlacesTitle => 'Saved places';
+
+  @override
+  String get savedPlacesAdd => 'Add a place';
+
+  @override
+  String get savedPlacesEmptyTitle => 'No saved places yet';
+
+  @override
+  String get savedPlacesEmptyBody => 'Save Home and Work to book faster.';
+
+  @override
+  String get savedPlaceTypeHome => 'Home';
+
+  @override
+  String get savedPlaceTypeWork => 'Work';
+
+  @override
+  String get savedPlaceTypeOther => 'Other';
+
+  @override
+  String get savedPlaceNameField => 'Name';
+
+  @override
+  String get savedPlaceTypeField => 'Type';
+
+  @override
+  String get savedPlaceNameRequired => 'Enter a name';
+
+  @override
+  String get savedPlaceSave => 'Save';
+
+  @override
+  String get savedPlaceDeleteTitle => 'Delete this place?';
+
+  @override
+  String get savedPlaceDeleteBody =>
+      'It will be removed from your saved places.';
+
+  @override
+  String get savedPlaceDelete => 'Delete';
+
+  @override
+  String get savedPlaceTypeTaken =>
+      'You already saved a place of this type. Delete it first.';
+
+  @override
+  String get savedPlaceLimit =>
+      'You reached the maximum number of saved places.';
+
+  @override
+  String get homeSavedPlaces => 'Saved places';
 }

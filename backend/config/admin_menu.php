@@ -153,6 +153,33 @@ return [
             'icon' => 'cube',
             'permission' => App\Enums\Admin\AdminPermission::VehicleCategoriesManage,
         ],
+        [
+            'key' => 'cities',
+            'group' => 'geography',
+            'label' => 'admin.cities.menu',
+            'route' => 'admin.cities.index',
+            'active' => 'admin.cities.*',
+            'icon' => 'map',
+            'permission' => App\Enums\Admin\AdminPermission::ServiceAreasManage,
+        ],
+        [
+            'key' => 'service_zones',
+            'group' => 'geography',
+            'label' => 'admin.service_zones.menu',
+            'route' => 'admin.service-zones.index',
+            'active' => 'admin.service-zones.*',
+            'icon' => 'map',
+            'permission' => App\Enums\Admin\AdminPermission::ServiceAreasManage,
+        ],
+        [
+            'key' => 'coverage_preview',
+            'group' => 'geography',
+            'label' => 'admin.coverage.menu',
+            'route' => 'admin.coverage-preview.show',
+            'active' => 'admin.coverage-preview.*',
+            'icon' => 'map',
+            'permission' => App\Enums\Admin\AdminPermission::ServiceAreasManage,
+        ],
         // @admin-module:menu
     ],
 ];

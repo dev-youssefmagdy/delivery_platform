@@ -8,11 +8,11 @@ import '../../../../app/router.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../auth/presentation/widgets/auth_error_text.dart';
 import '../../../catalog/presentation/widgets/service_picker.dart';
+import '../../../map/presentation/widgets/trip_location_panel.dart';
 
 /// Post-login landing. Only reachable when signed in with a complete profile
 /// and current consents (router guard). Shows the service catalog (family and
-/// category selection, P1.4); route selection arrives with the ride flow
-/// (P2.6). Hosts the language switch, sign-out and account deletion.
+/// category selection, P1.4); trip points come from the map panel (P1.5). Hosts the language switch, sign-out and account deletion.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -54,7 +54,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: ListView(
         children: [
           if (name != null) ListTile(title: Text(l10n.homeGreeting(name))),
+          const TripLocationPanel(),
           const ServicePicker(),
+          ListTile(
+            key: const Key('home-saved-places'),
+            minTileHeight: context.density.minTouchTarget,
+            leading: const Icon(Icons.bookmarks_outlined),
+            title: Text(l10n.homeSavedPlaces),
+            onTap: () => context.push(Routes.savedPlaces),
+          ),
           ListTile(
             minTileHeight: context.density.minTouchTarget,
             leading: const Icon(Icons.language),

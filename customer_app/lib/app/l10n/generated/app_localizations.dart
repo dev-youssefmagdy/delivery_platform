@@ -877,6 +877,372 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'اختر الوقت'**
   String get formPickTime;
+
+  /// No description provided for @mapPickupLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقطة الاستلام'**
+  String get mapPickupLabel;
+
+  /// No description provided for @mapDestinationLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوجهة'**
+  String get mapDestinationLabel;
+
+  /// No description provided for @mapPickupHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'من أين؟'**
+  String get mapPickupHint;
+
+  /// No description provided for @mapDestinationHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلى أين؟'**
+  String get mapDestinationHint;
+
+  /// No description provided for @mapSwap.
+  ///
+  /// In ar, this message translates to:
+  /// **'تبديل نقطة الاستلام والوجهة'**
+  String get mapSwap;
+
+  /// No description provided for @mapMyLocation.
+  ///
+  /// In ar, this message translates to:
+  /// **'موقعي'**
+  String get mapMyLocation;
+
+  /// No description provided for @mapCurrentLocation.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموقع الحالي'**
+  String get mapCurrentLocation;
+
+  /// No description provided for @mapPinnedLocation.
+  ///
+  /// In ar, this message translates to:
+  /// **'موقع محدد على الخريطة'**
+  String get mapPinnedLocation;
+
+  /// No description provided for @mapApproximate.
+  ///
+  /// In ar, this message translates to:
+  /// **'موقع تقريبي. العنوان الدقيق غير مؤكد.'**
+  String get mapApproximate;
+
+  /// No description provided for @mapLocating.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ تحديد موقعك…'**
+  String get mapLocating;
+
+  /// No description provided for @mapRationaleTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'استخدام موقعك؟'**
+  String get mapRationaleTitle;
+
+  /// No description provided for @mapRationaleBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نستخدم موقعك لتحديد نقطة الاستلام وعرض الخدمات القريبة منك. يمكنك أيضاً البحث عن عنوان بدلاً من ذلك.'**
+  String get mapRationaleBody;
+
+  /// No description provided for @mapRationaleAllow.
+  ///
+  /// In ar, this message translates to:
+  /// **'السماح بالموقع'**
+  String get mapRationaleAllow;
+
+  /// No description provided for @mapRationaleNotNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'ليس الآن'**
+  String get mapRationaleNotNow;
+
+  /// No description provided for @mapPermissionDenied.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموقع متوقف. اسمح به أو اختر نقطة الاستلام يدوياً.'**
+  String get mapPermissionDenied;
+
+  /// No description provided for @mapPermissionBlocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموقع محظور لهذا التطبيق. افتح الإعدادات للسماح به أو اختر نقطة الاستلام يدوياً.'**
+  String get mapPermissionBlocked;
+
+  /// No description provided for @mapServiceDisabled.
+  ///
+  /// In ar, this message translates to:
+  /// **'موقع الجهاز متوقف. شغّله أو اختر نقطة الاستلام يدوياً.'**
+  String get mapServiceDisabled;
+
+  /// No description provided for @mapLocateFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تحديد موقعك. اختر نقطة الاستلام يدوياً.'**
+  String get mapLocateFailed;
+
+  /// No description provided for @mapOpenSettings.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح الإعدادات'**
+  String get mapOpenSettings;
+
+  /// No description provided for @mapChoosePickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار نقطة الاستلام يدوياً'**
+  String get mapChoosePickup;
+
+  /// No description provided for @mapOutsideTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'خارج نطاق خدمتنا'**
+  String get mapOutsideTitle;
+
+  /// No description provided for @mapOutsideBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا نخدم موقع الاستلام هذا بعد. اختر نقطة استلام أخرى.'**
+  String get mapOutsideBody;
+
+  /// No description provided for @mapAreaCheckFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر التحقق من توفر الخدمة هنا.'**
+  String get mapAreaCheckFailed;
+
+  /// No description provided for @mapRestrictedPickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'قد يكون الاستلام هنا مقيّداً. اتبع نقاط الاستلام المحددة.'**
+  String get mapRestrictedPickup;
+
+  /// No description provided for @mapServing.
+  ///
+  /// In ar, this message translates to:
+  /// **'نخدم {city}'**
+  String mapServing(String city);
+
+  /// No description provided for @mapsUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخرائط غير متاحة مؤقتاً. حاول مرة أخرى بعد قليل.'**
+  String get mapsUnavailable;
+
+  /// No description provided for @searchPickupTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر نقطة الاستلام'**
+  String get searchPickupTitle;
+
+  /// No description provided for @searchDestinationTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر الوجهة'**
+  String get searchDestinationTitle;
+
+  /// No description provided for @searchPlaceTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'البحث عن مكان'**
+  String get searchPlaceTitle;
+
+  /// No description provided for @searchFieldHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث عن مكان أو عنوان'**
+  String get searchFieldHint;
+
+  /// No description provided for @searchMinChars.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب حرفين على الأقل للبحث.'**
+  String get searchMinChars;
+
+  /// No description provided for @searchEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد أماكن مطابقة'**
+  String get searchEmptyTitle;
+
+  /// No description provided for @searchEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'جرّب اسماً آخر أو اختر النقطة على الخريطة.'**
+  String get searchEmptyBody;
+
+  /// No description provided for @searchOnMap.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار من الخريطة'**
+  String get searchOnMap;
+
+  /// No description provided for @searchUseCurrent.
+  ///
+  /// In ar, this message translates to:
+  /// **'استخدام الموقع الحالي'**
+  String get searchUseCurrent;
+
+  /// No description provided for @searchSavedHeader.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأماكن المحفوظة'**
+  String get searchSavedHeader;
+
+  /// No description provided for @searchResultsHeader.
+  ///
+  /// In ar, this message translates to:
+  /// **'النتائج'**
+  String get searchResultsHeader;
+
+  /// No description provided for @searchUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'البحث غير متاح مؤقتاً. ما زال بإمكانك اختيار نقطة من الخريطة.'**
+  String get searchUnavailable;
+
+  /// No description provided for @pinInstruction.
+  ///
+  /// In ar, this message translates to:
+  /// **'حرّك الخريطة لوضع الدبوس'**
+  String get pinInstruction;
+
+  /// No description provided for @pinConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد الموقع'**
+  String get pinConfirm;
+
+  /// No description provided for @pinResolving.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ البحث عن العنوان…'**
+  String get pinResolving;
+
+  /// No description provided for @pinNoAddress.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد عنوان لهذه النقطة.'**
+  String get pinNoAddress;
+
+  /// No description provided for @pinLookupFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'البحث عن العنوان غير متاح. يمكنك استخدام هذه النقطة مع ذلك.'**
+  String get pinLookupFailed;
+
+  /// No description provided for @pinOutside.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه النقطة خارج نطاق خدمتنا.'**
+  String get pinOutside;
+
+  /// No description provided for @savedPlacesTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأماكن المحفوظة'**
+  String get savedPlacesTitle;
+
+  /// No description provided for @savedPlacesAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة مكان'**
+  String get savedPlacesAdd;
+
+  /// No description provided for @savedPlacesEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد أماكن محفوظة بعد'**
+  String get savedPlacesEmptyTitle;
+
+  /// No description provided for @savedPlacesEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'احفظ المنزل والعمل للحجز بشكل أسرع.'**
+  String get savedPlacesEmptyBody;
+
+  /// No description provided for @savedPlaceTypeHome.
+  ///
+  /// In ar, this message translates to:
+  /// **'المنزل'**
+  String get savedPlaceTypeHome;
+
+  /// No description provided for @savedPlaceTypeWork.
+  ///
+  /// In ar, this message translates to:
+  /// **'العمل'**
+  String get savedPlaceTypeWork;
+
+  /// No description provided for @savedPlaceTypeOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخرى'**
+  String get savedPlaceTypeOther;
+
+  /// No description provided for @savedPlaceNameField.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسم'**
+  String get savedPlaceNameField;
+
+  /// No description provided for @savedPlaceTypeField.
+  ///
+  /// In ar, this message translates to:
+  /// **'النوع'**
+  String get savedPlaceTypeField;
+
+  /// No description provided for @savedPlaceNameRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل اسماً'**
+  String get savedPlaceNameRequired;
+
+  /// No description provided for @savedPlaceSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ'**
+  String get savedPlaceSave;
+
+  /// No description provided for @savedPlaceDeleteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف هذا المكان؟'**
+  String get savedPlaceDeleteTitle;
+
+  /// No description provided for @savedPlaceDeleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستتم إزالته من أماكنك المحفوظة.'**
+  String get savedPlaceDeleteBody;
+
+  /// No description provided for @savedPlaceDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف'**
+  String get savedPlaceDelete;
+
+  /// No description provided for @savedPlaceTypeTaken.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك مكان محفوظ من هذا النوع. احذفه أولاً.'**
+  String get savedPlaceTypeTaken;
+
+  /// No description provided for @savedPlaceLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلت إلى الحد الأقصى للأماكن المحفوظة.'**
+  String get savedPlaceLimit;
+
+  /// No description provided for @homeSavedPlaces.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأماكن المحفوظة'**
+  String get homeSavedPlaces;
 }
 
 class _AppLocalizationsDelegate

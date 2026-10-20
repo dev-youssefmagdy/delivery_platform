@@ -456,4 +456,199 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get formPickTime => 'اختر الوقت';
+
+  @override
+  String get mapPickupLabel => 'نقطة الاستلام';
+
+  @override
+  String get mapDestinationLabel => 'الوجهة';
+
+  @override
+  String get mapPickupHint => 'من أين؟';
+
+  @override
+  String get mapDestinationHint => 'إلى أين؟';
+
+  @override
+  String get mapSwap => 'تبديل نقطة الاستلام والوجهة';
+
+  @override
+  String get mapMyLocation => 'موقعي';
+
+  @override
+  String get mapCurrentLocation => 'الموقع الحالي';
+
+  @override
+  String get mapPinnedLocation => 'موقع محدد على الخريطة';
+
+  @override
+  String get mapApproximate => 'موقع تقريبي. العنوان الدقيق غير مؤكد.';
+
+  @override
+  String get mapLocating => 'جارٍ تحديد موقعك…';
+
+  @override
+  String get mapRationaleTitle => 'استخدام موقعك؟';
+
+  @override
+  String get mapRationaleBody =>
+      'نستخدم موقعك لتحديد نقطة الاستلام وعرض الخدمات القريبة منك. يمكنك أيضاً البحث عن عنوان بدلاً من ذلك.';
+
+  @override
+  String get mapRationaleAllow => 'السماح بالموقع';
+
+  @override
+  String get mapRationaleNotNow => 'ليس الآن';
+
+  @override
+  String get mapPermissionDenied =>
+      'الموقع متوقف. اسمح به أو اختر نقطة الاستلام يدوياً.';
+
+  @override
+  String get mapPermissionBlocked =>
+      'الموقع محظور لهذا التطبيق. افتح الإعدادات للسماح به أو اختر نقطة الاستلام يدوياً.';
+
+  @override
+  String get mapServiceDisabled =>
+      'موقع الجهاز متوقف. شغّله أو اختر نقطة الاستلام يدوياً.';
+
+  @override
+  String get mapLocateFailed => 'تعذر تحديد موقعك. اختر نقطة الاستلام يدوياً.';
+
+  @override
+  String get mapOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String get mapChoosePickup => 'اختيار نقطة الاستلام يدوياً';
+
+  @override
+  String get mapOutsideTitle => 'خارج نطاق خدمتنا';
+
+  @override
+  String get mapOutsideBody =>
+      'لا نخدم موقع الاستلام هذا بعد. اختر نقطة استلام أخرى.';
+
+  @override
+  String get mapAreaCheckFailed => 'تعذر التحقق من توفر الخدمة هنا.';
+
+  @override
+  String get mapRestrictedPickup =>
+      'قد يكون الاستلام هنا مقيّداً. اتبع نقاط الاستلام المحددة.';
+
+  @override
+  String mapServing(String city) {
+    return 'نخدم $city';
+  }
+
+  @override
+  String get mapsUnavailable =>
+      'الخرائط غير متاحة مؤقتاً. حاول مرة أخرى بعد قليل.';
+
+  @override
+  String get searchPickupTitle => 'اختر نقطة الاستلام';
+
+  @override
+  String get searchDestinationTitle => 'اختر الوجهة';
+
+  @override
+  String get searchPlaceTitle => 'البحث عن مكان';
+
+  @override
+  String get searchFieldHint => 'ابحث عن مكان أو عنوان';
+
+  @override
+  String get searchMinChars => 'اكتب حرفين على الأقل للبحث.';
+
+  @override
+  String get searchEmptyTitle => 'لا توجد أماكن مطابقة';
+
+  @override
+  String get searchEmptyBody => 'جرّب اسماً آخر أو اختر النقطة على الخريطة.';
+
+  @override
+  String get searchOnMap => 'اختيار من الخريطة';
+
+  @override
+  String get searchUseCurrent => 'استخدام الموقع الحالي';
+
+  @override
+  String get searchSavedHeader => 'الأماكن المحفوظة';
+
+  @override
+  String get searchResultsHeader => 'النتائج';
+
+  @override
+  String get searchUnavailable =>
+      'البحث غير متاح مؤقتاً. ما زال بإمكانك اختيار نقطة من الخريطة.';
+
+  @override
+  String get pinInstruction => 'حرّك الخريطة لوضع الدبوس';
+
+  @override
+  String get pinConfirm => 'تأكيد الموقع';
+
+  @override
+  String get pinResolving => 'جارٍ البحث عن العنوان…';
+
+  @override
+  String get pinNoAddress => 'لا يوجد عنوان لهذه النقطة.';
+
+  @override
+  String get pinLookupFailed =>
+      'البحث عن العنوان غير متاح. يمكنك استخدام هذه النقطة مع ذلك.';
+
+  @override
+  String get pinOutside => 'هذه النقطة خارج نطاق خدمتنا.';
+
+  @override
+  String get savedPlacesTitle => 'الأماكن المحفوظة';
+
+  @override
+  String get savedPlacesAdd => 'إضافة مكان';
+
+  @override
+  String get savedPlacesEmptyTitle => 'لا توجد أماكن محفوظة بعد';
+
+  @override
+  String get savedPlacesEmptyBody => 'احفظ المنزل والعمل للحجز بشكل أسرع.';
+
+  @override
+  String get savedPlaceTypeHome => 'المنزل';
+
+  @override
+  String get savedPlaceTypeWork => 'العمل';
+
+  @override
+  String get savedPlaceTypeOther => 'أخرى';
+
+  @override
+  String get savedPlaceNameField => 'الاسم';
+
+  @override
+  String get savedPlaceTypeField => 'النوع';
+
+  @override
+  String get savedPlaceNameRequired => 'أدخل اسماً';
+
+  @override
+  String get savedPlaceSave => 'حفظ';
+
+  @override
+  String get savedPlaceDeleteTitle => 'حذف هذا المكان؟';
+
+  @override
+  String get savedPlaceDeleteBody => 'ستتم إزالته من أماكنك المحفوظة.';
+
+  @override
+  String get savedPlaceDelete => 'حذف';
+
+  @override
+  String get savedPlaceTypeTaken =>
+      'لديك مكان محفوظ من هذا النوع. احذفه أولاً.';
+
+  @override
+  String get savedPlaceLimit => 'وصلت إلى الحد الأقصى للأماكن المحفوظة.';
+
+  @override
+  String get homeSavedPlaces => 'الأماكن المحفوظة';
 }

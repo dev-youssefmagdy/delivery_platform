@@ -56,9 +56,17 @@ interface ServiceCategoryRepositoryInterface extends BaseRepositoryInterface
     public function loadDetails(ServiceCategory $category): ServiceCategory;
 
     /**
-     * Categories shown to clients: active, in an active family, with a published version.
+     * Every category (any status) in display order, for the zone availability matrix.
      *
      * @return Collection<int, ServiceCategory>
      */
-    public function publicList(?BookingType $bookingType, ?int $familyId): Collection;
+    public function allOrdered(): Collection;
+
+    /**
+     * Categories shown to clients: active, in an active family, with a published version. With `$zoneId` only the
+     * categories enabled in that zone's availability matrix are returned (P1.5); opening hours are applied by the caller.
+     *
+     * @return Collection<int, ServiceCategory>
+     */
+    public function publicList(?BookingType $bookingType, ?int $familyId, ?int $zoneId = null): Collection;
 }

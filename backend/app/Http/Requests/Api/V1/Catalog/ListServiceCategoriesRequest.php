@@ -3,14 +3,20 @@
 namespace App\Http\Requests\Api\V1\Catalog;
 
 use App\Enums\Catalog\BookingType;
+use App\Http\Requests\Api\V1\Concerns\ValidatesCoordinates;
+use App\Support\Geo\GeoPoint;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 /**
  * GET /service-categories?lat=&lng=&booking_type=&service_family_id=
  */
 class ListServiceCategoriesRequest extends FormRequest
 {
+    use ValidatesCoordinates;
+
     public function authorize(): bool
     {
         return true;
@@ -27,6 +33,19 @@ class ListServiceCategoriesRequest extends FormRequest
             'booking_type' => ['nullable', 'string', Rule::enum(BookingType::class)],
             'service_family_id' => ['nullable', 'integer', 'min:1'],
         ];
+    }
+
+    /**
+     * @return array<int, Closure>
+     */
+    public function after(): array
+    {
+        return [fn (Validator $validator) => $this->rejectImpossiblePoint($validator)];
+    }
+
+    public function point(): ?GeoPoint
+    {
+        return $this->pointFrom();
     }
 
     public function bookingType(): ?BookingType

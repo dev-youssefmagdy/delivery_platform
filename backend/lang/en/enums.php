@@ -258,6 +258,38 @@ return [
         'cancellation' => 'Cancellation policy',
     ],
 
+    'zone_status' => [
+        'draft' => 'Draft',
+        'active' => 'Active',
+        'suspended' => 'Suspended',
+    ],
+
+    'saved_place_type' => [
+        'home' => 'Home',
+        'work' => 'Work',
+        'other' => 'Other',
+    ],
+
+    'location_precision' => [
+        'exact' => 'Exact address',
+        'street' => 'Street',
+        'approximate' => 'Approximate',
+    ],
+
+    'availability_reason' => [
+        'available' => 'Available',
+        'not_in_zone' => 'Not offered in this zone',
+        'zone_closed' => 'The zone is closed at this time',
+        'category_closed' => 'The service is closed at this time',
+        'override_closed' => 'Closed at this time in this zone',
+    ],
+
+    'maps_provider_status' => [
+        'ok' => 'Operational',
+        'not_configured' => 'Not configured',
+        'unavailable' => 'Unavailable',
+    ],
+
     'service_family_kind' => [
         'passenger_city' => 'City passenger rides',
         'intercity' => 'Intercity rides',

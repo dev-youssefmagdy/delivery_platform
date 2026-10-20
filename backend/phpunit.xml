@@ -31,6 +31,8 @@
         <env name="DB_DATABASE" value="delivery_platform_testing"/>
         <env name="DB_URL" value=""/>
         <env name="SMS_DRIVER" value="log"/>
+        <env name="MAPS_DRIVER" value="fake"/>
+        <env name="MAPS_NOMINATIM_MIN_INTERVAL_MS" value="0"/>
         <env name="OTP_TEST_ENABLED" value="false"/>
         <env name="OTP_TEST_CODE" value=""/>
         <env name="OTP_TEST_PHONES" value=""/>

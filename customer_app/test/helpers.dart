@@ -4,6 +4,7 @@ import 'package:customer_app/features/app_config/domain/entities/app_config.dart
 import 'package:customer_app/features/app_config/presentation/providers/app_config_providers.dart';
 import 'package:customer_app/features/auth/presentation/providers/auth_providers.dart';
 import 'package:customer_app/features/catalog/presentation/providers/catalog_providers.dart';
+import 'package:customer_app/features/map/presentation/providers/map_providers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,7 +33,13 @@ Future<ProviderContainer> pumpApp(
   Future<AppConfig> Function()? configBuilder,
   FakeIdentityRepository? identity,
   FakeCatalogRepository? catalog,
+  FakeGeoRepository? geo,
+  FakeLocationService? location,
 }) async {
+  // Tall surface: the home screen now starts with the map and trip fields.
+  tester.view.physicalSize = const Size(800, 2600);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
   SharedPreferences.setMockInitialValues(prefs);
   final sp = await SharedPreferences.getInstance();
   final store = MemoryTokenStore(token);
@@ -52,6 +59,11 @@ Future<ProviderContainer> pumpApp(
       catalogRepositoryProvider.overrideWithValue(
         catalog ?? FakeCatalogRepository(),
       ),
+      geoRepositoryProvider.overrideWithValue(geo ?? FakeGeoRepository()),
+      locationServiceProvider.overrideWithValue(
+        location ?? FakeLocationService(),
+      ),
+      mapTileProviderProvider.overrideWithValue(NoNetworkTileProvider()),
     ],
   );
   addTearDown(container.dispose);

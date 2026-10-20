@@ -266,7 +266,7 @@ language, falling back to `ar`, so no refetch is needed when the language change
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/api/v1/service-families` | `data = [{ id, code, kind, name, description, icon, sort_order, categories_count }]` for active families that own at least one visible category. `kind` is `ServiceFamilyKind` |
-| GET | `/api/v1/service-categories?lat=&lng=&booking_type=&service_family_id=` | `lat`/`lng` are validated (both or none) and accepted now; zone availability is applied in P1.5 (until then every visible category is available). `booking_type` filters on the allowed booking types. `422` for invalid values |
+| GET | `/api/v1/service-categories?lat=&lng=&booking_type=&service_family_id=` | `lat`/`lng` (both or none; (0,0) and out-of-range are `422`) filter by the **serving zone** (8.7): only categories the zone has enabled **and** that are open right now (zone hours, category `service_hours`, zone override hours) are returned, each with `zone_availability: { zone_id, overrides }`; outside every active zone `data = []`. With a position `meta.service_area = { in_service_area, zone_id, city_id, restricted_pickup }`. Without a position every visible category is returned (`zone_availability: null`). `booking_type` filters on the allowed booking types |
 | GET | `/api/v1/vehicle-categories?service_category_id=` | active vehicle classes, limited to the ones linked to the category when given |
 
 A category is served **as of its published version** (ADR-65): admin edits of the draft never change what a client fetched until an admin publishes. `data[]` of `/service-categories`:
@@ -324,3 +324,26 @@ New domain codes (admin): `catalog_code_taken`, `catalog_code_immutable`, `catal
 
 Admin (permission `services.manage`; vehicle categories `vehicle_categories.manage`): `/admin/service-families`, `/admin/service-categories` (+ `/{id}/vehicle-categories`, `/{id}/form-schema`, `/{id}/publish`, `/{id}/activate`, `/{id}/deactivate`, `/{id}/versions`),
 `/admin/vehicle-categories` (+ activate / deactivate); lookups `service-families`, `service-categories`, `vehicle-categories`.
+
+### 8.7 Geography and maps (P1.5)
+
+Coordinates are WGS84 decimals; `lat` in [-90, 90], `lng` in [-180, 180]; `(0, 0)` and non-numeric values are rejected with `422 validation_failed`. Positions are decided with MySQL `ST_Contains` on the zone polygons (ADR-69).
+Overlapping zones resolve to the smallest one. Opening hours are evaluated in the **city's timezone**.
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/api/v1/service-areas/resolve?lat=&lng=` | public (`api` throttle) | `data = { in_service_area, point, city: {id,name,timezone,center}\|null, zone: {id,name,restricted_pickup}\|null, local_time, categories: [{ service_category_id, code, available, reason, opens_at, overrides }] }`. `categories` lists what the zone enables (active + published); `available=false` carries `reason` = `zone_closed` \| `category_closed` \| `override_closed` and `opens_at` when known. Outside every active zone: `in_service_area=false`, `city`/`zone` null, `categories=[]` (still `200`) |
+| GET | `/api/v1/places/search?q=&lat=&lng=&limit=` | `customer`/`provider` token, active account, `throttle:60,1` | type-ahead; `lat`/`lng` only bias ranking. `data = [{ id, title, address, lat, lng, precision, provider }]`. `precision` is `exact` \| `street` \| `approximate`: **only `exact` may be shown as a precise address**. `q` needs >= 2 characters (`422 maps_query_too_short`). Zero hits are `200` with `[]` |
+| GET | `/api/v1/places/reverse?lat=&lng=` | same | `data` = one place or `null` when the provider knows nothing there (used by the map pin) |
+| GET | `/api/v1/routes/estimate?origin=lat,lng&destination=lat,lng&stops[]=lat,lng&service_category_id=` | same | route only: `data = { distance_m, duration_s, polyline (encoded, precision 5), provider, origin_zone_id, origin_city_id }`; pricing is added by P2.3. The **origin must be inside an active zone** (`422 outside_service_area`) and, when `service_category_id` is given, the category must be available there now (`422 category_unavailable`) before any paid maps call is made |
+| GET | `/api/v1/me/saved-places` | `customer` token | `data = [{ id (uuid), label, type, lat, lng, address: {title,line,precision,provider}\|null, created_at }]`, home first, then work, then others |
+| POST | `/api/v1/me/saved-places` | `customer` | `{ label (<=60), type: home\|work\|other, lat, lng, address? }` -> `201`. One `home` and one `work` per customer (`422 saved_place_type_taken`), at most `GEO_SAVED_PLACES_MAX` (20) in total (`422 saved_place_limit_reached`). `address` is a client-supplied snapshot of the geocoder answer (a hint, never used for decisions) |
+| PUT | `/api/v1/me/saved-places/{uuid}` | `customer` | same body; replaces |
+| DELETE | `/api/v1/me/saved-places/{uuid}` | `customer` | another customer's place and a missing one are both `404` |
+
+Error codes (`errors._code`): `maps_unavailable` (**503**: provider down, quota/credential problem, or no maps driver configured), `outside_service_area`, `category_unavailable`, `route_not_found`, `route_too_many_stops`,
+`maps_query_too_short`, `saved_place_type_taken`, `saved_place_limit_reached` (all other `422`). A maps outage is never turned into an empty result or a straight-line guess.
+
+Admin (permission `service_areas.manage`): `/admin/cities` (+ activate / deactivate with reason), `/admin/service-zones` (+ activate, suspend with reason, `PUT /{id}/availability` matrix, `POST /overlaps` live overlap check),
+`/admin/coverage-preview` (GET page, POST preview); lookup `cities`. Admin codes: `city_has_zones`, `city_country_inactive`, `zone_no_categories`, `zone_not_active`, `zone_active_cannot_delete`, `zone_invalid_polygon`,
+`zone_city_missing`, `zone_availability_invalid`, `zone_override_fare_range`, `zone_override_radius`.

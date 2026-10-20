@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:flutter/painting.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:platform_core/platform_core.dart';
 
 /// Scriptable identity API for widget tests.
@@ -139,6 +144,8 @@ class FakeCatalogRepository implements CatalogRepository {
   List<ServiceCategoryInfo> categoriesResult;
   Object? error;
   int familiesCalls = 0;
+  double? lastLat;
+  double? lastLng;
 
   @override
   Future<List<ServiceFamilyInfo>> families() async {
@@ -154,10 +161,152 @@ class FakeCatalogRepository implements CatalogRepository {
     double? lat,
     double? lng,
   }) async {
+    lastLat = lat;
+    lastLng = lng;
     if (error != null) throw error!;
     return categoriesResult;
   }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// Scriptable device location for widget tests (never touches geolocator).
+class FakeLocationService implements LocationService {
+  FakeLocationService({
+    this.permission = LocationPermissionState.denied,
+    this.position,
+  });
+
+  LocationPermissionState permission;
+  GeoPoint? position;
+
+  /// Permission the OS grants when [request] is called.
+  LocationPermissionState? grantOnRequest;
+  int requests = 0;
+  int settingsOpened = 0;
+  bool throwOnCurrent = false;
+
+  @override
+  Future<LocationPermissionState> status() async => permission;
+
+  @override
+  Future<LocationPermissionState> request() async {
+    requests++;
+    permission = grantOnRequest ?? permission;
+    return permission;
+  }
+
+  @override
+  Future<GeoPoint?> current() async {
+    if (throwOnCurrent) throw StateError('no fix');
+    return permission == LocationPermissionState.granted ? position : null;
+  }
+
+  @override
+  Stream<GeoPoint> watch({int distanceFilterMeters = 20}) =>
+      const Stream.empty();
+
+  @override
+  Future<void> openAppSettings() async => settingsOpened++;
+
+  @override
+  Future<void> openLocationSettings() async => settingsOpened++;
+}
+
+/// Scriptable geography API for widget tests.
+class FakeGeoRepository implements GeoRepository {
+  FakeGeoRepository({this.saved = const []});
+
+  List<PlaceResult> searchResults = const [];
+  Object? searchError;
+  PlaceResult? reverseResult;
+  Object? reverseError;
+  ServiceAreaInfo area = const ServiceAreaInfo(
+    inServiceArea: true,
+    cityName: LocalizedText({'ar': 'القاهرة', 'en': 'Cairo'}),
+    zoneId: 1,
+  );
+  Object? areaError;
+  List<SavedPlaceInfo> saved;
+  Object? savedError;
+  Object? createError;
+
+  final searchQueries = <String>[];
+  final resolvedPoints = <LatLng>[];
+  final created = <Map<String, Object?>>[];
+  final deleted = <String>[];
+
+  @override
+  Future<List<PlaceResult>> searchPlaces(
+    String query, {
+    LatLng? near,
+    int? limit,
+  }) async {
+    searchQueries.add(query);
+    if (searchError != null) throw searchError!;
+    return searchResults;
+  }
+
+  @override
+  Future<PlaceResult?> reverse(LatLng point) async {
+    if (reverseError != null) throw reverseError!;
+    return reverseResult;
+  }
+
+  @override
+  Future<ServiceAreaInfo> resolveArea(LatLng point) async {
+    resolvedPoints.add(point);
+    if (areaError != null) throw areaError!;
+    return area;
+  }
+
+  @override
+  Future<List<SavedPlaceInfo>> savedPlaces() async {
+    if (savedError != null) throw savedError!;
+    return saved;
+  }
+
+  @override
+  Future<SavedPlaceInfo> createSavedPlace({
+    required String label,
+    required SavedPlaceType type,
+    required LatLng point,
+    PlaceResult? place,
+  }) async {
+    if (createError != null) throw createError!;
+    created.add({'label': label, 'type': type, 'point': point});
+    final info = SavedPlaceInfo(
+      id: 'sp-${created.length}',
+      label: label,
+      type: type,
+      point: point,
+      addressLine: place?.address,
+    );
+    saved = [...saved, info];
+    return info;
+  }
+
+  @override
+  Future<void> deleteSavedPlace(String id) async {
+    deleted.add(id);
+    saved = [
+      for (final p in saved)
+        if (p.id != id) p,
+    ];
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+final _transparentPng = base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+);
+
+/// Tiles that never hit the network.
+class NoNetworkTileProvider extends TileProvider {
+  @override
+  ImageProvider getImage(TileCoordinates coordinates, TileLayer options) =>
+      MemoryImage(_transparentPng);
 }

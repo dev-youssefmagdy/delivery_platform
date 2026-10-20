@@ -5,6 +5,7 @@ namespace App\Http\Resources\Api\V1\Catalog;
 use App\Models\ServiceCategory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use stdClass;
 
 /**
  * A bookable category as of its published version (ADR-65): the snapshot is what clients and bookings use, so
@@ -56,6 +57,7 @@ class ServiceCategoryResource extends JsonResource
             'limits' => $snapshot['limits'],
             'safety' => $snapshot['safety'],
             'payments' => $snapshot['payments'],
+            'zone_availability' => $this->zoneAvailability(),
             'vehicle_category_ids' => array_column($vehicles, 'id'),
             'vehicle_categories' => $vehicles,
             'form_schema' => [
@@ -63,6 +65,24 @@ class ServiceCategoryResource extends JsonResource
                 'fields' => array_map(static fn (array $field): array => self::field($field), (array) $snapshot['form_schema']['fields']),
             ],
         ];
+    }
+
+    /**
+     * The serving zone's overrides when the list was filtered by position (null otherwise).
+     *
+     * @return array<string, mixed>|null
+     */
+    private function zoneAvailability(): ?array
+    {
+        $availability = $this->resource->getAttributes()['zone_availability'] ?? null;
+
+        if (! is_array($availability)) {
+            return null;
+        }
+
+        $overrides = (array) ($availability['overrides'] ?? []);
+
+        return ['zone_id' => $availability['zone_id'], 'overrides' => $overrides === [] ? new stdClass : $overrides];
     }
 
     /**

@@ -21,7 +21,10 @@ class Env {
     required this.reverbScheme,
     required this.mapTileUrl,
     required this.flavor,
+    this.mapAttribution = defaultMapAttribution,
   });
+
+  static const defaultMapAttribution = '© OpenStreetMap contributors';
 
   /// Reads the compile-time defines. Defaults target the Android emulator
   /// talking to a local `php artisan serve` (10.0.2.2 is the host loopback).
@@ -44,6 +47,10 @@ class Env {
       'MAP_TILE_URL',
       defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     ),
+    mapAttribution: const String.fromEnvironment(
+      'MAP_ATTRIBUTION',
+      defaultValue: defaultMapAttribution,
+    ),
     flavor: Flavor.parse(
       const String.fromEnvironment('FLAVOR', defaultValue: 'dev'),
     ),
@@ -56,6 +63,9 @@ class Env {
   final String reverbScheme;
   final String mapTileUrl;
   final Flavor flavor;
+
+  /// Attribution text of the tile provider (shown on every map).
+  final String mapAttribution;
 
   bool get isProd => flavor == Flavor.prod;
 

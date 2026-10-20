@@ -180,6 +180,15 @@ return [
             'icon' => 'map',
             'permission' => App\Enums\Admin\AdminPermission::ServiceAreasManage,
         ],
+        [
+            'key' => 'customers',
+            'group' => 'people',
+            'label' => 'admin.customers.menu',
+            'route' => 'admin.customers.index',
+            'active' => 'admin.customers.*',
+            'icon' => 'users',
+            'permission' => App\Enums\Admin\AdminPermission::CustomersView,
+        ],
         // @admin-module:menu
     ],
 ];

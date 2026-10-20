@@ -29,7 +29,11 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $photo_path
  * @property string|null $preferred_locale
  * @property UserStatus $status
+ * @property string|null $status_reason why the account is suspended/restricted (shown to admins only)
+ * @property Carbon|null $status_changed_at
+ * @property Carbon|null $status_expires_at when a temporary suspension ends (auto-reactivation job)
  * @property Carbon|null $last_seen_at
+ * @property Carbon|null $anonymised_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon|null $deleted_at
@@ -97,6 +101,19 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasMany(AccountDeletionRequest::class);
     }
 
+    /**
+     * @return HasMany<CustomerMessage, $this>
+     */
+    public function customerMessages(): HasMany
+    {
+        return $this->hasMany(CustomerMessage::class);
+    }
+
+    public function isAnonymised(): bool
+    {
+        return $this->anonymised_at !== null;
+    }
+
     public function preferredLocale(): ?string
     {
         return $this->preferred_locale;
@@ -115,7 +132,10 @@ class User extends Authenticatable implements HasLocalePreference
         return [
             'status' => UserStatus::class,
             'phone_verified_at' => 'datetime',
+            'status_changed_at' => 'datetime',
+            'status_expires_at' => 'datetime',
             'last_seen_at' => 'datetime',
+            'anonymised_at' => 'datetime',
         ];
     }
 }

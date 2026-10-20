@@ -21,4 +21,15 @@ final class CustomerProfileRepository implements CustomerProfileRepositoryInterf
 
         return $profile;
     }
+
+    public function scrub(User $user): void
+    {
+        $this->model->newQuery()->where('user_id', $user->id)->update([
+            'accessibility_needs' => null,
+            'emergency_contact_name' => null,
+            'emergency_contact_phone' => null,
+            'marketing_opt_in' => false,
+            'marketing_opt_in_at' => null,
+        ]);
+    }
 }

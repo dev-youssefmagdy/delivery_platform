@@ -1,6 +1,47 @@
+import { http, normalizeError } from '../core/http.js';
+import { toast } from '../core/toast.js';
+
 /**
- * Small Alpine components: dropdown, sidebar, repeater, money input, file input.
+ * Small Alpine components: dropdown, sidebar, repeater, money input, file input, reveal of masked values.
  */
+
+/**
+ * <x-admin.reveal-fields>: POSTs to the (audited, permissioned) reveal endpoint and writes each returned value
+ * into the element marked [data-reveal-field="<key>"]. Nothing sensitive is present in the page before that.
+ */
+export function adminReveal(url) {
+    return {
+        loading: false,
+        revealed: false,
+
+        async reveal() {
+            if (this.loading) {
+                return;
+            }
+
+            this.loading = true;
+
+            try {
+                const { data } = await http.post(url);
+                const values = data?.data ?? {};
+
+                this.$root.querySelectorAll('[data-reveal-field]').forEach((element) => {
+                    const value = values[element.dataset.revealField];
+
+                    if (typeof value === 'string' && value !== '') {
+                        element.textContent = value;
+                    }
+                });
+                this.revealed = true;
+            } catch (error) {
+                const normalized = normalizeError(error);
+                toast.error(normalized.message, { requestId: normalized.requestId });
+            } finally {
+                this.loading = false;
+            }
+        },
+    };
+}
 
 export function adminDropdown() {
     return {

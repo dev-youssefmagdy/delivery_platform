@@ -53,6 +53,10 @@ return [
         'mfa_reset' => 'Two-step verification reset',
         'password_changed' => 'Password changed',
         'session_revoked' => 'Session revoked',
+        'restricted' => 'Restricted',
+        'message_sent' => 'Message sent',
+        'phone_revealed' => 'Phone number revealed',
+        'anonymised' => 'Anonymised',
     ],
 
     'health_status' => [

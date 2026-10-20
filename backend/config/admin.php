@@ -57,7 +57,6 @@ return [
         'sections' => [
             ['permission' => 'bookings.view', 'title' => 'admin.dashboard.sections.bookings', 'available_after' => 'admin.dashboard.after.bookings'],
             ['permission' => 'drivers.view', 'title' => 'admin.dashboard.sections.providers', 'available_after' => 'admin.dashboard.after.providers'],
-            ['permission' => 'customers.view', 'title' => 'admin.dashboard.sections.customers', 'available_after' => 'admin.dashboard.after.customers'],
             ['permission' => 'finance.view', 'title' => 'admin.dashboard.sections.finance', 'available_after' => 'admin.dashboard.after.finance'],
             ['permission' => 'support.view', 'title' => 'admin.dashboard.sections.support', 'available_after' => 'admin.dashboard.after.support'],
             ['permission' => 'reports.view', 'title' => 'admin.dashboard.sections.reports', 'available_after' => 'admin.dashboard.after.reports'],

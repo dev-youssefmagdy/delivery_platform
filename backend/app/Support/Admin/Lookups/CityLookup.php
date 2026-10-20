@@ -8,15 +8,16 @@ use App\Models\City;
 use App\Repositories\Contracts\Geography\CityRepositoryInterface;
 
 /**
- * Cities for remote selects (requires service_areas.manage).
+ * Cities for remote selects. City names are public reference data (the public API lists them), so any signed-in
+ * admin may use the lookup: the Customers filters card needs it without `service_areas.manage`.
  */
 final class CityLookup implements Lookup
 {
     public function __construct(private readonly CityRepositoryInterface $cities) {}
 
-    public function permission(): AdminPermission
+    public function permission(): ?AdminPermission
     {
-        return AdminPermission::ServiceAreasManage;
+        return null;
     }
 
     public function search(string $term, int $limit): array

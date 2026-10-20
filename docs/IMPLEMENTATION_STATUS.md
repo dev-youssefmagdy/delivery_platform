@@ -16,7 +16,7 @@
 | P1.3 | Identity API: OTP, users, profiles, devices, consents, deletion | P0 | ✅ | 2026-10-20 |
 | P1.4 | Service catalog, vehicle categories, form schemas, versioned snapshots | P0 | ✅ | 2026-10-20 |
 | P1.5 | Geography: cities, service zones, availability, maps adapter | P0 | ✅ | 2026-10-21 |
-| P1.6 | Customers admin module | P0 | ❌ | — |
+| P1.6 | Customers admin module | P0 | ✅ | 2026-10-21 |
 | P2.1 | Provider onboarding, vehicles, documents, verification | P0 | ❌ | — |
 | P2.2 | Availability, live location, eligibility, dispatch engine | P0 | ❌ | — |
 | P2.3 | Reference pricing & booking creation | P0 | ❌ | — |
@@ -51,6 +51,36 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P1.6 — Customers admin module · ✅ 2026-10-21
+
+Branch `milestone/p1.6-customers-admin` (from `main` @ `98a463d`), fast-forwarded into `main`.
+
+### What was built
+
+- **Module (contract, ADR-73..76):** Customers listing (Yajra, collapsed filters card: ID/phone/name search, status, registered range, city, deletion requested; "has active booking" shown as available after P2.3), masked phones everywhere, show page with tabs: Profile (reveal of contact details), Bookings / Payments / Coupons / Tickets / Ratings (explicit "available after P2.3 / P3.2 / P3.3 / P3.7 / P2.5" states, no fake rows), Consents, Devices, Saved places (`customers.view_pii`), Data requests, Messages, Restrictions and audit. Each lazy tab is its own DataTable on its own URL.
+- **Actions (mandatory reason + audit before/after):** suspend (optional expiry), restrict, reactivate, send help message, approve (anonymise) / reject deletion request, reveal contact (audited, `customers.view_pii`), listing CSV export and per-customer JSON personal-data export (queued, signed link, audited, `customers.export`). No create/edit/delete route; `UserPolicy` has no delete ability.
+- **Scheduler:** `ReactivateExpiredSuspensions` every minute (lock + re-check per account, audited as system).
+- **Retention (ADR-75):** anonymisation keeps the row/uuid (financial references intact) and consents/audit/request, removes name, email, phone, photo, tokens, devices, saved places, messages and profile contents; blocked by active bookings / open money (`CustomerActivityRepositoryInterface` seam, throws once those tables exist) and for provider accounts.
+- **API:** `GET /me/messages`, `POST /me/messages/{uuid}/read` (docs/API.md 8.8). Migration `add_customer_admin_support` (user standing columns, `customer_messages`, `admin_exports.format/subject_id`).
+- **UI kit:** `<x-admin.action-modal>`, `<x-admin.available-after>`, `<x-admin.reveal-fields>` (+ `adminReveal`). **Bug fixed:** `adminTabs` used `$el` instead of `$root`, so lazy tabs never loaded on click and tab keyboard navigation was dead.
+
+### Commands and results (2026-10-21)
+
+| Command | Result |
+|---|---|
+| `scripts/check.sh` | **All checks passed**: pint, phpstan (level 6, 0 errors), `php artisan test --parallel` 526 tests / 4244 assertions (was 497), `npm run build`, customer_app 86, driver_app 45, platform_core 149 (format, analyze, test clean) |
+| `npx vitest run` | 5 files, 19 tests passed (new: `adminReveal`) |
+| `scripts/browser-smoke.sh` (admin JS touched) | passed: customers listing masked, lazy devices tab (own DataTable), reveal, suspend modal (empty reason blocked client-side, then Precognition call before the real submit), no JS errors |
+
+New tests: customers contract (403 page/JSON/datatable, filters, masking, reveal audit, saved places PII gate, lazy tabs, no hard delete), account actions (Precognition, reason, audit, expiry job, job vs manual changes, schedule), deletion (permission, anonymisation keeps references, blockers, reject restores), exports (CSV masked, JSON personal data, owner-only), customer inbox API.
+
+### Known gaps / notes for P2.1 and later
+
+- Customer Flutter inbox screen is not built (API only); push delivery of help messages waits for P3.6.
+- P2.3 / P3.1 must replace `CustomerActivityRepository` (and `CatalogUsageRepository`) with real queries, add the Bookings/Payments/Coupons/Tickets/Ratings tabs and the "has active booking" filter, and add their scrub steps to `CustomerDeletionService` and sections to `PersonalDataExporter`.
+- Provider accounts: `customer_is_provider` blocks deletion here; P2.1 owns the provider-side equivalent (`drivers.view_pii`, `drivers.suspend`) and can reuse `UserPolicy` patterns, `<x-admin.action-modal>`, `<x-admin.reveal-fields>` and the lazy-tab DataTable pattern (`CustomerTabDataTable`).
+- DataTables serialise every model attribute: always use `$table->only([...])` for PII-bearing models.
 
 ## P1.5 — Geography: cities, service zones, availability, maps adapter · ✅ 2026-10-21
 

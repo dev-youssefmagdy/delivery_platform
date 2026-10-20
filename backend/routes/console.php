@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\Customers\ReactivateExpiredSuspensions;
 use App\Models\AdminExport;
 use App\Models\IdempotencyKey;
 use App\Models\OtpChallenge;
@@ -11,5 +12,7 @@ use Illuminate\Support\Facades\Schedule;
 */
 
 Schedule::command('system:heartbeat')->everyMinute()->withoutOverlapping();
+
+Schedule::job(new ReactivateExpiredSuspensions)->name('customers:reactivate-expired')->everyMinute()->withoutOverlapping();
 
 Schedule::command('model:prune', ['--model' => [IdempotencyKey::class, AdminExport::class, OtpChallenge::class]])->hourly()->withoutOverlapping();

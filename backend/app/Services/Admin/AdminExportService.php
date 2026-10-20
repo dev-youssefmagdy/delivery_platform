@@ -4,12 +4,16 @@ namespace App\Services\Admin;
 
 use App\DataTables\Admin\AdminDataTable;
 use App\Enums\Admin\AdminExportStatus;
+use App\Enums\Admin\ExportFormat;
 use App\Enums\Common\AuditAction;
 use App\Exceptions\ForbiddenActionException;
 use App\Jobs\Admin\GenerateAdminExport;
 use App\Models\AdminExport;
+use App\Models\User;
 use App\Repositories\Contracts\Admin\AdminExportRepositoryInterface;
+use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Services\Customers\PersonalDataExporter;
 use App\Support\Auth\ActorReference;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\DatabaseManager;
@@ -32,6 +36,8 @@ final class AdminExportService
         private readonly AdminExportRepositoryInterface $exports,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
+        private readonly PersonalDataExporter $personalData,
+        private readonly CustomerRepositoryInterface $customers,
     ) {}
 
     /**
@@ -66,7 +72,38 @@ final class AdminExportService
     }
 
     /**
-     * Runs inside the queued job: streams every matching row into a CSV file.
+     * Queues the JSON personal-data export of one customer (data-subject access request). The audit entry is written
+     * against the customer so it shows in their restrictions/audit tab; the caller checks `customers.export`.
+     */
+    public function queuePersonalData(User $customer, ?Authenticatable $actor): AdminExport
+    {
+        $actorRef = ActorReference::of($actor);
+
+        return $this->db->transaction(function () use ($customer, $actor, $actorRef): AdminExport {
+            $export = $this->exports->create([
+                'uuid' => (string) Str::uuid(),
+                'actor_type' => $actorRef->type,
+                'actor_id' => $actorRef->id,
+                'table' => 'customer_personal_data',
+                'format' => ExportFormat::Json,
+                'subject_id' => $customer->id,
+                'permission' => 'customers.export',
+                'filters' => null,
+                'status' => AdminExportStatus::Pending,
+                'disk' => (string) config('admin.exports.disk', 'local'),
+                'filename' => 'customer-'.substr($customer->uuid, 0, 8).'-personal-data-'.now()->format('Ymd-His').'.json',
+            ]);
+
+            $this->audit->record(AuditAction::Exported, $customer, $actor, meta: ['export' => $export->uuid, 'format' => ExportFormat::Json->value]);
+
+            GenerateAdminExport::dispatch($export->id)->afterCommit();
+
+            return $export;
+        });
+    }
+
+    /**
+     * Runs inside the queued job: writes the export file (CSV of a listing, or JSON of one customer).
      */
     public function generate(int $exportId): void
     {
@@ -79,9 +116,10 @@ final class AdminExportService
         $this->exports->update($export, ['status' => AdminExportStatus::Processing]);
 
         try {
-            $table = $this->resolveTable($export->table)->usingFilters($export->filters ?? []);
-            $path = trim((string) config('admin.exports.directory', 'exports'), '/').'/'.$export->uuid.'.csv';
-            $rows = $this->writeCsv($table, $export->disk, $path);
+            $path = trim((string) config('admin.exports.directory', 'exports'), '/').'/'.$export->uuid.'.'.$export->format->value;
+            $rows = $export->format === ExportFormat::Json
+                ? $this->writePersonalData($export, $path)
+                : $this->writeCsv($this->resolveTable($export->table)->usingFilters($export->filters ?? []), $export->disk, $path);
 
             $this->exports->update($export, [
                 'status' => AdminExportStatus::Completed,
@@ -178,6 +216,19 @@ final class AdminExportService
         fclose($stream);
 
         return $rows;
+    }
+
+    private function writePersonalData(AdminExport $export, string $path): int
+    {
+        $customer = $export->subject_id === null ? null : $this->customers->find($export->subject_id);
+
+        if (! $customer instanceof User || $customer->isAnonymised()) {
+            throw new InvalidArgumentException('The customer of this export no longer exists.');
+        }
+
+        Storage::disk($export->disk)->put($path, (string) json_encode($this->personalData->build($customer), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+
+        return 1;
     }
 
     private function safeCell(string $value): string

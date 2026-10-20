@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts\Identity;
 
 use App\Models\User;
 use App\Models\UserConsent;
+use Illuminate\Database\Eloquent\Builder;
 
 interface UserConsentRepositoryInterface
 {
@@ -23,4 +24,9 @@ interface UserConsentRepositoryInterface
      * @param array<string, mixed> $attributes
      */
     public function createIfMissing(User $user, int $policyVersionId, array $attributes): bool;
+
+    /**
+     * @return Builder<UserConsent> the user's consents with their policy version (admin customer tab)
+     */
+    public function datatableQuery(User $user): Builder;
 }

@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\Me\AccountDeletionController;
 use App\Http\Controllers\Api\V1\Me\ConsentController;
 use App\Http\Controllers\Api\V1\Me\DeviceController;
 use App\Http\Controllers\Api\V1\Me\MeController;
+use App\Http\Controllers\Api\V1\Me\MessageController;
 use App\Http\Controllers\Api\V1\Me\PhotoController;
 use App\Http\Controllers\Api\V1\Me\SavedPlaceController;
 use Illuminate\Support\Facades\Route;
@@ -78,6 +79,10 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
     // Status-safe: suspended / deletion-pending users must still be able to read their state and leave.
     Route::get('/', [MeController::class, 'show'])->name('show');
     Route::get('consents', [ConsentController::class, 'index'])->name('consents.index');
+    Route::middleware('ability:customer')->group(function (): void {
+        Route::get('messages', [MessageController::class, 'index'])->name('messages.index');
+        Route::post('messages/{message}/read', [MessageController::class, 'read'])->whereUuid('message')->name('messages.read');
+    });
     Route::delete('account-deletion-requests/{deletionRequest}', [AccountDeletionController::class, 'destroy'])
         ->whereUuid('deletionRequest')->name('account-deletion-requests.destroy');
 

@@ -13,4 +13,9 @@ interface CustomerProfileRepositoryInterface
      * @param array<string, mixed> $attributes
      */
     public function update(CustomerProfile $profile, array $attributes): CustomerProfile;
+
+    /**
+     * Clears every personal attribute of the user's profile (anonymisation); the row stays.
+     */
+    public function scrub(User $user): void;
 }

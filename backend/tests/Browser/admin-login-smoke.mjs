@@ -9,7 +9,9 @@
 //   3. a wrong password goes through validation (204) and submit (422) and shows one generic error;
 //   4. correct credentials validate, submit, and land on the dashboard;
 //   5. (P1.4) the service-category form-schema builder: repeater add/save through the Precognition protocol and
-//      the live preview (visible_if) without JavaScript errors.
+//      the live preview (visible_if) without JavaScript errors;
+//   6. (P1.6) the customers module: masked phone in the listing, lazy tab with its own DataTable, audited reveal of
+//      the contact details, and the suspend modal going through Precognition before the real submit.
 //
 // Environment: BASE_URL, ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME, CHROME_BIN (optional), CDP_PORT (optional).
 import { spawn } from 'node:child_process';
@@ -68,6 +70,8 @@ class Page {
                 msg.error ? reject(new Error(msg.error.message)) : resolve(msg.result);
             } else if (msg.method === 'Runtime.exceptionThrown') {
                 this.jsErrors.push(msg.params.exceptionDetails?.exception?.description ?? msg.params.exceptionDetails?.text ?? 'exception');
+            } else if (msg.method === 'Runtime.consoleAPICalled' && ['error', 'warning'].includes(msg.params.type)) {
+                this.jsErrors.push(`console.${msg.params.type}: ` + msg.params.args.map((a) => a.value ?? a.description ?? '').join(' ').slice(0, 300));
             } else if (msg.method === 'Network.requestWillBeSent') {
                 const { request } = msg.params;
                 this.requests.push({ url: request.url, method: request.method, headers: request.headers });
@@ -219,7 +223,41 @@ try {
     check(await page.eval(`!(${hidden})`), 'preview: conditional field appears after answering "No"');
     check(page.jsErrors.length === 0, `no JavaScript errors on the catalog pages${page.jsErrors.length ? ': ' + page.jsErrors[0] : ''}`);
 
-    // 6. Sign out through the account menu form.
+    // 6. Customers: masked listing, lazy DataTable tab, reveal, suspend modal (Precognition then submit).
+    page.jsErrors.length = 0;
+    await page.goto('/admin/customers');
+    check(await page.waitFor("document.querySelectorAll('#customers-table tbody a[href*=\"/admin/customers/\"]').length > 0", 'customer rows', 12000), 'customers listing loads rows through the DataTable');
+    const listingText = await page.eval("document.querySelector('#customers-table').innerText");
+    check(!listingText.includes('+201009998877') && listingText.includes('8877'), 'listing shows the phone masked only');
+    check(await page.eval("document.querySelector('[data-filters-for=\"customers-table\"]')?.closest('[x-data]')?.querySelector('[x-show]') !== null"), 'filters card present');
+    const customerHref = await page.eval("document.querySelector('#customers-table tbody a[href*=\"/admin/customers/\"]').getAttribute('href')");
+    await page.goto(new URL(customerHref, BASE_URL).pathname);
+    check(await page.waitFor("!!document.querySelector('[data-tab-trigger=\"devices\"]')", 'customer tabs'), 'customer page renders its tabs');
+    page.requests.length = 0;
+    await page.eval("document.querySelector('[data-tab-trigger=\"devices\"]').click()");
+    check(await page.waitFor("!!document.querySelector('#customer-devices-table') && document.querySelectorAll('#customer-devices-table thead th').length >= 5", 'devices table', 12000), 'devices tab lazy-loads its own DataTable');
+    check(await page.waitFor("(document.querySelector('#customer-devices-table tbody tr')?.textContent || '').trim() !== ''", 'devices rows'), 'devices DataTable drew its body (empty state, no fake rows)');
+    check(page.requests.filter((r) => r.url.includes('/tabs/devices')).length >= 2, 'tab fragment and DataTable AJAX were separate requests');
+    await page.eval("document.querySelector('[data-tab-trigger=\"profile\"]').click()");
+    await page.eval("document.querySelector('[x-data^=\"adminReveal\"] button').click()");
+    check(await page.waitFor("document.querySelector('[data-reveal-field=phone]')?.textContent.trim() === '+201009998877'", 'revealed phone'), 'reveal swaps in the full phone after the audited request');
+
+    await page.eval("document.querySelector('[data-modal-open=\"customer-suspend\"]').click()");
+    await sleep(400);
+    const suspendForm = "document.querySelector('form[action*=\"/suspend\"]')";
+    page.requests.length = 0;
+    await page.eval(`${suspendForm}.requestSubmit()`);
+    check(await page.waitFor(`(${suspendForm}.querySelector('[data-error-for=reason]')?.textContent || '').trim() !== ''`, 'reason error'), 'suspend without a reason: error shown inline');
+    check(page.writes('/suspend').length === 0, 'suspend without a reason sends nothing (client check)');
+    await page.eval(`(() => { const el = ${suspendForm}.querySelector('[name=reason]'); el.value = 'Repeated abuse of drivers'; el.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+    await page.eval(`${suspendForm}.requestSubmit()`);
+    for (let i = 0; i < 100 && page.writes('/suspend').length < 2; i++) await sleep(100);
+    const suspendWrites = page.writes('/suspend');
+    check(suspendWrites.length === 2 && isPrecognitive(suspendWrites[0]) && !isPrecognitive(suspendWrites[1]), `suspend: Precognition call, then the real submit (${suspendWrites.length} writes)`);
+    check(await page.waitFor("document.body.innerText.includes('Repeated abuse of drivers')", 'suspended notice', 12000), 'page reloads showing the suspension and its reason');
+    check(page.jsErrors.length === 0, `no JavaScript errors on the customer pages${page.jsErrors.length ? ': ' + page.jsErrors[0] : ''}`);
+
+    // 7. Sign out through the account menu form.
     await page.eval("document.querySelector('form[action$=\"/admin/logout\"] button[type=submit]').closest('form').requestSubmit()");
     check(await page.waitFor("location.pathname === '/admin/login'", 'back at login after logout', 12000), 'logout returns to the login page');
 

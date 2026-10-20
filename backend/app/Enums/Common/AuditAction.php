@@ -35,6 +35,10 @@ enum AuditAction: string implements HasColor, HasLabel
     case MfaReset = 'mfa_reset';
     case PasswordChanged = 'password_changed';
     case SessionRevoked = 'session_revoked';
+    case Restricted = 'restricted';
+    case MessageSent = 'message_sent';
+    case PhoneRevealed = 'phone_revealed';
+    case Anonymised = 'anonymised';
 
     public function label(): string
     {
@@ -45,9 +49,9 @@ enum AuditAction: string implements HasColor, HasLabel
     {
         return match ($this) {
             self::Created, self::Approved, self::Reactivated, self::Restored, self::Published, self::LoggedIn => BadgeColor::Success,
-            self::Deleted, self::Rejected, self::Suspended, self::LoginFailed => BadgeColor::Danger,
-            self::Overridden, self::StatusChanged, self::MfaReset, self::MfaDisabled => BadgeColor::Warning,
-            self::Updated, self::Exported, self::MfaEnabled, self::PasswordChanged, self::SessionRevoked => BadgeColor::Info,
+            self::Deleted, self::Rejected, self::Suspended, self::LoginFailed, self::Anonymised => BadgeColor::Danger,
+            self::Overridden, self::StatusChanged, self::MfaReset, self::MfaDisabled, self::Restricted, self::PhoneRevealed => BadgeColor::Warning,
+            self::Updated, self::Exported, self::MfaEnabled, self::PasswordChanged, self::SessionRevoked, self::MessageSent => BadgeColor::Info,
             default => BadgeColor::Neutral,
         };
     }

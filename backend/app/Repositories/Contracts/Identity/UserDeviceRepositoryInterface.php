@@ -5,6 +5,7 @@ namespace App\Repositories\Contracts\Identity;
 use App\Enums\Identity\ClientApp;
 use App\Models\User;
 use App\Models\UserDevice;
+use Illuminate\Database\Eloquent\Builder;
 
 interface UserDeviceRepositoryInterface
 {
@@ -21,4 +22,14 @@ interface UserDeviceRepositoryInterface
     public function releasePushToken(string $pushTokenHash, UserDevice $except): int;
 
     public function clearPushToken(User $user, ClientApp $app, string $deviceId): int;
+
+    /**
+     * @return Builder<UserDevice> the user's devices, newest activity first (admin customer tab)
+     */
+    public function datatableQuery(User $user): Builder;
+
+    /**
+     * Deletes every device row (push tokens included) of the user.
+     */
+    public function deleteForUser(User $user): int;
 }

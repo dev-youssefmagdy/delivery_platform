@@ -11,10 +11,10 @@ export function adminTabs(initial) {
         loaded: {},
 
         init() {
-            this.$el.addEventListener('admin:reveal', (event) => {
+            this.$root.addEventListener('admin:reveal', (event) => {
                 let panel = event.target.closest('[data-tab-panel]');
 
-                while (panel && panel.closest('[data-tabs]') !== this.$el) {
+                while (panel && panel.closest('[data-tabs]') !== this.$root) {
                     panel = panel.parentElement?.closest('[data-tab-panel]') ?? null;
                 }
 
@@ -35,7 +35,7 @@ export function adminTabs(initial) {
         },
 
         keydown(event) {
-            const tabs = [...this.$el.querySelectorAll(':scope [role="tab"]')].filter((tab) => tab.closest('[data-tabs]') === this.$el);
+            const tabs = [...this.$root.querySelectorAll(':scope [role="tab"]')].filter((tab) => tab.closest('[data-tabs]') === this.$root);
             const index = tabs.indexOf(document.activeElement);
             const rtl = document.documentElement.dir === 'rtl';
             const step = { ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1, Home: -Infinity, End: Infinity }[event.key];
@@ -51,7 +51,7 @@ export function adminTabs(initial) {
         },
 
         async load(id) {
-            const panel = [...this.$el.querySelectorAll(`[data-tab-panel="${id}"]`)].find((el) => el.closest('[data-tabs]') === this.$el);
+            const panel = [...this.$root.querySelectorAll(`[data-tab-panel="${id}"]`)].find((el) => el.closest('[data-tabs]') === this.$root);
             const url = panel?.dataset.tabUrl;
 
             if (!url || this.loaded[id]) {

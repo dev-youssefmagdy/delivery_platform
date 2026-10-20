@@ -17,6 +17,9 @@ use App\Repositories\Contracts\Catalog\VehicleCategoryRepositoryInterface;
 use App\Repositories\Contracts\Common\CountryRepositoryInterface;
 use App\Repositories\Contracts\Common\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\Common\IdempotencyKeyRepositoryInterface;
+use App\Repositories\Contracts\Customers\CustomerActivityRepositoryInterface;
+use App\Repositories\Contracts\Customers\CustomerMessageRepositoryInterface;
+use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Demo\DemoItemRepositoryInterface;
 use App\Repositories\Contracts\Geography\CityRepositoryInterface;
 use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
@@ -46,6 +49,9 @@ use App\Repositories\Eloquent\Catalog\VehicleCategoryRepository;
 use App\Repositories\Eloquent\Common\CountryRepository;
 use App\Repositories\Eloquent\Common\CurrencyRepository;
 use App\Repositories\Eloquent\Common\IdempotencyKeyRepository;
+use App\Repositories\Eloquent\Customers\CustomerActivityRepository;
+use App\Repositories\Eloquent\Customers\CustomerMessageRepository;
+use App\Repositories\Eloquent\Customers\CustomerRepository;
 use App\Repositories\Eloquent\Demo\DemoItemRepository;
 use App\Repositories\Eloquent\Geography\CityRepository;
 use App\Repositories\Eloquent\Geography\SavedPlaceRepository;
@@ -100,6 +106,9 @@ class RepositoryServiceProvider extends ServiceProvider
         ServiceZoneRepositoryInterface::class => ServiceZoneRepository::class,
         ZoneServiceCategoryRepositoryInterface::class => ZoneServiceCategoryRepository::class,
         SavedPlaceRepositoryInterface::class => SavedPlaceRepository::class,
+        CustomerRepositoryInterface::class => CustomerRepository::class,
+        CustomerMessageRepositoryInterface::class => CustomerMessageRepository::class,
+        CustomerActivityRepositoryInterface::class => CustomerActivityRepository::class,
         // @admin-module:bindings
     ];
 }

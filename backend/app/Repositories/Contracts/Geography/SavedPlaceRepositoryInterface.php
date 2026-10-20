@@ -5,6 +5,7 @@ namespace App\Repositories\Contracts\Geography;
 use App\Enums\Geo\SavedPlaceType;
 use App\Models\SavedPlace;
 use App\Repositories\Contracts\BaseRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -24,4 +25,11 @@ interface SavedPlaceRepositoryInterface extends BaseRepositoryInterface
     public function countForUser(int $userId): int;
 
     public function typeTaken(int $userId, SavedPlaceType $type, ?int $exceptId = null): bool;
+
+    /**
+     * @return Builder<SavedPlace> the owner's places (admin customer tab; PII, gate with customers.view_pii)
+     */
+    public function datatableQuery(int $userId): Builder;
+
+    public function deleteForUser(int $userId): int;
 }

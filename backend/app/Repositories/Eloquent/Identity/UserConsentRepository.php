@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent\Identity;
 use App\Models\User;
 use App\Models\UserConsent;
 use App\Repositories\Contracts\Identity\UserConsentRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 
 final class UserConsentRepository implements UserConsentRepositoryInterface
 {
@@ -36,5 +37,10 @@ final class UserConsentRepository implements UserConsentRepositoryInterface
             'policy_version_id' => $policyVersionId,
             ...$attributes,
         ]) > 0;
+    }
+
+    public function datatableQuery(User $user): Builder
+    {
+        return $this->model->newQuery()->with('policyVersion')->where('user_id', $user->id);
     }
 }

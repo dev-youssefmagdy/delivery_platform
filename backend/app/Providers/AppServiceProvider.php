@@ -11,6 +11,7 @@ use App\Models\AdminExport;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\CustomerMessage;
 use App\Models\CustomerProfile;
 use App\Models\DemoItem;
 use App\Models\IdempotencyKey;
@@ -93,6 +94,7 @@ class AppServiceProvider extends ServiceProvider
             'service_zone' => ServiceZone::class,
             'zone_service_category' => ZoneServiceCategory::class,
             'saved_place' => SavedPlace::class,
+            'customer_message' => CustomerMessage::class,
             // @admin-module:morph-map
         ]);
 

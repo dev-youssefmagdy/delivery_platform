@@ -347,3 +347,28 @@ Error codes (`errors._code`): `maps_unavailable` (**503**: provider down, quota/
 Admin (permission `service_areas.manage`): `/admin/cities` (+ activate / deactivate with reason), `/admin/service-zones` (+ activate, suspend with reason, `PUT /{id}/availability` matrix, `POST /overlaps` live overlap check),
 `/admin/coverage-preview` (GET page, POST preview); lookup `cities`. Admin codes: `city_has_zones`, `city_country_inactive`, `zone_no_categories`, `zone_not_active`, `zone_active_cannot_delete`, `zone_invalid_polygon`,
 `zone_city_missing`, `zone_availability_invalid`, `zone_override_fare_range`, `zone_override_radius`.
+
+### 8.8 Customers (P1.6)
+
+Customer inbox (mobile, `customer` token; status-safe so a suspended customer can still read why):
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/api/v1/me/messages` | `customer` token | newest 50 help messages from support: `data = [{ id (uuid), subject, body, read, sent_at }]`; driver tokens get `403` |
+| POST | `/api/v1/me/messages/{uuid}/read` | `customer` token | marks one read; another customer's uuid is `404` |
+
+Admin (`/admin/customers`, customers addressed by uuid, soft-deleted/anonymised accounts included). Permissions: `customers.view` (listing, show, lazy tabs), `customers.view_pii` (reveal, saved places), `customers.update` (help message), `customers.suspend` (suspend, restrict, reactivate), `customers.process_deletion`, `customers.export`.
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/admin/customers` | Yajra listing; filters `search`, `statuses[]`, `created_at[from|to]`, `city_ids[]`, `deletion_requested` |
+| POST | `/admin/customers/export` | queued CSV (masked phones), `customers.export`, audited; poll `admin/exports/{uuid}` |
+| GET | `/admin/customers/{uuid}` | show page; tabs lazy-load `/tabs/{consents|devices|saved-places|deletion-requests|messages|audit}` (each its own DataTable) |
+| POST | `/admin/customers/{uuid}/reveal` | `data = {phone, email, emergency_contact_phone}`, audited (`phone_revealed`) |
+| POST | `/admin/customers/{uuid}/suspend` | `reason` (required), `expires_at` (`Y-m-d H:i`, admin timezone, future) |
+| POST | `/admin/customers/{uuid}/restrict`, `/reactivate` | `reason` required |
+| POST | `/admin/customers/{uuid}/messages` | `subject`, `body`, `reason`; audited (`message_sent`) |
+| POST | `/admin/customers/{uuid}/export-data` | queued JSON personal-data export, audited against the customer |
+| POST | `/admin/customers/{uuid}/deletion-requests/{request}/approve|reject` | `reason` required; approve anonymises (ADR-75) |
+
+All write routes support Precognition (`422` / `204`). There is no create, update or delete route. Codes: `customer_status_transition_invalid`, `customer_anonymised`, `suspension_expiry_in_past`, `customer_has_active_bookings`, `customer_has_open_financial_items`, `customer_is_provider`, `deletion_request_not_pending`.

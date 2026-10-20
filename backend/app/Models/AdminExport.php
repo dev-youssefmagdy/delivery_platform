@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Admin\AdminExportStatus;
+use App\Enums\Admin\ExportFormat;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
  * @property string|null $actor_type
  * @property int|null $actor_id
  * @property string $table
+ * @property ExportFormat $format
+ * @property int|null $subject_id the exported record (personal-data exports)
  * @property string|null $permission
  * @property array<string, mixed>|null $filters
  * @property AdminExportStatus $status
@@ -34,7 +37,7 @@ class AdminExport extends Model
     use Prunable;
 
     protected $fillable = [
-        'uuid', 'actor_type', 'actor_id', 'table', 'permission', 'filters', 'status', 'disk', 'path', 'filename',
+        'uuid', 'actor_type', 'actor_id', 'table', 'format', 'subject_id', 'permission', 'filters', 'status', 'disk', 'path', 'filename',
         'rows', 'error_code', 'completed_at',
     ];
 
@@ -67,6 +70,8 @@ class AdminExport extends Model
     {
         return [
             'actor_id' => 'integer',
+            'format' => ExportFormat::class,
+            'subject_id' => 'integer',
             'filters' => 'array',
             'status' => AdminExportStatus::class,
             'rows' => 'integer',

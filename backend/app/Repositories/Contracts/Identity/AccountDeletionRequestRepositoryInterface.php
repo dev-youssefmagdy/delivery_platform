@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts\Identity;
 
 use App\Models\AccountDeletionRequest;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 
 interface AccountDeletionRequestRepositoryInterface
 {
@@ -23,4 +24,9 @@ interface AccountDeletionRequestRepositoryInterface
      * @param array<string, mixed> $attributes
      */
     public function update(AccountDeletionRequest $request, array $attributes): AccountDeletionRequest;
+
+    /**
+     * @return Builder<AccountDeletionRequest> every request of the user, newest first (admin customer tab)
+     */
+    public function datatableQuery(User $user): Builder;
 }

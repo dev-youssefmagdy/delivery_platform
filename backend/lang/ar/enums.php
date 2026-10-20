@@ -53,6 +53,10 @@ return [
         'mfa_reset' => 'إعادة تعيين التحقق بخطوتين',
         'password_changed' => 'تغيير كلمة المرور',
         'session_revoked' => 'إنهاء جلسة',
+        'restricted' => 'تقييد',
+        'message_sent' => 'إرسال رسالة',
+        'phone_revealed' => 'كشف رقم الهاتف',
+        'anonymised' => 'إخفاء الهوية',
     ],
 
     'health_status' => [

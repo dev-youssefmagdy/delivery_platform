@@ -42,4 +42,14 @@ final class SavedPlaceRepository extends BaseRepository implements SavedPlaceRep
             ->when($exceptId !== null, static fn (Builder $query) => $query->whereKeyNot($exceptId))
             ->exists();
     }
+
+    public function datatableQuery(int $userId): Builder
+    {
+        return $this->query()->where('user_id', $userId);
+    }
+
+    public function deleteForUser(int $userId): int
+    {
+        return $this->query()->where('user_id', $userId)->delete();
+    }
 }

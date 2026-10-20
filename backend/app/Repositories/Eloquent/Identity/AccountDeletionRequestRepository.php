@@ -6,6 +6,7 @@ use App\Enums\Identity\DeletionRequestStatus;
 use App\Models\AccountDeletionRequest;
 use App\Models\User;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 
 final class AccountDeletionRequestRepository implements AccountDeletionRequestRepositoryInterface
 {
@@ -35,5 +36,10 @@ final class AccountDeletionRequestRepository implements AccountDeletionRequestRe
         $request->fill($attributes)->save();
 
         return $request;
+    }
+
+    public function datatableQuery(User $user): Builder
+    {
+        return $this->model->newQuery()->where('user_id', $user->id);
     }
 }

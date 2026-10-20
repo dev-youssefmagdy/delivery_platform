@@ -6,6 +6,7 @@ use App\Enums\Identity\ClientApp;
 use App\Models\User;
 use App\Models\UserDevice;
 use App\Repositories\Contracts\Identity\UserDeviceRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 
 final class UserDeviceRepository implements UserDeviceRepositoryInterface
 {
@@ -34,5 +35,15 @@ final class UserDeviceRepository implements UserDeviceRepositoryInterface
             ->where('app', $app->value)
             ->where('device_id', $deviceId)
             ->update(['push_token' => null, 'push_token_hash' => null]);
+    }
+
+    public function datatableQuery(User $user): Builder
+    {
+        return $this->model->newQuery()->where('user_id', $user->id);
+    }
+
+    public function deleteForUser(User $user): int
+    {
+        return $this->model->newQuery()->where('user_id', $user->id)->delete();
     }
 }

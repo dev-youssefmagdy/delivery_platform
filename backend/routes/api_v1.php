@@ -1,7 +1,18 @@
 <?php
 
+use App\Enums\Common\RateLimiterName;
+use App\Enums\Policy\PolicyType;
+use App\Http\Controllers\Api\V1\Auth\OtpController;
+use App\Http\Controllers\Api\V1\Auth\SessionController;
 use App\Http\Controllers\Api\V1\Common\ConfigController;
 use App\Http\Controllers\Api\V1\Common\HealthController;
+use App\Http\Controllers\Api\V1\Common\MediaController;
+use App\Http\Controllers\Api\V1\Common\PolicyController;
+use App\Http\Controllers\Api\V1\Me\AccountDeletionController;
+use App\Http\Controllers\Api\V1\Me\ConsentController;
+use App\Http\Controllers\Api\V1\Me\DeviceController;
+use App\Http\Controllers\Api\V1\Me\MeController;
+use App\Http\Controllers\Api\V1\Me\PhotoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +27,44 @@ Route::get('health', HealthController::class)->name('health');
 Route::middleware('cache.headers:public;max_age=30;etag')->group(function (): void {
     Route::get('config/app', [ConfigController::class, 'app'])->name('config.app');
     Route::get('locales', [ConfigController::class, 'locales'])->name('locales');
+});
+
+// Current policy text for the consent screens (P1.3). Only types that have a published version resolve.
+Route::get('policies/{type}', [PolicyController::class, 'show'])
+    ->whereIn('type', PolicyType::values())
+    ->middleware('cache.headers:public;max_age=60;etag')
+    ->name('policies.show');
+
+// Private profile photos behind a short-lived signed URL (built by MeResource).
+Route::get('media/users/{user}/photo', [MediaController::class, 'userPhoto'])
+    ->whereUuid('user')
+    ->middleware('signed')
+    ->name('media.user-photo');
+
+// Mobile identity (P1.3). A token carries exactly one ability: `customer` or `provider` (ADR-62).
+Route::prefix('auth')->name('auth.')->group(function (): void {
+    Route::post('otp/request', [OtpController::class, 'request'])->middleware(RateLimiterName::OtpRequest->middleware())->name('otp.request');
+    Route::post('otp/verify', [OtpController::class, 'verify'])->middleware(RateLimiterName::OtpVerify->middleware())->name('otp.verify');
+
+    Route::middleware(['auth:sanctum', 'ability:customer,provider'])->group(function (): void {
+        Route::post('refresh', [SessionController::class, 'refresh'])->middleware('account.active')->name('refresh');
+        Route::post('logout', [SessionController::class, 'logout'])->name('logout');
+    });
+});
+
+Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->prefix('me')->name('me.')->group(function (): void {
+    // Status-safe: suspended / deletion-pending users must still be able to read their state and leave.
+    Route::get('/', [MeController::class, 'show'])->name('show');
+    Route::get('consents', [ConsentController::class, 'index'])->name('consents.index');
+    Route::delete('account-deletion-requests/{deletionRequest}', [AccountDeletionController::class, 'destroy'])
+        ->whereUuid('deletionRequest')->name('account-deletion-requests.destroy');
+
+    Route::middleware('account.active')->group(function (): void {
+        Route::patch('/', [MeController::class, 'update'])->name('update');
+        Route::post('photo', [PhotoController::class, 'store'])->name('photo.store');
+        Route::post('consents', [ConsentController::class, 'store'])->name('consents.store');
+        Route::post('devices', [DeviceController::class, 'store'])->name('devices.store');
+        Route::post('account-deletion-requests', [AccountDeletionController::class, 'store'])
+            ->middleware('idempotent')->name('account-deletion-requests.store');
+    });
 });

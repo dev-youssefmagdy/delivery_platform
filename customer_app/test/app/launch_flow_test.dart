@@ -38,7 +38,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('ابدأ الآن'));
     await tester.pumpAndSettle();
-    expect(find.text('تسجيل الدخول غير متاح بعد'), findsOneWidget);
+    expect(find.text('أدخل رقم هاتفك'), findsOneWidget);
   });
 
   testWidgets('returning user with chosen language skips to onboarding/auth', (
@@ -48,7 +48,7 @@ void main() {
       tester,
       prefs: {'language_code': 'en', 'onboarding_done': true},
     );
-    expect(find.text('Sign-in is not available yet'), findsOneWidget);
+    expect(find.text('Enter your phone number'), findsOneWidget);
   });
 
   testWidgets('authenticated user lands on home and can reopen language', (

@@ -206,18 +206,6 @@ abstract class AppLocalizations {
   /// **'تسجيل الدخول'**
   String get authTitle;
 
-  /// No description provided for @authUnavailableTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'تسجيل الدخول غير متاح بعد'**
-  String get authUnavailableTitle;
-
-  /// No description provided for @authUnavailableBody.
-  ///
-  /// In ar, this message translates to:
-  /// **'سيتوفر الدخول برقم الهاتف في تحديث قادم.'**
-  String get authUnavailableBody;
-
   /// No description provided for @homeTitle.
   ///
   /// In ar, this message translates to:
@@ -337,6 +325,288 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الإصدار المطلوب: {version}'**
   String forceUpdateRequiredVersion(String version);
+
+  /// No description provided for @authPhoneTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم هاتفك'**
+  String get authPhoneTitle;
+
+  /// No description provided for @authPhoneSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'سنرسل لك رمز تحقق عبر رسالة نصية.'**
+  String get authPhoneSubtitle;
+
+  /// No description provided for @authPhoneLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم الهاتف'**
+  String get authPhoneLabel;
+
+  /// No description provided for @authPhoneInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم هاتف صحيحاً'**
+  String get authPhoneInvalid;
+
+  /// No description provided for @authSendCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الرمز'**
+  String get authSendCode;
+
+  /// No description provided for @otpTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز التحقق'**
+  String get otpTitle;
+
+  /// No description provided for @otpSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل الرمز المكوّن من {length} أرقام المرسل إلى {phone}'**
+  String otpSubtitle(int length, String phone);
+
+  /// No description provided for @otpResendIn.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة الإرسال خلال {seconds} ث'**
+  String otpResendIn(int seconds);
+
+  /// No description provided for @otpResend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة إرسال الرمز'**
+  String get otpResend;
+
+  /// No description provided for @otpChangeNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيير الرقم'**
+  String get otpChangeNumber;
+
+  /// No description provided for @otpErrorInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرمز غير صحيح.'**
+  String get otpErrorInvalid;
+
+  /// No description provided for @otpErrorExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت صلاحية الرمز. اطلب رمزاً جديداً.'**
+  String get otpErrorExpired;
+
+  /// No description provided for @otpErrorLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاولات خاطئة كثيرة. اطلب رمزاً جديداً.'**
+  String get otpErrorLocked;
+
+  /// No description provided for @otpErrorTooManyRequests.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاولات كثيرة. حاول بعد {seconds} ثانية.'**
+  String otpErrorTooManyRequests(int seconds);
+
+  /// No description provided for @otpErrorDeliveryFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر إرسال الرمز. حاول لاحقاً.'**
+  String get otpErrorDeliveryFailed;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أكمل ملفك الشخصي'**
+  String get profileTitle;
+
+  /// No description provided for @profileSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخبرنا باسمك ليعرف السائقون من سيقابلون.'**
+  String get profileSubtitle;
+
+  /// No description provided for @profileNameLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسم الكامل'**
+  String get profileNameLabel;
+
+  /// No description provided for @profileNameInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل اسمك (حرفان على الأقل)'**
+  String get profileNameInvalid;
+
+  /// No description provided for @profileEmailLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد الإلكتروني (اختياري)'**
+  String get profileEmailLabel;
+
+  /// No description provided for @profileEmailInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل بريداً إلكترونياً صحيحاً'**
+  String get profileEmailInvalid;
+
+  /// No description provided for @consentTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشروط والخصوصية'**
+  String get consentTitle;
+
+  /// No description provided for @consentSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى القراءة والموافقة للمتابعة.'**
+  String get consentSubtitle;
+
+  /// No description provided for @consentRead.
+  ///
+  /// In ar, this message translates to:
+  /// **'قراءة'**
+  String get consentRead;
+
+  /// No description provided for @consentAccept.
+  ///
+  /// In ar, this message translates to:
+  /// **'أوافق على شروط الاستخدام وسياسة الخصوصية'**
+  String get consentAccept;
+
+  /// No description provided for @consentMarketing.
+  ///
+  /// In ar, this message translates to:
+  /// **'أرغب في تلقي العروض والأخبار (اختياري)'**
+  String get consentMarketing;
+
+  /// No description provided for @consentPolicyTerms.
+  ///
+  /// In ar, this message translates to:
+  /// **'شروط الاستخدام'**
+  String get consentPolicyTerms;
+
+  /// No description provided for @consentPolicyPrivacy.
+  ///
+  /// In ar, this message translates to:
+  /// **'سياسة الخصوصية'**
+  String get consentPolicyPrivacy;
+
+  /// No description provided for @consentPolicyOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'سياسة'**
+  String get consentPolicyOther;
+
+  /// No description provided for @statusSuspendedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحساب موقوف'**
+  String get statusSuspendedTitle;
+
+  /// No description provided for @statusSuspendedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسابك موقوف. يرجى التواصل مع الدعم.'**
+  String get statusSuspendedBody;
+
+  /// No description provided for @statusRestrictedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحساب مقيّد'**
+  String get statusRestrictedTitle;
+
+  /// No description provided for @statusRestrictedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'بعض الميزات محدودة على حسابك. تواصل مع الدعم لمعرفة التفاصيل.'**
+  String get statusRestrictedBody;
+
+  /// No description provided for @statusDeletionPendingTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم طلب الحذف'**
+  String get statusDeletionPendingTitle;
+
+  /// No description provided for @statusDeletionPendingBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسابك بانتظار الحذف. يمكنك إلغاء الطلب ما دام قيد المعالجة.'**
+  String get statusDeletionPendingBody;
+
+  /// No description provided for @statusVerificationTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحقق مطلوب'**
+  String get statusVerificationTitle;
+
+  /// No description provided for @statusVerificationBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يجب التحقق من حسابك قبل المتابعة. تواصل مع الدعم.'**
+  String get statusVerificationBody;
+
+  /// No description provided for @statusDeletedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حذف الحساب'**
+  String get statusDeletedTitle;
+
+  /// No description provided for @statusDeletedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حذف هذا الحساب.'**
+  String get statusDeletedBody;
+
+  /// No description provided for @statusCancelDeletion.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء طلب الحذف'**
+  String get statusCancelDeletion;
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرحباً، {name}'**
+  String homeGreeting(String name);
+
+  /// No description provided for @homeLogout.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الخروج'**
+  String get homeLogout;
+
+  /// No description provided for @homeDeleteAccount.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف حسابي'**
+  String get homeDeleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف حسابك؟'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'سنراجع طلبك. قد يتم الاحتفاظ ببعض البيانات حيث يشترط القانون ذلك. يمكنك الإلغاء ما دام الطلب قيد المعالجة.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب الحذف'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @actionCancel.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء'**
+  String get actionCancel;
 }
 
 class _AppLocalizationsDelegate

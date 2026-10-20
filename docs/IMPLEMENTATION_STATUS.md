@@ -13,7 +13,7 @@
 | P0.4 | Flutter foundation + shared package | P0 | ✅ | 2026-10-19 |
 | P1.1 | Admin authentication, roles/permissions, admin users, audit log UI | P0 | ✅ | 2026-10-19 |
 | P1.2 | Settings, markets, locales, policy versions, app config API | P0 | ✅ | 2026-10-19 |
-| P1.3 | Identity API: OTP, users, profiles, devices, consents, deletion | P0 | ❌ | — |
+| P1.3 | Identity API: OTP, users, profiles, devices, consents, deletion | P0 | ✅ | 2026-10-20 |
 | P1.4 | Service catalog, vehicle categories, form schemas, versioned snapshots | P0 | ❌ | — |
 | P1.5 | Geography: cities, service zones, availability, maps adapter | P0 | ❌ | — |
 | P1.6 | Customers admin module | P0 | ❌ | — |
@@ -49,6 +49,47 @@
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+
+---
+
+## P1.3 — Identity API: OTP, users, profiles, devices, consents, deletion · ✅ 2026-10-20
+
+Branch `milestone/p1.3-identity-api` (from `main` @ `d48b999`), fast-forwarded into `main`.
+
+### What was built
+
+- **Schema (ADR-60):** `users` restructured into the phone-identity table (uuid, unique `phone_e164`, `phone_verified_at`, `status`, `preferred_locale`, `last_seen_at`, soft deletes, nullable name/email, no password); new `customer_profiles`, `provider_profiles` (stub), `otp_challenges` (keyed phone hash, code HMAC only, attempts, delivery status), `user_devices`, `user_consents` (-> `policy_versions.id`, append-only), `account_deletion_requests`.
+- **SMS:** `SmsGateway` contract + `log` driver (log channel `otp_dev`, local/testing only) + `smsmisr` real driver (implemented from vendor docs, untested without credentials, INTEGRATIONS.md).
+- **OTP/auth (ADR-61/62):** `OtpService` (crypto-random, hashed, cooldown/TTL/length/attempts from `SettingsService`, per-phone/IP/device limits, enumeration-safe answers, SMS failure = 503 not fake success), `AuthService` (verify -> find/create user -> device -> Sanctum token with one ability `customer`|`provider` from `X-App`; refresh; logout), `EnsureAccountActive` (typed 403 per `UserStatus`), `user.seen`.
+- **Endpoints:** otp/request, otp/verify, refresh, logout, GET/PATCH `/me`, `/me/photo` (re-encoded, private disk, signed URL), GET/POST `/me/consents`, `/me/devices`, POST/DELETE `/me/account-deletion-requests`, public `GET /policies/{type}`, signed media route. Details in docs/API.md 8.5.
+- **Test-OTP safety:** fixed code only for configured numbers in local/testing; `TestOtpGuard` aborts boot elsewhere, the service re-checks the environment, no request parameter can enable it (tests for all three).
+- **Admin:** read-only OTP challenges log (permission `otp_challenges.view` -> System/Integration Admin), Yajra DataTable + collapsed filters card (phone/state/delivery/app/IP/date), masked phones, no codes.
+- **Flutter (ADR-64):** platform_core `IdentityRepository`, models, `DeviceIdStore`, `AuthStage`/`computeAuthStage`, `ApiClient.post(headers:)`. Customer: phone (EG preselected) -> OTP (resend countdown, typed errors, rate-limit wait) -> profile -> consent (policy reader, separate marketing choice) -> home (sign out, delete account with one idempotency key); status screen for suspended/restricted/deletion pending/verification/deleted and a retry state when `/me` fails; router redirect from `AuthStage`; token in secure storage. Driver: phone -> OTP -> `/provider-onboarding` ("coming soon", real route) with the same status screen.
+
+### Files touched
+
+Backend: `app/{Enums/Identity,DTOs/Identity,Models/{User,CustomerProfile,ProviderProfile,OtpChallenge,UserDevice,UserConsent,AccountDeletionRequest},Repositories/{Contracts,Eloquent}/Identity,Services/Identity,Services/Policy/PolicyReadService.php,Integrations/Sms,Http/{Controllers/Api/V1/{Auth,Me,Common},Requests/Api/V1/{Auth,Me},Resources/Api/V1/Identity,Middleware/{EnsureAccountActive,TouchLastSeen}.php,Controllers/Admin/Identity},DataTables/Admin/Identity,Policies/OtpChallengePolicy.php,Support/{Auth,Media},Exceptions/{RateLimited,ServiceUnavailable}Exception.php}`, providers, `bootstrap/app.php`, `config/{identity,services,logging,admin_menu}.php`, `routes/{api_v1.php,admin/otp-challenges.php,console.php}`, 2 migrations, `lang/{ar,en}/*`, `resources/views/admin/otp-challenges`, tests. Flutter: `packages/platform_core/lib/src/{identity,api/api_client.dart}`, both apps' `lib/{app/router.dart,app/l10n,features/{auth,splash,home|provider_onboarding}}` and tests. Docs: ADR-60..64, API 8.5, INTEGRATIONS.
+
+### Commands and results (2026-10-20)
+
+| `php artisan migrate` (local MySQL) | OK (2 new migrations) |
+| `vendor/bin/pint --test` | passed |
+| `vendor/bin/phpstan analyse` (level 6) | passed, 0 errors |
+| `php artisan test --parallel` | passed - 336 tests, 2854 assertions (was 291 / 2542); new: 23 OTP/bypass, 18 `/me`, 4 admin OTP log |
+| `npm run build` | built OK |
+| `scripts/check.sh flutter` | All checks passed: `platform_core` 64 tests (new: identity repository, auth stage), `customer_app` 49 (new: full flow, OTP errors/resend, status screens), `driver_app` 45 (new: stops at onboarding entry, status); format/analyze clean |
+
+### Known gaps / notes
+
+- Profile photo upload and push-token registration are not wired in the apps (endpoints exist). `POST /auth/refresh` exists but the apps do not call it yet.
+- Deletion requests are only recorded; admin processing (anonymise, retention) is P1.6. Active bookings will need to block deletion (P2.5).
+- Terms and privacy must be published (Admin > Policy versions) before launch; with none published no consent is required.
+- SMS Misr driver is unverified against the live service; no SMS is sent until `SMS_DRIVER` is configured (503 otherwise).
+- `restricted` accounts pass non-strict routes; booking creation should use `account.active:strict` (P2.3).
+
+### Next steps
+
+P1.4 service catalog. Reuse: `ClientApp`, `ability:`/`account.active` route middleware, `PolicyReadService`, `RateLimitedException`, `meta()` on domain exceptions, `AdminDataTable::rawColumn()`, platform_core `IdentityRepository` pattern for new feature repositories.
 
 ---
 

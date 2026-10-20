@@ -65,6 +65,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // Local-only sink of the `log` SMS driver (ADR-61). The only place an OTP may ever be written.
+        'otp_dev' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/otp_dev.log'),
+            'level' => 'debug',
+            'replace_placeholders' => true,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

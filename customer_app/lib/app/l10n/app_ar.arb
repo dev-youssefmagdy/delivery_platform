@@ -21,8 +21,6 @@
   "onboarding3Title": "تنقّل بأمان",
   "onboarding3Body": "تابع رحلتك لحظة بلحظة وشاركها مع من تثق به.",
   "authTitle": "تسجيل الدخول",
-  "authUnavailableTitle": "تسجيل الدخول غير متاح بعد",
-  "authUnavailableBody": "سيتوفر الدخول برقم الهاتف في تحديث قادم.",
   "homeTitle": "الرئيسية",
   "homeChangeLanguage": "تغيير اللغة",
   "offlineBanner": "لا يوجد اتصال بالإنترنت",
@@ -56,5 +54,83 @@
         "type": "String"
       }
     }
-  }
+  },
+  "authPhoneTitle": "أدخل رقم هاتفك",
+  "authPhoneSubtitle": "سنرسل لك رمز تحقق عبر رسالة نصية.",
+  "authPhoneLabel": "رقم الهاتف",
+  "authPhoneInvalid": "أدخل رقم هاتف صحيحاً",
+  "authSendCode": "إرسال الرمز",
+  "otpTitle": "رمز التحقق",
+  "otpSubtitle": "أدخل الرمز المكوّن من {length} أرقام المرسل إلى {phone}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "otpResendIn": "إعادة الإرسال خلال {seconds} ث",
+  "@otpResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpResend": "إعادة إرسال الرمز",
+  "otpChangeNumber": "تغيير الرقم",
+  "otpErrorInvalid": "الرمز غير صحيح.",
+  "otpErrorExpired": "انتهت صلاحية الرمز. اطلب رمزاً جديداً.",
+  "otpErrorLocked": "محاولات خاطئة كثيرة. اطلب رمزاً جديداً.",
+  "otpErrorTooManyRequests": "محاولات كثيرة. حاول بعد {seconds} ثانية.",
+  "@otpErrorTooManyRequests": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpErrorDeliveryFailed": "تعذر إرسال الرمز. حاول لاحقاً.",
+  "profileTitle": "أكمل ملفك الشخصي",
+  "profileSubtitle": "أخبرنا باسمك ليعرف السائقون من سيقابلون.",
+  "profileNameLabel": "الاسم الكامل",
+  "profileNameInvalid": "أدخل اسمك (حرفان على الأقل)",
+  "profileEmailLabel": "البريد الإلكتروني (اختياري)",
+  "profileEmailInvalid": "أدخل بريداً إلكترونياً صحيحاً",
+  "consentTitle": "الشروط والخصوصية",
+  "consentSubtitle": "يرجى القراءة والموافقة للمتابعة.",
+  "consentRead": "قراءة",
+  "consentAccept": "أوافق على شروط الاستخدام وسياسة الخصوصية",
+  "consentMarketing": "أرغب في تلقي العروض والأخبار (اختياري)",
+  "consentPolicyTerms": "شروط الاستخدام",
+  "consentPolicyPrivacy": "سياسة الخصوصية",
+  "consentPolicyOther": "سياسة",
+  "statusSuspendedTitle": "الحساب موقوف",
+  "statusSuspendedBody": "حسابك موقوف. يرجى التواصل مع الدعم.",
+  "statusRestrictedTitle": "الحساب مقيّد",
+  "statusRestrictedBody": "بعض الميزات محدودة على حسابك. تواصل مع الدعم لمعرفة التفاصيل.",
+  "statusDeletionPendingTitle": "تم طلب الحذف",
+  "statusDeletionPendingBody": "حسابك بانتظار الحذف. يمكنك إلغاء الطلب ما دام قيد المعالجة.",
+  "statusVerificationTitle": "التحقق مطلوب",
+  "statusVerificationBody": "يجب التحقق من حسابك قبل المتابعة. تواصل مع الدعم.",
+  "statusDeletedTitle": "تم حذف الحساب",
+  "statusDeletedBody": "تم حذف هذا الحساب.",
+  "statusCancelDeletion": "إلغاء طلب الحذف",
+  "homeGreeting": "مرحباً، {name}",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeLogout": "تسجيل الخروج",
+  "homeDeleteAccount": "حذف حسابي",
+  "deleteAccountTitle": "حذف حسابك؟",
+  "deleteAccountBody": "سنراجع طلبك. قد يتم الاحتفاظ ببعض البيانات حيث يشترط القانون ذلك. يمكنك الإلغاء ما دام الطلب قيد المعالجة.",
+  "deleteAccountConfirm": "طلب الحذف",
+  "actionCancel": "إلغاء"
 }

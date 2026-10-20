@@ -65,12 +65,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authTitle => 'تسجيل الدخول';
 
   @override
-  String get authUnavailableTitle => 'تسجيل الدخول غير متاح بعد';
-
-  @override
-  String get authUnavailableBody => 'سيتوفر الدخول برقم الهاتف في تحديث قادم.';
-
-  @override
   String get homeTitle => 'الرئيسية';
 
   @override
@@ -133,4 +127,157 @@ class AppLocalizationsAr extends AppLocalizations {
   String forceUpdateRequiredVersion(String version) {
     return 'الإصدار المطلوب: $version';
   }
+
+  @override
+  String get authPhoneTitle => 'أدخل رقم هاتفك';
+
+  @override
+  String get authPhoneSubtitle => 'سنرسل لك رمز تحقق عبر رسالة نصية.';
+
+  @override
+  String get authPhoneLabel => 'رقم الهاتف';
+
+  @override
+  String get authPhoneInvalid => 'أدخل رقم هاتف صحيحاً';
+
+  @override
+  String get authSendCode => 'إرسال الرمز';
+
+  @override
+  String get otpTitle => 'رمز التحقق';
+
+  @override
+  String otpSubtitle(int length, String phone) {
+    return 'أدخل الرمز المكوّن من $length أرقام المرسل إلى $phone';
+  }
+
+  @override
+  String otpResendIn(int seconds) {
+    return 'إعادة الإرسال خلال $seconds ث';
+  }
+
+  @override
+  String get otpResend => 'إعادة إرسال الرمز';
+
+  @override
+  String get otpChangeNumber => 'تغيير الرقم';
+
+  @override
+  String get otpErrorInvalid => 'الرمز غير صحيح.';
+
+  @override
+  String get otpErrorExpired => 'انتهت صلاحية الرمز. اطلب رمزاً جديداً.';
+
+  @override
+  String get otpErrorLocked => 'محاولات خاطئة كثيرة. اطلب رمزاً جديداً.';
+
+  @override
+  String otpErrorTooManyRequests(int seconds) {
+    return 'محاولات كثيرة. حاول بعد $seconds ثانية.';
+  }
+
+  @override
+  String get otpErrorDeliveryFailed => 'تعذر إرسال الرمز. حاول لاحقاً.';
+
+  @override
+  String get profileTitle => 'أكمل ملفك الشخصي';
+
+  @override
+  String get profileSubtitle => 'أخبرنا باسمك ليعرف السائقون من سيقابلون.';
+
+  @override
+  String get profileNameLabel => 'الاسم الكامل';
+
+  @override
+  String get profileNameInvalid => 'أدخل اسمك (حرفان على الأقل)';
+
+  @override
+  String get profileEmailLabel => 'البريد الإلكتروني (اختياري)';
+
+  @override
+  String get profileEmailInvalid => 'أدخل بريداً إلكترونياً صحيحاً';
+
+  @override
+  String get consentTitle => 'الشروط والخصوصية';
+
+  @override
+  String get consentSubtitle => 'يرجى القراءة والموافقة للمتابعة.';
+
+  @override
+  String get consentRead => 'قراءة';
+
+  @override
+  String get consentAccept => 'أوافق على شروط الاستخدام وسياسة الخصوصية';
+
+  @override
+  String get consentMarketing => 'أرغب في تلقي العروض والأخبار (اختياري)';
+
+  @override
+  String get consentPolicyTerms => 'شروط الاستخدام';
+
+  @override
+  String get consentPolicyPrivacy => 'سياسة الخصوصية';
+
+  @override
+  String get consentPolicyOther => 'سياسة';
+
+  @override
+  String get statusSuspendedTitle => 'الحساب موقوف';
+
+  @override
+  String get statusSuspendedBody => 'حسابك موقوف. يرجى التواصل مع الدعم.';
+
+  @override
+  String get statusRestrictedTitle => 'الحساب مقيّد';
+
+  @override
+  String get statusRestrictedBody =>
+      'بعض الميزات محدودة على حسابك. تواصل مع الدعم لمعرفة التفاصيل.';
+
+  @override
+  String get statusDeletionPendingTitle => 'تم طلب الحذف';
+
+  @override
+  String get statusDeletionPendingBody =>
+      'حسابك بانتظار الحذف. يمكنك إلغاء الطلب ما دام قيد المعالجة.';
+
+  @override
+  String get statusVerificationTitle => 'التحقق مطلوب';
+
+  @override
+  String get statusVerificationBody =>
+      'يجب التحقق من حسابك قبل المتابعة. تواصل مع الدعم.';
+
+  @override
+  String get statusDeletedTitle => 'تم حذف الحساب';
+
+  @override
+  String get statusDeletedBody => 'تم حذف هذا الحساب.';
+
+  @override
+  String get statusCancelDeletion => 'إلغاء طلب الحذف';
+
+  @override
+  String homeGreeting(String name) {
+    return 'مرحباً، $name';
+  }
+
+  @override
+  String get homeLogout => 'تسجيل الخروج';
+
+  @override
+  String get homeDeleteAccount => 'حذف حسابي';
+
+  @override
+  String get deleteAccountTitle => 'حذف حسابك؟';
+
+  @override
+  String get deleteAccountBody =>
+      'سنراجع طلبك. قد يتم الاحتفاظ ببعض البيانات حيث يشترط القانون ذلك. يمكنك الإلغاء ما دام الطلب قيد المعالجة.';
+
+  @override
+  String get deleteAccountConfirm => 'طلب الحذف';
+
+  @override
+  String get actionCancel => 'إلغاء';
 }

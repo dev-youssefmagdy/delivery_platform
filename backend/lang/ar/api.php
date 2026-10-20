@@ -8,6 +8,21 @@ return [
     'ok' => 'تمت العملية بنجاح.',
     'created' => 'تم الإنشاء بنجاح.',
 
+    'otp' => [
+        'sent' => 'تم إرسال رمز التحقق.',
+        'verified' => 'تم التحقق من رقم الهاتف.',
+        'sms' => 'رمز التحقق الخاص بك هو :code. صالح لمدة :minutes دقائق. لا تشاركه مع أحد.',
+    ],
+    'auth' => ['logged_out' => 'تم تسجيل الخروج.'],
+    'me' => [
+        'updated' => 'تم تحديث الملف الشخصي.',
+        'photo_saved' => 'تم تحديث الصورة.',
+        'consent_saved' => 'تم حفظ موافقتك.',
+        'deletion_requested' => 'تم استلام طلب حذف الحساب.',
+        'deletion_cancelled' => 'تم إلغاء طلب حذف الحساب.',
+        'device_saved' => 'تم حفظ الجهاز.',
+    ],
+
     'health' => [
         'ok' => 'جميع الخدمات تعمل.',
         'failing' => 'بعض الخدمات لا تعمل حاليًا.',
@@ -80,6 +95,20 @@ return [
         'setting_default_locale_unsupported' => 'يجب أن تكون اللغة الافتراضية من اللغات المدعومة.',
         'setting_otp_cooldown_exceeds_ttl' => 'يجب أن تكون مهلة إعادة الإرسال أقصر من مدة صلاحية الرمز.',
         'setting_offer_ttl_exceeds_search_ttl' => 'لا يمكن أن تتجاوز صلاحية العرض مدة البحث عن عروض.',
+        'otp_invalid' => 'رمز التحقق غير صحيح.',
+        'otp_expired' => 'انتهت صلاحية رمز التحقق. اطلب رمزاً جديداً.',
+        'otp_attempts_exceeded' => 'محاولات خاطئة كثيرة. اطلب رمزاً جديداً.',
+        'otp_resend_too_soon' => 'يرجى الانتظار :seconds ثانية قبل طلب رمز آخر.',
+        'otp_delivery_failed' => 'تعذر إرسال رمز التحقق. حاول مرة أخرى لاحقاً.',
+        'account_suspended' => 'هذا الحساب موقوف. يرجى التواصل مع الدعم.',
+        'account_deleted' => 'تم حذف هذا الحساب.',
+        'account_deletion_pending' => 'هذا الحساب قيد الحذف.',
+        'account_verification_required' => 'يحتاج هذا الحساب إلى التحقق أولاً.',
+        'account_restricted' => 'هذا الحساب مقيّد.',
+        'policy_version_not_current' => 'إحدى السياسات لم تعد سارية. أعد التحميل وحاول مجدداً.',
+        'deletion_request_exists' => 'يوجد طلب حذف قيد المعالجة بالفعل.',
+        'deletion_request_not_pending' => 'لا يمكن تعديل طلب الحذف هذا.',
+        'photo_invalid' => 'تعذرت معالجة الصورة.',
         'setting_radius_steps_not_ascending' => 'يجب أن تكون مراحل النطاق تصاعدية تماماً.',
     ],
 ];

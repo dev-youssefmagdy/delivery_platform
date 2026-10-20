@@ -74,7 +74,7 @@ page for their status.
 ## 4. Authentication
 
 - **Mobile (customer/provider):** phone OTP → Sanctum personal access token with abilities `customer` and/or `provider`
-  (ADR-05). Header: `Authorization: Bearer <token>`. Endpoints: `/auth/otp/request`, `/auth/otp/verify`, `/auth/logout` (P1.3).
+  (ADR-05). Header: `Authorization: Bearer <token>`. Endpoints: `/auth/otp/request`, `/auth/otp/verify`, `/auth/refresh`, `/auth/logout` (section 8.5). A token carries exactly one ability, `customer` or `provider`, chosen by the `X-App` header at verification.
 - **Admin:** session guard `admin` (cookie + CSRF), not token based (ADR-06).
 - **Webhooks:** no user auth; signature + timestamp window + `(gateway, event_id)` uniqueness (I8, P3.2).
 
@@ -87,6 +87,7 @@ page for their status.
 | `X-Request-Id` | both | Correlation id; accepted if it matches `[A-Za-z0-9._:-]{8,128}`, otherwise a UUID is generated. Echoed on every response and in `meta.request_id` of errors; added to every log line (Laravel Context) |
 | `Idempotency-Key` | request | UUID; required on critical writes (§7) |
 | `Idempotent-Replayed` | response | `true` when the body is a stored replay |
+| `X-App` | request | `customer` or `provider`; required on `/auth/otp/request` and `/auth/otp/verify` (selects the token ability). Authenticated routes read the app from the token, never from this header |
 | `X-App-Version`, `X-Platform` | request | App version gating (P5.6) |
 
 ## 6. Pagination, filtering, sorting
@@ -227,3 +228,31 @@ Public (no authentication, throttle `api`, `Cache-Control: public, max-age=30`, 
 
 `digits_preference` is `auto` (follow the language), `western` or `arabic_indic`. A client must block only when `maintenance` is true, or when `apps.<own>.force_update`
 is true and its version is below `apps.<own>.min_version` (customer app = `customer`, driver app = `provider`). Unknown keys are ignored (Section 1).
+
+### 8.5 Mobile identity (P1.3)
+
+Bearer tokens (Sanctum), ability `customer` or `provider`; a customer token is `403 forbidden` on provider-only routes and vice versa. Every `/me` route accepts either ability and
+only ever acts on the authenticated user (there is no user id in any path). Account status gates: `account.active` answers `403` with `account_suspended`, `account_deleted`,
+`account_deletion_pending`, `account_verification_required` (and `account_restricted` where a route asks for strict checking, such as booking creation later). `GET /me`, `GET /me/consents`,
+`DELETE /me/account-deletion-requests/{id}` and `POST /auth/logout` are status-safe so the app can always show the right screen and let the user leave.
+
+| Method | Path | Auth | Notes / errors |
+|---|---|---|---|
+| POST | `/auth/otp/request` | `X-App`; limiter `otp-request` (per phone, IP and `device_id`; settings `rate_limit_otp_request_*`) | body `phone` (E.164), optional `purpose`, `device_id`. `200` `data = { expires_in, resend_in, length }`, identical for every number. `429 otp_resend_too_soon` (+`Retry-After`, `meta.retry_after`) inside the cooldown, `503 otp_delivery_failed`, `422` |
+| POST | `/auth/otp/verify` | `X-App`; limiter `otp-verify` | body `phone`, `code`, `device{device_id, platform, app_version?, push_token?}`. `200` `data = { token, token_type, expires_at, abilities, is_new_user, user }`. `422 otp_invalid` (`meta.attempts_remaining`), `otp_expired`, `otp_attempts_exceeded`; `403 account_suspended` / `account_deleted` after a valid code |
+| POST | `/auth/refresh` | token | re-issues the token of this device (old one revoked); same payload as verify; `403` for blocked statuses |
+| POST | `/auth/logout` | token | revokes the presented token only and clears that device's push token |
+| GET | `/me` | token | `data = { id, app, name, phone, phone_verified, email, photo_url (signed, 15 min), preferred_locale, status, profile_complete, created_at, customer_profile?, consents{pending[{id,type,version}]}, deletion_request? }` |
+| PATCH | `/me` | token + `account.active` | `name`, `email`, `preferred_locale`; customer tokens also `accessibility_needs`, `emergency_contact_name/phone`, `marketing_opt_in`. Phone, status and ids are ignored |
+| POST | `/me/photo` | token + `account.active` | multipart `photo` (jpg/png/webp, 5 MB, 64-8000 px); re-encoded to JPEG (metadata stripped), stored on the private disk; `422 photo_invalid` |
+| GET | `/me/consents` | token | `data = { required[], pending[], accepted[] }` for the app's required policy types (terms, privacy) |
+| POST | `/me/consents` | token + `account.active` | `policies[]` (ids), optional `marketing_opt_in`; only current published versions: `422 policy_version_not_current` |
+| POST | `/me/devices` | token + `account.active` | `device_id`, `platform`, `app_version?`, `push_token?`, `locale?`; a push token moves to the newest holder |
+| POST | `/me/account-deletion-requests` | token + `account.active` + `Idempotency-Key` | optional `reason`; account becomes `deletion_pending`; `409 deletion_request_exists` |
+| DELETE | `/me/account-deletion-requests/{id}` | token | cancels a pending request and restores the previous status; `404` for another user's id, `422 deletion_request_not_pending` |
+| GET | `/policies/{type}` | public, `ETag` | current published text in the request language (Arabic fallback): `data = { id, type, version, title, content, published_at }`; `404` if none published |
+| GET | `/media/users/{uuid}/photo` | signed URL only | streams the private photo; `403` without a valid signature |
+
+New domain codes: `otp_invalid`, `otp_expired`, `otp_attempts_exceeded`, `otp_resend_too_soon` (429), `otp_delivery_failed` (503), `account_suspended`, `account_deleted`,
+`account_deletion_pending`, `account_verification_required`, `account_restricted` (all 403), `policy_version_not_current`, `photo_invalid`, `deletion_request_not_pending` (422), `deletion_request_exists` (409).
+Admin: `GET /admin/otp-challenges` (permission `otp_challenges.view`, read-only DataTable; filters phone/state/delivery/app/IP/date; masked phone, no codes).

@@ -72,7 +72,7 @@ class LanguageScreen extends ConsumerWidget {
                   await ref.read(localeProvider.notifier).setLanguage(current);
                   if (!context.mounted) return;
                   if (fromSettings) {
-                    context.go(Routes.home);
+                    context.go(Routes.providerOnboarding);
                   } else {
                     context.go(
                       ref.read(onboardingDoneProvider)

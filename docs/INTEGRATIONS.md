@@ -9,7 +9,7 @@
 
 | Area | Contract | Milestone | Dev driver | Production provider | Env vars (proposed) | Status |
 |---|---|---|---|---|---|---|
-| SMS / OTP | `SmsGateway` | P1.3 | `log` (OTP written to log, local/testing only) | TBD (launch-market SMS provider) | `SMS_DRIVER`, `SMS_API_KEY`, `SMS_SENDER_ID` | not configured yet |
+| SMS / OTP | `SmsGateway` (`App\Integrations\Sms`) | P1.3 | `log` (writes the OTP to log channel `otp_dev` only; refused outside local/testing) | `smsmisr` (SMS Misr, Egypt): real HTTP call implemented from the vendor docs, **untested without credentials** (verify sender token, unicode flag, error codes on a staging account) | `SMS_DRIVER` (`smsmisr`/`log`), `SMSMISR_USERNAME`, `SMSMISR_PASSWORD`, `SMSMISR_SENDER`, `SMSMISR_ENVIRONMENT` (1 live, 2 sandbox); test OTP: `OTP_TEST_ENABLED`, `OTP_TEST_CODE`, `OTP_TEST_PHONES` (local/testing only, boot-guarded); `AUTH_TOKEN_TTL_DAYS` | `log` in local/testing; unset = not configured: OTP requests answer `503 otp_delivery_failed`, never fake success |
 | Maps: geocode, reverse, route/ETA | `MapsProvider` | P1.5 | `fake` (straight-line distance) | TBD (Google Maps / Mapbox / OSRM) | `MAPS_DRIVER`, `MAPS_API_KEY`; Flutter tile URL `MAP_TILE_URL` | not configured yet |
 | Realtime | Laravel Reverb 1.12 (framework broadcaster) | P0.2 (installed) / P2.2 (channels + events) | Reverb on `localhost:8080` (`php artisan reverb:start`) | Reverb server behind TLS | `BROADCAST_CONNECTION`, `REVERB_APP_ID`, `REVERB_APP_KEY`, `REVERB_APP_SECRET`, `REVERB_HOST`, `REVERB_PORT`, `REVERB_SCHEME`, `REVERB_SERVER_HOST`, `REVERB_SERVER_PORT`, `REVERB_SCALING_ENABLED`, `VITE_REVERB_*` | configured locally (`BROADCAST_CONNECTION=reverb`); tests use `null`; no channels/events yet |
 | Payments (card / wallet) | `PaymentGateway` | P3.2 | `fake` (sandbox-style, local/testing only) | TBD (market/merchant eligibility) | `PAYMENT_DRIVER`, `PAYMENT_API_KEY`, `PAYMENT_WEBHOOK_SECRET`, `PAYMENT_MERCHANT_ID` | not configured yet |
@@ -34,7 +34,7 @@
 
 ## Credential checklist for production
 
-- [ ] SMS provider account + sender id approved for the launch market
+- [ ] SMS Misr account + approved sender token for the launch market (`SMSMISR_*`); run one live OTP end to end before go-live
 - [ ] Maps API key with geocoding/directions enabled (and tile provider for flutter_map)
 - [ ] Payment gateway merchant account, API keys, webhook secret, sandbox for staging
 - [ ] Firebase project, service-account JSON (stored outside the repo), APNs key uploaded to Firebase

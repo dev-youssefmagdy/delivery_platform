@@ -530,6 +530,23 @@ return [
         ],
     ],
 
+    'otp_challenges' => [
+        'menu' => 'OTP challenges',
+        'title' => 'OTP challenges',
+        'subtitle' => 'Verification codes requested by mobile users. Codes are never stored or shown.',
+        'fields' => [
+            'time' => 'Time',
+            'phone' => 'Phone (masked)',
+            'phone_full' => 'Phone number (full, exact match)',
+            'app' => 'App',
+            'state' => 'State',
+            'attempts' => 'Attempts',
+            'delivery' => 'Delivery',
+            'driver' => 'SMS driver',
+            'ip' => 'IP address',
+        ],
+    ],
+
     'settings' => [
         'menu' => 'Settings',
         'title' => 'Settings',

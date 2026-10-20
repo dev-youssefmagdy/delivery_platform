@@ -2,31 +2,120 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Identity\UserStatus;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+/**
+ * A mobile account (customer and/or provider). The verified phone is the identity; there is no password
+ * (ADR-60). Mass assignment is deliberately narrow: `status`, `phone_e164` and verification timestamps are only
+ * set by services, never from request input.
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property string|null $name
+ * @property string|null $phone_e164
+ * @property Carbon|null $phone_verified_at
+ * @property string|null $email
+ * @property string|null $photo_path
+ * @property string|null $preferred_locale
+ * @property UserStatus $status
+ * @property Carbon|null $last_seen_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read CustomerProfile|null $customerProfile
+ * @property-read ProviderProfile|null $providerProfile
+ */
+class User extends Authenticatable implements HasLocalePreference
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    protected $fillable = ['name', 'email', 'preferred_locale', 'photo_path'];
 
     /**
-     * Get the attributes that should be cast.
-     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'status' => 'active',
+    ];
+
+    protected static function booted(): void
+    {
+        static::creating(static function (self $user): void {
+            $user->uuid ??= (string) Str::uuid();
+        });
+    }
+
+    /**
+     * @return HasOne<CustomerProfile, $this>
+     */
+    public function customerProfile(): HasOne
+    {
+        return $this->hasOne(CustomerProfile::class);
+    }
+
+    /**
+     * @return HasOne<ProviderProfile, $this>
+     */
+    public function providerProfile(): HasOne
+    {
+        return $this->hasOne(ProviderProfile::class);
+    }
+
+    /**
+     * @return HasMany<UserDevice, $this>
+     */
+    public function devices(): HasMany
+    {
+        return $this->hasMany(UserDevice::class);
+    }
+
+    /**
+     * @return HasMany<UserConsent, $this>
+     */
+    public function consents(): HasMany
+    {
+        return $this->hasMany(UserConsent::class);
+    }
+
+    /**
+     * @return HasMany<AccountDeletionRequest, $this>
+     */
+    public function deletionRequests(): HasMany
+    {
+        return $this->hasMany(AccountDeletionRequest::class);
+    }
+
+    public function preferredLocale(): ?string
+    {
+        return $this->preferred_locale;
+    }
+
+    public function isProfileComplete(): bool
+    {
+        return $this->name !== null && trim($this->name) !== '';
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'status' => UserStatus::class,
+            'phone_verified_at' => 'datetime',
+            'last_seen_at' => 'datetime',
         ];
     }
 }

@@ -4,32 +4,61 @@ import 'package:platform_core/platform_core.dart';
 
 void main() {
   group('computeRedirect', () {
-    test('unauthenticated cannot open home', () {
-      expect(
-        computeRedirect(
-          location: Routes.home,
-          session: SessionStatus.unauthenticated,
-        ),
-        Routes.splash,
-      );
-      expect(
-        computeRedirect(location: Routes.home, session: SessionStatus.expired),
-        Routes.splash,
-      );
-    });
-
-    test('authenticated is moved off onboarding/auth', () {
-      for (final l in [Routes.auth, Routes.onboarding]) {
+    test('signed out cannot open signed-in screens', () {
+      for (final l in [
+        Routes.home,
+        Routes.profile,
+        Routes.consent,
+        Routes.accountStatus,
+      ]) {
         expect(
-          computeRedirect(location: l, session: SessionStatus.authenticated),
-          Routes.home,
+          computeRedirect(location: l, stage: AuthStage.signedOut),
+          Routes.splash,
         );
       }
+      for (final l in [Routes.auth, Routes.otp, Routes.language]) {
+        expect(
+          computeRedirect(location: l, stage: AuthStage.signedOut),
+          isNull,
+        );
+      }
+    });
+
+    test('each signed-in stage is pinned to its screen', () {
+      const expected = {
+        AuthStage.needsProfile: Routes.profile,
+        AuthStage.needsConsent: Routes.consent,
+        AuthStage.accountStatus: Routes.accountStatus,
+        AuthStage.error: Routes.accountStatus,
+        AuthStage.ready: Routes.home,
+      };
+      expected.forEach((stage, route) {
+        expect(computeRedirect(location: route, stage: stage), isNull);
+        for (final other in [
+          Routes.home,
+          Routes.profile,
+          Routes.consent,
+          Routes.auth,
+          Routes.otp,
+          Routes.onboarding,
+        ]) {
+          if (other == route) continue;
+          expect(computeRedirect(location: other, stage: stage), route);
+        }
+        expect(
+          computeRedirect(location: Routes.language, stage: stage),
+          isNull,
+        );
+      });
+    });
+
+    test('while /me loads, guarded screens wait on the splash', () {
       expect(
-        computeRedirect(
-          location: Routes.language,
-          session: SessionStatus.authenticated,
-        ),
+        computeRedirect(location: Routes.home, stage: AuthStage.loading),
+        Routes.splash,
+      );
+      expect(
+        computeRedirect(location: Routes.splash, stage: AuthStage.loading),
         isNull,
       );
     });

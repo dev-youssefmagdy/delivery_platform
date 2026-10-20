@@ -67,13 +67,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authTitle => 'Sign in';
 
   @override
-  String get authUnavailableTitle => 'Sign-in is not available yet';
-
-  @override
-  String get authUnavailableBody =>
-      'Phone sign-in and driver registration will arrive in an upcoming update.';
-
-  @override
   String get homeTitle => 'Home';
 
   @override
@@ -138,5 +131,116 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String forceUpdateRequiredVersion(String version) {
     return 'Required version: $version';
+  }
+
+  @override
+  String get authPhoneTitle => 'Enter your phone number';
+
+  @override
+  String get authPhoneSubtitle =>
+      'We will send you a verification code by SMS.';
+
+  @override
+  String get authPhoneLabel => 'Phone number';
+
+  @override
+  String get authPhoneInvalid => 'Enter a valid phone number';
+
+  @override
+  String get authSendCode => 'Send code';
+
+  @override
+  String get otpTitle => 'Verification code';
+
+  @override
+  String otpSubtitle(int length, String phone) {
+    return 'Enter the $length-digit code sent to $phone';
+  }
+
+  @override
+  String otpResendIn(int seconds) {
+    return 'Resend code in $seconds s';
+  }
+
+  @override
+  String get otpResend => 'Resend code';
+
+  @override
+  String get otpChangeNumber => 'Change number';
+
+  @override
+  String get otpErrorInvalid => 'The code is incorrect.';
+
+  @override
+  String get otpErrorExpired => 'The code has expired. Request a new one.';
+
+  @override
+  String get otpErrorLocked => 'Too many wrong attempts. Request a new code.';
+
+  @override
+  String otpErrorTooManyRequests(int seconds) {
+    return 'Too many attempts. Try again in $seconds seconds.';
+  }
+
+  @override
+  String get otpErrorDeliveryFailed =>
+      'We could not send the code. Try again later.';
+
+  @override
+  String get statusSuspendedTitle => 'Account suspended';
+
+  @override
+  String get statusSuspendedBody =>
+      'Your account is suspended. Please contact support.';
+
+  @override
+  String get statusRestrictedTitle => 'Account restricted';
+
+  @override
+  String get statusRestrictedBody =>
+      'Some features are limited on your account. Contact support for details.';
+
+  @override
+  String get statusDeletionPendingTitle => 'Deletion requested';
+
+  @override
+  String get statusDeletionPendingBody =>
+      'Your account is waiting to be deleted. You can cancel the request while it is pending.';
+
+  @override
+  String get statusVerificationTitle => 'Verification required';
+
+  @override
+  String get statusVerificationBody =>
+      'Your account needs to be verified before you can continue. Contact support.';
+
+  @override
+  String get statusDeletedTitle => 'Account deleted';
+
+  @override
+  String get statusDeletedBody => 'This account has been deleted.';
+
+  @override
+  String get statusCancelDeletion => 'Cancel deletion request';
+
+  @override
+  String get homeLogout => 'Sign out';
+
+  @override
+  String get providerOnboardingTitle => 'Driver application';
+
+  @override
+  String get providerOnboardingBadge => 'Coming soon';
+
+  @override
+  String get providerOnboardingHeadline => 'Your phone number is verified';
+
+  @override
+  String get providerOnboardingBody =>
+      'The driver application steps (documents, vehicle and review) open in an upcoming update. There is nothing more to do for now.';
+
+  @override
+  String providerOnboardingVerifiedPhone(String phone) {
+    return 'Verified number: $phone';
   }
 }

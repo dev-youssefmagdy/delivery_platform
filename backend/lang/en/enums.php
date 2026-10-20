@@ -62,6 +62,31 @@ return [
         'not_configured' => 'Not configured',
     ],
 
+    'user_status' => [
+        'active' => 'Active',
+        'restricted' => 'Restricted',
+        'suspended' => 'Suspended',
+        'verification_required' => 'Verification required',
+        'deletion_pending' => 'Deletion pending',
+        'deleted' => 'Deleted',
+    ],
+
+    'client_app' => ['customer' => 'Customer app', 'provider' => 'Driver app'],
+
+    'otp_purpose' => ['login' => 'Sign in'],
+
+    'otp_delivery_status' => ['sent' => 'Sent', 'failed' => 'Failed', 'skipped' => 'Test number (not sent)'],
+
+    'otp_challenge_state' => [
+        'pending' => 'Pending',
+        'verified' => 'Verified',
+        'expired' => 'Expired',
+        'locked' => 'Locked',
+        'superseded' => 'Superseded',
+    ],
+
+    'deletion_request_status' => ['pending' => 'Pending', 'cancelled' => 'Cancelled', 'rejected' => 'Rejected', 'completed' => 'Completed'],
+
     'admin_permission' => [
         'label' => ':group: :action',
     ],
@@ -72,6 +97,7 @@ return [
         'roles' => 'Roles',
         'audit_logs' => 'Audit logs',
         'login_activity' => 'Login activity',
+        'otp_challenges' => 'OTP challenges',
         'settings' => 'Settings',
         'markets' => 'Markets',
         'policies' => 'Policies',

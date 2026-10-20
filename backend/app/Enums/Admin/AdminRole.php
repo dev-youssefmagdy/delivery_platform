@@ -85,12 +85,12 @@ enum AdminRole: string implements HasLabel
             self::ContentCmsEditor => [$p::ContentManage, $p::TranslationsManage, $p::LeadsView],
             self::ReadOnlyAuditor => array_values(array_filter(
                 AdminPermission::cases(),
-                static fn (AdminPermission $permission): bool => $permission->action() === 'view' && $permission->group() !== 'demo_items',
+                static fn (AdminPermission $permission): bool => $permission->action() === 'view' && ! in_array($permission->group(), ['demo_items', 'otp_challenges'], true),
             )),
             self::SystemIntegrationAdmin => [
                 $p::SettingsView, $p::SettingsManage,
                 $p::SystemHealth, $p::SystemFeatureFlags, $p::SystemAppVersions, $p::SystemQueues,
-                $p::NotificationsManage, $p::AdminsView,
+                $p::NotificationsManage, $p::AdminsView, $p::OtpChallengesView,
             ],
         };
     }

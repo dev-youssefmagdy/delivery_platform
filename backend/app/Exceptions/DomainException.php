@@ -47,6 +47,16 @@ abstract class DomainException extends RuntimeException implements HttpException
     }
 
     /**
+     * Safe machine-readable extras for `meta` (retry hints, remaining attempts): only these context keys are exposed.
+     *
+     * @return array<string, mixed>
+     */
+    public function meta(): array
+    {
+        return array_intersect_key($this->context, array_flip(['retry_after', 'attempts_remaining']));
+    }
+
+    /**
      * Field errors for the envelope.
      *
      * @return array<string, list<string>>

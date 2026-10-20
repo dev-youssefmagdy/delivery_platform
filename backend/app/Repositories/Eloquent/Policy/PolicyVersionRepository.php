@@ -58,6 +58,26 @@ final class PolicyVersionRepository extends BaseRepository implements PolicyVers
             ->values();
     }
 
+    public function findCurrentByType(PolicyType $type): ?PolicyVersion
+    {
+        return $this->query()
+            ->where('type', $type->value)
+            ->where('status', ContentStatus::Published->value)
+            ->orderByDesc('version')
+            ->first();
+    }
+
+    public function currentPublishedByUuids(array $uuids): Collection
+    {
+        if ($uuids === []) {
+            return new Collection;
+        }
+
+        return $this->currentPublished()
+            ->filter(static fn (PolicyVersion $policy): bool => in_array($policy->uuid, $uuids, true))
+            ->values();
+    }
+
     public function loadPublisher(PolicyVersion $policy): PolicyVersion
     {
         return $policy->loadMissing('publisher:id,name,email');

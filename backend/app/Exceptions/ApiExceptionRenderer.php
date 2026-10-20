@@ -45,7 +45,7 @@ final class ApiExceptionRenderer
 
         return match (true) {
             $e instanceof DomainException => ApiResponse::error(
-                $e->getMessage(), $e->getStatusCode(), $e->errorCode, $e->fieldErrors(), headers: $e->getHeaders(),
+                $e->getMessage(), $e->getStatusCode(), $e->errorCode, $e->fieldErrors(), meta: $e->meta(), headers: $e->getHeaders(),
             ),
             $e instanceof ValidationException => ApiResponse::error(
                 (string) __('api.errors.validation_failed'), $e->status, 'validation_failed', $e->errors(),

@@ -21,8 +21,6 @@
   "onboarding3Title": "اربح بشفافية",
   "onboarding3Body": "تابع أرباحك وعمولتك بوضوح في كل رحلة.",
   "authTitle": "تسجيل الدخول",
-  "authUnavailableTitle": "تسجيل الدخول غير متاح بعد",
-  "authUnavailableBody": "سيتوفر الدخول برقم الهاتف وتسجيل السائقين في تحديث قادم.",
   "homeTitle": "الرئيسية",
   "homeChangeLanguage": "تغيير اللغة",
   "offlineBanner": "لا يوجد اتصال بالإنترنت",
@@ -53,6 +51,69 @@
   "@forceUpdateRequiredVersion": {
     "placeholders": {
       "version": {
+        "type": "String"
+      }
+    }
+  },
+  "authPhoneTitle": "أدخل رقم هاتفك",
+  "authPhoneSubtitle": "سنرسل لك رمز تحقق عبر رسالة نصية.",
+  "authPhoneLabel": "رقم الهاتف",
+  "authPhoneInvalid": "أدخل رقم هاتف صحيحاً",
+  "authSendCode": "إرسال الرمز",
+  "otpTitle": "رمز التحقق",
+  "otpSubtitle": "أدخل الرمز المكوّن من {length} أرقام المرسل إلى {phone}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "otpResendIn": "إعادة الإرسال خلال {seconds} ث",
+  "@otpResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpResend": "إعادة إرسال الرمز",
+  "otpChangeNumber": "تغيير الرقم",
+  "otpErrorInvalid": "الرمز غير صحيح.",
+  "otpErrorExpired": "انتهت صلاحية الرمز. اطلب رمزاً جديداً.",
+  "otpErrorLocked": "محاولات خاطئة كثيرة. اطلب رمزاً جديداً.",
+  "otpErrorTooManyRequests": "محاولات كثيرة. حاول بعد {seconds} ثانية.",
+  "@otpErrorTooManyRequests": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpErrorDeliveryFailed": "تعذر إرسال الرمز. حاول لاحقاً.",
+  "statusSuspendedTitle": "الحساب موقوف",
+  "statusSuspendedBody": "حسابك موقوف. يرجى التواصل مع الدعم.",
+  "statusRestrictedTitle": "الحساب مقيّد",
+  "statusRestrictedBody": "بعض الميزات محدودة على حسابك. تواصل مع الدعم لمعرفة التفاصيل.",
+  "statusDeletionPendingTitle": "تم طلب الحذف",
+  "statusDeletionPendingBody": "حسابك بانتظار الحذف. يمكنك إلغاء الطلب ما دام قيد المعالجة.",
+  "statusVerificationTitle": "التحقق مطلوب",
+  "statusVerificationBody": "يجب التحقق من حسابك قبل المتابعة. تواصل مع الدعم.",
+  "statusDeletedTitle": "تم حذف الحساب",
+  "statusDeletedBody": "تم حذف هذا الحساب.",
+  "statusCancelDeletion": "إلغاء طلب الحذف",
+  "homeLogout": "تسجيل الخروج",
+  "providerOnboardingTitle": "طلب الانضمام كسائق",
+  "providerOnboardingBadge": "قريباً",
+  "providerOnboardingHeadline": "تم التحقق من رقم هاتفك",
+  "providerOnboardingBody": "خطوات طلب الانضمام كسائق (المستندات والمركبة والمراجعة) ستتوفر في تحديث قادم. لا يلزمك أي إجراء الآن.",
+  "providerOnboardingVerifiedPhone": "الرقم الموثّق: {phone}",
+  "@providerOnboardingVerifiedPhone": {
+    "placeholders": {
+      "phone": {
         "type": "String"
       }
     }

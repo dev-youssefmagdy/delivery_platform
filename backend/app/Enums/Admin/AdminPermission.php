@@ -96,6 +96,7 @@ enum AdminPermission: string implements HasLabel
     case SystemFeatureFlags = 'system.feature_flags';
     case SystemAppVersions = 'system.app_versions';
     case SystemQueues = 'system.queues';
+    case OtpChallengesView = 'otp_challenges.view';
     case DemoItemsView = 'demo_items.view';
     case DemoItemsManage = 'demo_items.manage';
     case DemoItemsExport = 'demo_items.export';

@@ -62,6 +62,31 @@ return [
         'not_configured' => 'غير مهيأ',
     ],
 
+    'user_status' => [
+        'active' => 'نشط',
+        'restricted' => 'مقيّد',
+        'suspended' => 'موقوف',
+        'verification_required' => 'يتطلب التحقق',
+        'deletion_pending' => 'الحذف قيد المعالجة',
+        'deleted' => 'محذوف',
+    ],
+
+    'client_app' => ['customer' => 'تطبيق العميل', 'provider' => 'تطبيق السائق'],
+
+    'otp_purpose' => ['login' => 'تسجيل الدخول'],
+
+    'otp_delivery_status' => ['sent' => 'تم الإرسال', 'failed' => 'فشل', 'skipped' => 'رقم تجريبي (لم يُرسل)'],
+
+    'otp_challenge_state' => [
+        'pending' => 'قيد الانتظار',
+        'verified' => 'تم التحقق',
+        'expired' => 'منتهي',
+        'locked' => 'مقفل',
+        'superseded' => 'تم استبداله',
+    ],
+
+    'deletion_request_status' => ['pending' => 'قيد الانتظار', 'cancelled' => 'ملغى', 'rejected' => 'مرفوض', 'completed' => 'مكتمل'],
+
     'admin_permission' => [
         'label' => ':group: :action',
     ],
@@ -72,6 +97,7 @@ return [
         'roles' => 'الأدوار',
         'audit_logs' => 'سجل التدقيق',
         'login_activity' => 'نشاط تسجيل الدخول',
+        'otp_challenges' => 'طلبات رمز التحقق',
         'settings' => 'الإعدادات',
         'markets' => 'الأسواق',
         'policies' => 'السياسات',

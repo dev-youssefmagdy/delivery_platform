@@ -12,6 +12,13 @@ use App\Repositories\Contracts\Common\CountryRepositoryInterface;
 use App\Repositories\Contracts\Common\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\Common\IdempotencyKeyRepositoryInterface;
 use App\Repositories\Contracts\Demo\DemoItemRepositoryInterface;
+use App\Repositories\Contracts\Identity\AccessTokenRepositoryInterface;
+use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
+use App\Repositories\Contracts\Identity\CustomerProfileRepositoryInterface;
+use App\Repositories\Contracts\Identity\OtpChallengeRepositoryInterface;
+use App\Repositories\Contracts\Identity\UserConsentRepositoryInterface;
+use App\Repositories\Contracts\Identity\UserDeviceRepositoryInterface;
+use App\Repositories\Contracts\Identity\UserRepositoryInterface;
 use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
 use App\Repositories\Contracts\Settings\SettingsRepositoryInterface;
 use App\Repositories\Eloquent\Admin\AdminExportRepository;
@@ -24,6 +31,13 @@ use App\Repositories\Eloquent\Common\CountryRepository;
 use App\Repositories\Eloquent\Common\CurrencyRepository;
 use App\Repositories\Eloquent\Common\IdempotencyKeyRepository;
 use App\Repositories\Eloquent\Demo\DemoItemRepository;
+use App\Repositories\Eloquent\Identity\AccessTokenRepository;
+use App\Repositories\Eloquent\Identity\AccountDeletionRequestRepository;
+use App\Repositories\Eloquent\Identity\CustomerProfileRepository;
+use App\Repositories\Eloquent\Identity\OtpChallengeRepository;
+use App\Repositories\Eloquent\Identity\UserConsentRepository;
+use App\Repositories\Eloquent\Identity\UserDeviceRepository;
+use App\Repositories\Eloquent\Identity\UserRepository;
 use App\Repositories\Eloquent\Policy\PolicyVersionRepository;
 use App\Repositories\Eloquent\Settings\SettingsRepository;
 use Illuminate\Support\ServiceProvider;
@@ -49,6 +63,13 @@ class RepositoryServiceProvider extends ServiceProvider
         DemoItemRepositoryInterface::class => DemoItemRepository::class,
         SettingsRepositoryInterface::class => SettingsRepository::class,
         PolicyVersionRepositoryInterface::class => PolicyVersionRepository::class,
+        UserRepositoryInterface::class => UserRepository::class,
+        CustomerProfileRepositoryInterface::class => CustomerProfileRepository::class,
+        OtpChallengeRepositoryInterface::class => OtpChallengeRepository::class,
+        UserDeviceRepositoryInterface::class => UserDeviceRepository::class,
+        UserConsentRepositoryInterface::class => UserConsentRepository::class,
+        AccountDeletionRequestRepositoryInterface::class => AccountDeletionRequestRepository::class,
+        AccessTokenRepositoryInterface::class => AccessTokenRepository::class,
         // @admin-module:bindings
     ];
 }

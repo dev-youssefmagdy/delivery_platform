@@ -8,6 +8,21 @@ return [
     'ok' => 'Request completed successfully.',
     'created' => 'Created successfully.',
 
+    'otp' => [
+        'sent' => 'A verification code has been sent.',
+        'verified' => 'Phone number verified.',
+        'sms' => 'Your verification code is :code. It is valid for :minutes minutes. Do not share it with anyone.',
+    ],
+    'auth' => ['logged_out' => 'Signed out.'],
+    'me' => [
+        'updated' => 'Profile updated.',
+        'photo_saved' => 'Photo updated.',
+        'consent_saved' => 'Your acceptance was saved.',
+        'deletion_requested' => 'Your account deletion request was received.',
+        'deletion_cancelled' => 'Your account deletion request was cancelled.',
+        'device_saved' => 'Device saved.',
+    ],
+
     'health' => [
         'ok' => 'All services are operational.',
         'failing' => 'Some services are currently unavailable.',
@@ -80,6 +95,20 @@ return [
         'setting_default_locale_unsupported' => 'The default language must be one of the supported languages.',
         'setting_otp_cooldown_exceeds_ttl' => 'The resend cooldown must be shorter than the code validity.',
         'setting_offer_ttl_exceeds_search_ttl' => 'The offer validity cannot exceed the booking search duration.',
+        'otp_invalid' => 'The verification code is incorrect.',
+        'otp_expired' => 'The verification code has expired. Request a new one.',
+        'otp_attempts_exceeded' => 'Too many wrong attempts. Request a new code.',
+        'otp_resend_too_soon' => 'Please wait :seconds seconds before requesting another code.',
+        'otp_delivery_failed' => 'The verification code could not be sent. Please try again later.',
+        'account_suspended' => 'This account is suspended. Please contact support.',
+        'account_deleted' => 'This account has been deleted.',
+        'account_deletion_pending' => 'This account is pending deletion.',
+        'account_verification_required' => 'This account needs verification first.',
+        'account_restricted' => 'This account is restricted.',
+        'policy_version_not_current' => 'One of the policies is no longer current. Reload and try again.',
+        'deletion_request_exists' => 'A deletion request is already pending.',
+        'deletion_request_not_pending' => 'This deletion request can no longer be changed.',
+        'photo_invalid' => 'The image could not be processed.',
         'setting_radius_steps_not_ascending' => 'Radius steps must be strictly ascending.',
     ],
 ];

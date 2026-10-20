@@ -43,7 +43,7 @@ void main() {
       expect(find.byKey(const Key('force-update-screen')), findsOneWidget);
       expect(find.text('تحديث مطلوب'), findsOneWidget);
       expect(find.text('الإصدار المطلوب: 1.2.0'), findsOneWidget);
-      expect(find.text('تسجيل الدخول غير متاح بعد'), findsNothing);
+      expect(find.text('أدخل رقم هاتفك'), findsNothing);
     });
 
     testWidgets('English, LTR', (tester) async {
@@ -69,7 +69,7 @@ void main() {
         config: config(minVersion: '1.2.0', forceUpdate: true),
       );
       expect(find.byKey(const Key('force-update-screen')), findsNothing);
-      expect(find.text('تسجيل الدخول غير متاح بعد'), findsOneWidget);
+      expect(find.text('أدخل رقم هاتفك'), findsOneWidget);
     });
 
     testWidgets('does not block when the update is not forced', (tester) async {
@@ -138,7 +138,7 @@ void main() {
 
       expect(calls, 2);
       expect(find.byKey(const Key('maintenance-screen')), findsNothing);
-      expect(find.text('تسجيل الدخول غير متاح بعد'), findsOneWidget);
+      expect(find.text('أدخل رقم هاتفك'), findsOneWidget);
     });
   });
 
@@ -154,7 +154,7 @@ void main() {
         message: null,
       ),
     );
-    expect(find.text('تسجيل الدخول غير متاح بعد'), findsOneWidget);
+    expect(find.text('أدخل رقم هاتفك'), findsOneWidget);
   });
 
   testWidgets('the server default language applies until the user chooses', (

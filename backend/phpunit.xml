@@ -30,6 +30,10 @@
         <env name="DB_CONNECTION" value="mysql"/>
         <env name="DB_DATABASE" value="delivery_platform_testing"/>
         <env name="DB_URL" value=""/>
+        <env name="SMS_DRIVER" value="log"/>
+        <env name="OTP_TEST_ENABLED" value="false"/>
+        <env name="OTP_TEST_CODE" value=""/>
+        <env name="OTP_TEST_PHONES" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="REDIS_DB" value="15"/>

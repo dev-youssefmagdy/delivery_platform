@@ -108,6 +108,15 @@ return [
             'permission' => App\Enums\Admin\AdminPermission::LoginActivityView,
         ],
         [
+            'key' => 'otp_challenges',
+            'group' => 'system',
+            'label' => 'admin.otp_challenges.menu',
+            'route' => 'admin.otp-challenges.index',
+            'active' => 'admin.otp-challenges.*',
+            'icon' => 'lock-closed',
+            'permission' => App\Enums\Admin\AdminPermission::OtpChallengesView,
+        ],
+        [
             'key' => 'demo_items',
             'group' => 'developer',
             'label' => 'admin.demo_items.menu',

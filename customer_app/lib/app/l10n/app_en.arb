@@ -18,8 +18,6 @@
   "onboarding3Title": "Travel safely",
   "onboarding3Body": "Follow your trip live and share it with someone you trust.",
   "authTitle": "Sign in",
-  "authUnavailableTitle": "Sign-in is not available yet",
-  "authUnavailableBody": "Phone sign-in will arrive in an upcoming update.",
   "homeTitle": "Home",
   "homeChangeLanguage": "Change language",
   "offlineBanner": "No internet connection",
@@ -46,5 +44,83 @@
         "type": "String"
       }
     }
-  }
+  },
+  "authPhoneTitle": "Enter your phone number",
+  "authPhoneSubtitle": "We will send you a verification code by SMS.",
+  "authPhoneLabel": "Phone number",
+  "authPhoneInvalid": "Enter a valid phone number",
+  "authSendCode": "Send code",
+  "otpTitle": "Verification code",
+  "otpSubtitle": "Enter the {length}-digit code sent to {phone}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "otpResendIn": "Resend code in {seconds} s",
+  "@otpResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpResend": "Resend code",
+  "otpChangeNumber": "Change number",
+  "otpErrorInvalid": "The code is incorrect.",
+  "otpErrorExpired": "The code has expired. Request a new one.",
+  "otpErrorLocked": "Too many wrong attempts. Request a new code.",
+  "otpErrorTooManyRequests": "Too many attempts. Try again in {seconds} seconds.",
+  "@otpErrorTooManyRequests": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpErrorDeliveryFailed": "We could not send the code. Try again later.",
+  "profileTitle": "Complete your profile",
+  "profileSubtitle": "Tell us your name so drivers know who they are meeting.",
+  "profileNameLabel": "Full name",
+  "profileNameInvalid": "Enter your name (at least 2 characters)",
+  "profileEmailLabel": "Email (optional)",
+  "profileEmailInvalid": "Enter a valid email address",
+  "consentTitle": "Terms and privacy",
+  "consentSubtitle": "Please read and accept to continue.",
+  "consentRead": "Read",
+  "consentAccept": "I accept the terms of use and the privacy policy",
+  "consentMarketing": "Send me offers and news (optional)",
+  "consentPolicyTerms": "Terms of use",
+  "consentPolicyPrivacy": "Privacy policy",
+  "consentPolicyOther": "Policy",
+  "statusSuspendedTitle": "Account suspended",
+  "statusSuspendedBody": "Your account is suspended. Please contact support.",
+  "statusRestrictedTitle": "Account restricted",
+  "statusRestrictedBody": "Some features are limited on your account. Contact support for details.",
+  "statusDeletionPendingTitle": "Deletion requested",
+  "statusDeletionPendingBody": "Your account is waiting to be deleted. You can cancel the request while it is pending.",
+  "statusVerificationTitle": "Verification required",
+  "statusVerificationBody": "Your account needs to be verified before you can continue. Contact support.",
+  "statusDeletedTitle": "Account deleted",
+  "statusDeletedBody": "This account has been deleted.",
+  "statusCancelDeletion": "Cancel deletion request",
+  "homeGreeting": "Hello, {name}",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeLogout": "Sign out",
+  "homeDeleteAccount": "Delete my account",
+  "deleteAccountTitle": "Delete your account?",
+  "deleteAccountBody": "We will review your request. Some data may be kept where the law requires it. You can cancel while the request is pending.",
+  "deleteAccountConfirm": "Request deletion",
+  "actionCancel": "Cancel"
 }

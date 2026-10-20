@@ -35,5 +35,15 @@ interface PolicyVersionRepositoryInterface extends BaseRepositoryInterface
      */
     public function currentPublished(): Collection;
 
+    public function findCurrentByType(PolicyType $type): ?PolicyVersion;
+
+    /**
+     * The current published versions (one per type) whose public id is in $uuids.
+     *
+     * @param list<string> $uuids
+     * @return Collection<int, PolicyVersion>
+     */
+    public function currentPublishedByUuids(array $uuids): Collection;
+
     public function loadPublisher(PolicyVersion $policy): PolicyVersion;
 }

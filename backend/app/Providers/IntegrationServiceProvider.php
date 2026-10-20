@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use App\Integrations\IntegrationGuard;
+use App\Integrations\Sms\Contracts\SmsGateway;
+use App\Integrations\Sms\Drivers\LogSmsGateway;
+use App\Integrations\Sms\Drivers\SmsMisrGateway;
+use App\Support\Auth\TestOtpGuard;
 use Illuminate\Support\ServiceProvider;
 use RuntimeException;
 
@@ -17,7 +21,9 @@ class IntegrationServiceProvider extends ServiceProvider
      *
      * @var array<string, array{0: class-string, 1: array<string, class-string>}>
      */
-    protected array $integrations = [];
+    protected array $integrations = [
+        'sms' => [SmsGateway::class, ['log' => LogSmsGateway::class, 'smsmisr' => SmsMisrGateway::class]],
+    ];
 
     public function register(): void
     {
@@ -48,6 +54,15 @@ class IntegrationServiceProvider extends ServiceProvider
             $drivers,
             (string) $this->app->environment(),
             array_values((array) config('integrations.non_production_drivers', [])),
+            array_values((array) config('integrations.non_production_environments', [])),
+        );
+
+        // The fixed test OTP is a local/testing convenience: the application must not start anywhere else with it set.
+        TestOtpGuard::assertAllowed(
+            (bool) config('identity.test_otp.enabled'),
+            config('identity.test_otp.code'),
+            array_values((array) config('identity.test_otp.phones', [])),
+            (string) $this->app->environment(),
             array_values((array) config('integrations.non_production_environments', [])),
         );
     }

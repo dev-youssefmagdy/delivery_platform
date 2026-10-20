@@ -28,6 +28,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // SMS Misr (SMS_DRIVER=smsmisr), see docs/INTEGRATIONS.md. Credentials are environment-only secrets.
+    'smsmisr' => [
+        'username' => env('SMSMISR_USERNAME'),
+        'password' => env('SMSMISR_PASSWORD'),
+        'sender' => env('SMSMISR_SENDER'),
+        'environment' => env('SMSMISR_ENVIRONMENT', 1),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

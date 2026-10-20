@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1\Me;
+
+use App\Http\Controllers\Api\V1\Concerns\ResolvesClientApp;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Me\UpdateProfileRequest;
+use App\Http\Resources\Api\V1\Identity\MeResource;
+use App\Services\Identity\ProfileService;
+use App\Support\Http\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+/**
+ * The authenticated user's own profile. There is no id in any path: nobody else's record is addressable.
+ */
+final class MeController extends Controller
+{
+    use ResolvesClientApp;
+
+    public function __construct(private readonly ProfileService $profiles) {}
+
+    public function show(Request $request): JsonResponse
+    {
+        return ApiResponse::success(data: new MeResource($this->profiles->me($this->authenticatedUser($request), $this->clientApp($request))));
+    }
+
+    public function update(UpdateProfileRequest $request): JsonResponse
+    {
+        $me = $this->profiles->update($this->authenticatedUser($request), $this->clientApp($request), $request->toDto());
+
+        return ApiResponse::success(__('api.me.updated'), new MeResource($me));
+    }
+}

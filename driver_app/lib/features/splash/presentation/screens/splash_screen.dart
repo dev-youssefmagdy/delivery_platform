@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:platform_core/platform_core.dart';
 
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../../core/providers.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
+import '../../../auth/presentation/providers/auth_providers.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -34,6 +36,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           .timeout(ref.read(configWaitProvider));
     } on Object {
       // Unavailable config is handled by the gate (fails open).
+    }
+    if (ref.read(sessionStatusProvider) == SessionStatus.authenticated) {
+      // The signed-in user's status decides the first screen.
+      try {
+        await ref.read(meProvider.future).timeout(ref.read(configWaitProvider));
+      } on Object {
+        // A failed /me is shown by the account-status retry screen.
+      }
     }
     if (!mounted) return;
     context.go(

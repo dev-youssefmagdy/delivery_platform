@@ -2,11 +2,14 @@ import 'package:driver_app/app/app.dart';
 import 'package:driver_app/core/providers.dart';
 import 'package:driver_app/features/app_config/domain/entities/app_config.dart';
 import 'package:driver_app/features/app_config/presentation/providers/app_config_providers.dart';
+import 'package:driver_app/features/auth/presentation/providers/auth_providers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:platform_core/platform_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'fakes.dart';
 
 /// Pumps the whole app with in-memory storage and no splash delay.
 Future<ProviderContainer> pumpApp(
@@ -26,6 +29,7 @@ Future<ProviderContainer> pumpApp(
   ),
   String version = '1.0.0',
   Future<AppConfig> Function()? configBuilder,
+  FakeIdentityRepository? identity,
 }) async {
   SharedPreferences.setMockInitialValues(prefs);
   final sp = await SharedPreferences.getInstance();
@@ -40,6 +44,9 @@ Future<ProviderContainer> pumpApp(
         (ref) => configBuilder != null ? configBuilder() : Future.value(config),
       ),
       appVersionProvider.overrideWith((ref) async => version),
+      identityRepositoryProvider.overrideWithValue(
+        identity ?? FakeIdentityRepository(),
+      ),
     ],
   );
   addTearDown(container.dispose);

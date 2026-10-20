@@ -4,18 +4,25 @@ namespace App\Providers;
 
 use App\Enums\Common\RateLimiterName;
 use App\Enums\Settings\SettingKey;
+use App\Models\AccountDeletionRequest;
 use App\Models\Admin;
 use App\Models\AdminAuditLog;
 use App\Models\AdminExport;
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\CustomerProfile;
 use App\Models\DemoItem;
 use App\Models\IdempotencyKey;
+use App\Models\OtpChallenge;
 use App\Models\PlatformSetting;
 use App\Models\PolicyVersion;
+use App\Models\ProviderProfile;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserConsent;
+use App\Models\UserDevice;
 use App\Services\Settings\SettingsService;
+use App\Support\Auth\PhoneNumber;
 use App\Support\Money\CurrencyRegistry;
 use App\Support\Money\DatabaseCurrencyRegistry;
 use App\Support\Money\MoneyFormatter;
@@ -62,6 +69,12 @@ class AppServiceProvider extends ServiceProvider
             'demo_item' => DemoItem::class,
             'platform_setting' => PlatformSetting::class,
             'policy_version' => PolicyVersion::class,
+            'customer_profile' => CustomerProfile::class,
+            'provider_profile' => ProviderProfile::class,
+            'otp_challenge' => OtpChallenge::class,
+            'user_device' => UserDevice::class,
+            'user_consent' => UserConsent::class,
+            'account_deletion_request' => AccountDeletionRequest::class,
             // @admin-module:morph-map
         ]);
 
@@ -69,6 +82,16 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(static fn (Authorizable $user): ?bool => $user instanceof Admin && $user->isSuperAdmin() ? true : null);
 
         $this->configureRateLimiting();
+    }
+
+    /**
+     * The phone as the rate limiters see it: normalised, so formatting tricks do not create new buckets.
+     */
+    private static function limiterPhone(Request $request): string
+    {
+        $phone = (string) $request->input('phone');
+
+        return PhoneNumber::normalize($phone) ?? $phone;
     }
 
     /**
@@ -92,20 +115,30 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for(RateLimiterName::Api->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::Api))->by($actor($request)));
 
         RateLimiter::for(RateLimiterName::OtpRequest->value, static function (Request $request) use ($perMinute, $settings): array {
-            $phone = 'phone:'.hash('sha256', (string) $request->input('phone'));
+            $phone = 'phone:'.hash('sha256', self::limiterPhone($request));
             $ip = 'ip:'.$request->ip();
             $perHour = $settings(SettingKey::RateLimitOtpRequestPerHour);
-
-            return [
+            $limits = [
                 Limit::perMinute($perMinute(RateLimiterName::OtpRequest))->by($phone),
                 Limit::perMinute($perMinute(RateLimiterName::OtpRequest))->by($ip),
                 Limit::perHour($perHour)->by("hour:{$phone}"),
                 Limit::perHour($perHour)->by("hour:{$ip}"),
             ];
+
+            // Device signal (SRS §20.7): the same limits per install when the app reports its device id.
+            $deviceId = $request->input('device_id');
+
+            if (is_string($deviceId) && $deviceId !== '') {
+                $device = 'device:'.hash('sha256', $deviceId);
+                $limits[] = Limit::perMinute($perMinute(RateLimiterName::OtpRequest))->by($device);
+                $limits[] = Limit::perHour($perHour)->by("hour:{$device}");
+            }
+
+            return $limits;
         });
 
         RateLimiter::for(RateLimiterName::OtpVerify->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::OtpVerify))
-            ->by(hash('sha256', (string) $request->input('phone')).'|'.$request->ip()));
+            ->by(hash('sha256', self::limiterPhone($request)).'|'.$request->ip()));
 
         RateLimiter::for(RateLimiterName::Location->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::Location))->by($actor($request)));
 

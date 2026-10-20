@@ -7,9 +7,11 @@ use App\Http\Middleware\Admin\EnforceAdminMfa;
 use App\Http\Middleware\Admin\EnsureAdminSession;
 use App\Http\Middleware\Admin\UseAdminGuard;
 use App\Http\Middleware\CorrelationId;
+use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\Idempotency;
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\TouchLastSeen;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,6 +19,8 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Middleware\CheckAbilities;
+use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -49,6 +53,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.session' => EnsureAdminSession::class,
             'admin.mfa' => EnforceAdminMfa::class,
             'admin.access' => DeclareAdminAccess::class,
+            'abilities' => CheckAbilities::class,
+            'ability' => CheckForAnyAbility::class,
+            'account.active' => EnsureAccountActive::class,
+            'user.seen' => TouchLastSeen::class,
         ]);
 
         // Signed-out admins go to the admin login; signed-in admins hitting a guest page go to the panel.

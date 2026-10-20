@@ -18,8 +18,6 @@
   "onboarding3Title": "Earn transparently",
   "onboarding3Body": "See your earnings and commission clearly on every trip.",
   "authTitle": "Sign in",
-  "authUnavailableTitle": "Sign-in is not available yet",
-  "authUnavailableBody": "Phone sign-in and driver registration will arrive in an upcoming update.",
   "homeTitle": "Home",
   "homeChangeLanguage": "Change language",
   "offlineBanner": "No internet connection",
@@ -43,6 +41,69 @@
   "@forceUpdateRequiredVersion": {
     "placeholders": {
       "version": {
+        "type": "String"
+      }
+    }
+  },
+  "authPhoneTitle": "Enter your phone number",
+  "authPhoneSubtitle": "We will send you a verification code by SMS.",
+  "authPhoneLabel": "Phone number",
+  "authPhoneInvalid": "Enter a valid phone number",
+  "authSendCode": "Send code",
+  "otpTitle": "Verification code",
+  "otpSubtitle": "Enter the {length}-digit code sent to {phone}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "otpResendIn": "Resend code in {seconds} s",
+  "@otpResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpResend": "Resend code",
+  "otpChangeNumber": "Change number",
+  "otpErrorInvalid": "The code is incorrect.",
+  "otpErrorExpired": "The code has expired. Request a new one.",
+  "otpErrorLocked": "Too many wrong attempts. Request a new code.",
+  "otpErrorTooManyRequests": "Too many attempts. Try again in {seconds} seconds.",
+  "@otpErrorTooManyRequests": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpErrorDeliveryFailed": "We could not send the code. Try again later.",
+  "statusSuspendedTitle": "Account suspended",
+  "statusSuspendedBody": "Your account is suspended. Please contact support.",
+  "statusRestrictedTitle": "Account restricted",
+  "statusRestrictedBody": "Some features are limited on your account. Contact support for details.",
+  "statusDeletionPendingTitle": "Deletion requested",
+  "statusDeletionPendingBody": "Your account is waiting to be deleted. You can cancel the request while it is pending.",
+  "statusVerificationTitle": "Verification required",
+  "statusVerificationBody": "Your account needs to be verified before you can continue. Contact support.",
+  "statusDeletedTitle": "Account deleted",
+  "statusDeletedBody": "This account has been deleted.",
+  "statusCancelDeletion": "Cancel deletion request",
+  "homeLogout": "Sign out",
+  "providerOnboardingTitle": "Driver application",
+  "providerOnboardingBadge": "Coming soon",
+  "providerOnboardingHeadline": "Your phone number is verified",
+  "providerOnboardingBody": "The driver application steps (documents, vehicle and review) open in an upcoming update. There is nothing more to do for now.",
+  "providerOnboardingVerifiedPhone": "Verified number: {phone}",
+  "@providerOnboardingVerifiedPhone": {
+    "placeholders": {
+      "phone": {
         "type": "String"
       }
     }

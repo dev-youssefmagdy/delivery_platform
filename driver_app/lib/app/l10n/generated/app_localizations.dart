@@ -206,18 +206,6 @@ abstract class AppLocalizations {
   /// **'تسجيل الدخول'**
   String get authTitle;
 
-  /// No description provided for @authUnavailableTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'تسجيل الدخول غير متاح بعد'**
-  String get authUnavailableTitle;
-
-  /// No description provided for @authUnavailableBody.
-  ///
-  /// In ar, this message translates to:
-  /// **'سيتوفر الدخول برقم الهاتف وتسجيل السائقين في تحديث قادم.'**
-  String get authUnavailableBody;
-
   /// No description provided for @homeTitle.
   ///
   /// In ar, this message translates to:
@@ -337,6 +325,198 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الإصدار المطلوب: {version}'**
   String forceUpdateRequiredVersion(String version);
+
+  /// No description provided for @authPhoneTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم هاتفك'**
+  String get authPhoneTitle;
+
+  /// No description provided for @authPhoneSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'سنرسل لك رمز تحقق عبر رسالة نصية.'**
+  String get authPhoneSubtitle;
+
+  /// No description provided for @authPhoneLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم الهاتف'**
+  String get authPhoneLabel;
+
+  /// No description provided for @authPhoneInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم هاتف صحيحاً'**
+  String get authPhoneInvalid;
+
+  /// No description provided for @authSendCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الرمز'**
+  String get authSendCode;
+
+  /// No description provided for @otpTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز التحقق'**
+  String get otpTitle;
+
+  /// No description provided for @otpSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل الرمز المكوّن من {length} أرقام المرسل إلى {phone}'**
+  String otpSubtitle(int length, String phone);
+
+  /// No description provided for @otpResendIn.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة الإرسال خلال {seconds} ث'**
+  String otpResendIn(int seconds);
+
+  /// No description provided for @otpResend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة إرسال الرمز'**
+  String get otpResend;
+
+  /// No description provided for @otpChangeNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيير الرقم'**
+  String get otpChangeNumber;
+
+  /// No description provided for @otpErrorInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرمز غير صحيح.'**
+  String get otpErrorInvalid;
+
+  /// No description provided for @otpErrorExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت صلاحية الرمز. اطلب رمزاً جديداً.'**
+  String get otpErrorExpired;
+
+  /// No description provided for @otpErrorLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاولات خاطئة كثيرة. اطلب رمزاً جديداً.'**
+  String get otpErrorLocked;
+
+  /// No description provided for @otpErrorTooManyRequests.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاولات كثيرة. حاول بعد {seconds} ثانية.'**
+  String otpErrorTooManyRequests(int seconds);
+
+  /// No description provided for @otpErrorDeliveryFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر إرسال الرمز. حاول لاحقاً.'**
+  String get otpErrorDeliveryFailed;
+
+  /// No description provided for @statusSuspendedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحساب موقوف'**
+  String get statusSuspendedTitle;
+
+  /// No description provided for @statusSuspendedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسابك موقوف. يرجى التواصل مع الدعم.'**
+  String get statusSuspendedBody;
+
+  /// No description provided for @statusRestrictedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحساب مقيّد'**
+  String get statusRestrictedTitle;
+
+  /// No description provided for @statusRestrictedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'بعض الميزات محدودة على حسابك. تواصل مع الدعم لمعرفة التفاصيل.'**
+  String get statusRestrictedBody;
+
+  /// No description provided for @statusDeletionPendingTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم طلب الحذف'**
+  String get statusDeletionPendingTitle;
+
+  /// No description provided for @statusDeletionPendingBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسابك بانتظار الحذف. يمكنك إلغاء الطلب ما دام قيد المعالجة.'**
+  String get statusDeletionPendingBody;
+
+  /// No description provided for @statusVerificationTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحقق مطلوب'**
+  String get statusVerificationTitle;
+
+  /// No description provided for @statusVerificationBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يجب التحقق من حسابك قبل المتابعة. تواصل مع الدعم.'**
+  String get statusVerificationBody;
+
+  /// No description provided for @statusDeletedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حذف الحساب'**
+  String get statusDeletedTitle;
+
+  /// No description provided for @statusDeletedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حذف هذا الحساب.'**
+  String get statusDeletedBody;
+
+  /// No description provided for @statusCancelDeletion.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء طلب الحذف'**
+  String get statusCancelDeletion;
+
+  /// No description provided for @homeLogout.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الخروج'**
+  String get homeLogout;
+
+  /// No description provided for @providerOnboardingTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب الانضمام كسائق'**
+  String get providerOnboardingTitle;
+
+  /// No description provided for @providerOnboardingBadge.
+  ///
+  /// In ar, this message translates to:
+  /// **'قريباً'**
+  String get providerOnboardingBadge;
+
+  /// No description provided for @providerOnboardingHeadline.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم التحقق من رقم هاتفك'**
+  String get providerOnboardingHeadline;
+
+  /// No description provided for @providerOnboardingBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'خطوات طلب الانضمام كسائق (المستندات والمركبة والمراجعة) ستتوفر في تحديث قادم. لا يلزمك أي إجراء الآن.'**
+  String get providerOnboardingBody;
+
+  /// No description provided for @providerOnboardingVerifiedPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرقم الموثّق: {phone}'**
+  String providerOnboardingVerifiedPhone(String phone);
 }
 
 class _AppLocalizationsDelegate

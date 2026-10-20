@@ -220,6 +220,14 @@ abstract class AdminDataTable extends DataTable
     }
 
     /**
+     * Marks a column whose cells are trusted HTML (already escaped by the component that produced it).
+     */
+    protected function rawColumn(string $column): void
+    {
+        $this->rawColumns[] = $column;
+    }
+
+    /**
      * Renders an enum implementing HasLabel&HasColor as <x-admin.badge>.
      */
     protected function enumBadgeColumn(EloquentDataTable $table, string $column): void

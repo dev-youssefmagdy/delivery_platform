@@ -63,6 +63,7 @@ class ApiClient {
     Object? body,
     Map<String, dynamic>? query,
     String? idempotencyKey,
+    Map<String, String>? headers,
     CancelToken? cancelToken,
   }) => _send(
     'POST',
@@ -70,6 +71,7 @@ class ApiClient {
     body: body,
     query: query,
     idempotencyKey: idempotencyKey,
+    headers: headers,
     cancelToken: cancelToken,
   );
 
@@ -97,6 +99,7 @@ class ApiClient {
     Object? body,
     Map<String, dynamic>? query,
     String? idempotencyKey,
+    Map<String, String>? headers,
     CancelToken? cancelToken,
   }) async {
     try {
@@ -107,7 +110,7 @@ class ApiClient {
         cancelToken: cancelToken,
         options: Options(
           method: method,
-          headers: {ApiHeaders.idempotencyKey: ?idempotencyKey},
+          headers: {ApiHeaders.idempotencyKey: ?idempotencyKey, ...?headers},
         ),
       );
       return EnvelopeParser.parseSuccess(response.data);

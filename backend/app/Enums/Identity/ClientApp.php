@@ -44,13 +44,16 @@ enum ClientApp: string implements HasLabel
 
     /**
      * Policy types a user must have accepted (in their current version) to use this app. The driver terms are
-     * accepted during provider onboarding (P2.1).
+     * accepted during provider onboarding (P2.1): the declarations step of the driver wizard.
      *
      * @return list<PolicyType>
      */
     public function requiredPolicyTypes(): array
     {
-        return [PolicyType::Terms, PolicyType::Privacy];
+        return match ($this) {
+            self::Customer => [PolicyType::Terms, PolicyType::Privacy],
+            self::Provider => [PolicyType::Terms, PolicyType::Privacy, PolicyType::DriverTerms],
+        };
     }
 
     public function label(): string

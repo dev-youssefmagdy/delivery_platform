@@ -21,11 +21,9 @@ Future<void> _enterCode(WidgetTester tester, String code) async {
 }
 
 void main() {
-  testWidgets('phone -> OTP stops at the labelled onboarding entry point', (
-    tester,
-  ) async {
-    // Even with an incomplete profile and pending consents the driver app
-    // does not ask for them: the real onboarding is P2.1.
+  testWidgets('phone -> OTP leads to the application wizard', (tester) async {
+    // Even with an incomplete profile and pending consents the sign-in flow
+    // does not ask for them: the application wizard collects them (P2.1).
     final fake = FakeIdentityRepository(
       me: FakeIdentityRepository.defaultUser(
         complete: false,
@@ -42,8 +40,9 @@ void main() {
 
     expect(container.read(sessionStatusProvider), SessionStatus.authenticated);
     expect(find.text('Driver application'), findsOneWidget);
-    expect(find.text('Coming soon'), findsOneWidget);
-    expect(find.byKey(const Key('onboarding-coming')), findsOneWidget);
+    expect(find.text('Tell us about yourself'), findsOneWidget);
+    expect(find.text('Coming soon'), findsNothing);
+    expect(find.byKey(const Key('wizard-counter')), findsOneWidget);
   });
 
   testWidgets('wrong code and lock-out show typed errors', (tester) async {
@@ -92,13 +91,15 @@ void main() {
     expect(find.text('Enter your phone number'), findsOneWidget);
   });
 
-  testWidgets('signed-in driver lands on onboarding entry and can sign out', (
+  testWidgets('signed-in driver lands on the wizard and can sign out', (
     tester,
   ) async {
     final fake = FakeIdentityRepository();
     await pumpApp(tester, prefs: _prefs, token: 'abc', identity: fake);
 
-    expect(find.byKey(const Key('onboarding-coming')), findsOneWidget);
+    expect(find.byKey(const Key('wizard-counter')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('onboarding-menu')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('onboarding-logout')));
     await tester.pumpAndSettle();
     expect(fake.loggedOut, isTrue);

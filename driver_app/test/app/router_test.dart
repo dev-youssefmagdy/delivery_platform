@@ -36,6 +36,26 @@ void main() {
       }
     });
 
+    test('sub-pages of the application follow the same sign-in rules', () {
+      const vehicle = '/provider-onboarding/vehicle/veh-1';
+
+      expect(
+        computeRedirect(location: vehicle, stage: AuthStage.signedOut),
+        Routes.splash,
+      );
+      expect(
+        computeRedirect(
+          location: Routes.providerVehicleNew,
+          stage: AuthStage.ready,
+        ),
+        isNull,
+      );
+      expect(
+        computeRedirect(location: vehicle, stage: AuthStage.accountStatus),
+        Routes.accountStatus,
+      );
+    });
+
     test('blocked accounts are pinned to the status screen', () {
       for (final stage in [AuthStage.accountStatus, AuthStage.error]) {
         expect(

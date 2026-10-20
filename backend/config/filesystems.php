@@ -38,6 +38,16 @@ return [
             'report' => false,
         ],
 
+        // Private files (provider documents, vehicle photos): never served by a public path (ADR-11). Use an
+        // S3-compatible disk in production through PROVIDER_DOCUMENTS_DISK.
+        'private' => [
+            'driver' => 'local',
+            'root' => env('PRIVATE_FILES_ROOT', storage_path('app/private-files')),
+            'visibility' => 'private',
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -10,6 +10,7 @@ import '../features/auth/presentation/screens/otp_screen.dart';
 import '../features/language/presentation/screens/language_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/provider_onboarding/presentation/screens/provider_onboarding_screen.dart';
+import '../features/provider_onboarding/presentation/widgets/vehicle_editor_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
 
 abstract final class Routes {
@@ -20,9 +21,13 @@ abstract final class Routes {
   static const otp = '/auth/otp';
   static const accountStatus = '/account-status';
 
-  /// Entry point of the driver application flow (documents, vehicle, review).
-  /// The real steps arrive with P2.1; until then the screen says so.
+  /// The driver application: wizard while it is being filled in, the
+  /// verification status afterwards (P2.1).
   static const providerOnboarding = '/provider-onboarding';
+
+  /// Vehicle editor (`/provider-onboarding/vehicle/:id`, or `.../new`).
+  static const providerVehicle = '/provider-onboarding/vehicle';
+  static const providerVehicleNew = '/provider-onboarding/vehicle/new';
 }
 
 /// Where the splash screen sends the user.
@@ -37,8 +42,8 @@ String destinationAfterSplash({
   return Routes.auth;
 }
 
-/// The screen that belongs to a signed-in [stage]. The driver app stops after
-/// phone verification: `ready` leads to the onboarding entry point (P2.1).
+/// The screen that belongs to a signed-in [stage]. The driver app does not ask
+/// for a profile or consents at sign-in: the application wizard collects them.
 String routeForStage(AuthStage stage) => switch (stage) {
   AuthStage.signedOut => Routes.auth,
   AuthStage.loading => Routes.splash,
@@ -48,17 +53,26 @@ String routeForStage(AuthStage stage) => switch (stage) {
   AuthStage.ready => Routes.providerOnboarding,
 };
 
-const _signedInOnly = {Routes.providerOnboarding, Routes.accountStatus};
+bool _isSignedInOnly(String location) =>
+    location == Routes.accountStatus ||
+    location == Routes.providerOnboarding ||
+    location.startsWith('${Routes.providerOnboarding}/');
 
 const _signedOutOnly = {Routes.auth, Routes.otp, Routes.onboarding};
 
 /// Pure redirect rules (unit tested). Returns null to stay.
 String? computeRedirect({required String location, required AuthStage stage}) {
   if (stage == AuthStage.signedOut) {
-    return _signedInOnly.contains(location) ? Routes.splash : null;
+    return _isSignedInOnly(location) ? Routes.splash : null;
+  }
+  // Sub-pages of the application (vehicle editor ...) stay reachable while the
+  // stage leads to the onboarding hub.
+  if (location.startsWith('${Routes.providerOnboarding}/') &&
+      routeForStage(stage) == Routes.providerOnboarding) {
+    return null;
   }
   final guarded =
-      _signedInOnly.contains(location) || _signedOutOnly.contains(location);
+      _isSignedInOnly(location) || _signedOutOnly.contains(location);
   if (!guarded) return null;
   final target = routeForStage(stage);
   return target == location ? null : target;
@@ -97,6 +111,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.providerOnboarding,
         builder: (_, _) => const ProviderOnboardingScreen(),
+      ),
+      GoRoute(
+        path: Routes.providerVehicleNew,
+        builder: (_, _) => const VehicleEditorScreen(),
+      ),
+      GoRoute(
+        path: '${Routes.providerVehicle}/:id',
+        builder: (_, state) =>
+            VehicleEditorScreen(vehicleId: state.pathParameters['id']),
       ),
     ],
   );

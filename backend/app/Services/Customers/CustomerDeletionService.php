@@ -10,14 +10,11 @@ use App\Models\AccountDeletionRequest;
 use App\Models\Admin;
 use App\Models\User;
 use App\Repositories\Contracts\Customers\CustomerActivityRepositoryInterface;
-use App\Repositories\Contracts\Customers\CustomerMessageRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
-use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
-use App\Repositories\Contracts\Identity\AccessTokenRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
-use App\Repositories\Contracts\Identity\CustomerProfileRepositoryInterface;
-use App\Repositories\Contracts\Identity\UserDeviceRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Services\Identity\AccountScrubber;
+use App\Services\Provider\ProviderDeletionService;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -36,11 +33,8 @@ final class CustomerDeletionService
         private readonly CustomerRepositoryInterface $customers,
         private readonly AccountDeletionRequestRepositoryInterface $requests,
         private readonly CustomerActivityRepositoryInterface $activity,
-        private readonly AccessTokenRepositoryInterface $tokens,
-        private readonly UserDeviceRepositoryInterface $devices,
-        private readonly SavedPlaceRepositoryInterface $savedPlaces,
-        private readonly CustomerMessageRepositoryInterface $messages,
-        private readonly CustomerProfileRepositoryInterface $profiles,
+        private readonly AccountScrubber $scrubber,
+        private readonly ProviderDeletionService $providerDeletions,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
     ) {}
@@ -69,15 +63,8 @@ final class CustomerDeletionService
                 throw BusinessRuleViolation::make('customer_is_provider');
             }
 
-            $photoPath = $locked->photo_path;
             $previousStatus = $locked->status;
-
-            $this->tokens->revokeAll($locked);
-            $this->devices->deleteForUser($locked);
-            $this->savedPlaces->deleteForUser($locked->id);
-            $this->messages->deleteForUser($locked);
-            $this->profiles->scrub($locked);
-            $this->customers->anonymise($locked);
+            $photoPath = $this->scrubber->scrub($locked);
 
             $this->requests->update($request, [
                 'status' => DeletionRequestStatus::Completed,
@@ -127,6 +114,8 @@ final class CustomerDeletionService
                 $restored = $request->previous_user_status === UserStatus::DeletionPending ? UserStatus::Active : $request->previous_user_status;
                 $this->customers->applyStatus($locked, $restored, $locked->status_reason, $locked->status_expires_at);
             }
+
+            $this->providerDeletions->restoreProvider($locked, $request, $actor);
 
             $this->audit->record(
                 AuditAction::Rejected,

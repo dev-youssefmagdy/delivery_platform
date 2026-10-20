@@ -8,15 +8,15 @@ use App\Models\ServiceCategory;
 use App\Repositories\Contracts\Catalog\ServiceCategoryRepositoryInterface;
 
 /**
- * ServiceCategorys for remote selects (requires the catalog permission).
+ * ServiceCategorys for remote selects (names only, public catalog data: any signed-in admin may use it, e.g. the provider filters).
  */
 final class ServiceCategoryLookup implements Lookup
 {
     public function __construct(private readonly ServiceCategoryRepositoryInterface $items) {}
 
-    public function permission(): AdminPermission
+    public function permission(): ?AdminPermission
     {
-        return AdminPermission::ServicesManage;
+        return null;
     }
 
     public function search(string $term, int $limit): array

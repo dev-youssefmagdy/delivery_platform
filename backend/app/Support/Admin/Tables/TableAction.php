@@ -61,6 +61,14 @@ final readonly class TableAction
     }
 
     /**
+     * View or download a private document: `$url` is the endpoint that issues a short-lived signed URL.
+     */
+    public static function document(string $label, string $url, Model $subject, bool $download = false): self
+    {
+        return new self($label, $url, TableActionKind::Document, $download ? 'download' : 'eye', ability: 'view', subject: $subject, method: $download ? 'download' : 'view');
+    }
+
+    /**
      * @param array<string, string> $confirm
      */
     public static function confirm(

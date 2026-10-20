@@ -16,6 +16,9 @@ enum TableActionKind: string
     /** Loads `url` (HTML) into the global drawer (quick view). */
     case Drawer = 'drawer';
 
+    /** Asks `url` (POST, permissioned, audited when served) for a fresh signed file URL and opens the file in a new tab. */
+    case Document = 'document';
+
     /** Opens the confirm dialog, then sends `method` to `url` via AJAX (optional mandatory reason). */
     case Confirm = 'confirm';
 }

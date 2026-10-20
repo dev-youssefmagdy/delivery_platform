@@ -33,6 +33,16 @@ use App\Repositories\Contracts\Identity\UserConsentRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserDeviceRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserRepositoryInterface;
 use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
+use App\Repositories\Contracts\Provider\DocumentRequirementRepositoryInterface;
+use App\Repositories\Contracts\Provider\DocumentTypeRepositoryInterface;
+use App\Repositories\Contracts\Provider\ProviderActivityRepositoryInterface;
+use App\Repositories\Contracts\Provider\ProviderDocumentRepositoryInterface;
+use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
+use App\Repositories\Contracts\Provider\ProviderServiceRepositoryInterface;
+use App\Repositories\Contracts\Provider\ProviderStatusEventRepositoryInterface;
+use App\Repositories\Contracts\Provider\VehicleDocumentRepositoryInterface;
+use App\Repositories\Contracts\Provider\VehiclePhotoRepositoryInterface;
+use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
 use App\Repositories\Contracts\Settings\SettingsRepositoryInterface;
 use App\Repositories\Eloquent\Admin\AdminExportRepository;
 use App\Repositories\Eloquent\Admin\AdminLoginEventRepository;
@@ -65,6 +75,16 @@ use App\Repositories\Eloquent\Identity\UserConsentRepository;
 use App\Repositories\Eloquent\Identity\UserDeviceRepository;
 use App\Repositories\Eloquent\Identity\UserRepository;
 use App\Repositories\Eloquent\Policy\PolicyVersionRepository;
+use App\Repositories\Eloquent\Provider\DocumentRequirementRepository;
+use App\Repositories\Eloquent\Provider\DocumentTypeRepository;
+use App\Repositories\Eloquent\Provider\ProviderActivityRepository;
+use App\Repositories\Eloquent\Provider\ProviderDocumentRepository;
+use App\Repositories\Eloquent\Provider\ProviderProfileRepository;
+use App\Repositories\Eloquent\Provider\ProviderServiceRepository;
+use App\Repositories\Eloquent\Provider\ProviderStatusEventRepository;
+use App\Repositories\Eloquent\Provider\VehicleDocumentRepository;
+use App\Repositories\Eloquent\Provider\VehiclePhotoRepository;
+use App\Repositories\Eloquent\Provider\VehicleRepository;
 use App\Repositories\Eloquent\Settings\SettingsRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -109,6 +129,16 @@ class RepositoryServiceProvider extends ServiceProvider
         CustomerRepositoryInterface::class => CustomerRepository::class,
         CustomerMessageRepositoryInterface::class => CustomerMessageRepository::class,
         CustomerActivityRepositoryInterface::class => CustomerActivityRepository::class,
+        DocumentRequirementRepositoryInterface::class => DocumentRequirementRepository::class,
+        DocumentTypeRepositoryInterface::class => DocumentTypeRepository::class,
+        ProviderActivityRepositoryInterface::class => ProviderActivityRepository::class,
+        ProviderDocumentRepositoryInterface::class => ProviderDocumentRepository::class,
+        ProviderProfileRepositoryInterface::class => ProviderProfileRepository::class,
+        ProviderServiceRepositoryInterface::class => ProviderServiceRepository::class,
+        ProviderStatusEventRepositoryInterface::class => ProviderStatusEventRepository::class,
+        VehicleDocumentRepositoryInterface::class => VehicleDocumentRepository::class,
+        VehiclePhotoRepositoryInterface::class => VehiclePhotoRepository::class,
+        VehicleRepositoryInterface::class => VehicleRepository::class,
         // @admin-module:bindings
     ];
 }

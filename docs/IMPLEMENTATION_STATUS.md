@@ -17,7 +17,7 @@
 | P1.4 | Service catalog, vehicle categories, form schemas, versioned snapshots | P0 | ✅ | 2026-10-20 |
 | P1.5 | Geography: cities, service zones, availability, maps adapter | P0 | ✅ | 2026-10-21 |
 | P1.6 | Customers admin module | P0 | ✅ | 2026-10-21 |
-| P2.1 | Provider onboarding, vehicles, documents, verification | P0 | ❌ | — |
+| P2.1 | Provider onboarding, vehicles, documents, verification | P0 | ✅ | 2026-10-22 |
 | P2.2 | Availability, live location, eligibility, dispatch engine | P0 | ❌ | — |
 | P2.3 | Reference pricing & booking creation | P0 | ❌ | — |
 | P2.4 | Offers, counter-offers & atomic selection | P0 | ❌ | — |
@@ -51,6 +51,46 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P2.1 — Provider onboarding, vehicles, documents, verification · ✅ 2026-10-22
+
+Branch `milestone/p2.1-provider-onboarding` (from `main` @ `efdeb6c`), fast-forwarded into `main`.
+
+### What was built
+
+- **Schema (migration `create_provider_onboarding_tables`, the P1.3 stub is extended, not recreated):** `provider_profiles` (uuid, type, status, reason/expiry, city, birth date, rating and acceptance counters, online flags, current vehicle, assigned officer, `lock_version`), `provider_service_category` (requested / approved / rejected), `vehicles` (unique normalised plate, capabilities), `vehicle_photos`, `document_types`, `document_requirements`, `provider_documents` and `vehicle_documents` (private path, sha256, scan status, **encrypted number**, dates, review fields, soft delete for replaced uploads), `provider_status_events`; `account_deletion_requests.previous_provider_status`.
+- **Services (ADR-78..82):** `ProviderStatusService` (single status writer, history, event), `ProviderOnboardingService` (start, edit, submit, approve, request more information, reject, claim), `ProviderAccountService` (suspend / reactivate / auto-reactivate), `ProviderServiceCategoryService`, `VehicleService`, `DocumentService` + `UploadInspector` + `UploadScanner` + `PrivateFileStorage`, `DocumentAccessService` (signed, admin-bound, audited-when-served), `DocumentChecklistService` (requirement resolver), `OnboardingProgressService`, `ProviderEligibilityService` (typed reasons, never stored), `DocumentExpiryService`, `DocumentTypeService`, `ProviderDeletionService` + `AccountScrubber` (ADR-77), `VerificationReviewService`, `ProviderNotifier` (log-only hook until P3.6).
+- **Integration:** `FileScanner` contract with `noop` (local/testing, stores `skipped`) and `clamav` (clamd over TCP) drivers; boot guard extended with `noop`; `private` disk; `config/provider.php`.
+- **API (docs/API.md 8.9):** `GET /cities`; `POST/GET/PATCH /provider/application(s)`, `POST /provider/application/submit`, `GET /provider/eligibility`, vehicles CRUD + photos + `submit-review`, documents upload/list/show + signed owner-only files. `driver_terms` is now a required policy of the provider app.
+- **Admin (contract modules, collapsed filters cards, Precognition forms, AJAX confirm dialogs with mandatory reasons):** Providers (listing with every Appendix C filter, show with Profile / Services / Vehicles / Documents / Verification history / Jobs and Earnings placeholders (`available after P2.5 / P3.4`) / Data requests / Audit; audited PII reveal; suspend, reactivate, per-service decisions, deletion processing), Verification queue (SLA age, claim) and the **side-by-side review screen** (document and photo viewer on signed URLs, checklist, approve / request more information / reject), Vehicles (listing, show with photos and documents, approve / reject), Document types and requirements; menu entries; lookups `providers` (and public-name lookups for service/vehicle categories); settings `provider_verification_sla_hours`, `provider_document_expiry_warning_days`, `rate_limit_provider_uploads_per_minute`.
+- **Scheduler:** `documents:check-expiry` daily 02:00, `providers:reactivate-expired` every minute.
+- **Seeders:** `DocumentTypeSeeder` (Egypt defaults, reference data) and `ProviderSeeder` (approved with valid documents and vehicle, pending, rejected, expired licence; clearly named "(demo)"; off in production).
+- **Flutter:** platform_core `ProviderRepository`, models and enums; driver_app **wizard** (profile, services, vehicles with photos, documents with number / issue / expiry pickers and retry, declarations, review and submit; resumes at the server's `resume_step`) and **verification status screens** (under review, more information with reasons and tasks, rejected, approved with computed eligibility reasons and expiring documents, suspended); the old "coming soon" screen is gone; ARB ar/en regenerated.
+
+### Commands and results (2026-10-22)
+
+| Command | Result |
+|---|---|
+| `php artisan migrate` (local MySQL), rollback of the new migration and migrate again | OK |
+| `scripts/check.sh` (the whole gate) | **All checks passed** |
+| `vendor/bin/pint --test` | passed |
+| `vendor/bin/phpstan analyse` (level 6) | passed, 0 errors |
+| `php artisan test --parallel` | passed: 649 tests, 5290 assertions (new: ~150 in `Feature/Provider`, `Feature/Admin/Provider`, `Unit/Provider`: status machine, requirement resolver, eligibility, upload pipeline and scanners, private-file access and audit, IDOR, deletion, expiry job, seeders, the admin contracts) |
+| `npm run build` | built OK |
+| `npx vitest run` | 6 files, 23 tests passed (new: document viewer) |
+| `scripts/browser-smoke.sh` (admin JS touched) | passed, now also: queue -> review screen -> viewer loads a private file through a signed URL (no public path requested) -> reject without a reason sends nothing -> Precognition then submit -> reload; this run found and fixed a lazy-loading bug in the review screen that the feature tests had missed (see the seeded-pages test) |
+| customer_app / driver_app / platform_core: `dart format --set-exit-if-changed`, `flutter analyze`, `flutter test` | clean / no issues / customer_app 86, driver_app 80 (35 new: wizard steps, uploads and retries, resume, declarations, review, every status screen, RTL), platform_core 157 (8 new: repository shapes, multipart, idempotency) passed |
+
+
+### Known gaps / notes for P2.2 and later
+
+- `ProviderActivityRepository` (like the customer one) throws once bookings / wallets / payouts tables exist: P2.3 / P3.1 / P3.4 must replace it with real queries before deletions of providers with live jobs or money can be processed.
+- Going online is not built: P2.2's `AvailabilityService` must call `ProviderEligibilityService::check()` (returns `usableVehicleIds` for the vehicle choice) and add location freshness, active-job and debt-limit reasons; `provider_profiles.is_online`, `online_since` and `current_vehicle_id` exist and are cleared on suspension / document expiry.
+- Document **numbers** are shown masked in the admin; a `drivers.view_pii` reveal for them is not built. Document renewals by an approved provider are reviewed on the provider's Documents tab (they are not in the verification queue).
+- The ClamAV driver and the S3 `private` disk are untested against real services (INTEGRATIONS.md); with no scanner configured uploads are stored as `not_scanned` and flagged.
+- Notifications to the driver (status changes, expiry reminders) are log lines until P3.6 (`ProviderNotifier`).
+- The Flutter wizard was tested with scripted repositories (no emulator / real camera run here); the minimum vehicle photo count (2) is a hint text, the server decides.
+- Requirements seeded for Egypt are defaults to review, not legal advice (ADR-79).
 
 ## P1.6 — Customers admin module · ✅ 2026-10-21
 

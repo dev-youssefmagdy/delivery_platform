@@ -12,6 +12,8 @@
 //      the live preview (visible_if) without JavaScript errors;
 //   6. (P1.6) the customers module: masked phone in the listing, lazy tab with its own DataTable, audited reveal of
 //      the contact details, and the suspend modal going through Precognition before the real submit.
+//   7. (P2.1) the verification review screen: the document viewer loads a private file through a short-lived signed
+//      URL, and rejecting a document goes through the confirm dialog with a mandatory reason (Precognition first).
 //
 // Environment: BASE_URL, ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME, CHROME_BIN (optional), CDP_PORT (optional).
 import { spawn } from 'node:child_process';
@@ -257,7 +259,37 @@ try {
     check(await page.waitFor("document.body.innerText.includes('Repeated abuse of drivers')", 'suspended notice', 12000), 'page reloads showing the suspension and its reason');
     check(page.jsErrors.length === 0, `no JavaScript errors on the customer pages${page.jsErrors.length ? ': ' + page.jsErrors[0] : ''}`);
 
-    // 7. Sign out through the account menu form.
+    // 7. Verification review: queue row -> review screen -> document viewer -> reject with a mandatory reason.
+    page.jsErrors.length = 0;
+    await page.goto('/admin/verification');
+    check(await page.waitFor("document.querySelectorAll('#verification-queue-table tbody a[href*=\"/admin/verification/\"]').length > 0", 'queue rows', 12000), 'verification queue loads rows through the DataTable');
+    const reviewHref = await page.eval("document.querySelector('#verification-queue-table tbody a[href*=\"/admin/verification/\"]').getAttribute('href')");
+    await page.send('Page.navigate', { url: new URL(reviewHref, BASE_URL).href });
+    check(await page.waitFor("document.readyState === 'complete' && !!document.querySelector('[data-document-viewer]')", 'review screen', 12000), 'review screen renders the document viewer');
+    await sleep(500);
+    page.requests.length = 0;
+    await page.eval("document.querySelector('[data-viewer-item]').click()");
+    check(await page.waitFor("(() => { const img = document.querySelector('[data-viewer-image]'); return !!img && img.complete && img.naturalWidth > 0; })()", 'document image', 12000), 'selecting a document loads the private file through a signed URL');
+    const signed = page.requests.find((r) => r.url.includes('/admin/provider-files/'));
+    check(!!signed && signed.url.includes('signature=') && signed.url.includes('expires='), 'the file was requested with a signed, expiring URL');
+    check(!page.requests.some((r) => /\/storage\/|private-files/.test(r.url)), 'no public storage path is ever requested');
+
+    await page.eval("document.querySelector('[data-viewer-reject]').click()");
+    await sleep(400);
+    const confirmForm = "document.querySelector('[role=alertdialog] form')";
+    page.requests.length = 0;
+    await page.eval(`${confirmForm}.requestSubmit()`);
+    check(await page.waitFor(`(${confirmForm}.querySelector('[data-error-for=reason]')?.textContent || '').trim() !== ''`, 'reason error'), 'reject without a reason: error shown inline');
+    check(page.writes('/reject').length === 0, 'reject without a reason sends nothing (client check)');
+    await page.eval(`(() => { const el = ${confirmForm}.querySelector('[name=reason]'); el.value = 'The photo is not readable'; el.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+    await page.eval(`${confirmForm}.requestSubmit()`);
+    for (let i = 0; i < 100 && page.writes('/reject').length < 2; i++) await sleep(100);
+    const rejectWrites = page.writes('/reject');
+    check(rejectWrites.length === 2 && isPrecognitive(rejectWrites[0]) && !isPrecognitive(rejectWrites[1]), `reject: Precognition call, then the real submit (${rejectWrites.length} writes)`);
+    check(await page.waitFor("document.readyState === 'complete' && document.body.innerText.includes('Rejected') && !!document.querySelector('[data-document-viewer]')", 'rejected state', 12000), 'page reloads showing the document as rejected');
+    check(page.jsErrors.length === 0, `no JavaScript errors on the review screen${page.jsErrors.length ? ': ' + page.jsErrors[0] : ''}`);
+
+    // 8. Sign out through the account menu form.
     await page.eval("document.querySelector('form[action$=\"/admin/logout\"] button[type=submit]').closest('form').requestSubmit()");
     check(await page.waitFor("location.pathname === '/admin/login'", 'back at login after logout', 12000), 'logout returns to the login page');
 

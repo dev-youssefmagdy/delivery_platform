@@ -27,6 +27,16 @@ final class CityService
         private readonly DatabaseManager $db,
     ) {}
 
+    /**
+     * Active cities for the public list (driver application, coverage pickers).
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, City>
+     */
+    public function activeList(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->cities->activeList();
+    }
+
     public function create(CityData $data, ?Authenticatable $actor): City
     {
         $this->assertCountryActive($data->countryId);

@@ -8,15 +8,15 @@ use App\Models\VehicleCategory;
 use App\Repositories\Contracts\Catalog\VehicleCategoryRepositoryInterface;
 
 /**
- * VehicleCategorys for remote selects (requires the catalog permission).
+ * VehicleCategorys for remote selects (names only, public catalog data: any signed-in admin may use it, e.g. the provider filters).
  */
 final class VehicleCategoryLookup implements Lookup
 {
     public function __construct(private readonly VehicleCategoryRepositoryInterface $items) {}
 
-    public function permission(): AdminPermission
+    public function permission(): ?AdminPermission
     {
-        return AdminPermission::VehicleCategoriesManage;
+        return null;
     }
 
     public function search(string $term, int $limit): array

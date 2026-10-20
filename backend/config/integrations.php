@@ -12,12 +12,19 @@ return [
     'payments' => ['driver' => env('PAYMENT_DRIVER')],
     'push' => ['driver' => env('PUSH_DRIVER')],
     'phone_relay' => ['driver' => env('PHONE_RELAY_DRIVER')],
-    'file_scanner' => ['driver' => env('FILE_SCANNER_DRIVER')],
+    'file_scanner' => [
+        'driver' => env('FILE_SCANNER_DRIVER'),
+        'clamav' => [
+            'host' => env('CLAMAV_HOST', '127.0.0.1'),
+            'port' => (int) env('CLAMAV_PORT', 3310),
+            'timeout_seconds' => (int) env('CLAMAV_TIMEOUT_SECONDS', 20),
+        ],
+    ],
 
     /*
     | Drivers that simulate success and therefore must never run in staging/production.
     */
-    'non_production_drivers' => ['fake', 'log'],
+    'non_production_drivers' => ['fake', 'log', 'noop'],
 
     'non_production_environments' => ['local', 'testing'],
 ];

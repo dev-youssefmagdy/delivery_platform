@@ -59,13 +59,16 @@ void main() {
         prefs: {'language_code': 'ar', 'onboarding_done': true},
         token: 'abc',
       );
-      expect(find.byKey(const Key('onboarding-coming')), findsOneWidget);
+      expect(find.byKey(const Key('wizard-counter')), findsOneWidget);
+      expect(find.text('عرّفنا بنفسك'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('onboarding-menu')));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('تغيير اللغة'));
       await tester.pumpAndSettle();
       expect(find.text('اختر لغتك'), findsOneWidget);
       await tester.tap(find.text('متابعة'));
       await tester.pumpAndSettle();
-      expect(find.byKey(const Key('onboarding-coming')), findsOneWidget);
+      expect(find.byKey(const Key('wizard-counter')), findsOneWidget);
     },
   );
 }

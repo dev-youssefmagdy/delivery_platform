@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Common\ConfigController;
 use App\Http\Controllers\Api\V1\Common\HealthController;
 use App\Http\Controllers\Api\V1\Common\MediaController;
 use App\Http\Controllers\Api\V1\Common\PolicyController;
+use App\Http\Controllers\Api\V1\Geo\CityController;
 use App\Http\Controllers\Api\V1\Geo\PlaceController;
 use App\Http\Controllers\Api\V1\Geo\RouteController;
 use App\Http\Controllers\Api\V1\Geo\ServiceAreaController;
@@ -19,6 +20,10 @@ use App\Http\Controllers\Api\V1\Me\MeController;
 use App\Http\Controllers\Api\V1\Me\MessageController;
 use App\Http\Controllers\Api\V1\Me\PhotoController;
 use App\Http\Controllers\Api\V1\Me\SavedPlaceController;
+use App\Http\Controllers\Api\V1\Provider\ApplicationController;
+use App\Http\Controllers\Api\V1\Provider\DocumentController;
+use App\Http\Controllers\Api\V1\Provider\EligibilityController;
+use App\Http\Controllers\Api\V1\Provider\VehicleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,6 +50,7 @@ Route::middleware('cache.headers:public;max_age=30;etag')->group(function (): vo
 
 // Geography (P1.5). Resolving a position is public; anything that spends maps quota needs a signed-in app.
 Route::get('service-areas/resolve', [ServiceAreaController::class, 'resolve'])->name('service-areas.resolve');
+Route::get('cities', [CityController::class, 'index'])->middleware('cache.headers:public;max_age=60;etag')->name('cities.index');
 
 Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen', 'account.active', 'throttle:60,1'])->group(function (): void {
     Route::get('places/search', [PlaceController::class, 'search'])->name('places.search');
@@ -101,5 +107,34 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
         });
         Route::post('account-deletion-requests', [AccountDeletionController::class, 'store'])
             ->middleware('idempotent')->name('account-deletion-requests.store');
+    });
+});
+
+// Provider onboarding (P2.1): application, vehicles, documents, eligibility. `provider` tokens only (a customer token is
+// 403). Reads are status-safe so a suspended driver can still see why; writes need an active account. Files are only
+// served through the signed routes below (5 minutes) and still require the owner's token.
+Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('provider')->name('provider.')->group(function (): void {
+    Route::get('application', [ApplicationController::class, 'show'])->name('application.show');
+    Route::get('eligibility', [EligibilityController::class, 'show'])->name('eligibility.show');
+    Route::get('documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::get('documents/{document}', [DocumentController::class, 'show'])->whereUuid('document')->name('documents.show');
+    Route::get('documents/{document}/file', [DocumentController::class, 'file'])->whereUuid('document')->middleware('signed')->name('documents.file');
+    Route::get('vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
+    Route::get('vehicles/{vehicle:uuid}', [VehicleController::class, 'show'])->whereUuid('vehicle')->name('vehicles.show');
+    Route::get('vehicle-photos/{photo}/file', [VehicleController::class, 'photoFile'])->whereUuid('photo')->middleware('signed')->name('vehicle-photos.file');
+
+    Route::middleware('account.active')->group(function (): void {
+        Route::post('applications', [ApplicationController::class, 'store'])->middleware('idempotent')->name('applications.store');
+        Route::patch('application', [ApplicationController::class, 'update'])->name('application.update');
+        Route::post('application/submit', [ApplicationController::class, 'submit'])->middleware('idempotent')->name('application.submit');
+
+        Route::post('documents', [DocumentController::class, 'store'])->middleware([RateLimiterName::ProviderUploads->middleware(), 'idempotent'])->name('documents.store');
+
+        Route::post('vehicles', [VehicleController::class, 'store'])->middleware('idempotent')->name('vehicles.store');
+        Route::patch('vehicles/{vehicle:uuid}', [VehicleController::class, 'update'])->whereUuid('vehicle')->name('vehicles.update');
+        Route::delete('vehicles/{vehicle:uuid}', [VehicleController::class, 'destroy'])->whereUuid('vehicle')->name('vehicles.destroy');
+        Route::post('vehicles/{vehicle:uuid}/photos', [VehicleController::class, 'storePhoto'])->whereUuid('vehicle')->middleware([RateLimiterName::ProviderUploads->middleware(), 'idempotent'])->name('vehicles.photos.store');
+        Route::delete('vehicles/{vehicle:uuid}/photos/{photo}', [VehicleController::class, 'destroyPhoto'])->whereUuid(['vehicle', 'photo'])->name('vehicles.photos.destroy');
+        Route::post('vehicles/{vehicle:uuid}/submit-review', [VehicleController::class, 'submitReview'])->whereUuid('vehicle')->middleware('idempotent')->name('vehicles.submit-review');
     });
 });

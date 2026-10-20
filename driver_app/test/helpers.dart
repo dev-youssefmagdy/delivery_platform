@@ -3,6 +3,7 @@ import 'package:driver_app/core/providers.dart';
 import 'package:driver_app/features/app_config/domain/entities/app_config.dart';
 import 'package:driver_app/features/app_config/presentation/providers/app_config_providers.dart';
 import 'package:driver_app/features/auth/presentation/providers/auth_providers.dart';
+import 'package:driver_app/features/provider_onboarding/presentation/providers/provider_onboarding_providers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,6 +31,9 @@ Future<ProviderContainer> pumpApp(
   String version = '1.0.0',
   Future<AppConfig> Function()? configBuilder,
   FakeIdentityRepository? identity,
+  FakeProviderRepository? provider,
+  FakeCatalogRepository? catalog,
+  FakePhotoHandler? photos,
 }) async {
   SharedPreferences.setMockInitialValues(prefs);
   final sp = await SharedPreferences.getInstance();
@@ -46,6 +50,16 @@ Future<ProviderContainer> pumpApp(
       appVersionProvider.overrideWith((ref) async => version),
       identityRepositoryProvider.overrideWithValue(
         identity ?? FakeIdentityRepository(),
+      ),
+      providerRepositoryProvider.overrideWithValue(
+        provider ?? FakeProviderRepository(),
+      ),
+      catalogRepositoryProvider.overrideWithValue(
+        catalog ?? FakeCatalogRepository(),
+      ),
+      photoPickerFactoryProvider.overrideWithValue(
+        ({required cameraLabel, required galleryLabel}) =>
+            photos ?? FakePhotoHandler('/tmp/fake-photo.jpg'),
       ),
     ],
   );

@@ -33,6 +33,11 @@ return [
         'per_minute' => (int) env('RATE_LIMIT_PUBLIC_FORMS_PER_MINUTE', 5),
     ],
 
+    'provider-uploads' => [
+        // Document and vehicle photo uploads of one provider.
+        'per_minute' => (int) env('RATE_LIMIT_PROVIDER_UPLOADS_PER_MINUTE', 20),
+    ],
+
     'admin-login' => [
         // Per login identifier + IP.
         'per_minute' => (int) env('RATE_LIMIT_ADMIN_LOGIN_PER_MINUTE', 5),

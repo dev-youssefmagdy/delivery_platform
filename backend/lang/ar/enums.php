@@ -57,6 +57,8 @@ return [
         'message_sent' => 'إرسال رسالة',
         'phone_revealed' => 'كشف رقم الهاتف',
         'anonymised' => 'إخفاء الهوية',
+        'downloaded' => 'تم التنزيل',
+        'more_info_requested' => 'طُلبت معلومات إضافية',
     ],
 
     'health_status' => [
@@ -368,6 +370,115 @@ return [
         '5' => 'الجمعة',
         '6' => 'السبت',
         '7' => 'الأحد',
+    ],
+
+    'provider_type' => [
+        'individual_driver' => 'سائق فردي',
+        'courier' => 'مندوب توصيل',
+        'moving_crew' => 'فريق / سائق نقل أثاث',
+        'commercial_transport' => 'مزوّد نقل تجاري',
+        'company_fleet' => 'شركة / أسطول',
+    ],
+
+    'provider_status' => [
+        'draft' => 'مسودة',
+        'phone_verified' => 'تم التحقق من الهاتف',
+        'profile_submitted' => 'تم إرسال الملف الشخصي',
+        'documents_pending' => 'المستندات قيد الاستكمال',
+        'under_review' => 'قيد المراجعة',
+        'more_information_required' => 'مطلوب معلومات إضافية',
+        'approved' => 'معتمد',
+        'rejected' => 'مرفوض',
+        'temporarily_suspended' => 'موقوف مؤقتاً',
+        'permanently_suspended' => 'موقوف نهائياً',
+        'deletion_pending' => 'الحذف قيد المعالجة',
+    ],
+
+    'document_status' => [
+        'pending' => 'بانتظار المراجعة',
+        'approved' => 'معتمد',
+        'rejected' => 'مرفوض',
+        'expired' => 'منتهي الصلاحية',
+    ],
+
+    'vehicle_status' => [
+        'draft' => 'مسودة',
+        'under_review' => 'قيد المراجعة',
+        'approved' => 'معتمدة',
+        'rejected' => 'مرفوضة',
+        'suspended' => 'موقوفة',
+        'inactive' => 'غير نشطة',
+    ],
+
+    'eligibility_reason' => [
+        'not_approved' => 'لم يتم اعتماد الطلب بعد.',
+        'provider_suspended' => 'حساب المزوّد موقوف.',
+        'account_blocked' => 'الحساب محظور أو مقيّد.',
+        'document_missing' => 'هناك مستند مطلوب غير مرفوع.',
+        'document_not_approved' => 'هناك مستند مطلوب لم يتم اعتماده بعد.',
+        'document_expired' => 'انتهت صلاحية مستند مطلوب.',
+        'no_approved_vehicle' => 'لا توجد مركبة معتمدة.',
+        'vehicle_not_approved' => 'المركبة غير معتمدة.',
+        'service_not_approved' => 'لا توجد خدمة معتمدة لهذه الفئة.',
+        'vehicle_category_mismatch' => 'فئة المركبة لا تناسب هذه الخدمة.',
+    ],
+
+    'document_subject' => [
+        'provider' => 'المزوّد',
+        'vehicle' => 'المركبة',
+    ],
+
+    'vehicle_capability' => [
+        'air_conditioning' => 'تكييف',
+        'child_seat' => 'مقعد أطفال',
+        'wheelchair_accessible' => 'مهيأة للكراسي المتحركة',
+        'pets_allowed' => 'يُسمح بالحيوانات الأليفة',
+        'large_luggage' => 'حقائب كبيرة',
+        'covered_cargo' => 'صندوق شحن مغطى',
+        'tail_lift' => 'رافعة خلفية',
+        'refrigerated' => 'مبرّدة',
+        'moving_equipment' => 'معدات نقل أثاث',
+    ],
+
+    'vehicle_photo_kind' => [
+        'front' => 'أمامية',
+        'back' => 'خلفية',
+        'side' => 'جانبية',
+        'interior' => 'داخلية',
+        'other' => 'أخرى',
+    ],
+
+    'service_approval_status' => [
+        'requested' => 'مطلوبة',
+        'approved' => 'معتمدة',
+        'rejected' => 'مرفوضة',
+    ],
+
+    'file_scan_status' => [
+        'clean' => 'تم الفحص، سليم',
+        'infected' => 'مصاب',
+        'skipped' => 'لم يُفحص (الفاحص معطل)',
+        'not_scanned' => 'لم يُفحص (لا يوجد فاحص مهيأ)',
+    ],
+
+    'onboarding_task' => [
+        'complete_profile' => 'أكمل ملفك الشخصي',
+        'select_services' => 'اختر الخدمات التي تقدمها',
+        'add_vehicle' => 'أضف مركبة',
+        'add_vehicle_photos' => 'أضف صور المركبة',
+        'submit_vehicle' => 'أرسل المركبة للمراجعة',
+        'upload_document' => 'ارفع مستنداً مطلوباً',
+        'replace_rejected_document' => 'استبدل مستنداً مرفوضاً',
+        'renew_expired_document' => 'جدّد مستنداً منتهي الصلاحية',
+        'fix_vehicle' => 'صحّح بيانات المركبة وأرسلها مرة أخرى',
+        'accept_policies' => 'وافق على شروط السائقين',
+        'submit_application' => 'أرسل طلبك',
+    ],
+
+    'verification_decision' => [
+        'approve' => 'اعتماد',
+        'request_more_information' => 'طلب معلومات إضافية',
+        'reject' => 'رفض',
     ],
 
     // @admin-module:enums

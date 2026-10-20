@@ -107,15 +107,319 @@
   "statusCancelDeletion": "إلغاء طلب الحذف",
   "homeLogout": "تسجيل الخروج",
   "providerOnboardingTitle": "طلب الانضمام كسائق",
-  "providerOnboardingBadge": "قريباً",
-  "providerOnboardingHeadline": "تم التحقق من رقم هاتفك",
-  "providerOnboardingBody": "خطوات طلب الانضمام كسائق (المستندات والمركبة والمراجعة) ستتوفر في تحديث قادم. لا يلزمك أي إجراء الآن.",
-  "providerOnboardingVerifiedPhone": "الرقم الموثّق: {phone}",
-  "@providerOnboardingVerifiedPhone": {
+  "actionBack": "رجوع",
+  "actionSave": "حفظ",
+  "actionClose": "إغلاق",
+  "actionRefresh": "تحديث",
+  "actionRemove": "إزالة",
+  "actionEdit": "تعديل",
+  "actionDelete": "حذف",
+  "actionCancel": "إلغاء",
+  "photoCamera": "التقاط صورة",
+  "photoGallery": "اختيار من المعرض",
+  "obStepProfile": "الملف الشخصي",
+  "obStepServices": "الخدمات",
+  "obStepVehicles": "المركبات",
+  "obStepDocuments": "المستندات",
+  "obStepDeclarations": "الإقرارات",
+  "obStepReview": "المراجعة",
+  "obStepCounter": "الخطوة {current} من {total}",
+  "@obStepCounter": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "obStepDone": "مكتملة",
+  "obProfileTitle": "عرّفنا بنفسك",
+  "obProfileIntro": "هذه البيانات مطلوبة لمراجعة طلبك. يمكنك تعديلها قبل الإرسال.",
+  "obProfileName": "الاسم الكامل",
+  "obProfileDob": "تاريخ الميلاد",
+  "obProfileDobPick": "اختر التاريخ",
+  "obProfileType": "نوع مقدم الخدمة",
+  "obProfileCity": "المدينة",
+  "obProfileCityPick": "اختر المدينة",
+  "obProfileSave": "حفظ ومتابعة",
+  "obProfileCitiesEmpty": "لا توجد مدن متاحة حالياً.",
+  "obTypeIndividualDriver": "سائق فردي",
+  "obTypeCourier": "مندوب توصيل",
+  "obTypeMovingCrew": "فريق / سائق نقل أثاث",
+  "obTypeCommercialTransport": "مزوّد نقل تجاري",
+  "obTypeCompanyFleet": "شركة / أسطول",
+  "obServicesTitle": "ما الخدمات التي تقدمها؟",
+  "obServicesIntro": "اختر خدمة واحدة على الأقل. يمكنك إضافة المزيد لاحقاً وتُراجع كل خدمة قبل اعتمادها.",
+  "obServicesEmpty": "لا توجد خدمات متاحة حالياً.",
+  "obServicesSave": "حفظ ومتابعة",
+  "obServiceStatusApproved": "معتمدة",
+  "obServiceStatusRejected": "مرفوضة",
+  "obServiceStatusRequested": "قيد المراجعة",
+  "obVehiclesTitle": "مركباتك",
+  "obVehiclesIntro": "أضف مركبة واحدة على الأقل بصورها ومستنداتها ثم أرسلها للمراجعة.",
+  "obVehiclesEmpty": "لم تضف مركبة بعد.",
+  "obVehicleAdd": "إضافة مركبة",
+  "obVehicleFormTitle": "بيانات المركبة",
+  "obVehicleCategory": "فئة المركبة",
+  "obVehicleCategoryPick": "اختر الفئة",
+  "obVehicleMake": "الماركة",
+  "obVehicleModel": "الطراز",
+  "obVehicleYear": "سنة الصنع",
+  "obVehicleColor": "اللون",
+  "obVehiclePlate": "رقم اللوحة",
+  "obVehiclePassengers": "عدد الركاب",
+  "obVehiclePayload": "الحمولة (كجم)",
+  "obVehicleVolume": "حجم الشحن (م³)",
+  "obVehicleCapabilities": "القدرات الخاصة",
+  "obVehicleSave": "حفظ المركبة",
+  "obVehiclePhotos": "الصور",
+  "obVehiclePhotosHint": "أضف {count} صور على الأقل (أمامية وخلفية).",
+  "@obVehiclePhotosHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "obVehiclePhotoAdd": "إضافة صورة",
+  "obVehiclePhotoKindTitle": "أي جزء من المركبة؟",
+  "obPhotoKindFront": "أمامية",
+  "obPhotoKindBack": "خلفية",
+  "obPhotoKindSide": "جانبية",
+  "obPhotoKindInterior": "داخلية",
+  "obPhotoKindOther": "أخرى",
+  "obVehicleDocuments": "مستندات المركبة",
+  "obVehicleSubmit": "إرسال المركبة للمراجعة",
+  "obVehicleDeleteTitle": "إزالة هذه المركبة؟",
+  "obVehicleDeleteBody": "تُحذف المركبة وصورها ومستنداتها المرفوعة.",
+  "obVehicleSubmitted": "تم إرسال المركبة للمراجعة.",
+  "obVehicleLockedHint": "لا يمكن تعديل المركبة وهي قيد المراجعة.",
+  "obVehicleStatusDraft": "مسودة",
+  "obVehicleStatusUnderReview": "قيد المراجعة",
+  "obVehicleStatusApproved": "معتمدة",
+  "obVehicleStatusRejected": "مرفوضة",
+  "obVehicleStatusSuspended": "موقوفة",
+  "obVehicleStatusInactive": "غير نشطة",
+  "obVehicleRejectedReason": "سبب الرفض: {reason}",
+  "@obVehicleRejectedReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "obCapAirConditioning": "تكييف",
+  "obCapChildSeat": "مقعد أطفال",
+  "obCapWheelchair": "مهيأة للكراسي المتحركة",
+  "obCapPets": "يُسمح بالحيوانات الأليفة",
+  "obCapLargeLuggage": "حقائب كبيرة",
+  "obCapCoveredCargo": "صندوق شحن مغطى",
+  "obCapTailLift": "رافعة خلفية",
+  "obCapRefrigerated": "مبرّدة",
+  "obCapMovingEquipment": "معدات نقل أثاث",
+  "obDocumentsTitle": "المستندات المطلوبة",
+  "obDocumentsIntro": "ارفع صورة واضحة لكل مستند. تُراجع المستندات يدوياً وتظهر هنا حالة كل منها.",
+  "obDocumentsEmpty": "لا توجد مستندات مطلوبة لك حالياً.",
+  "obDocOptional": "اختياري",
+  "obDocStateMissing": "لم يُرفع",
+  "obDocStatePending": "بانتظار المراجعة",
+  "obDocStateApproved": "معتمد",
+  "obDocStateRejected": "مرفوض",
+  "obDocStateExpired": "منتهي الصلاحية",
+  "obDocExpires": "ينتهي في {date}",
+  "@obDocExpires": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "obDocReason": "السبب: {reason}",
+  "@obDocReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "obDocUpload": "رفع",
+  "obDocReplace": "رفع مرة أخرى",
+  "obDocRenew": "تجديد",
+  "obDocFormTitle": "رفع مستند",
+  "obDocPhoto": "صورة المستند",
+  "obDocChoosePhoto": "التقط أو اختر صورة",
+  "obDocChangePhoto": "تغيير الصورة",
+  "obDocNumber": "رقم المستند",
+  "obDocIssuedAt": "تاريخ الإصدار",
+  "obDocExpiresAt": "تاريخ الانتهاء",
+  "obDocSend": "إرسال المستند",
+  "obDocSent": "تم رفع المستند وسيُراجع قريباً.",
+  "obDocHint": "الأنواع المسموحة: {types}. الحد الأقصى {size} كيلوبايت.",
+  "@obDocHint": {
+    "placeholders": {
+      "types": {
+        "type": "String"
+      },
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "obDocPhotoRequired": "اختر صورة المستند أولاً.",
+  "obDeclTitle": "الإقرارات والشروط",
+  "obDeclIntro": "اقرأ الشروط ووافق عليها لإكمال طلبك. يُسجَّل إصدار الشروط ووقت الموافقة.",
+  "obDeclAccept": "قرأت وأوافق على: {title}",
+  "@obDeclAccept": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "obDeclAcceptAll": "موافقة ومتابعة",
+  "obDeclRead": "قراءة النص",
+  "obDeclNone": "لا توجد شروط تنتظر موافقتك.",
+  "obDeclAccepted": "تمت الموافقة على كل الشروط.",
+  "obPolicyTerms": "شروط الاستخدام",
+  "obPolicyPrivacy": "سياسة الخصوصية",
+  "obPolicyDriverTerms": "شروط السائقين",
+  "obPolicyOther": "سياسة",
+  "obReviewTitle": "المراجعة والإرسال",
+  "obReviewReady": "كل شيء جاهز. أرسل طلبك ليراجعه فريقنا.",
+  "obReviewTodo": "ما زال أمامك:",
+  "obReviewSubmit": "إرسال الطلب",
+  "obReviewSubmitted": "تم إرسال طلبك للمراجعة.",
+  "obGoToStep": "انتقل",
+  "obTaskCompleteProfile": "أكمل ملفك الشخصي",
+  "obTaskSelectServices": "اختر الخدمات التي تقدمها",
+  "obTaskAddVehicle": "أضف مركبة",
+  "obTaskAddVehiclePhotos": "أضف صور المركبة",
+  "obTaskSubmitVehicle": "أرسل المركبة للمراجعة",
+  "obTaskUploadDocument": "ارفع: {name}",
+  "@obTaskUploadDocument": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "obTaskReplaceDocument": "استبدل المستند المرفوض: {name}",
+  "@obTaskReplaceDocument": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "obTaskRenewDocument": "جدّد المستند المنتهي: {name}",
+  "@obTaskRenewDocument": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "obTaskFixVehicle": "صحّح بيانات المركبة وأرسلها مرة أخرى",
+  "obTaskAcceptPolicies": "وافق على شروط السائقين",
+  "obTaskSubmitApplication": "أرسل طلبك",
+  "vsTitle": "حالة التحقق",
+  "vsUnderReviewTitle": "نراجع طلبك",
+  "vsUnderReviewBody": "سيراجع فريقنا مستنداتك ومركبتك. سنخبرك بالنتيجة، ولا يلزمك أي إجراء الآن.",
+  "vsMoreInfoTitle": "نحتاج إلى معلومات إضافية",
+  "vsMoreInfoBody": "صحّح ما يلي ثم أعد إرسال طلبك للمراجعة.",
+  "vsRejectedTitle": "لم يُقبل طلبك",
+  "vsRejectedBody": "يمكنك تصحيح الأسباب أدناه وإرسال طلبك مجدداً.",
+  "vsApprovedTitle": "تم اعتماد طلبك",
+  "vsApprovedBody": "تم اعتمادك كمقدم خدمة. تأكد من بقاء مستنداتك صالحة.",
+  "vsSuspendedTitle": "حسابك موقوف مؤقتاً",
+  "vsSuspendedBody": "لا يمكنك العمل حتى يُرفع الإيقاف. تواصل مع الدعم لمعرفة المزيد.",
+  "vsPermanentTitle": "حسابك موقوف نهائياً",
+  "vsPermanentBody": "لا يمكنك العمل بهذا الحساب. تواصل مع الدعم لمعرفة المزيد.",
+  "vsDeletionTitle": "طلب حذف الحساب قيد المعالجة",
+  "vsDeletionBody": "أُرسل طلب حذف حسابك وهو قيد المعالجة.",
+  "vsDraftTitle": "أكمل طلبك",
+  "vsDraftBody": "لم تُرسل طلبك بعد. تابع من حيث توقفت.",
+  "vsReviewerReason": "رسالة من فريق المراجعة",
+  "vsTasksTitle": "ما يجب فعله الآن",
+  "vsNoTasks": "لا توجد إجراءات مطلوبة.",
+  "vsDocumentsTitle": "المستندات",
+  "vsVehiclesTitle": "المركبات",
+  "vsExpiringTitle": "مستندات تنتهي قريباً",
+  "vsEligibilityTitle": "الجاهزية للعمل",
+  "vsEligible": "تستوفي كل المتطلبات. الاتصال بالإنترنت لاستقبال الطلبات يتوفر في التحديث القادم.",
+  "vsNotEligible": "لم تكتمل جاهزيتك للعمل بعد:",
+  "vsContinue": "متابعة الطلب",
+  "vsUpdate": "تحديث الطلب",
+  "vsSupportTitle": "تحتاج مساعدة؟",
+  "vsSupportPhone": "اتصل بالدعم: {phone}",
+  "@vsSupportPhone": {
     "placeholders": {
       "phone": {
         "type": "String"
       }
     }
-  }
+  },
+  "vsSupportEmail": "راسل الدعم: {email}",
+  "@vsSupportEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "vsSubmittedOn": "أُرسل في {date}",
+  "@vsSubmittedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "erNotApproved": "لم يتم اعتماد طلبك بعد.",
+  "erProviderSuspended": "حسابك موقوف.",
+  "erAccountBlocked": "الحساب محظور أو مقيّد.",
+  "erDocumentMissing": "هناك مستند مطلوب غير مرفوع.",
+  "erDocumentNotApproved": "هناك مستند مطلوب لم يُعتمد بعد.",
+  "erDocumentExpired": "انتهت صلاحية مستند مطلوب.",
+  "erNoApprovedVehicle": "لا توجد مركبة معتمدة.",
+  "erVehicleNotApproved": "المركبة غير معتمدة.",
+  "erServiceNotApproved": "لا توجد خدمة معتمدة لهذه الفئة.",
+  "erVehicleCategoryMismatch": "فئة المركبة لا تناسب هذه الخدمة.",
+  "erUnknown": "هناك متطلب غير مكتمل.",
+  "obErrGeneric": "تعذر حفظ التغيير. حاول مرة أخرى.",
+  "obErrValidation": "راجع البيانات المدخلة وحاول مرة أخرى.",
+  "obErrUnderage": "يجب ألا يقل عمرك عن {age} سنة.",
+  "@obErrUnderage": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "obErrCityUnavailable": "لا نعمل في هذه المدينة بعد.",
+  "obErrServiceUnavailable": "إحدى الخدمات المختارة غير متاحة.",
+  "obErrApplicationLocked": "لا يمكن تعديل الطلب في حالته الحالية.",
+  "obErrApplicationExists": "لقد بدأت طلباً بالفعل.",
+  "obErrIncomplete": "الطلب غير مكتمل بعد. أكمل المهام المتبقية.",
+  "obErrDocTypeNotAllowed": "نوع الملف غير مسموح لهذا المستند.",
+  "obErrDocTooLarge": "الملف كبير جداً. اختر صورة أصغر.",
+  "obErrDocUnreadable": "الملف فارغ أو لا يمكن قراءته.",
+  "obErrDocTooSmall": "الصورة صغيرة جداً. التقط صورة أوضح.",
+  "obErrDocInfected": "تم رفض الملف بواسطة الفحص الأمني.",
+  "obErrScannerDown": "تعذر فحص الملفات حالياً. حاول بعد قليل.",
+  "obErrNumberRequired": "رقم المستند مطلوب.",
+  "obErrExpiryRequired": "تاريخ الانتهاء مطلوب لهذا المستند.",
+  "obErrAlreadyExpired": "انتهت صلاحية هذا المستند بالفعل.",
+  "obErrDatesInconsistent": "يجب أن يكون تاريخ الانتهاء بعد تاريخ الإصدار.",
+  "obErrIssueFuture": "لا يمكن أن يكون تاريخ الإصدار في المستقبل.",
+  "obErrPlateTaken": "توجد مركبة مسجلة بهذه اللوحة بالفعل.",
+  "obErrPlateInvalid": "رقم اللوحة غير صالح.",
+  "obErrYearInvalid": "سنة الصنع غير صالحة.",
+  "obErrVehicleNotEditable": "لا يمكن تعديل المركبة في حالتها الحالية.",
+  "obErrVehicleIncomplete": "المركبة غير مكتملة: أضف الصور والمستندات الناقصة.",
+  "obErrPhotoLimit": "وصلت إلى الحد الأقصى لعدد الصور.",
+  "obErrVehicleLimit": "وصلت إلى الحد الأقصى لعدد المركبات.",
+  "obErrPolicyStale": "تغيّرت الشروط. حدّث الصفحة وحاول مرة أخرى."
 }

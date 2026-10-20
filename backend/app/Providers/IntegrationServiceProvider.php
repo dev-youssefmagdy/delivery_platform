@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Integrations\Files\Contracts\FileScanner;
+use App\Integrations\Files\Drivers\ClamAvFileScanner;
+use App\Integrations\Files\Drivers\NoopFileScanner;
 use App\Integrations\IntegrationGuard;
 use App\Integrations\Maps\Contracts\MapsProvider;
 use App\Integrations\Maps\Drivers\CachingMapsProvider;
@@ -33,10 +36,15 @@ class IntegrationServiceProvider extends ServiceProvider
             'osrm_nominatim' => OsrmNominatimMapsProvider::class,
             'google' => GoogleMapsProvider::class,
         ]],
+        'file_scanner' => [FileScanner::class, ['noop' => NoopFileScanner::class, 'clamav' => ClamAvFileScanner::class]],
     ];
 
     public function register(): void
     {
+        $this->app->when(ClamAvFileScanner::class)->needs('$host')->giveConfig('integrations.file_scanner.clamav.host');
+        $this->app->when(ClamAvFileScanner::class)->needs('$port')->giveConfig('integrations.file_scanner.clamav.port');
+        $this->app->when(ClamAvFileScanner::class)->needs('$timeoutSeconds')->giveConfig('integrations.file_scanner.clamav.timeout_seconds');
+
         foreach ($this->integrations as $area => [$contract, $drivers]) {
             $this->app->singleton($contract, function () use ($area, $contract, $drivers): object {
                 $driver = config("integrations.{$area}.driver");

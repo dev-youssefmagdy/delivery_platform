@@ -52,6 +52,11 @@ php artisan admin:create            # asks for name, email and password (interac
 Sign in at `/admin/login`. Roles in `ADMIN_MFA_REQUIRED_ROLES` (Super Admin by default) must enrol an authenticator app at the
 first sign-in. With `MAIL_MAILER=log`, invitation and password-reset links are written to `storage/logs/laravel.log`.
 
+Provider documents (P2.1): uploads go to the private disk (`storage/app/private-files`, created on first upload) and need a file
+scanner driver: `FILE_SCANNER_DRIVER=noop` in `.env` for local work (files are stored as "not scanned"), `clamav` with `CLAMAV_HOST` /
+`CLAMAV_PORT` anywhere real. `db:seed` also creates the default document types (Egypt requirements, to be reviewed for local
+compliance) and, outside production, four clearly named demo providers (`PROVIDER_SEED_DEMO=false` turns that off).
+
 Checks:
 
 ```bash

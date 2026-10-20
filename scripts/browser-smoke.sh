@@ -28,6 +28,8 @@ export DB_DATABASE=delivery_platform_testing DB_URL=
 export SESSION_DRIVER=file SESSION_FILES="${CACHE_DIR}/sessions"
 export CACHE_STORE=file QUEUE_CONNECTION=sync MAIL_MAILER=log BROADCAST_CONNECTION=null
 export ADMIN_MFA_REQUIRED_ROLES=
+# Private provider files (demo seed) go to the throwaway directory too.
+export PRIVATE_FILES_ROOT="${CACHE_DIR}/private-files"
 export LOG_CHANNEL=stderr LOG_LEVEL=error
 mkdir -p "${CACHE_DIR}/sessions"
 
@@ -39,7 +41,7 @@ php artisan cache:clear >/dev/null 2>&1
 php artisan migrate:fresh --force --seed --no-interaction >/dev/null || exit 1
 php artisan tinker --execute '
 $admin = App\Models\Admin::factory()->create(["name" => getenv("ADMIN_NAME"), "email" => getenv("ADMIN_EMAIL"), "password" => getenv("ADMIN_PASSWORD")]);
-$admin->givePermissionTo(["dashboard.view", "services.manage", "customers.view", "customers.view_pii", "customers.suspend"]);
+$admin->givePermissionTo(["dashboard.view", "services.manage", "customers.view", "customers.view_pii", "customers.suspend", "drivers.view", "drivers.verify", "drivers.reject", "documents.view", "vehicles.view", "vehicles.approve", "vehicles.reject"]);
 $customer = App\Models\User::factory()->create(["name" => "Smoke Customer", "phone_e164" => "+201009998877"]);
 App\Models\CustomerProfile::query()->create(["user_id" => $customer->id]);
 ' >/dev/null || exit 1

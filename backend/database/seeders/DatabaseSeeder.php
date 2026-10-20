@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             CatalogSeeder::class,
             GeographySeeder::class,
+            DocumentTypeSeeder::class,
+            ProviderSeeder::class,
         ]);
     }
 }

@@ -56,6 +56,8 @@ enum SettingKey: string implements HasLabel
     // Providers
     case ProviderSingleActiveJob = 'provider_single_active_job';
     case ProviderCashDebtLimitMinor = 'provider_cash_debt_limit_minor';
+    case ProviderVerificationSlaHours = 'provider_verification_sla_hours';
+    case ProviderDocumentExpiryWarningDays = 'provider_document_expiry_warning_days';
 
     // Safety & privacy
     case RidePinRequired = 'ride_pin_required';
@@ -82,6 +84,7 @@ enum SettingKey: string implements HasLabel
     case RateLimitOffersPerMinute = 'rate_limit_offers_per_minute';
     case RateLimitPublicFormsPerMinute = 'rate_limit_public_forms_per_minute';
     case RateLimitAdminLoginPerMinute = 'rate_limit_admin_login_per_minute';
+    case RateLimitProviderUploadsPerMinute = 'rate_limit_provider_uploads_per_minute';
 
     public const VERSION_PATTERN = '/^\d{1,4}\.\d{1,4}\.\d{1,4}$/';
 
@@ -139,7 +142,8 @@ enum SettingKey: string implements HasLabel
             self::RatingCustomerByProviderEnabled => SettingGroup::Booking,
             self::DispatchRadiusStepsKm, self::DispatchBatchSize, self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds,
             self::AutoRedispatchOnProviderCancel => SettingGroup::Dispatch,
-            self::ProviderSingleActiveJob, self::ProviderCashDebtLimitMinor => SettingGroup::Providers,
+            self::ProviderSingleActiveJob, self::ProviderCashDebtLimitMinor, self::ProviderVerificationSlaHours,
+            self::ProviderDocumentExpiryWarningDays => SettingGroup::Providers,
             self::RidePinRequired, self::ShareLinkTtlMinutes, self::DirectPhoneExposure => SettingGroup::Safety,
             self::MinAppVersionCustomer, self::MinAppVersionDriver, self::ForceUpdateCustomer, self::ForceUpdateDriver,
             self::MaintenanceModeApps => SettingGroup::Apps,
@@ -179,10 +183,12 @@ enum SettingKey: string implements HasLabel
             self::OtpTtlSeconds, self::OtpResendCooldownSeconds, self::BookingSearchTtlSeconds, self::OfferTtlSeconds,
             self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds, self::AdminLoginLockoutSeconds => 'seconds',
             self::ShareLinkTtlMinutes => 'minutes',
+            self::ProviderVerificationSlaHours => 'hours',
+            self::ProviderDocumentExpiryWarningDays => 'days',
             self::DispatchRadiusStepsKm => 'km',
             self::RateLimitApiPerMinute, self::RateLimitOtpRequestPerMinute, self::RateLimitOtpVerifyPerMinute,
             self::RateLimitLocationPerMinute, self::RateLimitOffersPerMinute, self::RateLimitPublicFormsPerMinute,
-            self::RateLimitAdminLoginPerMinute => 'per_minute',
+            self::RateLimitAdminLoginPerMinute, self::RateLimitProviderUploadsPerMinute => 'per_minute',
             self::RateLimitOtpRequestPerHour => 'per_hour',
             default => null,
         };
@@ -209,8 +215,11 @@ enum SettingKey: string implements HasLabel
             self::LocationStaleAfterSeconds => [10, 3600],
             self::ProviderCashDebtLimitMinor => [0, 100_000_000],
             self::ShareLinkTtlMinutes => [5, 1440],
+            self::ProviderVerificationSlaHours => [1, 720],
+            self::ProviderDocumentExpiryWarningDays => [1, 365],
             self::AdminLoginLockoutSeconds => [60, 86_400],
             self::RateLimitApiPerMinute, self::RateLimitLocationPerMinute, self::RateLimitOffersPerMinute => [1, 10_000],
+            self::RateLimitProviderUploadsPerMinute => [1, 1000],
             self::RateLimitOtpRequestPerMinute, self::RateLimitOtpVerifyPerMinute, self::RateLimitPublicFormsPerMinute,
             self::RateLimitAdminLoginPerMinute => [1, 1000],
             self::RateLimitOtpRequestPerHour => [1, 10_000],
@@ -246,6 +255,8 @@ enum SettingKey: string implements HasLabel
             self::AutoRedispatchOnProviderCancel => true,
             self::ProviderSingleActiveJob => true,
             self::ProviderCashDebtLimitMinor => 50_000,
+            self::ProviderVerificationSlaHours => 24,
+            self::ProviderDocumentExpiryWarningDays => 30,
             self::RidePinRequired => true,
             self::ShareLinkTtlMinutes => 120,
             self::DirectPhoneExposure => false,
@@ -264,6 +275,7 @@ enum SettingKey: string implements HasLabel
             self::RateLimitOffersPerMinute => (int) config('rate_limits.offers.per_minute', 20),
             self::RateLimitPublicFormsPerMinute => (int) config('rate_limits.public-forms.per_minute', 5),
             self::RateLimitAdminLoginPerMinute => (int) config('rate_limits.admin-login.per_minute', 5),
+            self::RateLimitProviderUploadsPerMinute => (int) config('rate_limits.provider-uploads.per_minute', 20),
         };
     }
 

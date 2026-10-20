@@ -8,7 +8,7 @@ use App\Enums\Identity\UserStatus;
 use App\Models\User;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
-use App\Support\Auth\PhoneNumber;
+use App\Repositories\Eloquent\Concerns\SearchesUsers;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
  */
 final class CustomerRepository extends BaseRepository implements CustomerRepositoryInterface
 {
-    private const UUID_PATTERN = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
+    use SearchesUsers;
 
     public function __construct(User $model)
     {
@@ -33,7 +33,7 @@ final class CustomerRepository extends BaseRepository implements CustomerReposit
             ->whereHas('customerProfile')
             ->with('customerProfile')
             ->withExists(['deletionRequests as has_pending_deletion' => static fn (Builder $query) => $query->where('status', DeletionRequestStatus::Pending->value)])
-            ->when($filters->search, fn (Builder $query, string $search) => $this->applySearch($query, $search))
+            ->when($filters->search, fn (Builder $query, string $search) => $this->applyUserSearch($query, $search))
             ->when($filters->statuses !== [], static fn (Builder $query) => $query->whereIn(
                 'status',
                 array_map(static fn (UserStatus $status): string => $status->value, $filters->statuses),
@@ -108,39 +108,5 @@ final class CustomerRepository extends BaseRepository implements CustomerReposit
     public function hasProviderProfile(User $user): bool
     {
         return $user->providerProfile()->exists();
-    }
-
-    /**
-     * One search box for uuid, phone and name: a uuid matches exactly, a full international number matches exactly,
-     * a run of at least four digits matches the END of the number (the mask already shows the last four digits, so
-     * this reveals nothing more), anything else is a name search.
-     *
-     * @param Builder<User> $query
-     */
-    private function applySearch(Builder $query, string $search): void
-    {
-        if (preg_match(self::UUID_PATTERN, $search) === 1) {
-            $query->where('uuid', strtolower($search));
-
-            return;
-        }
-
-        $phone = PhoneNumber::normalize($search);
-
-        if ($phone !== null) {
-            $query->where('phone_e164', $phone);
-
-            return;
-        }
-
-        $latin = strtr($search, ['٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4', '٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9']);
-
-        if (preg_match('/^[0-9\s+\-().]{4,}$/', $latin) === 1 && strlen((string) preg_replace('/\D+/', '', $latin)) >= 4) {
-            $query->where('phone_e164', 'like', '%'.preg_replace('/\D+/', '', $latin));
-
-            return;
-        }
-
-        $query->where('name', 'like', '%'.addcslashes($search, '%_\\').'%');
     }
 }

@@ -29,6 +29,10 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take photos of your documents and vehicle for your driver application.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose photos of your documents and vehicle for your driver application.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to show you to nearby customers and track trips.</string>
 	<key>LSRequiresIPhoneOS</key>

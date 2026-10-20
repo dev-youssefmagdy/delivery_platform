@@ -10,6 +10,7 @@ use App\Models\AccountDeletionRequest;
 use App\Models\User;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserRepositoryInterface;
+use App\Services\Provider\ProviderDeletionService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +23,7 @@ final class AccountDeletionService
     public function __construct(
         private readonly AccountDeletionRequestRepositoryInterface $requests,
         private readonly UserRepositoryInterface $users,
+        private readonly ProviderDeletionService $providerDeletions,
     ) {}
 
     /**
@@ -45,6 +47,7 @@ final class AccountDeletionService
             ]);
 
             $this->users->setStatus($user, UserStatus::DeletionPending);
+            $this->providerDeletions->markProviderPending($locked, $request);
 
             return $request;
         });
@@ -65,6 +68,7 @@ final class AccountDeletionService
 
             $this->requests->update($request, ['status' => DeletionRequestStatus::Cancelled, 'processed_at' => now()]);
             $this->users->setStatus($user, $request->previous_user_status === UserStatus::DeletionPending ? UserStatus::Active : $request->previous_user_status);
+            $this->providerDeletions->restoreProvider($user, $request, $user);
 
             return $request;
         });

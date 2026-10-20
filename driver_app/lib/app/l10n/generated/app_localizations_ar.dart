@@ -221,17 +221,676 @@ class AppLocalizationsAr extends AppLocalizations {
   String get providerOnboardingTitle => 'طلب الانضمام كسائق';
 
   @override
-  String get providerOnboardingBadge => 'قريباً';
+  String get actionBack => 'رجوع';
 
   @override
-  String get providerOnboardingHeadline => 'تم التحقق من رقم هاتفك';
+  String get actionSave => 'حفظ';
 
   @override
-  String get providerOnboardingBody =>
-      'خطوات طلب الانضمام كسائق (المستندات والمركبة والمراجعة) ستتوفر في تحديث قادم. لا يلزمك أي إجراء الآن.';
+  String get actionClose => 'إغلاق';
 
   @override
-  String providerOnboardingVerifiedPhone(String phone) {
-    return 'الرقم الموثّق: $phone';
+  String get actionRefresh => 'تحديث';
+
+  @override
+  String get actionRemove => 'إزالة';
+
+  @override
+  String get actionEdit => 'تعديل';
+
+  @override
+  String get actionDelete => 'حذف';
+
+  @override
+  String get actionCancel => 'إلغاء';
+
+  @override
+  String get photoCamera => 'التقاط صورة';
+
+  @override
+  String get photoGallery => 'اختيار من المعرض';
+
+  @override
+  String get obStepProfile => 'الملف الشخصي';
+
+  @override
+  String get obStepServices => 'الخدمات';
+
+  @override
+  String get obStepVehicles => 'المركبات';
+
+  @override
+  String get obStepDocuments => 'المستندات';
+
+  @override
+  String get obStepDeclarations => 'الإقرارات';
+
+  @override
+  String get obStepReview => 'المراجعة';
+
+  @override
+  String obStepCounter(int current, int total) {
+    return 'الخطوة $current من $total';
   }
+
+  @override
+  String get obStepDone => 'مكتملة';
+
+  @override
+  String get obProfileTitle => 'عرّفنا بنفسك';
+
+  @override
+  String get obProfileIntro =>
+      'هذه البيانات مطلوبة لمراجعة طلبك. يمكنك تعديلها قبل الإرسال.';
+
+  @override
+  String get obProfileName => 'الاسم الكامل';
+
+  @override
+  String get obProfileDob => 'تاريخ الميلاد';
+
+  @override
+  String get obProfileDobPick => 'اختر التاريخ';
+
+  @override
+  String get obProfileType => 'نوع مقدم الخدمة';
+
+  @override
+  String get obProfileCity => 'المدينة';
+
+  @override
+  String get obProfileCityPick => 'اختر المدينة';
+
+  @override
+  String get obProfileSave => 'حفظ ومتابعة';
+
+  @override
+  String get obProfileCitiesEmpty => 'لا توجد مدن متاحة حالياً.';
+
+  @override
+  String get obTypeIndividualDriver => 'سائق فردي';
+
+  @override
+  String get obTypeCourier => 'مندوب توصيل';
+
+  @override
+  String get obTypeMovingCrew => 'فريق / سائق نقل أثاث';
+
+  @override
+  String get obTypeCommercialTransport => 'مزوّد نقل تجاري';
+
+  @override
+  String get obTypeCompanyFleet => 'شركة / أسطول';
+
+  @override
+  String get obServicesTitle => 'ما الخدمات التي تقدمها؟';
+
+  @override
+  String get obServicesIntro =>
+      'اختر خدمة واحدة على الأقل. يمكنك إضافة المزيد لاحقاً وتُراجع كل خدمة قبل اعتمادها.';
+
+  @override
+  String get obServicesEmpty => 'لا توجد خدمات متاحة حالياً.';
+
+  @override
+  String get obServicesSave => 'حفظ ومتابعة';
+
+  @override
+  String get obServiceStatusApproved => 'معتمدة';
+
+  @override
+  String get obServiceStatusRejected => 'مرفوضة';
+
+  @override
+  String get obServiceStatusRequested => 'قيد المراجعة';
+
+  @override
+  String get obVehiclesTitle => 'مركباتك';
+
+  @override
+  String get obVehiclesIntro =>
+      'أضف مركبة واحدة على الأقل بصورها ومستنداتها ثم أرسلها للمراجعة.';
+
+  @override
+  String get obVehiclesEmpty => 'لم تضف مركبة بعد.';
+
+  @override
+  String get obVehicleAdd => 'إضافة مركبة';
+
+  @override
+  String get obVehicleFormTitle => 'بيانات المركبة';
+
+  @override
+  String get obVehicleCategory => 'فئة المركبة';
+
+  @override
+  String get obVehicleCategoryPick => 'اختر الفئة';
+
+  @override
+  String get obVehicleMake => 'الماركة';
+
+  @override
+  String get obVehicleModel => 'الطراز';
+
+  @override
+  String get obVehicleYear => 'سنة الصنع';
+
+  @override
+  String get obVehicleColor => 'اللون';
+
+  @override
+  String get obVehiclePlate => 'رقم اللوحة';
+
+  @override
+  String get obVehiclePassengers => 'عدد الركاب';
+
+  @override
+  String get obVehiclePayload => 'الحمولة (كجم)';
+
+  @override
+  String get obVehicleVolume => 'حجم الشحن (م³)';
+
+  @override
+  String get obVehicleCapabilities => 'القدرات الخاصة';
+
+  @override
+  String get obVehicleSave => 'حفظ المركبة';
+
+  @override
+  String get obVehiclePhotos => 'الصور';
+
+  @override
+  String obVehiclePhotosHint(int count) {
+    return 'أضف $count صور على الأقل (أمامية وخلفية).';
+  }
+
+  @override
+  String get obVehiclePhotoAdd => 'إضافة صورة';
+
+  @override
+  String get obVehiclePhotoKindTitle => 'أي جزء من المركبة؟';
+
+  @override
+  String get obPhotoKindFront => 'أمامية';
+
+  @override
+  String get obPhotoKindBack => 'خلفية';
+
+  @override
+  String get obPhotoKindSide => 'جانبية';
+
+  @override
+  String get obPhotoKindInterior => 'داخلية';
+
+  @override
+  String get obPhotoKindOther => 'أخرى';
+
+  @override
+  String get obVehicleDocuments => 'مستندات المركبة';
+
+  @override
+  String get obVehicleSubmit => 'إرسال المركبة للمراجعة';
+
+  @override
+  String get obVehicleDeleteTitle => 'إزالة هذه المركبة؟';
+
+  @override
+  String get obVehicleDeleteBody => 'تُحذف المركبة وصورها ومستنداتها المرفوعة.';
+
+  @override
+  String get obVehicleSubmitted => 'تم إرسال المركبة للمراجعة.';
+
+  @override
+  String get obVehicleLockedHint => 'لا يمكن تعديل المركبة وهي قيد المراجعة.';
+
+  @override
+  String get obVehicleStatusDraft => 'مسودة';
+
+  @override
+  String get obVehicleStatusUnderReview => 'قيد المراجعة';
+
+  @override
+  String get obVehicleStatusApproved => 'معتمدة';
+
+  @override
+  String get obVehicleStatusRejected => 'مرفوضة';
+
+  @override
+  String get obVehicleStatusSuspended => 'موقوفة';
+
+  @override
+  String get obVehicleStatusInactive => 'غير نشطة';
+
+  @override
+  String obVehicleRejectedReason(String reason) {
+    return 'سبب الرفض: $reason';
+  }
+
+  @override
+  String get obCapAirConditioning => 'تكييف';
+
+  @override
+  String get obCapChildSeat => 'مقعد أطفال';
+
+  @override
+  String get obCapWheelchair => 'مهيأة للكراسي المتحركة';
+
+  @override
+  String get obCapPets => 'يُسمح بالحيوانات الأليفة';
+
+  @override
+  String get obCapLargeLuggage => 'حقائب كبيرة';
+
+  @override
+  String get obCapCoveredCargo => 'صندوق شحن مغطى';
+
+  @override
+  String get obCapTailLift => 'رافعة خلفية';
+
+  @override
+  String get obCapRefrigerated => 'مبرّدة';
+
+  @override
+  String get obCapMovingEquipment => 'معدات نقل أثاث';
+
+  @override
+  String get obDocumentsTitle => 'المستندات المطلوبة';
+
+  @override
+  String get obDocumentsIntro =>
+      'ارفع صورة واضحة لكل مستند. تُراجع المستندات يدوياً وتظهر هنا حالة كل منها.';
+
+  @override
+  String get obDocumentsEmpty => 'لا توجد مستندات مطلوبة لك حالياً.';
+
+  @override
+  String get obDocOptional => 'اختياري';
+
+  @override
+  String get obDocStateMissing => 'لم يُرفع';
+
+  @override
+  String get obDocStatePending => 'بانتظار المراجعة';
+
+  @override
+  String get obDocStateApproved => 'معتمد';
+
+  @override
+  String get obDocStateRejected => 'مرفوض';
+
+  @override
+  String get obDocStateExpired => 'منتهي الصلاحية';
+
+  @override
+  String obDocExpires(String date) {
+    return 'ينتهي في $date';
+  }
+
+  @override
+  String obDocReason(String reason) {
+    return 'السبب: $reason';
+  }
+
+  @override
+  String get obDocUpload => 'رفع';
+
+  @override
+  String get obDocReplace => 'رفع مرة أخرى';
+
+  @override
+  String get obDocRenew => 'تجديد';
+
+  @override
+  String get obDocFormTitle => 'رفع مستند';
+
+  @override
+  String get obDocPhoto => 'صورة المستند';
+
+  @override
+  String get obDocChoosePhoto => 'التقط أو اختر صورة';
+
+  @override
+  String get obDocChangePhoto => 'تغيير الصورة';
+
+  @override
+  String get obDocNumber => 'رقم المستند';
+
+  @override
+  String get obDocIssuedAt => 'تاريخ الإصدار';
+
+  @override
+  String get obDocExpiresAt => 'تاريخ الانتهاء';
+
+  @override
+  String get obDocSend => 'إرسال المستند';
+
+  @override
+  String get obDocSent => 'تم رفع المستند وسيُراجع قريباً.';
+
+  @override
+  String obDocHint(String types, int size) {
+    return 'الأنواع المسموحة: $types. الحد الأقصى $size كيلوبايت.';
+  }
+
+  @override
+  String get obDocPhotoRequired => 'اختر صورة المستند أولاً.';
+
+  @override
+  String get obDeclTitle => 'الإقرارات والشروط';
+
+  @override
+  String get obDeclIntro =>
+      'اقرأ الشروط ووافق عليها لإكمال طلبك. يُسجَّل إصدار الشروط ووقت الموافقة.';
+
+  @override
+  String obDeclAccept(String title) {
+    return 'قرأت وأوافق على: $title';
+  }
+
+  @override
+  String get obDeclAcceptAll => 'موافقة ومتابعة';
+
+  @override
+  String get obDeclRead => 'قراءة النص';
+
+  @override
+  String get obDeclNone => 'لا توجد شروط تنتظر موافقتك.';
+
+  @override
+  String get obDeclAccepted => 'تمت الموافقة على كل الشروط.';
+
+  @override
+  String get obPolicyTerms => 'شروط الاستخدام';
+
+  @override
+  String get obPolicyPrivacy => 'سياسة الخصوصية';
+
+  @override
+  String get obPolicyDriverTerms => 'شروط السائقين';
+
+  @override
+  String get obPolicyOther => 'سياسة';
+
+  @override
+  String get obReviewTitle => 'المراجعة والإرسال';
+
+  @override
+  String get obReviewReady => 'كل شيء جاهز. أرسل طلبك ليراجعه فريقنا.';
+
+  @override
+  String get obReviewTodo => 'ما زال أمامك:';
+
+  @override
+  String get obReviewSubmit => 'إرسال الطلب';
+
+  @override
+  String get obReviewSubmitted => 'تم إرسال طلبك للمراجعة.';
+
+  @override
+  String get obGoToStep => 'انتقل';
+
+  @override
+  String get obTaskCompleteProfile => 'أكمل ملفك الشخصي';
+
+  @override
+  String get obTaskSelectServices => 'اختر الخدمات التي تقدمها';
+
+  @override
+  String get obTaskAddVehicle => 'أضف مركبة';
+
+  @override
+  String get obTaskAddVehiclePhotos => 'أضف صور المركبة';
+
+  @override
+  String get obTaskSubmitVehicle => 'أرسل المركبة للمراجعة';
+
+  @override
+  String obTaskUploadDocument(String name) {
+    return 'ارفع: $name';
+  }
+
+  @override
+  String obTaskReplaceDocument(String name) {
+    return 'استبدل المستند المرفوض: $name';
+  }
+
+  @override
+  String obTaskRenewDocument(String name) {
+    return 'جدّد المستند المنتهي: $name';
+  }
+
+  @override
+  String get obTaskFixVehicle => 'صحّح بيانات المركبة وأرسلها مرة أخرى';
+
+  @override
+  String get obTaskAcceptPolicies => 'وافق على شروط السائقين';
+
+  @override
+  String get obTaskSubmitApplication => 'أرسل طلبك';
+
+  @override
+  String get vsTitle => 'حالة التحقق';
+
+  @override
+  String get vsUnderReviewTitle => 'نراجع طلبك';
+
+  @override
+  String get vsUnderReviewBody =>
+      'سيراجع فريقنا مستنداتك ومركبتك. سنخبرك بالنتيجة، ولا يلزمك أي إجراء الآن.';
+
+  @override
+  String get vsMoreInfoTitle => 'نحتاج إلى معلومات إضافية';
+
+  @override
+  String get vsMoreInfoBody => 'صحّح ما يلي ثم أعد إرسال طلبك للمراجعة.';
+
+  @override
+  String get vsRejectedTitle => 'لم يُقبل طلبك';
+
+  @override
+  String get vsRejectedBody => 'يمكنك تصحيح الأسباب أدناه وإرسال طلبك مجدداً.';
+
+  @override
+  String get vsApprovedTitle => 'تم اعتماد طلبك';
+
+  @override
+  String get vsApprovedBody =>
+      'تم اعتمادك كمقدم خدمة. تأكد من بقاء مستنداتك صالحة.';
+
+  @override
+  String get vsSuspendedTitle => 'حسابك موقوف مؤقتاً';
+
+  @override
+  String get vsSuspendedBody =>
+      'لا يمكنك العمل حتى يُرفع الإيقاف. تواصل مع الدعم لمعرفة المزيد.';
+
+  @override
+  String get vsPermanentTitle => 'حسابك موقوف نهائياً';
+
+  @override
+  String get vsPermanentBody =>
+      'لا يمكنك العمل بهذا الحساب. تواصل مع الدعم لمعرفة المزيد.';
+
+  @override
+  String get vsDeletionTitle => 'طلب حذف الحساب قيد المعالجة';
+
+  @override
+  String get vsDeletionBody => 'أُرسل طلب حذف حسابك وهو قيد المعالجة.';
+
+  @override
+  String get vsDraftTitle => 'أكمل طلبك';
+
+  @override
+  String get vsDraftBody => 'لم تُرسل طلبك بعد. تابع من حيث توقفت.';
+
+  @override
+  String get vsReviewerReason => 'رسالة من فريق المراجعة';
+
+  @override
+  String get vsTasksTitle => 'ما يجب فعله الآن';
+
+  @override
+  String get vsNoTasks => 'لا توجد إجراءات مطلوبة.';
+
+  @override
+  String get vsDocumentsTitle => 'المستندات';
+
+  @override
+  String get vsVehiclesTitle => 'المركبات';
+
+  @override
+  String get vsExpiringTitle => 'مستندات تنتهي قريباً';
+
+  @override
+  String get vsEligibilityTitle => 'الجاهزية للعمل';
+
+  @override
+  String get vsEligible =>
+      'تستوفي كل المتطلبات. الاتصال بالإنترنت لاستقبال الطلبات يتوفر في التحديث القادم.';
+
+  @override
+  String get vsNotEligible => 'لم تكتمل جاهزيتك للعمل بعد:';
+
+  @override
+  String get vsContinue => 'متابعة الطلب';
+
+  @override
+  String get vsUpdate => 'تحديث الطلب';
+
+  @override
+  String get vsSupportTitle => 'تحتاج مساعدة؟';
+
+  @override
+  String vsSupportPhone(String phone) {
+    return 'اتصل بالدعم: $phone';
+  }
+
+  @override
+  String vsSupportEmail(String email) {
+    return 'راسل الدعم: $email';
+  }
+
+  @override
+  String vsSubmittedOn(String date) {
+    return 'أُرسل في $date';
+  }
+
+  @override
+  String get erNotApproved => 'لم يتم اعتماد طلبك بعد.';
+
+  @override
+  String get erProviderSuspended => 'حسابك موقوف.';
+
+  @override
+  String get erAccountBlocked => 'الحساب محظور أو مقيّد.';
+
+  @override
+  String get erDocumentMissing => 'هناك مستند مطلوب غير مرفوع.';
+
+  @override
+  String get erDocumentNotApproved => 'هناك مستند مطلوب لم يُعتمد بعد.';
+
+  @override
+  String get erDocumentExpired => 'انتهت صلاحية مستند مطلوب.';
+
+  @override
+  String get erNoApprovedVehicle => 'لا توجد مركبة معتمدة.';
+
+  @override
+  String get erVehicleNotApproved => 'المركبة غير معتمدة.';
+
+  @override
+  String get erServiceNotApproved => 'لا توجد خدمة معتمدة لهذه الفئة.';
+
+  @override
+  String get erVehicleCategoryMismatch => 'فئة المركبة لا تناسب هذه الخدمة.';
+
+  @override
+  String get erUnknown => 'هناك متطلب غير مكتمل.';
+
+  @override
+  String get obErrGeneric => 'تعذر حفظ التغيير. حاول مرة أخرى.';
+
+  @override
+  String get obErrValidation => 'راجع البيانات المدخلة وحاول مرة أخرى.';
+
+  @override
+  String obErrUnderage(int age) {
+    return 'يجب ألا يقل عمرك عن $age سنة.';
+  }
+
+  @override
+  String get obErrCityUnavailable => 'لا نعمل في هذه المدينة بعد.';
+
+  @override
+  String get obErrServiceUnavailable => 'إحدى الخدمات المختارة غير متاحة.';
+
+  @override
+  String get obErrApplicationLocked => 'لا يمكن تعديل الطلب في حالته الحالية.';
+
+  @override
+  String get obErrApplicationExists => 'لقد بدأت طلباً بالفعل.';
+
+  @override
+  String get obErrIncomplete => 'الطلب غير مكتمل بعد. أكمل المهام المتبقية.';
+
+  @override
+  String get obErrDocTypeNotAllowed => 'نوع الملف غير مسموح لهذا المستند.';
+
+  @override
+  String get obErrDocTooLarge => 'الملف كبير جداً. اختر صورة أصغر.';
+
+  @override
+  String get obErrDocUnreadable => 'الملف فارغ أو لا يمكن قراءته.';
+
+  @override
+  String get obErrDocTooSmall => 'الصورة صغيرة جداً. التقط صورة أوضح.';
+
+  @override
+  String get obErrDocInfected => 'تم رفض الملف بواسطة الفحص الأمني.';
+
+  @override
+  String get obErrScannerDown => 'تعذر فحص الملفات حالياً. حاول بعد قليل.';
+
+  @override
+  String get obErrNumberRequired => 'رقم المستند مطلوب.';
+
+  @override
+  String get obErrExpiryRequired => 'تاريخ الانتهاء مطلوب لهذا المستند.';
+
+  @override
+  String get obErrAlreadyExpired => 'انتهت صلاحية هذا المستند بالفعل.';
+
+  @override
+  String get obErrDatesInconsistent =>
+      'يجب أن يكون تاريخ الانتهاء بعد تاريخ الإصدار.';
+
+  @override
+  String get obErrIssueFuture => 'لا يمكن أن يكون تاريخ الإصدار في المستقبل.';
+
+  @override
+  String get obErrPlateTaken => 'توجد مركبة مسجلة بهذه اللوحة بالفعل.';
+
+  @override
+  String get obErrPlateInvalid => 'رقم اللوحة غير صالح.';
+
+  @override
+  String get obErrYearInvalid => 'سنة الصنع غير صالحة.';
+
+  @override
+  String get obErrVehicleNotEditable =>
+      'لا يمكن تعديل المركبة في حالتها الحالية.';
+
+  @override
+  String get obErrVehicleIncomplete =>
+      'المركبة غير مكتملة: أضف الصور والمستندات الناقصة.';
+
+  @override
+  String get obErrPhotoLimit => 'وصلت إلى الحد الأقصى لعدد الصور.';
+
+  @override
+  String get obErrVehicleLimit => 'وصلت إلى الحد الأقصى لعدد المركبات.';
+
+  @override
+  String get obErrPolicyStale => 'تغيّرت الشروط. حدّث الصفحة وحاول مرة أخرى.';
 }

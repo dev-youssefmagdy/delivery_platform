@@ -19,6 +19,8 @@ import { askConfirm, confirmDialog, initConfirmActions } from './core/confirm-ac
 import { adminModal, initModalTriggers } from './core/modal.js';
 import { adminTabs } from './components/tabs.js';
 import { schemaPreview } from './components/schema-preview.js';
+import { documentViewer } from './components/document-viewer.js';
+import { initDocumentLinks } from './core/document-links.js';
 import { adminDropdown, adminFile, adminMoney, adminRepeater, adminReveal, adminSidebar } from './components/ui.js';
 
 const Admin = {
@@ -55,10 +57,12 @@ Alpine.data('adminMoney', adminMoney);
 Alpine.data('adminFile', adminFile);
 Alpine.data('adminReveal', adminReveal);
 Alpine.data('schemaPreview', schemaPreview);
+Alpine.data('documentViewer', documentViewer);
 
 initConfirmActions();
 initModalTriggers();
 initExports();
+initDocumentLinks();
 
 Alpine.start();
 Admin.init(document);

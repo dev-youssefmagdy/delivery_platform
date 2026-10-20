@@ -97,15 +97,319 @@
   "statusCancelDeletion": "Cancel deletion request",
   "homeLogout": "Sign out",
   "providerOnboardingTitle": "Driver application",
-  "providerOnboardingBadge": "Coming soon",
-  "providerOnboardingHeadline": "Your phone number is verified",
-  "providerOnboardingBody": "The driver application steps (documents, vehicle and review) open in an upcoming update. There is nothing more to do for now.",
-  "providerOnboardingVerifiedPhone": "Verified number: {phone}",
-  "@providerOnboardingVerifiedPhone": {
+  "actionBack": "Back",
+  "actionSave": "Save",
+  "actionClose": "Close",
+  "actionRefresh": "Refresh",
+  "actionRemove": "Remove",
+  "actionEdit": "Edit",
+  "actionDelete": "Delete",
+  "actionCancel": "Cancel",
+  "photoCamera": "Take a photo",
+  "photoGallery": "Choose from gallery",
+  "obStepProfile": "Profile",
+  "obStepServices": "Services",
+  "obStepVehicles": "Vehicles",
+  "obStepDocuments": "Documents",
+  "obStepDeclarations": "Declarations",
+  "obStepReview": "Review",
+  "obStepCounter": "Step {current} of {total}",
+  "@obStepCounter": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "obStepDone": "Done",
+  "obProfileTitle": "Tell us about yourself",
+  "obProfileIntro": "We need this to review your application. You can change it before you submit.",
+  "obProfileName": "Full name",
+  "obProfileDob": "Date of birth",
+  "obProfileDobPick": "Choose a date",
+  "obProfileType": "Provider type",
+  "obProfileCity": "City",
+  "obProfileCityPick": "Select your city",
+  "obProfileSave": "Save and continue",
+  "obProfileCitiesEmpty": "No cities are available right now.",
+  "obTypeIndividualDriver": "Individual driver",
+  "obTypeCourier": "Courier",
+  "obTypeMovingCrew": "Moving crew / driver",
+  "obTypeCommercialTransport": "Commercial transport provider",
+  "obTypeCompanyFleet": "Company / fleet",
+  "obServicesTitle": "What do you want to offer?",
+  "obServicesIntro": "Choose at least one service. You can add more later; each service is reviewed before it is approved.",
+  "obServicesEmpty": "No services are available right now.",
+  "obServicesSave": "Save and continue",
+  "obServiceStatusApproved": "Approved",
+  "obServiceStatusRejected": "Rejected",
+  "obServiceStatusRequested": "Pending review",
+  "obVehiclesTitle": "Your vehicles",
+  "obVehiclesIntro": "Add at least one vehicle with its photos and documents, then submit it for review.",
+  "obVehiclesEmpty": "You have not added a vehicle yet.",
+  "obVehicleAdd": "Add a vehicle",
+  "obVehicleFormTitle": "Vehicle details",
+  "obVehicleCategory": "Vehicle category",
+  "obVehicleCategoryPick": "Select a category",
+  "obVehicleMake": "Make",
+  "obVehicleModel": "Model",
+  "obVehicleYear": "Year",
+  "obVehicleColor": "Colour",
+  "obVehiclePlate": "Plate number",
+  "obVehiclePassengers": "Passenger seats",
+  "obVehiclePayload": "Payload (kg)",
+  "obVehicleVolume": "Cargo volume (m³)",
+  "obVehicleCapabilities": "Special capabilities",
+  "obVehicleSave": "Save vehicle",
+  "obVehiclePhotos": "Photos",
+  "obVehiclePhotosHint": "Add at least {count} photos (front and back).",
+  "@obVehiclePhotosHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "obVehiclePhotoAdd": "Add a photo",
+  "obVehiclePhotoKindTitle": "Which side of the vehicle?",
+  "obPhotoKindFront": "Front",
+  "obPhotoKindBack": "Back",
+  "obPhotoKindSide": "Side",
+  "obPhotoKindInterior": "Interior",
+  "obPhotoKindOther": "Other",
+  "obVehicleDocuments": "Vehicle documents",
+  "obVehicleSubmit": "Submit vehicle for review",
+  "obVehicleDeleteTitle": "Remove this vehicle?",
+  "obVehicleDeleteBody": "The vehicle, its photos and uploaded documents are deleted.",
+  "obVehicleSubmitted": "The vehicle was submitted for review.",
+  "obVehicleLockedHint": "The vehicle cannot be changed while it is being reviewed.",
+  "obVehicleStatusDraft": "Draft",
+  "obVehicleStatusUnderReview": "Under review",
+  "obVehicleStatusApproved": "Approved",
+  "obVehicleStatusRejected": "Rejected",
+  "obVehicleStatusSuspended": "Suspended",
+  "obVehicleStatusInactive": "Inactive",
+  "obVehicleRejectedReason": "Rejected: {reason}",
+  "@obVehicleRejectedReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "obCapAirConditioning": "Air conditioning",
+  "obCapChildSeat": "Child seat",
+  "obCapWheelchair": "Wheelchair accessible",
+  "obCapPets": "Pets allowed",
+  "obCapLargeLuggage": "Large luggage",
+  "obCapCoveredCargo": "Covered cargo area",
+  "obCapTailLift": "Tail lift",
+  "obCapRefrigerated": "Refrigerated",
+  "obCapMovingEquipment": "Moving equipment",
+  "obDocumentsTitle": "Required documents",
+  "obDocumentsIntro": "Upload a clear photo of each document. Documents are reviewed by hand and the status of each one shows here.",
+  "obDocumentsEmpty": "No documents are required from you right now.",
+  "obDocOptional": "Optional",
+  "obDocStateMissing": "Not uploaded",
+  "obDocStatePending": "Waiting for review",
+  "obDocStateApproved": "Approved",
+  "obDocStateRejected": "Rejected",
+  "obDocStateExpired": "Expired",
+  "obDocExpires": "Expires {date}",
+  "@obDocExpires": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "obDocReason": "Reason: {reason}",
+  "@obDocReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "obDocUpload": "Upload",
+  "obDocReplace": "Upload again",
+  "obDocRenew": "Renew",
+  "obDocFormTitle": "Upload a document",
+  "obDocPhoto": "Photo of the document",
+  "obDocChoosePhoto": "Take or choose a photo",
+  "obDocChangePhoto": "Change photo",
+  "obDocNumber": "Document number",
+  "obDocIssuedAt": "Issue date",
+  "obDocExpiresAt": "Expiry date",
+  "obDocSend": "Send the document",
+  "obDocSent": "The document was uploaded and will be reviewed soon.",
+  "obDocHint": "Allowed: {types}. Maximum {size} KB.",
+  "@obDocHint": {
+    "placeholders": {
+      "types": {
+        "type": "String"
+      },
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "obDocPhotoRequired": "Choose the photo of the document first.",
+  "obDeclTitle": "Declarations and terms",
+  "obDeclIntro": "Read and accept the terms to complete your application. The version and the time you accept are recorded.",
+  "obDeclAccept": "I have read and accept: {title}",
+  "@obDeclAccept": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "obDeclAcceptAll": "Accept and continue",
+  "obDeclRead": "Read the text",
+  "obDeclNone": "There is nothing waiting for your acceptance.",
+  "obDeclAccepted": "You accepted all the terms.",
+  "obPolicyTerms": "Terms of use",
+  "obPolicyPrivacy": "Privacy policy",
+  "obPolicyDriverTerms": "Driver terms",
+  "obPolicyOther": "Policy",
+  "obReviewTitle": "Review and submit",
+  "obReviewReady": "Everything is ready. Submit your application for our team to review.",
+  "obReviewTodo": "Still to do:",
+  "obReviewSubmit": "Submit application",
+  "obReviewSubmitted": "Your application was submitted for review.",
+  "obGoToStep": "Go",
+  "obTaskCompleteProfile": "Complete your profile",
+  "obTaskSelectServices": "Choose the services you offer",
+  "obTaskAddVehicle": "Add a vehicle",
+  "obTaskAddVehiclePhotos": "Add vehicle photos",
+  "obTaskSubmitVehicle": "Submit the vehicle for review",
+  "obTaskUploadDocument": "Upload: {name}",
+  "@obTaskUploadDocument": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "obTaskReplaceDocument": "Replace the rejected document: {name}",
+  "@obTaskReplaceDocument": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "obTaskRenewDocument": "Renew the expired document: {name}",
+  "@obTaskRenewDocument": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "obTaskFixVehicle": "Fix the vehicle and submit it again",
+  "obTaskAcceptPolicies": "Accept the driver terms",
+  "obTaskSubmitApplication": "Submit your application",
+  "vsTitle": "Verification status",
+  "vsUnderReviewTitle": "We are reviewing your application",
+  "vsUnderReviewBody": "Our team is checking your documents and vehicle. We will tell you the result; there is nothing to do now.",
+  "vsMoreInfoTitle": "We need more information",
+  "vsMoreInfoBody": "Fix the items below, then submit your application again.",
+  "vsRejectedTitle": "Your application was not accepted",
+  "vsRejectedBody": "You can fix the reasons below and submit your application again.",
+  "vsApprovedTitle": "Your application is approved",
+  "vsApprovedBody": "You are approved as a provider. Keep your documents valid.",
+  "vsSuspendedTitle": "Your account is temporarily suspended",
+  "vsSuspendedBody": "You cannot work until the suspension ends. Contact support to learn more.",
+  "vsPermanentTitle": "Your account is permanently suspended",
+  "vsPermanentBody": "You cannot work with this account. Contact support to learn more.",
+  "vsDeletionTitle": "Your account deletion is being processed",
+  "vsDeletionBody": "Your account deletion request was received and is being processed.",
+  "vsDraftTitle": "Finish your application",
+  "vsDraftBody": "You have not submitted your application yet. Continue where you left off.",
+  "vsReviewerReason": "Message from the review team",
+  "vsTasksTitle": "What to do next",
+  "vsNoTasks": "Nothing is required from you.",
+  "vsDocumentsTitle": "Documents",
+  "vsVehiclesTitle": "Vehicles",
+  "vsExpiringTitle": "Documents expiring soon",
+  "vsEligibilityTitle": "Ready to work",
+  "vsEligible": "You meet every requirement. Going online to receive requests arrives in the next update.",
+  "vsNotEligible": "You are not ready to work yet:",
+  "vsContinue": "Continue the application",
+  "vsUpdate": "Update the application",
+  "vsSupportTitle": "Need help?",
+  "vsSupportPhone": "Call support: {phone}",
+  "@vsSupportPhone": {
     "placeholders": {
       "phone": {
         "type": "String"
       }
     }
-  }
+  },
+  "vsSupportEmail": "Email support: {email}",
+  "@vsSupportEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "vsSubmittedOn": "Submitted on {date}",
+  "@vsSubmittedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "erNotApproved": "Your application is not approved yet.",
+  "erProviderSuspended": "Your account is suspended.",
+  "erAccountBlocked": "The account is blocked or restricted.",
+  "erDocumentMissing": "A required document is missing.",
+  "erDocumentNotApproved": "A required document is not approved yet.",
+  "erDocumentExpired": "A required document has expired.",
+  "erNoApprovedVehicle": "There is no approved vehicle.",
+  "erVehicleNotApproved": "The vehicle is not approved.",
+  "erServiceNotApproved": "No approved service for this category.",
+  "erVehicleCategoryMismatch": "The vehicle category does not fit this service.",
+  "erUnknown": "A requirement is not met.",
+  "obErrGeneric": "We could not save the change. Please try again.",
+  "obErrValidation": "Check the details you entered and try again.",
+  "obErrUnderage": "You must be at least {age} years old.",
+  "@obErrUnderage": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "obErrCityUnavailable": "We do not operate in this city yet.",
+  "obErrServiceUnavailable": "One of the selected services is not available.",
+  "obErrApplicationLocked": "The application cannot be changed in its current status.",
+  "obErrApplicationExists": "You already started an application.",
+  "obErrIncomplete": "The application is not complete yet. Finish the remaining tasks.",
+  "obErrDocTypeNotAllowed": "This file type is not allowed for this document.",
+  "obErrDocTooLarge": "The file is too large. Choose a smaller photo.",
+  "obErrDocUnreadable": "The file is empty or cannot be read.",
+  "obErrDocTooSmall": "The image is too small. Take a clearer photo.",
+  "obErrDocInfected": "The file was rejected by the security scan.",
+  "obErrScannerDown": "Files cannot be checked right now. Try again shortly.",
+  "obErrNumberRequired": "The document number is required.",
+  "obErrExpiryRequired": "The expiry date is required for this document.",
+  "obErrAlreadyExpired": "This document has already expired.",
+  "obErrDatesInconsistent": "The expiry date must be after the issue date.",
+  "obErrIssueFuture": "The issue date cannot be in the future.",
+  "obErrPlateTaken": "A vehicle with this plate is already registered.",
+  "obErrPlateInvalid": "The plate number is not valid.",
+  "obErrYearInvalid": "The model year is not valid.",
+  "obErrVehicleNotEditable": "The vehicle cannot be changed in its current status.",
+  "obErrVehicleIncomplete": "The vehicle is not complete: add the missing photos and documents.",
+  "obErrPhotoLimit": "You reached the maximum number of photos.",
+  "obErrVehicleLimit": "You reached the maximum number of vehicles.",
+  "obErrPolicyStale": "The terms changed. Refresh the page and try again."
 }

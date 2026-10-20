@@ -57,6 +57,8 @@ return [
         'message_sent' => 'Message sent',
         'phone_revealed' => 'Phone number revealed',
         'anonymised' => 'Anonymised',
+        'downloaded' => 'Downloaded',
+        'more_info_requested' => 'More information requested',
     ],
 
     'health_status' => [
@@ -368,6 +370,115 @@ return [
         '5' => 'Friday',
         '6' => 'Saturday',
         '7' => 'Sunday',
+    ],
+
+    'provider_type' => [
+        'individual_driver' => 'Individual driver',
+        'courier' => 'Courier',
+        'moving_crew' => 'Moving crew / driver',
+        'commercial_transport' => 'Commercial transport provider',
+        'company_fleet' => 'Company / fleet',
+    ],
+
+    'provider_status' => [
+        'draft' => 'Draft',
+        'phone_verified' => 'Phone verified',
+        'profile_submitted' => 'Profile submitted',
+        'documents_pending' => 'Documents pending',
+        'under_review' => 'Under review',
+        'more_information_required' => 'More information required',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+        'temporarily_suspended' => 'Temporarily suspended',
+        'permanently_suspended' => 'Permanently suspended',
+        'deletion_pending' => 'Deletion pending',
+    ],
+
+    'document_status' => [
+        'pending' => 'Pending review',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+        'expired' => 'Expired',
+    ],
+
+    'vehicle_status' => [
+        'draft' => 'Draft',
+        'under_review' => 'Under review',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+        'suspended' => 'Suspended',
+        'inactive' => 'Inactive',
+    ],
+
+    'eligibility_reason' => [
+        'not_approved' => 'The application is not approved yet.',
+        'provider_suspended' => 'The provider account is suspended.',
+        'account_blocked' => 'The account is blocked or restricted.',
+        'document_missing' => 'A required document is missing.',
+        'document_not_approved' => 'A required document is not approved yet.',
+        'document_expired' => 'A required document has expired.',
+        'no_approved_vehicle' => 'There is no approved vehicle.',
+        'vehicle_not_approved' => 'The vehicle is not approved.',
+        'service_not_approved' => 'No approved service for this category.',
+        'vehicle_category_mismatch' => 'The vehicle category does not match this service.',
+    ],
+
+    'document_subject' => [
+        'provider' => 'Provider',
+        'vehicle' => 'Vehicle',
+    ],
+
+    'vehicle_capability' => [
+        'air_conditioning' => 'Air conditioning',
+        'child_seat' => 'Child seat',
+        'wheelchair_accessible' => 'Wheelchair accessible',
+        'pets_allowed' => 'Pets allowed',
+        'large_luggage' => 'Large luggage',
+        'covered_cargo' => 'Covered cargo area',
+        'tail_lift' => 'Tail lift',
+        'refrigerated' => 'Refrigerated',
+        'moving_equipment' => 'Moving equipment',
+    ],
+
+    'vehicle_photo_kind' => [
+        'front' => 'Front',
+        'back' => 'Back',
+        'side' => 'Side',
+        'interior' => 'Interior',
+        'other' => 'Other',
+    ],
+
+    'service_approval_status' => [
+        'requested' => 'Requested',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+    ],
+
+    'file_scan_status' => [
+        'clean' => 'Scanned, clean',
+        'infected' => 'Infected',
+        'skipped' => 'Not scanned (scanner disabled)',
+        'not_scanned' => 'Not scanned (no scanner configured)',
+    ],
+
+    'onboarding_task' => [
+        'complete_profile' => 'Complete your profile',
+        'select_services' => 'Choose the services you offer',
+        'add_vehicle' => 'Add a vehicle',
+        'add_vehicle_photos' => 'Add vehicle photos',
+        'submit_vehicle' => 'Submit the vehicle for review',
+        'upload_document' => 'Upload a required document',
+        'replace_rejected_document' => 'Replace a rejected document',
+        'renew_expired_document' => 'Renew an expired document',
+        'fix_vehicle' => 'Fix the vehicle and submit it again',
+        'accept_policies' => 'Accept the driver terms',
+        'submit_application' => 'Submit your application',
+    ],
+
+    'verification_decision' => [
+        'approve' => 'Approve',
+        'request_more_information' => 'Request more information',
+        'reject' => 'Reject',
     ],
 
     // @admin-module:enums

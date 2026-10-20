@@ -14,11 +14,17 @@ use App\Models\Currency;
 use App\Models\CustomerMessage;
 use App\Models\CustomerProfile;
 use App\Models\DemoItem;
+use App\Models\DocumentRequirement;
+use App\Models\DocumentType;
 use App\Models\IdempotencyKey;
 use App\Models\OtpChallenge;
+use App\Models\OwnedDocument;
 use App\Models\PlatformSetting;
 use App\Models\PolicyVersion;
+use App\Models\ProviderDocument;
 use App\Models\ProviderProfile;
+use App\Models\ProviderServiceCategory;
+use App\Models\ProviderStatusEvent;
 use App\Models\Role;
 use App\Models\SavedPlace;
 use App\Models\ServiceCategory;
@@ -29,8 +35,12 @@ use App\Models\ServiceZone;
 use App\Models\User;
 use App\Models\UserConsent;
 use App\Models\UserDevice;
+use App\Models\Vehicle;
 use App\Models\VehicleCategory;
+use App\Models\VehicleDocument;
+use App\Models\VehiclePhoto;
 use App\Models\ZoneServiceCategory;
+use App\Policies\DocumentPolicy;
 use App\Services\Settings\SettingsService;
 use App\Support\Auth\PhoneNumber;
 use App\Support\Money\CurrencyRegistry;
@@ -81,6 +91,14 @@ class AppServiceProvider extends ServiceProvider
             'policy_version' => PolicyVersion::class,
             'customer_profile' => CustomerProfile::class,
             'provider_profile' => ProviderProfile::class,
+            'vehicle' => Vehicle::class,
+            'vehicle_photo' => VehiclePhoto::class,
+            'document_type' => DocumentType::class,
+            'document_requirement' => DocumentRequirement::class,
+            'provider_document' => ProviderDocument::class,
+            'vehicle_document' => VehicleDocument::class,
+            'provider_service_category' => ProviderServiceCategory::class,
+            'provider_status_event' => ProviderStatusEvent::class,
             'otp_challenge' => OtpChallenge::class,
             'user_device' => UserDevice::class,
             'user_consent' => UserConsent::class,
@@ -97,6 +115,9 @@ class AppServiceProvider extends ServiceProvider
             'customer_message' => CustomerMessage::class,
             // @admin-module:morph-map
         ]);
+
+        // The shared base class of provider/vehicle documents: one policy covers both subclasses.
+        Gate::policy(OwnedDocument::class, DocumentPolicy::class);
 
         // Super Admin passes every ability check (Plan Appendix B); every other admin is checked by Spatie.
         Gate::before(static fn (Authorizable $user): ?bool => $user instanceof Admin && $user->isSuperAdmin() ? true : null);
@@ -129,6 +150,7 @@ class AppServiceProvider extends ServiceProvider
             RateLimiterName::Offers => SettingKey::RateLimitOffersPerMinute,
             RateLimiterName::PublicForms => SettingKey::RateLimitPublicFormsPerMinute,
             RateLimiterName::AdminLogin => SettingKey::RateLimitAdminLoginPerMinute,
+            RateLimiterName::ProviderUploads => SettingKey::RateLimitProviderUploadsPerMinute,
         });
         $actor = static fn (Request $request): string => (string) ($request->user()?->getAuthIdentifier() ?? 'ip:'.$request->ip());
 
@@ -163,6 +185,8 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for(RateLimiterName::Location->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::Location))->by($actor($request)));
 
         RateLimiter::for(RateLimiterName::Offers->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::Offers))->by($actor($request)));
+
+        RateLimiter::for(RateLimiterName::ProviderUploads->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::ProviderUploads))->by($actor($request)));
 
         RateLimiter::for(RateLimiterName::PublicForms->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::PublicForms))->by('ip:'.$request->ip()));
 

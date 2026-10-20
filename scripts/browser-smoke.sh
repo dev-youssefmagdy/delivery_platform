@@ -39,7 +39,7 @@ php artisan cache:clear >/dev/null 2>&1
 php artisan migrate:fresh --force --seed --no-interaction >/dev/null || exit 1
 php artisan tinker --execute '
 $admin = App\Models\Admin::factory()->create(["name" => getenv("ADMIN_NAME"), "email" => getenv("ADMIN_EMAIL"), "password" => getenv("ADMIN_PASSWORD")]);
-$admin->givePermissionTo("dashboard.view");
+$admin->givePermissionTo(["dashboard.view", "services.manage"]);
 ' >/dev/null || exit 1
 
 # Same invocation as `php artisan serve`: document root and working directory are public/.

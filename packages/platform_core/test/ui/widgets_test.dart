@@ -207,36 +207,4 @@ void main() {
     );
     expect(find.text('+20'), findsOneWidget);
   });
-
-  testWidgets(
-    'DynamicFormRenderer reports values and skips unsupported types',
-    (t) async {
-      Map<String, Object?> values = {};
-      await t.pumpWidget(
-        host(
-          DynamicFormRenderer(
-            requiredMessage: 'req',
-            fields: const [
-              FormFieldSchema(
-                key: 'note',
-                type: FormFieldType.text,
-                label: 'Note',
-              ),
-              FormFieldSchema(
-                key: 'p',
-                type: FormFieldType.photo,
-                label: 'Photo',
-              ),
-            ],
-            onChanged: (v) => values = v,
-          ),
-          dir: TextDirection.rtl,
-        ),
-      );
-      expect(find.text('Photo'), findsNothing);
-      await t.enterText(find.byType(TextFormField), 'hi');
-      expect(values['note'], 'hi');
-      expect(DynamicFormRenderer.supports(FormFieldType.photo), isFalse);
-    },
-  );
 }

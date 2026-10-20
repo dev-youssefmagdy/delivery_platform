@@ -122,5 +122,127 @@
   "deleteAccountTitle": "Delete your account?",
   "deleteAccountBody": "We will review your request. Some data may be kept where the law requires it. You can cancel while the request is pending.",
   "deleteAccountConfirm": "Request deletion",
-  "actionCancel": "Cancel"
+  "actionCancel": "Cancel",
+  "catalogTitle": "Choose a service",
+  "catalogEmptyTitle": "No services available",
+  "catalogEmptyBody": "Services will appear here as soon as they are available in your area.",
+  "catalogCapacityPassengers": "{count, plural, =1{1 passenger} other{{count} passengers}}",
+  "@catalogCapacityPassengers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "catalogCapacityLuggage": "{count, plural, =1{1 bag} other{{count} bags}}",
+  "@catalogCapacityLuggage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "catalogCapacityWeight": "Up to {kg} kg",
+  "@catalogCapacityWeight": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogFareFrom": "From {amount}",
+  "@catalogFareFrom": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogNegotiable": "Name your fare",
+  "catalogSelectedLabel": "Selected service",
+  "catalogDetailsButton": "Service details",
+  "catalogDetailsTitle": "Service details",
+  "catalogDetailsIntro": "Tell us about your request so drivers can offer the right price.",
+  "catalogDetailsNone": "This service needs no extra details.",
+  "catalogDetailsSave": "Save details",
+  "catalogDetailsSaved": "Details saved",
+  "catalogDetailsFixErrors": "Please correct the highlighted fields.",
+  "catalogVehiclesLabel": "Vehicles: {names}",
+  "@catalogVehiclesLabel": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "formTooShort": "Enter at least {limit} characters",
+  "@formTooShort": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formTooLong": "Enter at most {limit} characters",
+  "@formTooLong": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formTooSmall": "Must be at least {limit}",
+  "@formTooSmall": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formTooLarge": "Must be at most {limit}",
+  "@formTooLarge": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formNotANumber": "Enter a valid number",
+  "formNotWhole": "Enter a whole number",
+  "formInvalidChoice": "Choose a valid option",
+  "formTooFewItems": "Choose at least {limit}",
+  "@formTooFewItems": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formTooManyItems": "Choose at most {limit}",
+  "@formTooManyItems": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formInvalidPhone": "Enter a valid phone number with the country code",
+  "formInvalidDate": "Enter a valid date or time",
+  "formIncomplete": "Complete every part of this field",
+  "formYes": "Yes",
+  "formNo": "No",
+  "formChoose": "Choose…",
+  "formContactName": "Name",
+  "formContactPhone": "Phone (with country code)",
+  "formLength": "Length (cm)",
+  "formWidth": "Width (cm)",
+  "formHeight": "Height (cm)",
+  "formKilograms": "kg",
+  "formQuantity": "Quantity",
+  "formAddPhoto": "Add photo",
+  "formRemovePhoto": "Remove photo",
+  "formPhotoCamera": "Camera",
+  "formPhotoGallery": "Gallery",
+  "formPickDate": "Select date",
+  "formPickTime": "Select time"
 }

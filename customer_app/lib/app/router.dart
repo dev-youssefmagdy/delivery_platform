@@ -9,6 +9,7 @@ import '../features/auth/presentation/screens/auth_screen.dart';
 import '../features/auth/presentation/screens/consent_screen.dart';
 import '../features/auth/presentation/screens/otp_screen.dart';
 import '../features/auth/presentation/screens/profile_screen.dart';
+import '../features/catalog/presentation/screens/service_details_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/language/presentation/screens/language_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -24,6 +25,7 @@ abstract final class Routes {
   static const consent = '/consent';
   static const accountStatus = '/account-status';
   static const home = '/home';
+  static const serviceDetails = '/service-details';
 }
 
 /// Where the splash screen sends the user.
@@ -57,8 +59,15 @@ const _signedInOnly = {
 
 const _signedOutOnly = {Routes.auth, Routes.otp, Routes.onboarding};
 
+/// Screens pushed on top of home: only for a fully set-up account.
+const _readyOnly = {Routes.serviceDetails};
+
 /// Pure redirect rules (unit tested). Returns null to stay.
 String? computeRedirect({required String location, required AuthStage stage}) {
+  if (_readyOnly.contains(location)) {
+    if (stage == AuthStage.ready) return null;
+    return stage == AuthStage.signedOut ? Routes.splash : routeForStage(stage);
+  }
   if (stage == AuthStage.signedOut) {
     return _signedInOnly.contains(location) ? Routes.splash : null;
   }
@@ -102,6 +111,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const AccountStatusScreen(),
       ),
       GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
+      GoRoute(
+        path: Routes.serviceDetails,
+        builder: (_, _) => const ServiceDetailsScreen(),
+      ),
     ],
   );
   ref.onDispose(router.dispose);

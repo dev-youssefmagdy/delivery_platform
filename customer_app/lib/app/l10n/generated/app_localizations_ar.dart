@@ -280,4 +280,180 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get actionCancel => 'إلغاء';
+
+  @override
+  String get catalogTitle => 'اختر الخدمة';
+
+  @override
+  String get catalogEmptyTitle => 'لا توجد خدمات متاحة';
+
+  @override
+  String get catalogEmptyBody => 'ستظهر الخدمات هنا فور توفرها في منطقتك.';
+
+  @override
+  String catalogCapacityPassengers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count راكب',
+      many: '$count راكبًا',
+      few: '$count ركاب',
+      two: 'راكبان',
+      one: 'راكب واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String catalogCapacityLuggage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حقيبة',
+      many: '$count حقيبة',
+      few: '$count حقائب',
+      two: 'حقيبتان',
+      one: 'حقيبة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String catalogCapacityWeight(String kg) {
+    return 'حتى $kg كجم';
+  }
+
+  @override
+  String catalogFareFrom(String amount) {
+    return 'ابتداءً من $amount';
+  }
+
+  @override
+  String get catalogNegotiable => 'حدد أجرتك';
+
+  @override
+  String get catalogSelectedLabel => 'الخدمة المختارة';
+
+  @override
+  String get catalogDetailsButton => 'تفاصيل الخدمة';
+
+  @override
+  String get catalogDetailsTitle => 'تفاصيل الخدمة';
+
+  @override
+  String get catalogDetailsIntro =>
+      'أخبرنا بتفاصيل طلبك ليقدّم السائقون السعر المناسب.';
+
+  @override
+  String get catalogDetailsNone => 'هذه الخدمة لا تحتاج إلى تفاصيل إضافية.';
+
+  @override
+  String get catalogDetailsSave => 'حفظ التفاصيل';
+
+  @override
+  String get catalogDetailsSaved => 'تم حفظ التفاصيل';
+
+  @override
+  String get catalogDetailsFixErrors => 'يرجى تصحيح الحقول المظللة.';
+
+  @override
+  String catalogVehiclesLabel(String names) {
+    return 'المركبات: $names';
+  }
+
+  @override
+  String formTooShort(num limit) {
+    return 'أدخل $limit أحرف على الأقل';
+  }
+
+  @override
+  String formTooLong(num limit) {
+    return 'أدخل $limit حرفًا كحد أقصى';
+  }
+
+  @override
+  String formTooSmall(num limit) {
+    return 'يجب ألا تقل القيمة عن $limit';
+  }
+
+  @override
+  String formTooLarge(num limit) {
+    return 'يجب ألا تزيد القيمة عن $limit';
+  }
+
+  @override
+  String get formNotANumber => 'أدخل رقمًا صحيحًا';
+
+  @override
+  String get formNotWhole => 'أدخل عددًا صحيحًا بدون كسور';
+
+  @override
+  String get formInvalidChoice => 'اختر خيارًا صالحًا';
+
+  @override
+  String formTooFewItems(num limit) {
+    return 'اختر $limit على الأقل';
+  }
+
+  @override
+  String formTooManyItems(num limit) {
+    return 'اختر $limit كحد أقصى';
+  }
+
+  @override
+  String get formInvalidPhone => 'أدخل رقم هاتف صحيحًا مع رمز الدولة';
+
+  @override
+  String get formInvalidDate => 'أدخل تاريخًا أو وقتًا صحيحًا';
+
+  @override
+  String get formIncomplete => 'أكمل جميع أجزاء هذا الحقل';
+
+  @override
+  String get formYes => 'نعم';
+
+  @override
+  String get formNo => 'لا';
+
+  @override
+  String get formChoose => 'اختر…';
+
+  @override
+  String get formContactName => 'الاسم';
+
+  @override
+  String get formContactPhone => 'الهاتف (مع رمز الدولة)';
+
+  @override
+  String get formLength => 'الطول (سم)';
+
+  @override
+  String get formWidth => 'العرض (سم)';
+
+  @override
+  String get formHeight => 'الارتفاع (سم)';
+
+  @override
+  String get formKilograms => 'كجم';
+
+  @override
+  String get formQuantity => 'الكمية';
+
+  @override
+  String get formAddPhoto => 'إضافة صورة';
+
+  @override
+  String get formRemovePhoto => 'حذف الصورة';
+
+  @override
+  String get formPhotoCamera => 'الكاميرا';
+
+  @override
+  String get formPhotoGallery => 'المعرض';
+
+  @override
+  String get formPickDate => 'اختر التاريخ';
+
+  @override
+  String get formPickTime => 'اختر الوقت';
 }

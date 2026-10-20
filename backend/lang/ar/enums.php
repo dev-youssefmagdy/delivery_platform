@@ -258,5 +258,81 @@ return [
         'cancellation' => 'سياسة الإلغاء',
     ],
 
+    'service_family_kind' => [
+        'passenger_city' => 'رحلات الركاب داخل المدينة',
+        'intercity' => 'رحلات بين المدن',
+        'courier' => 'التوصيل والطرود',
+        'moving' => 'نقل الأثاث',
+        'freight' => 'الشحن والبضائع',
+        'hourly' => 'التأجير بالساعة',
+        'other' => 'أخرى',
+    ],
+
+    'booking_type' => [
+        'on_demand' => 'فوري',
+        'scheduled' => 'مجدول',
+        'intercity' => 'بين المدن',
+        'parcel' => 'طرد',
+        'freight' => 'شحن',
+        'hourly' => 'بالساعة',
+    ],
+
+    'proof_type' => [
+        'photo' => 'صورة',
+        'signature' => 'توقيع',
+        'recipient_otp' => 'رمز المستلم',
+        'pickup_pin' => 'رمز الاستلام',
+        'checklist' => 'قائمة تحقق',
+        'weight' => 'الوزن',
+    ],
+
+    'payment_method_type' => [
+        'cash' => 'نقدًا',
+        'card' => 'بطاقة',
+        'mobile_wallet' => 'محفظة الهاتف',
+        'platform_wallet' => 'محفظة المنصة',
+    ],
+
+    'visibility_operator' => [
+        'eq' => 'يساوي',
+        'neq' => 'لا يساوي',
+        'in' => 'من بين',
+        'not_in' => 'ليس من بين',
+        'gt' => 'أكبر من',
+        'gte' => 'لا يقل عن',
+        'lt' => 'أقل من',
+        'lte' => 'لا يزيد عن',
+        'filled' => 'تمت الإجابة عنه',
+        'empty' => 'فارغ',
+    ],
+
+    'form_field_type' => [
+        'text' => 'نص قصير',
+        'textarea' => 'نص طويل',
+        'integer' => 'عدد صحيح',
+        'decimal' => 'عدد عشري',
+        'boolean' => 'نعم / لا',
+        'select' => 'اختيار واحد',
+        'multiselect' => 'اختيار متعدد',
+        'date' => 'تاريخ',
+        'time' => 'وقت',
+        'datetime' => 'تاريخ ووقت',
+        'contact' => 'جهة اتصال (الاسم والهاتف)',
+        'photo' => 'صور',
+        'item_checklist' => 'قائمة عناصر',
+        'dimensions' => 'الأبعاد (الطول × العرض × الارتفاع)',
+        'weight' => 'الوزن (كجم)',
+    ],
+
+    'weekday' => [
+        '1' => 'الاثنين',
+        '2' => 'الثلاثاء',
+        '3' => 'الأربعاء',
+        '4' => 'الخميس',
+        '5' => 'الجمعة',
+        '6' => 'السبت',
+        '7' => 'الأحد',
+    ],
+
     // @admin-module:enums
 ];

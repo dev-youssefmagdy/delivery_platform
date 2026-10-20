@@ -24,6 +24,30 @@ void main() {
       }
     });
 
+    test('service details is only for a ready account', () {
+      expect(
+        computeRedirect(
+          location: Routes.serviceDetails,
+          stage: AuthStage.ready,
+        ),
+        isNull,
+      );
+      expect(
+        computeRedirect(
+          location: Routes.serviceDetails,
+          stage: AuthStage.signedOut,
+        ),
+        Routes.splash,
+      );
+      expect(
+        computeRedirect(
+          location: Routes.serviceDetails,
+          stage: AuthStage.needsConsent,
+        ),
+        Routes.consent,
+      );
+    });
+
     test('each signed-in stage is pinned to its screen', () {
       const expected = {
         AuthStage.needsProfile: Routes.profile,

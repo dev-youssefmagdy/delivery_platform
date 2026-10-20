@@ -607,6 +607,276 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'إلغاء'**
   String get actionCancel;
+
+  /// No description provided for @catalogTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر الخدمة'**
+  String get catalogTitle;
+
+  /// No description provided for @catalogEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد خدمات متاحة'**
+  String get catalogEmptyTitle;
+
+  /// No description provided for @catalogEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستظهر الخدمات هنا فور توفرها في منطقتك.'**
+  String get catalogEmptyBody;
+
+  /// No description provided for @catalogCapacityPassengers.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count, plural, =1{راكب واحد} =2{راكبان} few{{count} ركاب} many{{count} راكبًا} other{{count} راكب}}'**
+  String catalogCapacityPassengers(int count);
+
+  /// No description provided for @catalogCapacityLuggage.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count, plural, =1{حقيبة واحدة} =2{حقيبتان} few{{count} حقائب} many{{count} حقيبة} other{{count} حقيبة}}'**
+  String catalogCapacityLuggage(int count);
+
+  /// No description provided for @catalogCapacityWeight.
+  ///
+  /// In ar, this message translates to:
+  /// **'حتى {kg} كجم'**
+  String catalogCapacityWeight(String kg);
+
+  /// No description provided for @catalogFareFrom.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابتداءً من {amount}'**
+  String catalogFareFrom(String amount);
+
+  /// No description provided for @catalogNegotiable.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدد أجرتك'**
+  String get catalogNegotiable;
+
+  /// No description provided for @catalogSelectedLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخدمة المختارة'**
+  String get catalogSelectedLabel;
+
+  /// No description provided for @catalogDetailsButton.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفاصيل الخدمة'**
+  String get catalogDetailsButton;
+
+  /// No description provided for @catalogDetailsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفاصيل الخدمة'**
+  String get catalogDetailsTitle;
+
+  /// No description provided for @catalogDetailsIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخبرنا بتفاصيل طلبك ليقدّم السائقون السعر المناسب.'**
+  String get catalogDetailsIntro;
+
+  /// No description provided for @catalogDetailsNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه الخدمة لا تحتاج إلى تفاصيل إضافية.'**
+  String get catalogDetailsNone;
+
+  /// No description provided for @catalogDetailsSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ التفاصيل'**
+  String get catalogDetailsSave;
+
+  /// No description provided for @catalogDetailsSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حفظ التفاصيل'**
+  String get catalogDetailsSaved;
+
+  /// No description provided for @catalogDetailsFixErrors.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى تصحيح الحقول المظللة.'**
+  String get catalogDetailsFixErrors;
+
+  /// No description provided for @catalogVehiclesLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'المركبات: {names}'**
+  String catalogVehiclesLabel(String names);
+
+  /// No description provided for @formTooShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل {limit} أحرف على الأقل'**
+  String formTooShort(num limit);
+
+  /// No description provided for @formTooLong.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل {limit} حرفًا كحد أقصى'**
+  String formTooLong(num limit);
+
+  /// No description provided for @formTooSmall.
+  ///
+  /// In ar, this message translates to:
+  /// **'يجب ألا تقل القيمة عن {limit}'**
+  String formTooSmall(num limit);
+
+  /// No description provided for @formTooLarge.
+  ///
+  /// In ar, this message translates to:
+  /// **'يجب ألا تزيد القيمة عن {limit}'**
+  String formTooLarge(num limit);
+
+  /// No description provided for @formNotANumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقمًا صحيحًا'**
+  String get formNotANumber;
+
+  /// No description provided for @formNotWhole.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل عددًا صحيحًا بدون كسور'**
+  String get formNotWhole;
+
+  /// No description provided for @formInvalidChoice.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر خيارًا صالحًا'**
+  String get formInvalidChoice;
+
+  /// No description provided for @formTooFewItems.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر {limit} على الأقل'**
+  String formTooFewItems(num limit);
+
+  /// No description provided for @formTooManyItems.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر {limit} كحد أقصى'**
+  String formTooManyItems(num limit);
+
+  /// No description provided for @formInvalidPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم هاتف صحيحًا مع رمز الدولة'**
+  String get formInvalidPhone;
+
+  /// No description provided for @formInvalidDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل تاريخًا أو وقتًا صحيحًا'**
+  String get formInvalidDate;
+
+  /// No description provided for @formIncomplete.
+  ///
+  /// In ar, this message translates to:
+  /// **'أكمل جميع أجزاء هذا الحقل'**
+  String get formIncomplete;
+
+  /// No description provided for @formYes.
+  ///
+  /// In ar, this message translates to:
+  /// **'نعم'**
+  String get formYes;
+
+  /// No description provided for @formNo.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا'**
+  String get formNo;
+
+  /// No description provided for @formChoose.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر…'**
+  String get formChoose;
+
+  /// No description provided for @formContactName.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسم'**
+  String get formContactName;
+
+  /// No description provided for @formContactPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'الهاتف (مع رمز الدولة)'**
+  String get formContactPhone;
+
+  /// No description provided for @formLength.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطول (سم)'**
+  String get formLength;
+
+  /// No description provided for @formWidth.
+  ///
+  /// In ar, this message translates to:
+  /// **'العرض (سم)'**
+  String get formWidth;
+
+  /// No description provided for @formHeight.
+  ///
+  /// In ar, this message translates to:
+  /// **'الارتفاع (سم)'**
+  String get formHeight;
+
+  /// No description provided for @formKilograms.
+  ///
+  /// In ar, this message translates to:
+  /// **'كجم'**
+  String get formKilograms;
+
+  /// No description provided for @formQuantity.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكمية'**
+  String get formQuantity;
+
+  /// No description provided for @formAddPhoto.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة صورة'**
+  String get formAddPhoto;
+
+  /// No description provided for @formRemovePhoto.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف الصورة'**
+  String get formRemovePhoto;
+
+  /// No description provided for @formPhotoCamera.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكاميرا'**
+  String get formPhotoCamera;
+
+  /// No description provided for @formPhotoGallery.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعرض'**
+  String get formPhotoGallery;
+
+  /// No description provided for @formPickDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر التاريخ'**
+  String get formPickDate;
+
+  /// No description provided for @formPickTime.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر الوقت'**
+  String get formPickTime;
 }
 
 class _AppLocalizationsDelegate

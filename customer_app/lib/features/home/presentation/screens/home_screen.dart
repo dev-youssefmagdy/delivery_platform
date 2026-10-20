@@ -7,10 +7,12 @@ import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../auth/presentation/widgets/auth_error_text.dart';
+import '../../../catalog/presentation/widgets/service_picker.dart';
 
 /// Post-login landing. Only reachable when signed in with a complete profile
-/// and current consents (router guard); real content arrives with the ride
-/// flows (P2.6). Hosts the language switch, sign-out and account deletion.
+/// and current consents (router guard). Shows the service catalog (family and
+/// category selection, P1.4); route selection arrives with the ride flow
+/// (P2.6). Hosts the language switch, sign-out and account deletion.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -52,6 +54,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: ListView(
         children: [
           if (name != null) ListTile(title: Text(l10n.homeGreeting(name))),
+          const ServicePicker(),
           ListTile(
             minTileHeight: context.density.minTouchTarget,
             leading: const Icon(Icons.language),

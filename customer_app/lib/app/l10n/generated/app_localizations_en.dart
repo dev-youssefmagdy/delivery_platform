@@ -291,4 +291,177 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionCancel => 'Cancel';
+
+  @override
+  String get catalogTitle => 'Choose a service';
+
+  @override
+  String get catalogEmptyTitle => 'No services available';
+
+  @override
+  String get catalogEmptyBody =>
+      'Services will appear here as soon as they are available in your area.';
+
+  @override
+  String catalogCapacityPassengers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count passengers',
+      one: '1 passenger',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String catalogCapacityLuggage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bags',
+      one: '1 bag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String catalogCapacityWeight(String kg) {
+    return 'Up to $kg kg';
+  }
+
+  @override
+  String catalogFareFrom(String amount) {
+    return 'From $amount';
+  }
+
+  @override
+  String get catalogNegotiable => 'Name your fare';
+
+  @override
+  String get catalogSelectedLabel => 'Selected service';
+
+  @override
+  String get catalogDetailsButton => 'Service details';
+
+  @override
+  String get catalogDetailsTitle => 'Service details';
+
+  @override
+  String get catalogDetailsIntro =>
+      'Tell us about your request so drivers can offer the right price.';
+
+  @override
+  String get catalogDetailsNone => 'This service needs no extra details.';
+
+  @override
+  String get catalogDetailsSave => 'Save details';
+
+  @override
+  String get catalogDetailsSaved => 'Details saved';
+
+  @override
+  String get catalogDetailsFixErrors =>
+      'Please correct the highlighted fields.';
+
+  @override
+  String catalogVehiclesLabel(String names) {
+    return 'Vehicles: $names';
+  }
+
+  @override
+  String formTooShort(num limit) {
+    return 'Enter at least $limit characters';
+  }
+
+  @override
+  String formTooLong(num limit) {
+    return 'Enter at most $limit characters';
+  }
+
+  @override
+  String formTooSmall(num limit) {
+    return 'Must be at least $limit';
+  }
+
+  @override
+  String formTooLarge(num limit) {
+    return 'Must be at most $limit';
+  }
+
+  @override
+  String get formNotANumber => 'Enter a valid number';
+
+  @override
+  String get formNotWhole => 'Enter a whole number';
+
+  @override
+  String get formInvalidChoice => 'Choose a valid option';
+
+  @override
+  String formTooFewItems(num limit) {
+    return 'Choose at least $limit';
+  }
+
+  @override
+  String formTooManyItems(num limit) {
+    return 'Choose at most $limit';
+  }
+
+  @override
+  String get formInvalidPhone =>
+      'Enter a valid phone number with the country code';
+
+  @override
+  String get formInvalidDate => 'Enter a valid date or time';
+
+  @override
+  String get formIncomplete => 'Complete every part of this field';
+
+  @override
+  String get formYes => 'Yes';
+
+  @override
+  String get formNo => 'No';
+
+  @override
+  String get formChoose => 'Choose…';
+
+  @override
+  String get formContactName => 'Name';
+
+  @override
+  String get formContactPhone => 'Phone (with country code)';
+
+  @override
+  String get formLength => 'Length (cm)';
+
+  @override
+  String get formWidth => 'Width (cm)';
+
+  @override
+  String get formHeight => 'Height (cm)';
+
+  @override
+  String get formKilograms => 'kg';
+
+  @override
+  String get formQuantity => 'Quantity';
+
+  @override
+  String get formAddPhoto => 'Add photo';
+
+  @override
+  String get formRemovePhoto => 'Remove photo';
+
+  @override
+  String get formPhotoCamera => 'Camera';
+
+  @override
+  String get formPhotoGallery => 'Gallery';
+
+  @override
+  String get formPickDate => 'Select date';
+
+  @override
+  String get formPickTime => 'Select time';
 }

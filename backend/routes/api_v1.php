@@ -4,6 +4,7 @@ use App\Enums\Common\RateLimiterName;
 use App\Enums\Policy\PolicyType;
 use App\Http\Controllers\Api\V1\Auth\OtpController;
 use App\Http\Controllers\Api\V1\Auth\SessionController;
+use App\Http\Controllers\Api\V1\Common\CatalogController;
 use App\Http\Controllers\Api\V1\Common\ConfigController;
 use App\Http\Controllers\Api\V1\Common\HealthController;
 use App\Http\Controllers\Api\V1\Common\MediaController;
@@ -27,6 +28,13 @@ Route::get('health', HealthController::class)->name('health');
 Route::middleware('cache.headers:public;max_age=30;etag')->group(function (): void {
     Route::get('config/app', [ConfigController::class, 'app'])->name('config.app');
     Route::get('locales', [ConfigController::class, 'locales'])->name('locales');
+});
+
+// Service catalog (P1.4): public, only active entries with a published version. Zone availability arrives in P1.5.
+Route::middleware('cache.headers:public;max_age=30;etag')->group(function (): void {
+    Route::get('service-families', [CatalogController::class, 'families'])->name('catalog.families');
+    Route::get('service-categories', [CatalogController::class, 'categories'])->name('catalog.categories');
+    Route::get('vehicle-categories', [CatalogController::class, 'vehicleCategories'])->name('catalog.vehicle-categories');
 });
 
 // Current policy text for the consent screens (P1.3). Only types that have a published version resolve.

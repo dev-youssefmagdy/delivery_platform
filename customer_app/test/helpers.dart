@@ -3,6 +3,7 @@ import 'package:customer_app/core/providers.dart';
 import 'package:customer_app/features/app_config/domain/entities/app_config.dart';
 import 'package:customer_app/features/app_config/presentation/providers/app_config_providers.dart';
 import 'package:customer_app/features/auth/presentation/providers/auth_providers.dart';
+import 'package:customer_app/features/catalog/presentation/providers/catalog_providers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,6 +31,7 @@ Future<ProviderContainer> pumpApp(
   String version = '1.0.0',
   Future<AppConfig> Function()? configBuilder,
   FakeIdentityRepository? identity,
+  FakeCatalogRepository? catalog,
 }) async {
   SharedPreferences.setMockInitialValues(prefs);
   final sp = await SharedPreferences.getInstance();
@@ -46,6 +48,9 @@ Future<ProviderContainer> pumpApp(
       appVersionProvider.overrideWith((ref) async => version),
       identityRepositoryProvider.overrideWithValue(
         identity ?? FakeIdentityRepository(),
+      ),
+      catalogRepositoryProvider.overrideWithValue(
+        catalog ?? FakeCatalogRepository(),
       ),
     ],
   );

@@ -6,9 +6,11 @@
             $extra = $field['attributes'] ?? [];
             $value = $row[$field['name']] ?? null;
         @endphp
-        <div class="min-w-40 flex-1">
+        <div class="{{ $field['class'] ?? 'min-w-40 flex-1' }}">
             @if ($type === 'select')
                 <x-admin.form.select :name="$fieldName" :label="$field['label']" :options="$field['options'] ?? []" :value="$value" :required="$field['required'] ?? false" :attributes="new \Illuminate\View\ComponentAttributeBag($extra)" />
+            @elseif ($type === 'textarea')
+                <x-admin.form.textarea :name="$fieldName" :label="$field['label']" :value="$value" :hint="$field['hint'] ?? null" :rows="$field['rows'] ?? 3" :attributes="new \Illuminate\View\ComponentAttributeBag($extra)" />
             @elseif ($type === 'checkbox')
                 <div class="pt-7"><x-admin.form.checkbox :name="$fieldName" :label="$field['label']" :checked="(bool) $value" /></div>
             @else

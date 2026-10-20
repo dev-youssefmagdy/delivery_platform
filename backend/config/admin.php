@@ -88,6 +88,9 @@ return [
     'lookups' => [
         'countries' => App\Support\Admin\Lookups\CountryLookup::class,
         'admins' => App\Support\Admin\Lookups\AdminLookup::class,
+        'service-families' => App\Support\Admin\Lookups\ServiceFamilyLookup::class,
+        'service-categories' => App\Support\Admin\Lookups\ServiceCategoryLookup::class,
+        'vehicle-categories' => App\Support\Admin\Lookups\VehicleCategoryLookup::class,
         // @admin-module:lookups
     ],
 

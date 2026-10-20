@@ -258,5 +258,81 @@ return [
         'cancellation' => 'Cancellation policy',
     ],
 
+    'service_family_kind' => [
+        'passenger_city' => 'City passenger rides',
+        'intercity' => 'Intercity rides',
+        'courier' => 'Courier and parcels',
+        'moving' => 'Furniture moving',
+        'freight' => 'Freight and cargo',
+        'hourly' => 'Hourly hire',
+        'other' => 'Other',
+    ],
+
+    'booking_type' => [
+        'on_demand' => 'On demand',
+        'scheduled' => 'Scheduled',
+        'intercity' => 'Intercity',
+        'parcel' => 'Parcel',
+        'freight' => 'Freight',
+        'hourly' => 'Hourly',
+    ],
+
+    'proof_type' => [
+        'photo' => 'Photo',
+        'signature' => 'Signature',
+        'recipient_otp' => 'Recipient code',
+        'pickup_pin' => 'Pickup PIN',
+        'checklist' => 'Checklist',
+        'weight' => 'Weight',
+    ],
+
+    'payment_method_type' => [
+        'cash' => 'Cash',
+        'card' => 'Card',
+        'mobile_wallet' => 'Mobile wallet',
+        'platform_wallet' => 'Platform wallet',
+    ],
+
+    'visibility_operator' => [
+        'eq' => 'equals',
+        'neq' => 'does not equal',
+        'in' => 'is one of',
+        'not_in' => 'is not one of',
+        'gt' => 'is greater than',
+        'gte' => 'is at least',
+        'lt' => 'is less than',
+        'lte' => 'is at most',
+        'filled' => 'is answered',
+        'empty' => 'is empty',
+    ],
+
+    'form_field_type' => [
+        'text' => 'Short text',
+        'textarea' => 'Long text',
+        'integer' => 'Whole number',
+        'decimal' => 'Decimal number',
+        'boolean' => 'Yes / no',
+        'select' => 'Single choice',
+        'multiselect' => 'Multiple choice',
+        'date' => 'Date',
+        'time' => 'Time',
+        'datetime' => 'Date and time',
+        'contact' => 'Contact (name and phone)',
+        'photo' => 'Photos',
+        'item_checklist' => 'Item checklist',
+        'dimensions' => 'Dimensions (L x W x H)',
+        'weight' => 'Weight (kg)',
+    ],
+
+    'weekday' => [
+        '1' => 'Monday',
+        '2' => 'Tuesday',
+        '3' => 'Wednesday',
+        '4' => 'Thursday',
+        '5' => 'Friday',
+        '6' => 'Saturday',
+        '7' => 'Sunday',
+    ],
+
     // @admin-module:enums
 ];

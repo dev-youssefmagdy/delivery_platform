@@ -127,3 +127,37 @@ class FakeIdentityRepository implements IdentityRepository {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
+
+/// Scriptable catalog API for widget tests.
+class FakeCatalogRepository implements CatalogRepository {
+  FakeCatalogRepository({
+    this.familiesResult = const [],
+    this.categoriesResult = const [],
+  });
+
+  List<ServiceFamilyInfo> familiesResult;
+  List<ServiceCategoryInfo> categoriesResult;
+  Object? error;
+  int familiesCalls = 0;
+
+  @override
+  Future<List<ServiceFamilyInfo>> families() async {
+    familiesCalls++;
+    if (error != null) throw error!;
+    return familiesResult;
+  }
+
+  @override
+  Future<List<ServiceCategoryInfo>> categories({
+    BookingType? bookingType,
+    int? familyId,
+    double? lat,
+    double? lng,
+  }) async {
+    if (error != null) throw error!;
+    return categoriesResult;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}

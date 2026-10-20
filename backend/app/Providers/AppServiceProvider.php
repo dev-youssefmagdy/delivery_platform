@@ -18,9 +18,14 @@ use App\Models\PlatformSetting;
 use App\Models\PolicyVersion;
 use App\Models\ProviderProfile;
 use App\Models\Role;
+use App\Models\ServiceCategory;
+use App\Models\ServiceCategoryVersion;
+use App\Models\ServiceFamily;
+use App\Models\ServiceFormSchema;
 use App\Models\User;
 use App\Models\UserConsent;
 use App\Models\UserDevice;
+use App\Models\VehicleCategory;
 use App\Services\Settings\SettingsService;
 use App\Support\Auth\PhoneNumber;
 use App\Support\Money\CurrencyRegistry;
@@ -75,6 +80,11 @@ class AppServiceProvider extends ServiceProvider
             'user_device' => UserDevice::class,
             'user_consent' => UserConsent::class,
             'account_deletion_request' => AccountDeletionRequest::class,
+            'service_family' => ServiceFamily::class,
+            'service_category' => ServiceCategory::class,
+            'service_category_version' => ServiceCategoryVersion::class,
+            'service_form_schema' => ServiceFormSchema::class,
+            'vehicle_category' => VehicleCategory::class,
             // @admin-module:morph-map
         ]);
 

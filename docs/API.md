@@ -256,3 +256,71 @@ only ever acts on the authenticated user (there is no user id in any path). Acco
 New domain codes: `otp_invalid`, `otp_expired`, `otp_attempts_exceeded`, `otp_resend_too_soon` (429), `otp_delivery_failed` (503), `account_suspended`, `account_deleted`,
 `account_deletion_pending`, `account_verification_required`, `account_restricted` (all 403), `policy_version_not_current`, `photo_invalid`, `deletion_request_not_pending` (422), `deletion_request_exists` (409).
 Admin: `GET /admin/otp-challenges` (permission `otp_challenges.view`, read-only DataTable; filters phone/state/delivery/app/IP/date; masked phone, no codes).
+
+### 8.6 Service catalog (P1.4)
+
+Public, no authentication, throttle `api`, `Cache-Control: public, max-age=30`, `ETag` / `If-None-Match` -> `304`. Only **active** entries that have a **published version** are returned
+(a category also needs an active family). Names, descriptions and labels are translation maps `{ "ar": "...", "en": "..." }` (always JSON objects, `{}` when empty): the app picks its
+language, falling back to `ar`, so no refetch is needed when the language changes. Ids are integers.
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/service-families` | `data = [{ id, code, kind, name, description, icon, sort_order, categories_count }]` for active families that own at least one visible category. `kind` is `ServiceFamilyKind` |
+| GET | `/api/v1/service-categories?lat=&lng=&booking_type=&service_family_id=` | `lat`/`lng` are validated (both or none) and accepted now; zone availability is applied in P1.5 (until then every visible category is available). `booking_type` filters on the allowed booking types. `422` for invalid values |
+| GET | `/api/v1/vehicle-categories?service_category_id=` | active vehicle classes, limited to the ones linked to the category when given |
+
+A category is served **as of its published version** (ADR-65): admin edits of the draft never change what a client fetched until an admin publishes. `data[]` of `/service-categories`:
+
+```json
+{
+  "id": 7, "code": "ride_taxi", "sort_order": 20, "icon": "car", "map_marker": "car",
+  "version": { "id": 31, "number": 2, "published_at": "2026-10-20T10:00:00Z" },
+  "family": { "id": 1, "code": "rides", "kind": "passenger_city", "name": { "ar": "...", "en": "..." } },
+  "name": { "ar": "...", "en": "..." }, "description": { "ar": "..." },
+  "booking": { "allowed_booking_types": ["on_demand", "scheduled"], "supports_stops": true, "max_stops": 3, "service_hours": [{ "day": 1, "from": "08:00", "to": "22:00" }] },
+  "pricing": { "negotiation_enabled": true, "reference_estimate_enabled": true, "min_customer_fare_minor": 1500, "max_customer_fare_minor": 150000, "counter_offer_min_pct": 70, "counter_offer_max_pct": 200 },
+  "dispatch": { "offer_ttl_seconds": 120, "search_ttl_seconds": 300, "dispatch_radius_steps_km": [2.0, 4.0, 7.0], "dispatch_batch_size": 10 },
+  "limits": { "max_passengers": 4, "max_luggage": 2, "max_weight_kg": null, "max_volume_m3": "0.50" },
+  "safety": { "pin_required": true, "pickup_proof_required": false, "delivery_proof_types": [], "recipient_otp_required": false },
+  "payments": { "payment_methods": ["cash", "card"], "cash_allowed": true, "tipping_enabled": true, "coupon_eligible": true },
+  "vehicle_category_ids": [3],
+  "vehicle_categories": [{ "id": 3, "code": "taxi", "name": { "ar": "..." }, "icon": "car", "map_marker": "car", "passenger_capacity": 4, "luggage_capacity": 2, "max_payload_kg": null, "max_volume_m3": null }],
+  "form_schema": { "version": 4, "fields": [ /* see below */ ] }
+}
+```
+
+`dispatch` and `safety.pin_required` are the **effective** values: a null category field falls back to the platform setting (`CategoryPolicyResolver`). Money is integer minor units in the market
+currency (`/config/app`). Decimal limits (`max_weight_kg`, `max_volume_m3`, `max_payload_kg`) are decimal strings. `version.id` is what bookings will reference (P2.3).
+
+**Form schema field** (`form_schema.fields[]`), validated by the server (`ServiceFormValidator`, for a booking's `service_details`) and rendered by `DynamicFormRenderer`:
+
+```json
+{ "key": "origin_floor", "type": "integer", "label": { "ar": "...", "en": "..." }, "help": { "ar": "..." } | null,
+  "required": true, "min": 0, "max": 40,
+  "options": [{ "value": "sofa", "label": { "ar": "...", "en": "..." } }],
+  "visible_if": { "field": "origin_elevator", "op": "eq", "value": false } | null }
+```
+
+| `type` | Answer value in `service_details` | `min` / `max` mean |
+|---|---|---|
+| `text` / `textarea` | string | length (default max 255 / 2000) |
+| `integer` / `decimal` | number | value |
+| `weight` | number (kg) | value (default min 0.01) |
+| `boolean` | `true` / `false` | - |
+| `select` | one option `value` | - |
+| `multiselect` | list of option values (distinct) | item count (default max = options) |
+| `date` / `time` / `datetime` | `Y-m-d` / `H:i` / `Y-m-d\TH:i` (market local time) | - |
+| `contact` | `{ name (max 100), phone (E.164) }`, both required when present | - |
+| `photo` | list of attachment references (strings) | count (default max 10) |
+| `item_checklist` | `[{ item: option value, quantity: 1..999 }]`, distinct items | item count |
+| `dimensions` | `{ length, width, height }` in cm, all required when present | each side (default min 0.01) |
+
+`visible_if.op` is one of `eq neq in not_in gt gte lt lte filled empty` (`filled` / `empty` carry no `value`). The controlling field must come earlier in the schema. Hidden fields are never
+required and any value sent for them is dropped; keys not in the schema are rejected (`service_details.<key>` validation error). Unknown field types or operators must be ignored/hidden by clients (forward compatibility).
+
+New domain codes (admin): `catalog_code_taken`, `catalog_code_immutable`, `catalog_last_active_category`, `family_has_categories`, `vehicle_category_in_use`, `category_requires_published_version`,
+`category_family_inactive`, `category_has_active_bookings`, `category_not_deletable`, `category_no_changes`, `category_arabic_name_required`, `category_requires_booking_type`,
+`category_requires_vehicle_category`, `form_schema_invalid` (all `422`).
+
+Admin (permission `services.manage`; vehicle categories `vehicle_categories.manage`): `/admin/service-families`, `/admin/service-categories` (+ `/{id}/vehicle-categories`, `/{id}/form-schema`, `/{id}/publish`, `/{id}/activate`, `/{id}/deactivate`, `/{id}/versions`),
+`/admin/vehicle-categories` (+ activate / deactivate); lookups `service-families`, `service-categories`, `vehicle-categories`.

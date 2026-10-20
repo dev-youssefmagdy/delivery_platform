@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             CountrySeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
+            CatalogSeeder::class,
         ]);
     }
 }

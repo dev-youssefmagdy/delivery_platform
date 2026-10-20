@@ -8,6 +8,12 @@ use App\Repositories\Contracts\Admin\AdminRepositoryInterface;
 use App\Repositories\Contracts\Admin\AdminSessionRepositoryInterface;
 use App\Repositories\Contracts\Admin\RoleRepositoryInterface;
 use App\Repositories\Contracts\Audit\AuditLogRepositoryInterface;
+use App\Repositories\Contracts\Catalog\CatalogUsageRepositoryInterface;
+use App\Repositories\Contracts\Catalog\ServiceCategoryRepositoryInterface;
+use App\Repositories\Contracts\Catalog\ServiceCategoryVersionRepositoryInterface;
+use App\Repositories\Contracts\Catalog\ServiceFamilyRepositoryInterface;
+use App\Repositories\Contracts\Catalog\ServiceFormSchemaRepositoryInterface;
+use App\Repositories\Contracts\Catalog\VehicleCategoryRepositoryInterface;
 use App\Repositories\Contracts\Common\CountryRepositoryInterface;
 use App\Repositories\Contracts\Common\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\Common\IdempotencyKeyRepositoryInterface;
@@ -27,6 +33,12 @@ use App\Repositories\Eloquent\Admin\AdminRepository;
 use App\Repositories\Eloquent\Admin\AdminSessionRepository;
 use App\Repositories\Eloquent\Admin\RoleRepository;
 use App\Repositories\Eloquent\Audit\AuditLogRepository;
+use App\Repositories\Eloquent\Catalog\CatalogUsageRepository;
+use App\Repositories\Eloquent\Catalog\ServiceCategoryRepository;
+use App\Repositories\Eloquent\Catalog\ServiceCategoryVersionRepository;
+use App\Repositories\Eloquent\Catalog\ServiceFamilyRepository;
+use App\Repositories\Eloquent\Catalog\ServiceFormSchemaRepository;
+use App\Repositories\Eloquent\Catalog\VehicleCategoryRepository;
 use App\Repositories\Eloquent\Common\CountryRepository;
 use App\Repositories\Eloquent\Common\CurrencyRepository;
 use App\Repositories\Eloquent\Common\IdempotencyKeyRepository;
@@ -70,6 +82,12 @@ class RepositoryServiceProvider extends ServiceProvider
         UserConsentRepositoryInterface::class => UserConsentRepository::class,
         AccountDeletionRequestRepositoryInterface::class => AccountDeletionRequestRepository::class,
         AccessTokenRepositoryInterface::class => AccessTokenRepository::class,
+        CatalogUsageRepositoryInterface::class => CatalogUsageRepository::class,
+        ServiceCategoryRepositoryInterface::class => ServiceCategoryRepository::class,
+        ServiceCategoryVersionRepositoryInterface::class => ServiceCategoryVersionRepository::class,
+        ServiceFamilyRepositoryInterface::class => ServiceFamilyRepository::class,
+        ServiceFormSchemaRepositoryInterface::class => ServiceFormSchemaRepository::class,
+        VehicleCategoryRepositoryInterface::class => VehicleCategoryRepository::class,
         // @admin-module:bindings
     ];
 }

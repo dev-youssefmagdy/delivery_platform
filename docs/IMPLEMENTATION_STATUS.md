@@ -14,7 +14,7 @@
 | P1.1 | Admin authentication, roles/permissions, admin users, audit log UI | P0 | ✅ | 2026-10-19 |
 | P1.2 | Settings, markets, locales, policy versions, app config API | P0 | ✅ | 2026-10-19 |
 | P1.3 | Identity API: OTP, users, profiles, devices, consents, deletion | P0 | ✅ | 2026-10-20 |
-| P1.4 | Service catalog, vehicle categories, form schemas, versioned snapshots | P0 | ❌ | — |
+| P1.4 | Service catalog, vehicle categories, form schemas, versioned snapshots | P0 | ✅ | 2026-10-20 |
 | P1.5 | Geography: cities, service zones, availability, maps adapter | P0 | ❌ | — |
 | P1.6 | Customers admin module | P0 | ❌ | — |
 | P2.1 | Provider onboarding, vehicles, documents, verification | P0 | ❌ | — |
@@ -49,6 +49,51 @@
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+
+---
+
+## P1.4 — Service catalog, vehicle categories, form schemas, versioned snapshots · ✅ 2026-10-20
+
+Branch `milestone/p1.4-service-catalog` (from `main` @ `3d7ff5b`), fast-forwarded into `main`.
+
+### What was built
+
+- **Schema (ADR-65):** `service_families`, `vehicle_categories`, `service_categories` (all policy fields of Plan P1.4, null policy fields fall back to settings), `category_vehicle_category`, `service_form_schemas` (one draft row per category + immutable published rows), `service_category_versions` (immutable JSON snapshot: configuration, effective policies, vehicles, form). Models registered in the morph map; repositories bound in `RepositoryServiceProvider`.
+- **Enums:** `ServiceFamilyKind`, `BookingType`, `FormFieldType` (15 types), `ProofType`, `VisibilityOperator`, `Weekday`, `PaymentMethodType`.
+- **Services:** `CategoryPolicyResolver` (null -> `SettingKey` defaults), `FormSchemaValidator` (schema checks, ADR-67), `ServiceFormValidator` (schema -> Laravel rules for `service_details`, unknown keys rejected, `visible_if`), `ServiceCategorySnapshotBuilder`, `ServiceCategoryPublisher` (publish with reason + audit, "unpublished changes" detection), `ServiceCategoryService` / `ServiceFamilyService` / `VehicleCategoryService` / `ServiceFormSchemaService`, `CatalogReadService`. Guards (ADR-66): never deactivate the last active category (or the family holding it), active bookings need an explicit confirmation, reasons audited; `CatalogUsageRepository` is the seam P2.3 must replace.
+- **Admin (contract modules, `services.manage` / `vehicle_categories.manage`):** Service families, Vehicle categories, Service categories with tabs: edit page (General, Booking rules, Pricing bounds and negotiation, Dispatch, Proofs and safety, Payments and coupons) and show page (Overview + effective policy, Vehicle categories, **Form schema builder** (repeater), **Preview** of the draft form with live `visible_if`, Versions history (lazy tab with snapshots), Activity). Collapsed filters cards (family / active / booking type / negotiation enabled ...), lookups, Publish / Activate (confirm), Deactivate modal (reason + active-bookings confirmation), optimistic locking, Precognition everywhere with errors on the exact repeater cell. Repeater row partial gained a `textarea` type and per-field width.
+- **Seeder (SRS §28, idempotent, part of `DatabaseSeeder`):** 4 families, 8 vehicle classes, 8 published and active categories (tuk-tuk, taxi, economy, standard, courier motorcycle, pickup truck, furniture moving truck, freight truck) with Arabic-first schemas.
+- **API (docs/API.md 8.6):** `GET /service-families`, `/service-categories?lat&lng&booking_type&service_family_id`, `/vehicle-categories?service_category_id`; public, ETag, served from the published snapshot (includes the form schema version and the version id bookings will reference).
+- **Flutter:** platform_core `DynamicFormRenderer` for every `FormFieldType` (+ `DynamicFormController`, `FormLogic`, `DynamicFormStrings`, `PhotoFieldHandler`, `ImagePickerPhotoHandler`), `CatalogRepository` + models, `VisibilityOperator` enum (ADR-68). Customer app: service family chips + category cards from the API on the home screen (all async states), selected-service panel, `/service-details` screen rendering the category's dynamic form and keeping `service_details` for P2.6; ARB ar/en + regenerated l10n.
+
+### Files touched
+
+Backend: `app/{Enums/{Catalog,Payments},DTOs/Catalog,Models/{ServiceFamily,VehicleCategory,ServiceCategory,ServiceFormSchema,ServiceCategoryVersion},Repositories/{Contracts,Eloquent}/Catalog,Services/Catalog(+Forms),Policies,Http/{Controllers/{Admin/Catalog,Api/V1/Common/CatalogController.php},Requests/{Admin,Api/V1}/Catalog,Resources/Api/V1/Catalog},DataTables/Admin/Catalog,Support/Admin/Lookups}`, `config/{admin,admin_menu}.php`, `routes/{api_v1.php,admin/{service-families,service-categories,vehicle-categories}.php}`, migration `2026_10_20_180000_create_service_catalog_tables`, factories, `CatalogSeeder`, `lang/{ar,en}/{admin,api,enums,catalog}.php`, `resources/views/admin/{service-families,service-categories,vehicle-categories}`, `resources/js/admin/components/schema-preview.js(+test)`, repeater row partial, `tests/{Unit/Catalog,Feature/{Admin/Catalog,Api/CatalogEndpointsTest.php,Catalog},Browser/admin-login-smoke.mjs}`. Flutter: `packages/platform_core/lib/src/{forms,catalog,enums/visibility_operator.dart}` + tests, `customer_app/lib/{app/{router.dart,l10n},features/{catalog,home}}` + tests. Docs: ADR-65..68, API 8.6. `scripts/browser-smoke.sh` (admin gets `services.manage`).
+
+### Commands and results (2026-10-20)
+
+| Command | Result |
+|---|---|
+| `php artisan migrate` (local MySQL); `php artisan db:seed --class=CatalogSeeder` twice | OK; 8 categories / 8 versions, second run no change |
+| `vendor/bin/pint --test` | passed |
+| `vendor/bin/phpstan analyse` (level 6) | passed, 0 errors |
+| `php artisan test --parallel` | passed - 423 tests, 3474 assertions (was 336 / 2854); new: 34 unit (schema validator, form validator, operators), 43 admin catalog contract/publishing, 7 API, 3 seeder |
+| `npm run build` / `npx vitest run` | built OK / 15 passed (new: schema preview + `visible_if` parity) |
+| `scripts/browser-smoke.sh` (real headless Chrome) | passed - login protocol plus catalog: builder repeater add, duplicate key stopped by the Precognition call (no real submit), valid save = Precognition then submit, live preview shows the conditional field after answering, no JS errors |
+| `scripts/check.sh` (everything) | All checks passed: `platform_core` 141 tests (new: renderer per field type in RTL and LTR, logic parity, repository), `customer_app` 58 (new: catalog flow, details form, router rule), `driver_app` 45; format and analyze clean |
+
+### Known gaps / notes
+
+- Zone availability (`lat`/`lng`) is validated and accepted but not applied until P1.5.
+- `CatalogUsageRepository::activeBookingCount()` returns 0 and throws once a `bookings` table exists: **P2.3 must implement it** (ADR-66).
+- Photo answers are attachment references; uploads arrive with P4.x (the app stores the picked local path until then).
+- The driver app does not use the catalog yet (provider service selection is P2.1); `DynamicFormRenderer` is ready for it.
+- Permissions: `services.manage` covers view, edit and publish of families/categories (Plan Appendix A has no finer split).
+- The customer home shows only the first page of the catalog; there is no search or pagination (the catalog is small by design).
+
+### Next steps
+
+P1.5 geography. Reuse: `ServiceCategoryRepositoryInterface::publicList()` (add the zone filter there and in `CatalogReadService::categories()`; the endpoint already validates `lat`/`lng`), the `service-categories` admin lookup for zone-service pivots, `CategoryPolicyResolver`, `AdminDataTable` + generator patterns, the customer `catalogProvider` (pass `lat`/`lng` once the user's location is known).
 
 ---
 
@@ -89,7 +134,7 @@ Backend: `app/{Enums/Identity,DTOs/Identity,Models/{User,CustomerProfile,Provide
 
 ### Next steps
 
-P1.4 service catalog. Reuse: `ClientApp`, `ability:`/`account.active` route middleware, `PolicyReadService`, `RateLimitedException`, `meta()` on domain exceptions, `AdminDataTable::rawColumn()`, platform_core `IdentityRepository` pattern for new feature repositories.
+P1.4 service catalog (done, see above). Reuse: `ClientApp`, `ability:`/`account.active` route middleware, `PolicyReadService`, `RateLimitedException`, `meta()` on domain exceptions, `AdminDataTable::rawColumn()`, platform_core `IdentityRepository` pattern for new feature repositories.
 
 ---
 

@@ -1,145 +1,63 @@
 import 'package:flutter/material.dart';
 
-import '../enums/form_field_type.dart';
-import 'form_schema.dart';
+import '../ui/tokens.dart';
+import 'dynamic_form_controller.dart';
+import 'dynamic_form_strings.dart';
+import 'form_field_widgets.dart';
+import 'photo_field_handler.dart';
 
-/// Renders a list of [FormFieldSchema] and reports value changes as a map.
+/// Renders a service form schema (Plan §2.3) for every `FormFieldType`: the
+/// same schema the backend validates. Shows only fields whose `visible_if`
+/// holds, with Arabic/English labels and Directional layout, and reports all
+/// state through the [controller] (answers, issues, payload).
 ///
-/// Supported now: text, textarea, integer, decimal, boolean, select,
-/// multiselect. The remaining [FormFieldType]s (date, time, datetime, contact,
-/// photo, item_checklist, dimensions, weight) are rendered by the milestones
-/// that need them (P1.4/P2.x/P4.x); [supports] lets callers check, and
-/// unsupported fields are skipped, never shown as dead controls.
-class DynamicFormRenderer extends StatefulWidget {
+/// There is no per-service branching: a new service category only needs a
+/// new schema on the server.
+class DynamicFormRenderer extends StatelessWidget {
   const DynamicFormRenderer({
     super.key,
-    required this.fields,
-    required this.onChanged,
-    required this.requiredMessage,
-    this.initialValues = const {},
+    required this.controller,
+    required this.languageCode,
+    required this.strings,
+    this.photoHandler,
   });
 
-  final List<FormFieldSchema> fields;
-  final Map<String, Object?> initialValues;
-  final ValueChanged<Map<String, Object?>> onChanged;
+  final DynamicFormController controller;
 
-  /// Localized "this field is required" message supplied by the caller.
-  final String requiredMessage;
+  /// Language for labels, help texts and option names (`ar` / `en`).
+  final String languageCode;
+  final DynamicFormStrings strings;
 
-  static const _supported = {
-    FormFieldType.text,
-    FormFieldType.textarea,
-    FormFieldType.integer,
-    FormFieldType.decimal,
-    FormFieldType.boolean,
-    FormFieldType.select,
-    FormFieldType.multiselect,
-  };
-
-  static bool supports(FormFieldType type) => _supported.contains(type);
+  /// Needed only for schemas that contain `photo` fields; without it those
+  /// fields render without an add button.
+  final PhotoFieldHandler? photoHandler;
 
   @override
-  State<DynamicFormRenderer> createState() => _DynamicFormRendererState();
-}
-
-class _DynamicFormRendererState extends State<DynamicFormRenderer> {
-  late final Map<String, Object?> _values = {...widget.initialValues};
-
-  void _set(String key, Object? value) {
-    setState(() => _values[key] = value);
-    widget.onChanged(Map.unmodifiable(_values));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final fields = widget.fields.where(
-      (f) => DynamicFormRenderer.supports(f.type),
-    );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final f in fields)
-          Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 16),
-            child: _build(f),
-          ),
-      ],
-    );
-  }
-
-  Widget _build(FormFieldSchema f) {
-    final validator = f.required
-        ? (String? v) =>
-              (v == null || v.trim().isEmpty) ? widget.requiredMessage : null
-        : null;
-    final deco = InputDecoration(labelText: f.label, hintText: f.hint);
-    switch (f.type) {
-      case FormFieldType.textarea:
-        return TextFormField(
-          initialValue: _values[f.key] as String?,
-          decoration: deco,
-          minLines: 3,
-          maxLines: 6,
-          validator: validator,
-          onChanged: (v) => _set(f.key, v),
-        );
-      case FormFieldType.integer:
-      case FormFieldType.decimal:
-        final isInt = f.type == FormFieldType.integer;
-        return TextFormField(
-          initialValue: _values[f.key]?.toString(),
-          decoration: deco,
-          keyboardType: TextInputType.numberWithOptions(decimal: !isInt),
-          validator: validator,
-          onChanged: (v) =>
-              _set(f.key, isInt ? int.tryParse(v) : double.tryParse(v)),
-        );
-      case FormFieldType.boolean:
-        return SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(f.label),
-          value: (_values[f.key] as bool?) ?? false,
-          onChanged: (v) => _set(f.key, v),
-        );
-      case FormFieldType.select:
-        return DropdownButtonFormField<String>(
-          initialValue: _values[f.key] as String?,
-          decoration: deco,
-          items: [
-            for (final o in f.options)
-              DropdownMenuItem(value: o.value, child: Text(o.label)),
-          ],
-          validator: f.required
-              ? (v) => v == null ? widget.requiredMessage : null
-              : null,
-          onChanged: (v) => _set(f.key, v),
-        );
-      case FormFieldType.multiselect:
-        final selected = {...((_values[f.key] as List?)?.cast<String>() ?? [])};
-        return InputDecorator(
-          decoration: deco,
-          child: Wrap(
-            spacing: 8,
-            children: [
-              for (final o in f.options)
-                FilterChip(
-                  label: Text(o.label),
-                  selected: selected.contains(o.value),
-                  onSelected: (on) {
-                    on ? selected.add(o.value) : selected.remove(o.value);
-                    _set(f.key, selected.toList());
-                  },
-                ),
-            ],
-          ),
-        );
-      default:
-        return TextFormField(
-          initialValue: _values[f.key] as String?,
-          decoration: deco,
-          validator: validator,
-          onChanged: (v) => _set(f.key, v),
-        );
-    }
-  }
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: controller,
+    builder: (context, _) {
+      final issues = controller.issues;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final field in controller.visibleFields)
+            Padding(
+              key: ValueKey('form-field-${field.key}'),
+              padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
+              child: FormFieldView(
+                field: field,
+                value: controller.valueOf(field.key),
+                error: issues[field.key] == null
+                    ? null
+                    : strings.messageFor(issues[field.key]!),
+                languageCode: languageCode,
+                strings: strings,
+                photoHandler: photoHandler,
+                onChanged: (v) => controller.setValue(field.key, v),
+              ),
+            ),
+        ],
+      );
+    },
+  );
 }

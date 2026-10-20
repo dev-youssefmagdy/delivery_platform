@@ -126,6 +126,33 @@ return [
             'permission' => App\Enums\Admin\AdminPermission::DemoItemsView,
             'environments' => ['local', 'testing'],
         ],
+        [
+            'key' => 'service_families',
+            'group' => 'catalog',
+            'label' => 'admin.service_families.menu',
+            'route' => 'admin.service-families.index',
+            'active' => 'admin.service-families.*',
+            'icon' => 'squares',
+            'permission' => App\Enums\Admin\AdminPermission::ServicesManage,
+        ],
+        [
+            'key' => 'service_categories',
+            'group' => 'catalog',
+            'label' => 'admin.service_categories.menu',
+            'route' => 'admin.service-categories.index',
+            'active' => 'admin.service-categories.*',
+            'icon' => 'archive',
+            'permission' => App\Enums\Admin\AdminPermission::ServicesManage,
+        ],
+        [
+            'key' => 'vehicle_categories',
+            'group' => 'catalog',
+            'label' => 'admin.vehicle_categories.menu',
+            'route' => 'admin.vehicle-categories.index',
+            'active' => 'admin.vehicle-categories.*',
+            'icon' => 'cube',
+            'permission' => App\Enums\Admin\AdminPermission::VehicleCategoriesManage,
+        ],
         // @admin-module:menu
     ],
 ];

@@ -132,5 +132,127 @@
   "deleteAccountTitle": "حذف حسابك؟",
   "deleteAccountBody": "سنراجع طلبك. قد يتم الاحتفاظ ببعض البيانات حيث يشترط القانون ذلك. يمكنك الإلغاء ما دام الطلب قيد المعالجة.",
   "deleteAccountConfirm": "طلب الحذف",
-  "actionCancel": "إلغاء"
+  "actionCancel": "إلغاء",
+  "catalogTitle": "اختر الخدمة",
+  "catalogEmptyTitle": "لا توجد خدمات متاحة",
+  "catalogEmptyBody": "ستظهر الخدمات هنا فور توفرها في منطقتك.",
+  "catalogCapacityPassengers": "{count, plural, =1{راكب واحد} =2{راكبان} few{{count} ركاب} many{{count} راكبًا} other{{count} راكب}}",
+  "@catalogCapacityPassengers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "catalogCapacityLuggage": "{count, plural, =1{حقيبة واحدة} =2{حقيبتان} few{{count} حقائب} many{{count} حقيبة} other{{count} حقيبة}}",
+  "@catalogCapacityLuggage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "catalogCapacityWeight": "حتى {kg} كجم",
+  "@catalogCapacityWeight": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogFareFrom": "ابتداءً من {amount}",
+  "@catalogFareFrom": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogNegotiable": "حدد أجرتك",
+  "catalogSelectedLabel": "الخدمة المختارة",
+  "catalogDetailsButton": "تفاصيل الخدمة",
+  "catalogDetailsTitle": "تفاصيل الخدمة",
+  "catalogDetailsIntro": "أخبرنا بتفاصيل طلبك ليقدّم السائقون السعر المناسب.",
+  "catalogDetailsNone": "هذه الخدمة لا تحتاج إلى تفاصيل إضافية.",
+  "catalogDetailsSave": "حفظ التفاصيل",
+  "catalogDetailsSaved": "تم حفظ التفاصيل",
+  "catalogDetailsFixErrors": "يرجى تصحيح الحقول المظللة.",
+  "catalogVehiclesLabel": "المركبات: {names}",
+  "@catalogVehiclesLabel": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "formTooShort": "أدخل {limit} أحرف على الأقل",
+  "@formTooShort": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formTooLong": "أدخل {limit} حرفًا كحد أقصى",
+  "@formTooLong": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formTooSmall": "يجب ألا تقل القيمة عن {limit}",
+  "@formTooSmall": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formTooLarge": "يجب ألا تزيد القيمة عن {limit}",
+  "@formTooLarge": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formNotANumber": "أدخل رقمًا صحيحًا",
+  "formNotWhole": "أدخل عددًا صحيحًا بدون كسور",
+  "formInvalidChoice": "اختر خيارًا صالحًا",
+  "formTooFewItems": "اختر {limit} على الأقل",
+  "@formTooFewItems": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formTooManyItems": "اختر {limit} كحد أقصى",
+  "@formTooManyItems": {
+    "placeholders": {
+      "limit": {
+        "type": "num"
+      }
+    }
+  },
+  "formInvalidPhone": "أدخل رقم هاتف صحيحًا مع رمز الدولة",
+  "formInvalidDate": "أدخل تاريخًا أو وقتًا صحيحًا",
+  "formIncomplete": "أكمل جميع أجزاء هذا الحقل",
+  "formYes": "نعم",
+  "formNo": "لا",
+  "formChoose": "اختر…",
+  "formContactName": "الاسم",
+  "formContactPhone": "الهاتف (مع رمز الدولة)",
+  "formLength": "الطول (سم)",
+  "formWidth": "العرض (سم)",
+  "formHeight": "الارتفاع (سم)",
+  "formKilograms": "كجم",
+  "formQuantity": "الكمية",
+  "formAddPhoto": "إضافة صورة",
+  "formRemovePhoto": "حذف الصورة",
+  "formPhotoCamera": "الكاميرا",
+  "formPhotoGallery": "المعرض",
+  "formPickDate": "اختر التاريخ",
+  "formPickTime": "اختر الوقت"
 }

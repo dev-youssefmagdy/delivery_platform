@@ -5,11 +5,13 @@ namespace Tests\Concerns;
 use App\DTOs\Dispatch\DispatchableRequest;
 use App\DTOs\Location\ActiveBooking;
 use App\DTOs\Location\LocationSample;
+use App\Enums\Booking\BookingStatus;
 use App\Enums\Location\LocationSource;
 use App\Enums\Location\TrackingState;
 use App\Enums\Provider\ProviderStatus;
 use App\Enums\Provider\ServiceApprovalStatus;
 use App\Enums\Provider\VehicleStatus;
+use App\Models\Booking;
 use App\Models\City;
 use App\Models\ProviderProfile;
 use App\Models\ServiceCategory;
@@ -81,11 +83,18 @@ trait BuildsDispatch
         return $provider->refresh();
     }
 
+    /**
+     * A dispatchable request backed by a real booking row (dispatch tables reference `bookings`). The same booking id
+     * returns the same booking, so a test may build several requests for one booking.
+     */
     protected function requestFor(ServiceCategory $category, City $city, int $bookingId = 501, ?CarbonImmutable $expires = null, array $overrides = []): DispatchableRequest
     {
+        $uuid = $overrides['uuid'] ?? '11111111-1111-4111-8111-'.str_pad((string) $bookingId, 12, '0', STR_PAD_LEFT);
+        $booking = Booking::query()->find($bookingId) ?? Booking::factory()->forCategory($category)->state(['id' => $bookingId, 'uuid' => $uuid, 'city_id' => $city->id])->create();
+
         return new DispatchableRequest(
-            bookingId: $bookingId,
-            bookingUuid: $overrides['uuid'] ?? '11111111-1111-4111-8111-'.str_pad((string) $bookingId, 12, '0', STR_PAD_LEFT),
+            bookingId: $booking->id,
+            bookingUuid: $booking->uuid,
             serviceCategoryId: $category->id,
             cityId: $city->id,
             pickup: GeoPoint::make(30.05, 31.25),
@@ -98,7 +107,7 @@ trait BuildsDispatch
     }
 
     /**
-     * Makes every provider look busy (or not) until P2.3 provides real bookings.
+     * Makes every provider look busy (or not), and in debt (or not), without building the whole job.
      */
     protected function fakeWorkload(?ActiveBooking $active = null, int $debtMinor = 0): void
     {
@@ -118,8 +127,13 @@ trait BuildsDispatch
         });
     }
 
+    /**
+     * An active job backed by a real booking (location history points at it through a foreign key).
+     */
     protected function busy(string $uuid = '22222222-2222-4222-8222-222222222222'): ActiveBooking
     {
-        return new ActiveBooking(900, $uuid, TrackingState::Active);
+        $booking = Booking::query()->where('uuid', $uuid)->first() ?? Booking::factory()->status(BookingStatus::ProviderHeadingToPickup)->state(['uuid' => $uuid])->create();
+
+        return new ActiveBooking($booking->id, $booking->uuid, TrackingState::Active);
     }
 }

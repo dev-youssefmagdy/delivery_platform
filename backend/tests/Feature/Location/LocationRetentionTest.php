@@ -27,10 +27,11 @@ class LocationRetentionTest extends TestCase
     public function test_history_is_pruned_by_the_two_retention_periods(): void
     {
         $provider = $this->makeProvider();
+        $booking = \App\Models\Booking::factory()->create();
         $this->row($provider->id, 5);
         $this->row($provider->id, 31);
-        $this->row($provider->id, 45, 7);
-        $this->row($provider->id, 91, 7);
+        $this->row($provider->id, 45, $booking->id);
+        $this->row($provider->id, 91, $booking->id);
 
         $this->artisan('locations:prune')->assertSuccessful();
 

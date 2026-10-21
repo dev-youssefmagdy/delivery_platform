@@ -32,7 +32,7 @@ class ApiEnvelopeTest extends TestCase
             Route::get('paginated', fn () => ApiResponse::paginated(new LengthAwarePaginator([['id' => 1], ['id' => 2]], 5, 2, 1)));
             Route::post('validate', fn (Request $request) => $request->validate(['name' => 'required|string']));
             Route::get('rule', fn () => throw BusinessRuleViolation::make('offer_expired', 'offer_id'));
-            Route::get('conflict', fn () => throw ConflictException::make('booking_already_assigned'));
+            Route::get('conflict', fn () => throw ConflictException::make('conflict_without_translation'));
             Route::get('forbidden-action', fn () => throw ForbiddenActionException::make('not_your_booking'));
             Route::get('unauthenticated', fn () => throw new AuthenticationException);
             Route::get('unauthorized', fn () => throw new AuthorizationException('secret policy detail'));
@@ -83,7 +83,7 @@ class ApiEnvelopeTest extends TestCase
 
     public function test_conflict_and_forbidden_action(): void
     {
-        $this->getJson('/api/v1/_test/conflict')->assertStatus(409)->assertJsonPath('errors._code', 'booking_already_assigned');
+        $this->getJson('/api/v1/_test/conflict')->assertStatus(409)->assertJsonPath('errors._code', 'conflict_without_translation');
         $this->getJson('/api/v1/_test/forbidden-action')->assertStatus(403)->assertJsonPath('errors._code', 'not_your_booking');
     }
 

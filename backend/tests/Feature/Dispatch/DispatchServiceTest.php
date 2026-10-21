@@ -11,10 +11,10 @@ use App\Jobs\Dispatch\DispatchBookingWave;
 use App\Models\DispatchRecipient;
 use App\Models\ProviderLastLocation;
 use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
+use App\Services\Booking\DispatchableBookingSource;
 use App\Services\Dispatch\DispatchableRequestSource;
 use App\Services\Dispatch\DispatchService;
 use App\Services\Dispatch\FindEligibleProvidersService;
-use App\Services\Dispatch\UnavailableDispatchableRequestSource;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -277,25 +277,26 @@ class DispatchServiceTest extends TestCase
 
         app(DispatchService::class)->start($this->requestFor($category, $city, 901));
 
-        Bus::assertDispatched(DispatchBookingWave::class, static fn (DispatchBookingWave $job): bool => $job->wave === 1 && $job->uniqueId() === 'dispatch-wave:901:1');
+        Bus::assertDispatched(DispatchBookingWave::class, static fn (DispatchBookingWave $job): bool => $job->wave === 1 && $job->uniqueId() === 'dispatch-wave:901:1:1');
     }
 
-    public function test_without_bookings_the_default_source_finds_nothing_and_the_job_stops_quietly(): void
+    public function test_the_source_is_bound_to_bookings_and_a_vanished_booking_stops_the_job_quietly(): void
     {
-        $this->assertInstanceOf(UnavailableDispatchableRequestSource::class, app(DispatchableRequestSource::class));
-        $this->assertNull(app(DispatchableRequestSource::class)->find(1));
+        $this->assertInstanceOf(DispatchableBookingSource::class, app(DispatchableRequestSource::class));
+        $this->assertNull(app(DispatchableRequestSource::class)->find(999_999));
 
-        (new DispatchBookingWave(1, 1))->handle(app(DispatchableRequestSource::class), app(DispatchService::class));
+        (new DispatchBookingWave(999_999, 1))->handle(app(DispatchableRequestSource::class), app(DispatchService::class));
 
         $this->assertSame(0, DispatchRecipient::query()->count());
     }
 
     public function test_recipient_responses_can_be_recorded(): void
     {
-        ['category' => $category] = $this->cairo();
+        ['category' => $category, 'city' => $city] = $this->cairo();
         $provider = $this->onlineAtKm($category, 0.3);
+        $booking = $this->requestFor($category, $city, 1);
         $recipients = app(DispatchRecipientRepositoryInterface::class);
-        $recipients->recordWave(1, 1, [['provider_profile_id' => $provider->id, 'distance_m' => 300]]);
+        $recipients->recordWave($booking->bookingId, 1, [['provider_profile_id' => $provider->id, 'distance_m' => 300]]);
 
         $recipients->markSeen(1, $provider->id);
         $recipients->respond(1, $provider->id, DispatchResponse::Declined);

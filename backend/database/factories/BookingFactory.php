@@ -36,7 +36,7 @@ class BookingFactory extends Factory
         return [
             'uuid' => (string) Str::uuid(),
             'code' => 'BK-'.strtoupper(Str::random(6)),
-            'customer_id' => static function (): int {
+            'customer_id' => function (): int {
                 $user = User::factory()->create();
                 CustomerProfile::query()->create(['user_id' => $user->id]);
 
@@ -70,7 +70,7 @@ class BookingFactory extends Factory
 
     public function forCategory(ServiceCategory $category): static
     {
-        return $this->state(static fn (): array => [
+        return $this->state(fn (): array => [
             'service_category_id' => $category->id,
             'service_category_version_id' => $category->published_version_id,
             'service_snapshot' => ['category' => ['id' => $category->id, 'code' => $category->code, 'name' => $category->getTranslations('name')]],

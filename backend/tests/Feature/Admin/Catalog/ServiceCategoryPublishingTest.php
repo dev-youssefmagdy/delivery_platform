@@ -293,12 +293,20 @@ class ServiceCategoryPublishingTest extends TestCase
         $this->assertSame([5.0, 9.0], $own->dispatchRadiusStepsKm);
     }
 
-    public function test_the_default_usage_repository_reports_zero_without_a_bookings_table(): void
+    public function test_the_usage_repository_counts_only_bookings_in_flight(): void
     {
-        $repository = new \App\Repositories\Eloquent\Catalog\CatalogUsageRepository;
+        $repository = app(CatalogUsageRepositoryInterface::class);
         $category = ServiceCategory::factory()->create(['service_family_id' => ServiceFamily::factory()]);
-
         $this->assertSame(0, $repository->activeBookingCount($category));
+
+        foreach ([\App\Enums\Booking\BookingStatus::Draft, \App\Enums\Booking\BookingStatus::InProgress, \App\Enums\Booking\BookingStatus::Completed, \App\Enums\Booking\BookingStatus::CancelledByCustomer] as $status) {
+            \App\Models\Booking::factory()->status($status)->state([
+                'service_category_id' => $category->id,
+                'service_category_version_id' => \App\Models\Booking::factory()->create()->service_category_version_id,
+            ])->create();
+        }
+
+        $this->assertSame(2, $repository->activeBookingCount($category));
     }
 
     public function test_publishing_uses_a_dedicated_schema_row_per_version(): void

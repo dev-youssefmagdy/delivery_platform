@@ -10,7 +10,6 @@ use App\Services\Provider\ProviderEligibilityService;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use LogicException;
 use Tests\Concerns\BuildsDispatch;
 use Tests\TestCase;
 
@@ -91,7 +90,7 @@ class WorkingEligibilityTest extends TestCase
         $this->assertTrue($this->working($provider, $category)->has(EligibilityReason::CashDebtLimitExceeded));
     }
 
-    public function test_the_workload_placeholder_fails_loudly_once_bookings_exist(): void
+    public function test_the_workload_reads_the_providers_assigned_booking_and_a_neutral_debt(): void
     {
         $repository = app(\App\Repositories\Contracts\Provider\ProviderWorkloadRepositoryInterface::class);
         ['category' => $category] = $this->cairo();
@@ -100,9 +99,18 @@ class WorkingEligibilityTest extends TestCase
         $this->assertNull($repository->activeBooking($provider));
         $this->assertSame(0, $repository->cashDebtMinor($provider));
 
-        \Illuminate\Support\Facades\Schema::partialMock()->shouldReceive('hasTable')->with('bookings')->andReturn(true);
+        $booking = \App\Models\Booking::factory()->forCategory($category)->status(\App\Enums\Booking\BookingStatus::ProviderSelected)->state(['provider_id' => $provider->id])->create();
+        $active = $repository->activeBooking($provider);
 
-        $this->expectException(LogicException::class);
-        $repository->activeBooking($provider);
+        $this->assertSame($booking->id, $active?->bookingId);
+        $this->assertSame($booking->uuid, $active?->bookingUuid);
+        $this->assertSame(\App\Enums\Location\TrackingState::ToPickup, $active?->trackingState);
+
+        $booking->forceFill([])->save();
+        \App\Support\Booking\BookingStatusGate::run(fn () => $booking->forceFill(['status' => \App\Enums\Booking\BookingStatus::InProgress])->save());
+        $this->assertSame(\App\Enums\Location\TrackingState::Active, $repository->activeBooking($provider)?->trackingState);
+
+        \App\Support\Booking\BookingStatusGate::run(fn () => $booking->forceFill(['status' => \App\Enums\Booking\BookingStatus::Completed])->save());
+        $this->assertNull($repository->activeBooking($provider));
     }
 }

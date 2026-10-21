@@ -195,6 +195,8 @@ class CustomerDeletionAndExportTest extends TestCase
         $this->actingAsAdmin([AdminPermission::CustomersView]);
         $this->postJson(route('admin.customers.export-data', $customer))->assertForbidden();
 
+        \App\Models\Booking::factory()->forCustomer($customer)->state(['pickup_address' => ['line' => 'Secret street']])->create();
+
         $admin = $this->actingAsAdmin([AdminPermission::CustomersView, AdminPermission::CustomersExport]);
         $statusUrl = $this->postJson(route('admin.customers.export-data', $customer))->assertOk()->json('data.status_url');
 
@@ -217,7 +219,11 @@ class CustomerDeletionAndExportTest extends TestCase
         $this->assertCount(1, $data['consents']);
         $this->assertCount(1, $data['saved_places']);
         $this->assertCount(1, $data['deletion_requests']);
-        $this->assertContains('bookings', $data['sections_pending']);
+        $this->assertNotContains('bookings', $data['sections_pending']);
+        $this->assertContains('payments', $data['sections_pending']);
+        $this->assertCount(1, $data['bookings']);
+        $this->assertSame('Secret street', $data['bookings'][0]['pickup']['address']['line']);
+        $this->assertSame(5000, $data['bookings'][0]['proposed_fare_minor']);
 
         // The export is owner-only.
         $this->actingAsAdmin([AdminPermission::CustomersExport]);

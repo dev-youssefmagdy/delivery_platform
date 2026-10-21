@@ -45,14 +45,15 @@ class CustomerAdminTest extends TestCase
         $this->postJson(route('admin.customers.export'))->assertForbidden();
     }
 
-    public function test_index_renders_with_a_collapsed_filters_card_and_the_booking_filter_note(): void
+    public function test_index_renders_with_a_collapsed_filters_card_and_the_booking_filter(): void
     {
         $this->actingAsAdmin([AdminPermission::CustomersView]);
 
         $this->get(route('admin.customers.index'))->assertOk()
             ->assertSee('data-filters-for="'.CustomersDataTable::TABLE_ID.'"', false)
             ->assertSee('id="'.CustomersDataTable::TABLE_ID.'"', false)
-            ->assertSee('P2.3');
+            ->assertSee('name="filters[has_active_booking]"', false)
+            ->assertDontSee('P2.3');
     }
 
     public function test_datatable_json_respects_each_filter(): void
@@ -102,7 +103,7 @@ class CustomerAdminTest extends TestCase
         $this->assertStringContainsString('4567', $response->getContent());
     }
 
-    public function test_show_page_masks_contact_details_and_marks_unavailable_modules(): void
+    public function test_show_page_masks_contact_details_and_marks_modules_that_are_not_built_yet(): void
     {
         $this->actingAsAdmin([AdminPermission::CustomersView]);
         $customer = $this->customer(['name' => 'Mona Ali', 'phone_e164' => '+201001234567', 'email' => 'mona@example.test']);
@@ -111,7 +112,8 @@ class CustomerAdminTest extends TestCase
         $response = $this->get(route('admin.customers.show', $customer))->assertOk()->assertSee('Mona Ali');
 
         $response->assertDontSee('+201001234567')->assertDontSee('mona@example.test')->assertDontSee('+201112223333');
-        $response->assertSee('P2.3')->assertSee('P3.2')->assertSee('P3.3')->assertSee('P3.7')->assertSee('P2.5');
+        $response->assertSee('P3.2')->assertSee('P3.3')->assertSee('P3.7')->assertSee('P2.5');
+        $response->assertSee(route('admin.customers.tabs.bookings', $customer), false);
         $response->assertDontSee('adminReveal(', false);
         $response->assertDontSee(route('admin.customers.tabs.saved-places', $customer), false);
         $response->assertSee(route('admin.customers.tabs.devices', $customer), false);

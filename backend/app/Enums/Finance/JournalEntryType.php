@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Enums\Finance;
+
+use App\Enums\Concerns\EnumHelpers;
+use App\Enums\Contracts\HasColor;
+use App\Enums\Contracts\HasLabel;
+use App\Enums\Support\BadgeColor;
+
+/**
+ * Why a journal entry exists. Written once with the entry; the later milestones (payments, payouts, refunds,
+ * adjustments, cancellation fees) post through the same ledger with their own type.
+ */
+enum JournalEntryType: string implements HasColor, HasLabel
+{
+    use EnumHelpers;
+
+    case BookingSettlementCash = 'booking_settlement_cash';
+    case BookingSettlementGateway = 'booking_settlement_gateway';
+    case Tip = 'tip';
+    case Refund = 'refund';
+    case PayoutReserve = 'payout_reserve';
+    case PayoutPaid = 'payout_paid';
+    case Adjustment = 'adjustment';
+    case CancellationFee = 'cancellation_fee';
+    case Reversal = 'reversal';
+
+    public function label(): string
+    {
+        return __("enums.journal_entry_type.{$this->value}");
+    }
+
+    public function color(): BadgeColor
+    {
+        return match ($this) {
+            self::BookingSettlementCash, self::BookingSettlementGateway, self::Tip => BadgeColor::Success,
+            self::Refund, self::Reversal => BadgeColor::Warning,
+            self::PayoutReserve, self::PayoutPaid => BadgeColor::Info,
+            self::Adjustment, self::CancellationFee => BadgeColor::Neutral,
+        };
+    }
+}

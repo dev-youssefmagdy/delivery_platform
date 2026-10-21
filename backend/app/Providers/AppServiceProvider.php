@@ -21,8 +21,14 @@ use App\Models\DispatchRecipient;
 use App\Models\DocumentRequirement;
 use App\Models\DocumentType;
 use App\Models\CancellationPolicy;
+use App\Models\CommissionRule;
+use App\Models\CommissionRuleVersion;
 use App\Models\FarePolicy;
 use App\Models\IdempotencyKey;
+use App\Models\JournalEntry;
+use App\Models\JournalLine;
+use App\Models\LedgerAccount;
+use App\Models\LedgerReconciliationRun;
 use App\Models\OtpChallenge;
 use App\Models\OwnedDocument;
 use App\Models\PlatformSetting;
@@ -145,6 +151,12 @@ class AppServiceProvider extends ServiceProvider
             'booking_status_event' => BookingStatusEvent::class,
             'fare_policy' => FarePolicy::class,
             'cancellation_policy' => CancellationPolicy::class,
+            'ledger_account' => LedgerAccount::class,
+            'journal_entry' => JournalEntry::class,
+            'journal_line' => JournalLine::class,
+            'ledger_reconciliation_run' => LedgerReconciliationRun::class,
+            'commission_rule' => CommissionRule::class,
+            'commission_rule_version' => CommissionRuleVersion::class,
             // @admin-module:morph-map
         ]);
 

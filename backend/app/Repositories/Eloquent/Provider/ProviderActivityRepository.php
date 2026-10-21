@@ -9,7 +9,7 @@ use App\Repositories\Contracts\Provider\ProviderActivityRepositoryInterface;
 
 /**
  * What a provider still has running: assigned bookings come from `bookings`, unsettled money from the financial
- * position seam (neutral until the ledger exists, ADR-92).
+ * position, which is read from the ledger wallets and the payments seam (ADR-115).
  */
 final class ProviderActivityRepository implements ProviderActivityRepositoryInterface
 {

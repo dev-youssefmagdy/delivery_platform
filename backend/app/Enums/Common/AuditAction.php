@@ -41,6 +41,8 @@ enum AuditAction: string implements HasColor, HasLabel
     case Anonymised = 'anonymised';
     case Downloaded = 'downloaded';
     case MoreInfoRequested = 'more_info_requested';
+    case Reversed = 'reversed';
+    case Reconciled = 'reconciled';
 
     public function label(): string
     {
@@ -52,8 +54,8 @@ enum AuditAction: string implements HasColor, HasLabel
         return match ($this) {
             self::Created, self::Approved, self::Reactivated, self::Restored, self::Published, self::LoggedIn => BadgeColor::Success,
             self::Deleted, self::Rejected, self::Suspended, self::LoginFailed, self::Anonymised => BadgeColor::Danger,
-            self::Overridden, self::StatusChanged, self::MoreInfoRequested, self::MfaReset, self::MfaDisabled, self::Restricted, self::PhoneRevealed => BadgeColor::Warning,
-            self::Updated, self::Exported, self::Downloaded, self::MfaEnabled, self::PasswordChanged, self::SessionRevoked, self::MessageSent => BadgeColor::Info,
+            self::Overridden, self::StatusChanged, self::MoreInfoRequested, self::MfaReset, self::MfaDisabled, self::Restricted, self::PhoneRevealed, self::Reversed => BadgeColor::Warning,
+            self::Updated, self::Exported, self::Downloaded, self::MfaEnabled, self::PasswordChanged, self::SessionRevoked, self::MessageSent, self::Reconciled => BadgeColor::Info,
             default => BadgeColor::Neutral,
         };
     }

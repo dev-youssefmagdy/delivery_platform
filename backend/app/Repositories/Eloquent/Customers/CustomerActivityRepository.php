@@ -9,7 +9,7 @@ use App\Repositories\Contracts\Finance\FinancialPositionRepositoryInterface;
 
 /**
  * What a customer still has running: bookings in flight come from `bookings`; unsettled money from the financial
- * position seam, which is neutral until the ledger and payments exist (P3.1 / P3.2, ADR-92).
+ * position: ledger wallets with a balance plus open payments (that part stays neutral until P3.2, ADR-115).
  */
 final class CustomerActivityRepository implements CustomerActivityRepositoryInterface
 {

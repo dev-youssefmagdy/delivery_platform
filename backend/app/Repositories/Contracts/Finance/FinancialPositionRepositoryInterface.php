@@ -8,9 +8,8 @@ use App\Models\User;
 /**
  * What a customer or provider owes or is owed that is not settled yet. Account deletion and going online read it.
  *
- * Until the ledger exists (P3.1) the bound implementation answers "nothing" by construction: there is no wallet,
- * payment or payout table that could hold anything. P3.1 / P3.2 / P3.4 rebind this interface to ledger-backed
- * queries; callers do not change.
+ * Backed by the ledger since P3.1 (wallet balances and cash debt) plus the payments seam (open payments, P3.2) and,
+ * in P3.4, payout requests. Callers did not change when the neutral implementation of ADR-92 was replaced (ADR-115).
  */
 interface FinancialPositionRepositoryInterface
 {

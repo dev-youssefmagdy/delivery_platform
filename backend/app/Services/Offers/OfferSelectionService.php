@@ -17,6 +17,7 @@ use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\OfferRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Services\Booking\BookingTransitionService;
+use App\Services\Finance\CommissionSnapshotService;
 use App\Services\Provider\ProviderEligibilityService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -34,7 +35,8 @@ use Illuminate\Support\Facades\Hash;
  * 3. conditional update of the offer (`WHERE status active AND expires_at > now`, one row expected) which also takes
  *    the unique winner marker, so the database itself refuses a second winner;
  * 4. `BookingTransitionService::transition(ProviderSelected)` writes the booking (the only writer of the status);
- * 5. agreed fare, scope and version are copied onto the booking, the trip PIN is generated;
+ * 5. agreed fare, scope and version are copied onto the booking together with the commission rule/version snapshot
+ *    (P3.1), and the trip PIN is generated;
  * 6. every other active offer ends as `lost_booking_assigned`.
  * Events leave after commit. A booking that is already assigned answers 409 `booking_already_assigned`, an expired
  * or closed offer 409 `offer_expired` / `offer_not_active`. Choosing the offer that already won is a replay, not an error.
@@ -50,6 +52,7 @@ final class OfferSelectionService
         private readonly OfferCloser $closer,
         private readonly OfferSettlement $settlement,
         private readonly OfferNotifier $notifier,
+        private readonly CommissionSnapshotService $commissions,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -125,6 +128,7 @@ final class OfferSelectionService
             ));
 
             $pin = $this->newPin();
+            // The commission rule and version that apply are bound in the same atomic write as the agreed fare (Plan I4, SRS §12.4).
             $selected = $this->bookings->forceUpdate($selected, [
                 'agreed_fare_minor' => $version->amount_minor,
                 'agreed_offer_version_id' => $version->id,
@@ -132,7 +136,7 @@ final class OfferSelectionService
                 'provider_selected_at' => $now,
                 'pin_hash' => Hash::make($pin),
                 'pin_encrypted' => Crypt::encryptString($pin),
-            ]);
+            ] + $this->commissions->attributesFor($selected, $now));
 
             $this->closer->close($selected, $this->offers->lockActiveForBooking($selected->id), OfferStatus::LostBookingAssigned, 'lost_booking_assigned', $now);
 

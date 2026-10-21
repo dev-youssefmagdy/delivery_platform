@@ -342,6 +342,10 @@ final class BookingTransitionService
                 'agreed_fare_minor' => null,
                 'agreed_offer_version_id' => null,
                 'agreed_scope' => null,
+                // The commission is bound at selection (P3.1): a new selection binds it again.
+                'commission_snapshot' => null,
+                'commission_rule_id' => null,
+                'commission_rule_version_id' => null,
                 'provider_selected_at' => null,
                 'pin_hash' => null,
                 'pin_encrypted' => null,

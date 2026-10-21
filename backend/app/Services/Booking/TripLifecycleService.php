@@ -15,6 +15,7 @@ use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Location\ProviderLastLocationRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
+use App\Services\Finance\BookingSettlementService;
 use App\Support\Geo\GeoPoint;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -28,7 +29,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  * after a lost response is harmless (the `idempotent` middleware covers repeats of the same key).
  *
  * Totals are never read from the client: completion copies the agreed fare snapshot (plus approved adjustments, none
- * before P4) into `final_fare_minor`; cash trips get `payment_status = cash_due`.
+ * before P4) into `final_fare_minor`; cash trips get `payment_status = cash_due`. The price breakdown is stored and cash
+ * trips are settled in the ledger by `BookingSettlementService` in the same transaction (P3.1).
  */
 final class TripLifecycleService
 {
@@ -39,6 +41,7 @@ final class TripLifecycleService
         private readonly ProviderProfileRepositoryInterface $providers,
         private readonly BookingTransitionService $transitions,
         private readonly BookingNotifier $notifier,
+        private readonly BookingSettlementService $settlement,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -79,6 +82,9 @@ final class TripLifecycleService
             'trip_completed',
             proofsSatisfied: $this->deliveryProofsPresent($booking),
         ), function (Booking $completed) use ($provider): void {
+            // Same transaction as the status change: the price breakdown is stored and a cash trip is settled in the
+            // ledger, or the completion does not happen (a retry is safe: both steps are idempotent).
+            $completed = $this->settlement->onCompleted($completed);
             $this->providers->incrementCompletedJobs($provider->id);
             $this->notifier->completed($completed);
         });

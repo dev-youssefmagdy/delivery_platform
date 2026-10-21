@@ -55,6 +55,10 @@ use LogicException;
  * @property array<string, mixed> $service_snapshot
  * @property array<string, mixed> $policy_snapshot
  * @property array<string, mixed>|null $commission_snapshot
+ * @property int|null $commission_rule_id
+ * @property int|null $commission_rule_version_id
+ * @property array<string, mixed>|null $price_breakdown
+ * @property Carbon|null $settled_at
  * @property PaymentMethodType $payment_method
  * @property PaymentStatus $payment_status
  * @property int|null $coupon_reservation_id
@@ -114,7 +118,7 @@ class Booking extends Model
         'uuid', 'code', 'customer_id', 'service_category_id', 'service_category_version_id', 'city_id', 'service_zone_id', 'fare_policy_id',
         'booking_type', 'sequence', 'request_version', 'pickup_point', 'pickup_address', 'dropoff_point', 'dropoff_address', 'scheduled_at',
         'passengers', 'luggage_count', 'cargo_weight_kg', 'service_details', 'proposed_fare', 'reference_estimate', 'route_snapshot',
-        'service_snapshot', 'policy_snapshot', 'commission_snapshot', 'payment_method', 'payment_status', 'coupon_reservation_id',
+        'service_snapshot', 'policy_snapshot', 'commission_snapshot', 'commission_rule_id', 'commission_rule_version_id', 'price_breakdown', 'settled_at', 'payment_method', 'payment_status', 'coupon_reservation_id',
         'selected_offer_id', 'agreed_fare_minor', 'agreed_offer_version_id', 'agreed_scope', 'provider_selected_at', 'provider_id', 'search_expires_at', 'pin_hash', 'pin_encrypted', 'cancelled_at', 'cancelled_by_type',
         'cancelled_by_id', 'cancellation_reason', 'completed_at', 'idempotency_key', 'lock_version',
         'heading_at', 'arrived_at', 'arrival_evidence', 'free_wait_ends_at', 'started_at', 'final_fare_minor', 'cancellation_policy_id',
@@ -247,6 +251,10 @@ class Booking extends Model
             'service_snapshot' => 'array',
             'policy_snapshot' => 'array',
             'commission_snapshot' => 'array',
+            'commission_rule_id' => 'integer',
+            'commission_rule_version_id' => 'integer',
+            'price_breakdown' => 'array',
+            'settled_at' => 'datetime',
             'payment_method' => PaymentMethodType::class,
             'payment_status' => PaymentStatus::class,
             'agreed_fare_minor' => 'integer',

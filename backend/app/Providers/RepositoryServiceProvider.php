@@ -33,7 +33,13 @@ use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Demo\DemoItemRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\BookingParticipationRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
+use App\Repositories\Contracts\Finance\CommissionRuleRepositoryInterface;
 use App\Repositories\Contracts\Finance\FinancialPositionRepositoryInterface;
+use App\Repositories\Contracts\Finance\JournalEntryRepositoryInterface;
+use App\Repositories\Contracts\Finance\JournalLineRepositoryInterface;
+use App\Repositories\Contracts\Finance\LedgerAccountRepositoryInterface;
+use App\Repositories\Contracts\Finance\LedgerReconciliationRunRepositoryInterface;
+use App\Repositories\Contracts\Finance\PaymentPositionRepositoryInterface;
 use App\Repositories\Contracts\Geography\CityRepositoryInterface;
 use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
 use App\Repositories\Contracts\Geography\ServiceZoneRepositoryInterface;
@@ -93,7 +99,13 @@ use App\Repositories\Eloquent\Demo\DemoItemRepository;
 use App\Repositories\Eloquent\Dispatch\BookingParticipationRepository;
 use App\Repositories\Eloquent\Operations\OperationsMapRepository;
 use App\Repositories\Eloquent\Dispatch\DispatchRecipientRepository;
-use App\Repositories\Eloquent\Finance\PreLedgerFinancialPositionRepository;
+use App\Repositories\Eloquent\Finance\CommissionRuleRepository;
+use App\Repositories\Eloquent\Finance\JournalEntryRepository;
+use App\Repositories\Eloquent\Finance\JournalLineRepository;
+use App\Repositories\Eloquent\Finance\LedgerAccountRepository;
+use App\Repositories\Eloquent\Finance\LedgerFinancialPositionRepository;
+use App\Repositories\Eloquent\Finance\LedgerReconciliationRunRepository;
+use App\Repositories\Eloquent\Finance\PrePaymentsPaymentPositionRepository;
 use App\Repositories\Eloquent\Geography\CityRepository;
 use App\Repositories\Eloquent\Geography\SavedPlaceRepository;
 use App\Repositories\Eloquent\Geography\ServiceZoneRepository;
@@ -195,7 +207,13 @@ class RepositoryServiceProvider extends ServiceProvider
         OfferRepositoryInterface::class => OfferRepository::class,
         BookingOfferRepositoryInterface::class => BookingOfferBridge::class,
         FarePolicyRepositoryInterface::class => FarePolicyRepository::class,
-        // Neutral until the ledger exists: P3.1 rebinds this to the ledger-backed repository (ADR-92).
-        FinancialPositionRepositoryInterface::class => PreLedgerFinancialPositionRepository::class,
+        // P3.1: the financial position is read from the ledger (ADR-115); its payments part stays neutral until P3.2.
+        FinancialPositionRepositoryInterface::class => LedgerFinancialPositionRepository::class,
+        PaymentPositionRepositoryInterface::class => PrePaymentsPaymentPositionRepository::class,
+        LedgerAccountRepositoryInterface::class => LedgerAccountRepository::class,
+        JournalEntryRepositoryInterface::class => JournalEntryRepository::class,
+        JournalLineRepositoryInterface::class => JournalLineRepository::class,
+        LedgerReconciliationRunRepositoryInterface::class => LedgerReconciliationRunRepository::class,
+        CommissionRuleRepositoryInterface::class => CommissionRuleRepository::class,
     ];
 }

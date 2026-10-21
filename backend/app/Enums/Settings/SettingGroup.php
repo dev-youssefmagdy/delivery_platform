@@ -18,6 +18,7 @@ enum SettingGroup: string implements HasLabel
     case Booking = 'booking';
     case Dispatch = 'dispatch';
     case Providers = 'providers';
+    case Finance = 'finance';
     case Safety = 'safety';
     case Apps = 'apps';
     case Security = 'security';
@@ -37,6 +38,7 @@ enum SettingGroup: string implements HasLabel
             self::Booking => 'clipboard',
             self::Dispatch => 'bolt',
             self::Providers => 'users',
+            self::Finance => 'banknotes',
             self::Safety => 'shield',
             self::Apps => 'cube',
             self::Security => 'key',

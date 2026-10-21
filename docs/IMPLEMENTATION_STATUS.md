@@ -19,7 +19,7 @@
 | P1.6 | Customers admin module | P0 | ✅ | 2026-10-21 |
 | P2.1 | Provider onboarding, vehicles, documents, verification | P0 | ✅ | 2026-10-22 |
 | P2.2 | Availability, live location, eligibility, dispatch engine | P0 | ✅ | 2026-10-23 |
-| P2.3 | Reference pricing & booking creation | P0 | ❌ | — |
+| P2.3 | Reference pricing & booking creation | P0 | ✅ | 2026-10-24 |
 | P2.4 | Offers, counter-offers & atomic selection | P0 | ❌ | — |
 | P2.5 | Trip lifecycle: heading, arrived, PIN, start, complete, cancellation v1, ratings, share link | P0 | ❌ | — |
 | P2.6 | Customer app: complete ride flow | P0 | ❌ | — |
@@ -51,6 +51,42 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P2.3 — Reference pricing & booking creation · ✅ 2026-10-24
+
+Committed directly on `main` in small steps (no milestone branch, by instruction), after `317c22d`. ADR-89..93.
+
+### What was built
+
+- **Schema** (`create_fare_policies_table`, `create_bookings_tables`): `fare_policies`, `bookings` (snapshots, searchable columns, `request_version`, `sequence`, unique `(customer_id, idempotency_key)`), `booking_stops`, append-only `booking_status_events`; the two P2.2 foreign keys (`provider_locations.booking_id`, `booking_dispatch_recipients.booking_id`). Four settings: `max_active_on_demand_bookings`, `scheduled_booking_min_lead_minutes`, `scheduled_booking_max_days`, `scheduled_search_lead_minutes`; `config/booking.php`.
+- **Lifecycle (ADR-89):** `BookingStatus` (15 statuses, owns `allowedTransitions()`), `BookingTransitionService` as the only writer of `bookings.status` (row lock, graph check, per-target guards, event + sequence, broadcast after commit; the model refuses a changed status outside `BookingStatusGate`, a test keeps the gate to that one service), `BookingEventSequencer` (`bookings.sequence`).
+- **Pricing (ADR-90):** `ReferencePriceCalculator` (formula V1, pure, integer math, no demand multiplier), fare policy resolution (zone beats category, latest wins, no overlaps), guidance on `GET /routes/estimate`, estimate stored with its inputs and policy values. **Admin:** Pricing > Fare policies (contract module: collapsed filters card, Precognition forms with repeater for surcharges, mandatory reasons, audit before/after, `lock_version`, calculator tab), `ZoneLookup`, `FarePolicySeeder` (starting EGP prices, to review).
+- **Bookings (ADR-91):** `POST /bookings` (strict account check, `Idempotency-Key` required, every rule of Plan step 4, one active on-demand booking per customer, scheduled bookings wait in `draft`), `GET /bookings`, `GET /bookings/{booking}` (timeline, `allowed_actions`, offers summary), `PATCH /bookings/{booking}/request` (invalidates offers, restarts search and dispatch). `BookingEnteredSearch` -> `StartBookingDispatch` starts dispatch and the exact-expiry job; `ExpireBookingSearch` + `bookings:expire-searches` (every 5 s, also opens due scheduled bookings); `BookingNotifier` log hook.
+- **Carry-over (ADR-92, 93):** `CatalogUsageRepository`, `ProviderWorkloadRepository`, `ProviderActivityRepository`, `CustomerActivityRepository` query real bookings; money lives behind the neutral `FinancialPositionRepositoryInterface` until P3.1; `DispatchableRequestSource` bound to `DispatchableBookingSource` (staged disclosure); `BookingParticipationRepository` verified (`customer_id`) and completed with the selected provider; Customers admin: real Bookings tab, "has active booking" filter, booking scrub in `CustomerDeletionService`, `bookings` section in `PersonalDataExporter`; zone suspend needs confirmation when bookings are in flight, zone delete refused.
+
+### Commands and results (2026-10-24)
+
+| Command | Result |
+|---|---|
+| `php artisan migrate`, rollback of both new migrations and migrate again (local MySQL) | OK |
+| `scripts/check.sh` (the whole gate) | **All checks passed** |
+| `vendor/bin/pint --test` / `vendor/bin/phpstan analyse` (level 6) | passed / 0 errors |
+| `php artisan test --parallel` | passed: 854 tests, 7591 assertions (new: 15 x 15 transition matrix twice (enum and through the real service), calculator, create / read / change / expiry / snapshot / carry-over / guidance API, fare policy admin contract, seeder) |
+| `npm run build` | built OK (no admin JS changed) |
+| `scripts/browser-smoke.sh` (new screens) | passed; now also: fare policy edit blocked by a server rule through Precognition (no real PUT), corrected form saves and redirects, calculator validates then posts, Bookings tab lazy-loads its DataTable |
+| customer_app / driver_app / platform_core: `dart format`, `flutter analyze`, `flutter test` | clean / no issues / 86, 109, 163 passed (untouched by this milestone) |
+
+### Known gaps / notes for P2.4
+
+- **Offers do not exist yet.** `BookingOfferRepositoryInterface` is bound to `PreOfferBookingOfferRepository` (summary 0, invalidate 0, throws once `booking_offers` exists): P2.4 must rebind it. Selection must go through `BookingTransitionService::transition(..., ProviderSelected, TransitionContext(providerId, offerId))` after verifying the offer under the lock; the service guards "no assignment" and "provider eligible (Working)" but trusts that the offer was verified. `selected_offer_id` has no foreign key yet (add it with `booking_offers`). Customer resources show `provider: null`; the provider-facing stage resources (I10) are P2.4/P2.5.
+- Provider-side booking endpoints (`/provider/requests/available`, offers) are P2.4; `booking_dispatch_recipients.seen_at` / `response` are written through `DispatchRecipientRepositoryInterface` by it.
+- Cancellation (`/bookings/{booking}/cancel`, fees), PIN generation/verification, proofs, ratings and share are P2.5 / P3.5: the transition guards already require the facts (`pinVerified`, `proofsSatisfied`) and `pin_hash` / `pin_encrypted` columns exist unused.
+- Dispatch waves and search expiry are delayed jobs: `QUEUE_CONNECTION=sync` would chain every wave at once, so a real queue is required outside tests (the booking tests fake the two jobs; documented in SETUP).
+- No Flutter work (customer booking UI is P2.6); the booking enums and payload shapes are in docs/API.md 8.11 and still to be mirrored in platform_core.
+- Admin Bookings module (listing with all Appendix C filters, live operations) is P2.8; the customer tab shows only the basics. The tab has no filters card of its own, like the other customer tabs.
+- A booking whose maps provider is down cannot be created (`503 maps_unavailable`); the reference estimate is never invented. Hourly bookings (no drop-off) get no guidance (`no_route`).
+- The Process-pool race script for concurrent creates (P2.9) is not built; correctness relies on the customer row lock, the unique `(customer_id, idempotency_key)` index and the idempotency middleware lock.
+- Customer notifications are a log-only hook until P3.6; fare policies and settings defaults are starting points to review before launch.
 
 ## P2.2 — Availability, live location, eligibility, dispatch engine · ✅ 2026-10-23
 

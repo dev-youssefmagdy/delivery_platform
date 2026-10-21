@@ -1302,7 +1302,7 @@ return [
         'tabs' => ['details' => 'التفاصيل', 'availability' => 'توفر الخدمات', 'overlaps' => 'التداخل'],
         'sections' => ['basic' => 'البيانات الأساسية', 'area' => 'المساحة', 'hours' => 'ساعات العمل', 'rules' => 'القواعد'],
         'fields' => [
-            'confirm_active_bookings' => 'تأكيد الحجوزات النشطة', 
+            'confirm_active_bookings' => 'تأكيد الحجوزات النشطة',
             'name' => 'الاسم', 'city' => 'المدينة', 'status' => 'الحالة', 'polygon' => 'المساحة', 'restricted_pickup' => 'استلام مقيّد',
             'notes' => 'ملاحظات داخلية', 'categories' => 'الفئات المفعّلة', 'operating_hours' => 'ساعات العمل',
             'hours_day' => 'اليوم', 'hours_from' => 'من', 'hours_to' => 'إلى', 'area' => 'حجم المساحة', 'demo' => 'بيانات تجريبية',

@@ -1305,7 +1305,7 @@ return [
         'tabs' => ['details' => 'Details', 'availability' => 'Service availability', 'overlaps' => 'Overlaps'],
         'sections' => ['basic' => 'Basic information', 'area' => 'Area', 'hours' => 'Operating hours', 'rules' => 'Rules'],
         'fields' => [
-            'confirm_active_bookings' => 'Active bookings confirmation', 
+            'confirm_active_bookings' => 'Active bookings confirmation',
             'name' => 'Name', 'city' => 'City', 'status' => 'Status', 'polygon' => 'Area', 'restricted_pickup' => 'Restricted pickup',
             'notes' => 'Internal notes', 'categories' => 'Enabled categories', 'operating_hours' => 'Operating hours',
             'hours_day' => 'Day', 'hours_from' => 'From', 'hours_to' => 'To', 'area' => 'Area size', 'demo' => 'Demo data',

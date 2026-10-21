@@ -39,6 +39,7 @@
         <env name="OTP_TEST_PHONES" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="PROVIDER_GEO_INDEX" value="database"/>
         <env name="REDIS_DB" value="15"/>
         <env name="REDIS_CACHE_DB" value="15"/>
         <env name="REDIS_PREFIX" value="delivery-platform-testing-"/>

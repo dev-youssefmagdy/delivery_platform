@@ -51,6 +51,8 @@ enum SettingKey: string implements HasLabel
     case DispatchBatchSize = 'dispatch_batch_size';
     case DispatchWaveIntervalSeconds = 'dispatch_wave_interval_seconds';
     case LocationStaleAfterSeconds = 'location_stale_after_seconds';
+    case LocationMaxSpeedKmh = 'location_max_speed_kmh';
+    case LocationHistoryIntervalSeconds = 'location_history_interval_seconds';
     case AutoRedispatchOnProviderCancel = 'auto_redispatch_on_provider_cancel';
 
     // Providers
@@ -141,6 +143,7 @@ enum SettingKey: string implements HasLabel
             self::BookingSearchTtlSeconds, self::OfferTtlSeconds, self::MaxOffersPerProviderPerBooking, self::MaxOfferRevisions,
             self::RatingCustomerByProviderEnabled => SettingGroup::Booking,
             self::DispatchRadiusStepsKm, self::DispatchBatchSize, self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds,
+            self::LocationMaxSpeedKmh, self::LocationHistoryIntervalSeconds,
             self::AutoRedispatchOnProviderCancel => SettingGroup::Dispatch,
             self::ProviderSingleActiveJob, self::ProviderCashDebtLimitMinor, self::ProviderVerificationSlaHours,
             self::ProviderDocumentExpiryWarningDays => SettingGroup::Providers,
@@ -181,11 +184,12 @@ enum SettingKey: string implements HasLabel
     {
         return match ($this) {
             self::OtpTtlSeconds, self::OtpResendCooldownSeconds, self::BookingSearchTtlSeconds, self::OfferTtlSeconds,
-            self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds, self::AdminLoginLockoutSeconds => 'seconds',
+            self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds, self::LocationHistoryIntervalSeconds, self::AdminLoginLockoutSeconds => 'seconds',
             self::ShareLinkTtlMinutes => 'minutes',
             self::ProviderVerificationSlaHours => 'hours',
             self::ProviderDocumentExpiryWarningDays => 'days',
             self::DispatchRadiusStepsKm => 'km',
+            self::LocationMaxSpeedKmh => 'kmh',
             self::RateLimitApiPerMinute, self::RateLimitOtpRequestPerMinute, self::RateLimitOtpVerifyPerMinute,
             self::RateLimitLocationPerMinute, self::RateLimitOffersPerMinute, self::RateLimitPublicFormsPerMinute,
             self::RateLimitAdminLoginPerMinute, self::RateLimitProviderUploadsPerMinute => 'per_minute',
@@ -213,6 +217,8 @@ enum SettingKey: string implements HasLabel
             self::DispatchBatchSize => [1, 200],
             self::DispatchWaveIntervalSeconds => [5, 600],
             self::LocationStaleAfterSeconds => [10, 3600],
+            self::LocationMaxSpeedKmh => [30, 1000],
+            self::LocationHistoryIntervalSeconds => [1, 600],
             self::ProviderCashDebtLimitMinor => [0, 100_000_000],
             self::ShareLinkTtlMinutes => [5, 1440],
             self::ProviderVerificationSlaHours => [1, 720],
@@ -252,6 +258,8 @@ enum SettingKey: string implements HasLabel
             self::DispatchBatchSize => 10,
             self::DispatchWaveIntervalSeconds => 30,
             self::LocationStaleAfterSeconds => 90,
+            self::LocationMaxSpeedKmh => 200,
+            self::LocationHistoryIntervalSeconds => 15,
             self::AutoRedispatchOnProviderCancel => true,
             self::ProviderSingleActiveJob => true,
             self::ProviderCashDebtLimitMinor => 50_000,

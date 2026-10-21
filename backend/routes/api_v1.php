@@ -21,9 +21,13 @@ use App\Http\Controllers\Api\V1\Me\MessageController;
 use App\Http\Controllers\Api\V1\Me\PhotoController;
 use App\Http\Controllers\Api\V1\Me\SavedPlaceController;
 use App\Http\Controllers\Api\V1\Provider\ApplicationController;
+use App\Http\Controllers\Api\V1\Provider\AvailabilityController;
 use App\Http\Controllers\Api\V1\Provider\DocumentController;
 use App\Http\Controllers\Api\V1\Provider\EligibilityController;
+use App\Http\Controllers\Api\V1\Provider\LocationController;
 use App\Http\Controllers\Api\V1\Provider\VehicleController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -116,6 +120,7 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
 Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('provider')->name('provider.')->group(function (): void {
     Route::get('application', [ApplicationController::class, 'show'])->name('application.show');
     Route::get('eligibility', [EligibilityController::class, 'show'])->name('eligibility.show');
+    Route::get('availability', [AvailabilityController::class, 'show'])->name('availability.show');
     Route::get('documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::get('documents/{document}', [DocumentController::class, 'show'])->whereUuid('document')->name('documents.show');
     Route::get('documents/{document}/file', [DocumentController::class, 'file'])->whereUuid('document')->middleware('signed')->name('documents.file');
@@ -124,6 +129,11 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     Route::get('vehicle-photos/{photo}/file', [VehicleController::class, 'photoFile'])->whereUuid('photo')->middleware('signed')->name('vehicle-photos.file');
 
     Route::middleware('account.active')->group(function (): void {
+        // Availability and live location (P2.2). Going offline has no idempotency key: it is naturally idempotent.
+        Route::post('availability/online', [AvailabilityController::class, 'online'])->name('availability.online');
+        Route::post('availability/offline', [AvailabilityController::class, 'offline'])->name('availability.offline');
+        Route::post('location', [LocationController::class, 'store'])->middleware(RateLimiterName::Location->middleware())->name('location.store');
+
         Route::post('applications', [ApplicationController::class, 'store'])->middleware('idempotent')->name('applications.store');
         Route::patch('application', [ApplicationController::class, 'update'])->name('application.update');
         Route::post('application/submit', [ApplicationController::class, 'submit'])->middleware('idempotent')->name('application.submit');
@@ -138,3 +148,9 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::post('vehicles/{vehicle:uuid}/submit-review', [VehicleController::class, 'submitReview'])->whereUuid('vehicle')->middleware('idempotent')->name('vehicles.submit-review');
     });
 });
+
+// Private channel authorization for the mobile apps (ADR-07): the pusher-protocol clients post `socket_id` and
+// `channel_name` here with their bearer token; every channel is decided by `routes/channels.php` through policies.
+Route::post('broadcasting/auth', static fn (Request $request) => Broadcast::auth($request))
+    ->middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen', 'account.active'])
+    ->name('broadcasting.auth');

@@ -24,6 +24,9 @@ return [
     ],
 
     'provider' => [
+        'availability_online' => 'You are online.',
+        'availability_offline' => 'You are offline.',
+        'location_received' => 'Location received.',
         'application_started' => 'Your application was started.',
         'application_updated' => 'Your application was updated.',
         'application_submitted' => 'Your application was submitted for review.',
@@ -161,6 +164,11 @@ return [
         'deletion_request_not_pending' => 'This deletion request can no longer be changed.',
         'photo_invalid' => 'The image could not be processed.',
         'setting_radius_steps_not_ascending' => 'Radius steps must be strictly ascending.',
+        'provider_not_eligible' => 'You cannot go online yet. Check the reasons shown.',
+        'vehicle_not_usable' => 'This vehicle cannot be used to work right now.',
+        'outside_service_area' => 'You are outside the service areas.',
+        'active_job_blocks_offline' => 'You have a job in progress. Confirm to stop receiving new requests while you finish it.',
+        'location_not_tracking' => 'Location is only accepted while you are online or serving a job.',
         'provider_status_transition_invalid' => 'This action is not possible in the current status of the provider.',
         'application_exists' => 'You already started an application.',
         'application_locked' => 'The application cannot be changed in its current status.',

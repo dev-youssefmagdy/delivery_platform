@@ -2,6 +2,7 @@
 
 use App\Jobs\Customers\ReactivateExpiredSuspensions;
 use App\Jobs\Provider\ReactivateExpiredProviderSuspensions;
+use App\Jobs\Provider\SweepStaleProviders;
 use App\Models\AdminExport;
 use App\Models\IdempotencyKey;
 use App\Models\OtpChallenge;
@@ -21,3 +22,7 @@ Schedule::job(new ReactivateExpiredProviderSuspensions)->name('providers:reactiv
 Schedule::command('documents:check-expiry')->dailyAt('02:00')->withoutOverlapping();
 
 Schedule::command('model:prune', ['--model' => [IdempotencyKey::class, AdminExport::class, OtpChallenge::class]])->hourly()->withoutOverlapping();
+
+Schedule::job(new SweepStaleProviders)->name('providers:sweep-stale')->everyThirtySeconds()->withoutOverlapping();
+
+Schedule::command('locations:prune')->dailyAt('03:30')->withoutOverlapping();

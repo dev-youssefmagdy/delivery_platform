@@ -200,6 +200,8 @@ return [
     |
     */
 
+    'invalid_coordinates' => 'The position is not a valid location.',
+
     'attributes' => [
         'name' => 'name',
         'email' => 'email',

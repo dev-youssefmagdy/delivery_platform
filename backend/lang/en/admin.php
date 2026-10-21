@@ -561,6 +561,7 @@ return [
             'hours' => 'hours',
             'days' => 'days',
             'km' => 'km',
+            'kmh' => 'km/h',
             'per_minute' => 'per minute',
             'per_hour' => 'per hour',
         ],
@@ -648,6 +649,14 @@ return [
             'location_stale_after_seconds' => [
                 'label' => 'Stale location threshold',
                 'description' => 'A provider location older than this is marked stale.',
+            ],
+            'location_max_speed_kmh' => [
+                'label' => 'Maximum plausible speed',
+                'description' => 'A location sample implying a faster move than this is flagged as an anomaly and not used for dispatch.',
+            ],
+            'location_history_interval_seconds' => [
+                'label' => 'Location history interval',
+                'description' => 'At most one location sample per provider is stored in the history within this period.',
             ],
             'auto_redispatch_on_provider_cancel' => [
                 'label' => 'Re-dispatch after provider cancellation',

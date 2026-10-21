@@ -3,6 +3,7 @@
 namespace App\Services\Provider;
 
 use App\Enums\Common\AuditAction;
+use App\Enums\Location\OfflineReason;
 use App\Enums\Provider\DocumentStatus;
 use App\Models\OwnedDocument;
 use App\Models\ProviderProfile;
@@ -26,6 +27,7 @@ final class DocumentExpiryService
         private readonly VehicleDocumentRepositoryInterface $vehicleDocuments,
         private readonly ProviderProfileRepositoryInterface $profiles,
         private readonly ProviderEligibilityService $eligibility,
+        private readonly AvailabilityService $availability,
         private readonly ProviderNotifier $notifier,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -122,7 +124,7 @@ final class DocumentExpiryService
         $fresh = $this->profiles->find($profile->id);
 
         if ($fresh instanceof ProviderProfile && $fresh->is_online && ! $this->eligibility->check($fresh)->isEligible()) {
-            $this->profiles->setOnline($fresh, false);
+            $this->availability->forceOffline($fresh, OfflineReason::NoLongerEligible);
         }
     }
 

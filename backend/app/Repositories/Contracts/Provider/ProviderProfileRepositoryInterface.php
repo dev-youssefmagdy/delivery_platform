@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts\Provider;
 
 use App\DTOs\Provider\ProviderFilterData;
 use App\DTOs\Provider\VerificationQueueFilterData;
+use App\Enums\Location\OfflineReason;
 use App\Enums\Provider\ProviderStatus;
 use App\Models\ProviderProfile;
 use App\Models\User;
@@ -55,6 +56,26 @@ interface ProviderProfileRepositoryInterface extends BaseRepositoryInterface
     public function applyStatus(ProviderProfile $profile, ProviderStatus $status, ?string $reason, ?CarbonInterface $expiresAt): ProviderProfile;
 
     public function setOnline(ProviderProfile $profile, bool $online): ProviderProfile;
+
+    /**
+     * Marks the provider offline and remembers why (shown in the app and to support).
+     */
+    public function setOffline(ProviderProfile $profile, OfflineReason $reason): ProviderProfile;
+
+    /**
+     * Online providers whose newest position is older than the cut-off (or that never reported one since going online).
+     *
+     * @return Collection<int, ProviderProfile>
+     */
+    public function onlineWithLocationOlderThan(CarbonInterface $before, int $limit): Collection;
+
+    /**
+     * Profiles with their full account row (status checks), for dispatch filtering.
+     *
+     * @param list<int> $ids
+     * @return Collection<int, ProviderProfile>
+     */
+    public function findManyForDispatch(array $ids): Collection;
 
     public function setCurrentVehicle(ProviderProfile $profile, ?int $vehicleId): ProviderProfile;
 

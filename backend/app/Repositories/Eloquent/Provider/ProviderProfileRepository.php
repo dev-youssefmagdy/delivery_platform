@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent\Provider;
 
 use App\DTOs\Provider\ProviderFilterData;
 use App\DTOs\Provider\VerificationQueueFilterData;
+use App\Enums\Location\OfflineReason;
 use App\Enums\Provider\DocumentStatus;
 use App\Enums\Provider\ProviderStatus;
 use App\Enums\Provider\ServiceApprovalStatus;
@@ -122,9 +123,36 @@ final class ProviderProfileRepository extends BaseRepository implements Provider
 
     public function setOnline(ProviderProfile $profile, bool $online): ProviderProfile
     {
-        $profile->forceFill(['is_online' => $online, 'online_since' => $online ? now() : null])->save();
+        $profile->forceFill(['is_online' => $online, 'online_since' => $online ? now() : null, 'last_offline_reason' => $online ? null : $profile->last_offline_reason])->save();
 
         return $profile;
+    }
+
+    public function setOffline(ProviderProfile $profile, OfflineReason $reason): ProviderProfile
+    {
+        $profile->forceFill(['is_online' => false, 'online_since' => null, 'last_offline_reason' => $reason])->save();
+
+        return $profile;
+    }
+
+    public function onlineWithLocationOlderThan(CarbonInterface $before, int $limit): Collection
+    {
+        return $this->query()
+            ->where('is_online', true)
+            ->where(static function (Builder $query) use ($before): void {
+                $query->whereNotExists(static fn ($sub) => $sub->select(DB::raw(1))->from('provider_last_locations')
+                    ->whereColumn('provider_last_locations.provider_profile_id', 'provider_profiles.id')
+                    ->where('provider_last_locations.recorded_at', '>=', $before))
+                    ->where(static fn (Builder $inner) => $inner->whereNull('online_since')->orWhere('online_since', '<', $before));
+            })
+            ->orderBy('id')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function findManyForDispatch(array $ids): Collection
+    {
+        return $this->query()->with(['user' => static fn ($query) => $query->withTrashed()])->whereKey($ids)->get();
     }
 
     public function setCurrentVehicle(ProviderProfile $profile, ?int $vehicleId): ProviderProfile

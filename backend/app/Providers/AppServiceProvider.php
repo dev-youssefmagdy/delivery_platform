@@ -14,6 +14,7 @@ use App\Models\Currency;
 use App\Models\CustomerMessage;
 use App\Models\CustomerProfile;
 use App\Models\DemoItem;
+use App\Models\DispatchRecipient;
 use App\Models\DocumentRequirement;
 use App\Models\DocumentType;
 use App\Models\IdempotencyKey;
@@ -22,6 +23,8 @@ use App\Models\OwnedDocument;
 use App\Models\PlatformSetting;
 use App\Models\PolicyVersion;
 use App\Models\ProviderDocument;
+use App\Models\ProviderLastLocation;
+use App\Models\ProviderLocation;
 use App\Models\ProviderProfile;
 use App\Models\ProviderServiceCategory;
 use App\Models\ProviderStatusEvent;
@@ -41,6 +44,13 @@ use App\Models\VehicleDocument;
 use App\Models\VehiclePhoto;
 use App\Models\ZoneServiceCategory;
 use App\Policies\DocumentPolicy;
+use App\Services\Dispatch\CacheEventSequencer;
+use App\Services\Dispatch\DispatchableRequestSource;
+use App\Services\Dispatch\EventSequencer;
+use App\Services\Dispatch\UnavailableDispatchableRequestSource;
+use App\Services\Location\Index\DatabaseGeoIndex;
+use App\Services\Location\Index\ProviderGeoIndex;
+use App\Services\Location\Index\RedisGeoIndex;
 use App\Services\Settings\SettingsService;
 use App\Support\Auth\PhoneNumber;
 use App\Support\Money\CurrencyRegistry;
@@ -48,6 +58,7 @@ use App\Support\Money\DatabaseCurrencyRegistry;
 use App\Support\Money\MoneyFormatter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Auth\Access\Authorizable;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
@@ -64,6 +75,13 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(CurrencyRegistry::class, DatabaseCurrencyRegistry::class);
         $this->app->singleton(MoneyFormatter::class);
+
+        // Realtime / dispatch seams (P2.2). P2.3 rebinds the request source (and may rebind the sequencer).
+        $this->app->bind(DispatchableRequestSource::class, UnavailableDispatchableRequestSource::class);
+        $this->app->bind(EventSequencer::class, CacheEventSequencer::class);
+        $this->app->bind(ProviderGeoIndex::class, static fn (Application $app): ProviderGeoIndex => config('location.index') === 'redis'
+            ? $app->make(RedisGeoIndex::class)
+            : $app->make(DatabaseGeoIndex::class));
     }
 
     /**
@@ -113,6 +131,9 @@ class AppServiceProvider extends ServiceProvider
             'zone_service_category' => ZoneServiceCategory::class,
             'saved_place' => SavedPlace::class,
             'customer_message' => CustomerMessage::class,
+            'provider_location' => ProviderLocation::class,
+            'provider_last_location' => ProviderLastLocation::class,
+            'dispatch_recipient' => DispatchRecipient::class,
             // @admin-module:morph-map
         ]);
 

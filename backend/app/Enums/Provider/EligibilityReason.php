@@ -7,8 +7,8 @@ use App\Enums\Contracts\HasLabel;
 
 /**
  * Why a provider cannot go online / receive requests (Plan I11). Returned as typed reasons by
- * `ProviderEligibilityService::check()`; the apps map each code to text. P2.2 and P3.x add the location, active-job
- * and debt-limit reasons to the same service.
+ * `ProviderEligibilityService::check()`; the apps map each code to text. The runtime reasons (stale location, active job, cash debt
+ * limit) are only evaluated for `EligibilityScope::Working`.
  */
 enum EligibilityReason: string implements HasLabel
 {
@@ -24,6 +24,9 @@ enum EligibilityReason: string implements HasLabel
     case VehicleNotApproved = 'vehicle_not_approved';
     case ServiceNotApproved = 'service_not_approved';
     case VehicleCategoryMismatch = 'vehicle_category_mismatch';
+    case LocationStale = 'location_stale';
+    case ActiveJobExists = 'active_job_exists';
+    case CashDebtLimitExceeded = 'cash_debt_limit_exceeded';
 
     public function label(): string
     {

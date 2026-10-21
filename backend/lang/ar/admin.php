@@ -558,6 +558,7 @@ return [
             'hours' => 'ساعة',
             'days' => 'يوم',
             'km' => 'كم',
+            'kmh' => 'كم/س',
             'per_minute' => 'في الدقيقة',
             'per_hour' => 'في الساعة',
         ],
@@ -645,6 +646,14 @@ return [
             'location_stale_after_seconds' => [
                 'label' => 'حد قِدم الموقع',
                 'description' => 'يُعتبر موقع مقدم الخدمة قديماً إذا تجاوز عمره هذه المدة.',
+            ],
+            'location_max_speed_kmh' => [
+                'label' => 'أقصى سرعة معقولة',
+                'description' => 'أي موقع يعني انتقالاً أسرع من هذه السرعة يُوسم كحالة شاذة ولا يُستخدم في التوزيع.',
+            ],
+            'location_history_interval_seconds' => [
+                'label' => 'فاصل سجل المواقع',
+                'description' => 'يُحفظ في السجل موقع واحد على الأكثر لكل مقدم خدمة خلال هذه المدة.',
             ],
             'auto_redispatch_on_provider_cancel' => [
                 'label' => 'إعادة الإرسال عند إلغاء مقدم الخدمة',

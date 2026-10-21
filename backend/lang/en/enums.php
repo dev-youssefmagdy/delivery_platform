@@ -421,6 +421,41 @@ return [
         'vehicle_not_approved' => 'The vehicle is not approved.',
         'service_not_approved' => 'No approved service for this category.',
         'vehicle_category_mismatch' => 'The vehicle category does not match this service.',
+        'location_stale' => 'Your location is missing or out of date.',
+        'active_job_exists' => 'You already have an active job.',
+        'cash_debt_limit_exceeded' => 'Your unsettled commission is over the allowed limit.',
+    ],
+
+    'tracking_state' => [
+        'off' => 'Not tracking',
+        'idle' => 'Waiting for requests',
+        'to_pickup' => 'Heading to pickup',
+        'active' => 'Active job',
+    ],
+
+    'location_source' => [
+        'gps' => 'GPS',
+        'fused' => 'Fused',
+        'network' => 'Network',
+    ],
+
+    'location_anomaly' => [
+        'impossible_speed' => 'Impossible speed between samples',
+        'future_timestamp' => 'Timestamp in the future',
+    ],
+
+    'offline_reason' => [
+        'provider_choice' => 'The provider went offline',
+        'stale_location' => 'The location became stale',
+        'no_longer_eligible' => 'The provider is no longer eligible',
+        'account_changed' => 'The account status changed',
+    ],
+
+    'dispatch_response' => [
+        'pending' => 'Waiting',
+        'offered' => 'Offered',
+        'declined' => 'Declined',
+        'expired' => 'Expired',
     ],
 
     'document_subject' => [

@@ -21,6 +21,8 @@ use App\Repositories\Contracts\Customers\CustomerActivityRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerMessageRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Demo\DemoItemRepositoryInterface;
+use App\Repositories\Contracts\Dispatch\BookingParticipationRepositoryInterface;
+use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
 use App\Repositories\Contracts\Geography\CityRepositoryInterface;
 use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
 use App\Repositories\Contracts\Geography\ServiceZoneRepositoryInterface;
@@ -32,6 +34,8 @@ use App\Repositories\Contracts\Identity\OtpChallengeRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserConsentRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserDeviceRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserRepositoryInterface;
+use App\Repositories\Contracts\Location\ProviderLastLocationRepositoryInterface;
+use App\Repositories\Contracts\Location\ProviderLocationRepositoryInterface;
 use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
 use App\Repositories\Contracts\Provider\DocumentRequirementRepositoryInterface;
 use App\Repositories\Contracts\Provider\DocumentTypeRepositoryInterface;
@@ -40,6 +44,7 @@ use App\Repositories\Contracts\Provider\ProviderDocumentRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderServiceRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderStatusEventRepositoryInterface;
+use App\Repositories\Contracts\Provider\ProviderWorkloadRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleDocumentRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehiclePhotoRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
@@ -63,6 +68,8 @@ use App\Repositories\Eloquent\Customers\CustomerActivityRepository;
 use App\Repositories\Eloquent\Customers\CustomerMessageRepository;
 use App\Repositories\Eloquent\Customers\CustomerRepository;
 use App\Repositories\Eloquent\Demo\DemoItemRepository;
+use App\Repositories\Eloquent\Dispatch\BookingParticipationRepository;
+use App\Repositories\Eloquent\Dispatch\DispatchRecipientRepository;
 use App\Repositories\Eloquent\Geography\CityRepository;
 use App\Repositories\Eloquent\Geography\SavedPlaceRepository;
 use App\Repositories\Eloquent\Geography\ServiceZoneRepository;
@@ -74,6 +81,8 @@ use App\Repositories\Eloquent\Identity\OtpChallengeRepository;
 use App\Repositories\Eloquent\Identity\UserConsentRepository;
 use App\Repositories\Eloquent\Identity\UserDeviceRepository;
 use App\Repositories\Eloquent\Identity\UserRepository;
+use App\Repositories\Eloquent\Location\ProviderLastLocationRepository;
+use App\Repositories\Eloquent\Location\ProviderLocationRepository;
 use App\Repositories\Eloquent\Policy\PolicyVersionRepository;
 use App\Repositories\Eloquent\Provider\DocumentRequirementRepository;
 use App\Repositories\Eloquent\Provider\DocumentTypeRepository;
@@ -82,6 +91,7 @@ use App\Repositories\Eloquent\Provider\ProviderDocumentRepository;
 use App\Repositories\Eloquent\Provider\ProviderProfileRepository;
 use App\Repositories\Eloquent\Provider\ProviderServiceRepository;
 use App\Repositories\Eloquent\Provider\ProviderStatusEventRepository;
+use App\Repositories\Eloquent\Provider\ProviderWorkloadRepository;
 use App\Repositories\Eloquent\Provider\VehicleDocumentRepository;
 use App\Repositories\Eloquent\Provider\VehiclePhotoRepository;
 use App\Repositories\Eloquent\Provider\VehicleRepository;
@@ -140,5 +150,10 @@ class RepositoryServiceProvider extends ServiceProvider
         VehiclePhotoRepositoryInterface::class => VehiclePhotoRepository::class,
         VehicleRepositoryInterface::class => VehicleRepository::class,
         // @admin-module:bindings
+        ProviderWorkloadRepositoryInterface::class => ProviderWorkloadRepository::class,
+        ProviderLocationRepositoryInterface::class => ProviderLocationRepository::class,
+        ProviderLastLocationRepositoryInterface::class => ProviderLastLocationRepository::class,
+        DispatchRecipientRepositoryInterface::class => DispatchRecipientRepository::class,
+        BookingParticipationRepositoryInterface::class => BookingParticipationRepository::class,
     ];
 }

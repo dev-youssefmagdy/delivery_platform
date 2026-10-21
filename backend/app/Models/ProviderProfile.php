@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Location\OfflineReason;
 use App\Enums\Provider\ProviderStatus;
 use App\Enums\Provider\ProviderType;
 use App\Support\Audit\Auditable;
@@ -35,6 +36,7 @@ use Illuminate\Support\Str;
  * @property int $requests_accepted
  * @property bool $is_online
  * @property Carbon|null $online_since
+ * @property OfflineReason|null $last_offline_reason
  * @property int|null $current_vehicle_id
  * @property Carbon|null $submitted_at
  * @property Carbon|null $approved_at
@@ -170,6 +172,7 @@ class ProviderProfile extends Model
             'requests_accepted' => 'integer',
             'is_online' => 'boolean',
             'online_since' => 'datetime',
+            'last_offline_reason' => OfflineReason::class,
             'submitted_at' => 'datetime',
             'approved_at' => 'datetime',
             'lock_version' => 'integer',

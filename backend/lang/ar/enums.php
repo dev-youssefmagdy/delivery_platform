@@ -421,6 +421,41 @@ return [
         'vehicle_not_approved' => 'المركبة غير معتمدة.',
         'service_not_approved' => 'لا توجد خدمة معتمدة لهذه الفئة.',
         'vehicle_category_mismatch' => 'فئة المركبة لا تناسب هذه الخدمة.',
+        'location_stale' => 'موقعك غير متاح أو قديم.',
+        'active_job_exists' => 'لديك مهمة نشطة بالفعل.',
+        'cash_debt_limit_exceeded' => 'العمولة غير المسددة تجاوزت الحد المسموح.',
+    ],
+
+    'tracking_state' => [
+        'off' => 'بدون تتبع',
+        'idle' => 'في انتظار الطلبات',
+        'to_pickup' => 'في الطريق إلى نقطة الاستلام',
+        'active' => 'مهمة نشطة',
+    ],
+
+    'location_source' => [
+        'gps' => 'GPS',
+        'fused' => 'مدمج',
+        'network' => 'الشبكة',
+    ],
+
+    'location_anomaly' => [
+        'impossible_speed' => 'سرعة مستحيلة بين الموقعين',
+        'future_timestamp' => 'وقت في المستقبل',
+    ],
+
+    'offline_reason' => [
+        'provider_choice' => 'اختار مقدم الخدمة إيقاف الاتصال',
+        'stale_location' => 'أصبح الموقع قديماً',
+        'no_longer_eligible' => 'لم يعد مقدم الخدمة مؤهلاً',
+        'account_changed' => 'تغيرت حالة الحساب',
+    ],
+
+    'dispatch_response' => [
+        'pending' => 'في الانتظار',
+        'offered' => 'قدّم عرضاً',
+        'declined' => 'رفض',
+        'expired' => 'انتهى',
     ],
 
     'document_subject' => [

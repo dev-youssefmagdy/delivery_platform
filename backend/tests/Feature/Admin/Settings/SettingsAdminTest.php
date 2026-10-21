@@ -181,6 +181,8 @@ class SettingsAdminTest extends TestCase
             'dispatch_batch_size' => '15',
             'dispatch_wave_interval_seconds' => '45',
             'location_stale_after_seconds' => '120',
+            'location_max_speed_kmh' => '180',
+            'location_history_interval_seconds' => '20',
             'auto_redispatch_on_provider_cancel' => '0',
         ]])->assertOk();
 

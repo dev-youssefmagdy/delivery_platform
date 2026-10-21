@@ -24,6 +24,9 @@ return [
     ],
 
     'provider' => [
+        'availability_online' => 'أنت متصل الآن.',
+        'availability_offline' => 'أنت غير متصل.',
+        'location_received' => 'تم استلام الموقع.',
         'application_started' => 'بدأ طلبك.',
         'application_updated' => 'تم تحديث طلبك.',
         'application_submitted' => 'تم إرسال طلبك للمراجعة.',
@@ -161,6 +164,11 @@ return [
         'deletion_request_not_pending' => 'لا يمكن تعديل طلب الحذف هذا.',
         'photo_invalid' => 'تعذرت معالجة الصورة.',
         'setting_radius_steps_not_ascending' => 'يجب أن تكون مراحل النطاق تصاعدية تماماً.',
+        'provider_not_eligible' => 'لا يمكنك الاتصال بعد. راجع الأسباب الظاهرة.',
+        'vehicle_not_usable' => 'لا يمكن استخدام هذه المركبة للعمل حالياً.',
+        'outside_service_area' => 'أنت خارج مناطق الخدمة.',
+        'active_job_blocks_offline' => 'لديك مهمة جارية. أكّد لإيقاف استقبال الطلبات الجديدة أثناء إنهائها.',
+        'location_not_tracking' => 'لا يُقبل الموقع إلا أثناء الاتصال أو تنفيذ مهمة.',
         'provider_status_transition_invalid' => 'هذا الإجراء غير ممكن في الحالة الحالية لمقدم الخدمة.',
         'application_exists' => 'لقد بدأت طلباً بالفعل.',
         'application_locked' => 'لا يمكن تعديل الطلب في حالته الحالية.',

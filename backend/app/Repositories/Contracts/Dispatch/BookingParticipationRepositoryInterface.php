@@ -4,7 +4,7 @@ namespace App\Repositories\Contracts\Dispatch;
 
 /**
  * Who may listen to a booking's private channel. Deny-by-default: the Eloquent implementation answers false until the
- * bookings table exists (P2.3 completes it).
+ * booking does not exist; the owner is `bookings.customer_id`, providers are dispatched recipients or the selected provider.
  */
 interface BookingParticipationRepositoryInterface
 {

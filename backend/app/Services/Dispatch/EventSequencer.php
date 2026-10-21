@@ -3,8 +3,8 @@
 namespace App\Services\Dispatch;
 
 /**
- * Per-booking, strictly increasing event numbers so clients can detect a missed event (ADR-07). The default
- * implementation counts in the cache; P2.3 may replace it with the number stored by the `booking_status_events` outbox.
+ * Per-booking, strictly increasing event numbers so clients can detect a missed event (ADR-07). Booking streams
+ * use `bookings.sequence` (BookingEventSequencer, the same number the status events carry); other streams count in the cache.
  */
 interface EventSequencer
 {

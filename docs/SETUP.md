@@ -74,6 +74,12 @@ php artisan schedule:work       # local; production: cron `* * * * * php /path/a
 php artisan reverb:start        # realtime, from P2.2
 ```
 
+From P2.3 the scheduler also runs `bookings:expire-searches` every 5 seconds (ends search windows that ran out and opens the
+search of scheduled bookings that are due); `schedule:run` keeps looping for the whole minute while a sub-minute task exists, so a
+plain per-minute cron is enough. **Dispatch waves and search expiry are delayed queue jobs: run them on a real queue
+(`QUEUE_CONNECTION=redis`). The `sync` driver ignores delays, so a booking created with it would chain all waves immediately
+(the PHPUnit suite fakes these jobs for that reason).**
+
 Production process management (supervisor/systemd), TLS and reverse proxy are documented in P6.4.
 
 ## 4. Flutter apps

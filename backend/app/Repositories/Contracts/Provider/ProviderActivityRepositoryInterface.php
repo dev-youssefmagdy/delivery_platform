@@ -6,8 +6,8 @@ use App\Models\ProviderProfile;
 
 /**
  * What a provider still has running with the platform. Processing an account deletion is refused while any of it is
- * open. The Eloquent implementation is a seam: bookings arrive in P2.3 and wallets/payouts in P3.1/P3.4, which must
- * replace the placeholder counts.
+ * open. Assigned bookings are counted from `bookings`; unsettled money comes from FinancialPositionRepositoryInterface,
+ * neutral until the ledger, wallets and payouts exist (P3.1 / P3.4, ADR-92).
  */
 interface ProviderActivityRepositoryInterface
 {

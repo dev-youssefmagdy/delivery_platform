@@ -6,8 +6,8 @@ use App\Models\User;
 
 /**
  * What a customer still has running with the platform. Deleting the account is refused while any of it is open.
- * The Eloquent implementation is a seam: bookings arrive in P2.3 and the ledger/payments in P3.1, which must
- * replace the placeholder counts.
+ * Bookings in flight are counted from `bookings`; unsettled money comes from FinancialPositionRepositoryInterface,
+ * neutral until the ledger and payments exist (P3.1 / P3.2, ADR-92).
  */
 interface CustomerActivityRepositoryInterface
 {

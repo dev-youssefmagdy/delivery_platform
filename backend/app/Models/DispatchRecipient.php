@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * A provider that was notified of a request, with the wave and distance (SRS §10.2). Providers only ever see requests
- * they were dispatched; `booking_id` references `bookings` once P2.3 creates it.
+ * they were dispatched; `booking_id` references `bookings`.
  *
  * @property int $id
  * @property int $booking_id

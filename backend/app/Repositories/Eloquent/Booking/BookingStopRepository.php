@@ -21,7 +21,7 @@ final class BookingStopRepository extends BaseRepository implements BookingStopR
     {
         $this->query()->where('booking_id', $booking->id)->delete();
 
-        foreach (array_values($stops) as $index => $stop) {
+        foreach ($stops as $index => $stop) {
             $this->query()->create([
                 'booking_id' => $booking->id,
                 'position' => $index + 1,

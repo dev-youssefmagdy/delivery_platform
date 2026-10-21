@@ -34,6 +34,14 @@
 | `MAP_ATTRIBUTION` | `© OpenStreetMap contributors` | attribution text shown on every map; change it with the tile provider |
 | `FLAVOR` | `dev` | `dev`, `staging` or `prod` |
 
+## Booking configuration (P2.3)
+
+No external service is added by P2.3. New deployment-level variables (all optional, defaults in `backend/config/booking.php`):
+`BOOKING_PAYMENT_METHODS` (comma list of methods customers may pick; `cash` until P3.2 enables a gateway),
+`BOOKING_HARD_MAX_FARE_MINOR` (ceiling when no service or zone maximum exists), `BOOKING_SWEEP_BATCH`. Route estimates reuse the
+maps adapter (`MAPS_DRIVER`); a maps outage answers `503 maps_unavailable` and creates no booking. Customer notifications for an
+expired search are a log-only hook (`BookingNotifier`, nothing is sent) until the notification platform (P3.6).
+
 ## Credential checklist for production
 
 - [ ] SMS Misr account + approved sender token for the launch market (`SMSMISR_*`); run one live OTP end to end before go-live

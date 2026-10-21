@@ -39,7 +39,7 @@ final class DispatchableBookingSource implements DispatchableRequestSource
             pickup: $booking->pickup_point,
             searchExpiresAt: $booking->search_expires_at !== null ? CarbonImmutable::instance($booking->search_expires_at) : CarbonImmutable::now(),
             searching: $booking->status->isSearching(),
-            vehicleCategoryIds: array_values(array_map(static fn (array $vehicle): int => (int) $vehicle['id'], $vehicles)),
+            vehicleCategoryIds: array_map(static fn (array $vehicle): int => (int) $vehicle['id'], $vehicles),
             passengerCount: $booking->passengers,
             summary: [
                 'booking_type' => $booking->booking_type->value,

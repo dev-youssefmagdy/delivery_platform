@@ -6,8 +6,8 @@ use App\Support\Geo\GeoPoint;
 use Carbon\CarbonImmutable;
 
 /**
- * The minimal contract between dispatch and a booking. Dispatch never reads the bookings table: P2.3 supplies a
- * `DispatchableRequestSource` that builds this from a real booking. `summary` must already be safe for every
+ * The minimal contract between dispatch and a booking. Dispatch never reads the bookings table: the
+ * `DispatchableRequestSource` (DispatchableBookingSource, P2.3) builds this from a real booking. `summary` must already be safe for every
  * dispatched provider (staged disclosure, Plan I10): service name, fare, rounded pickup area, never a phone or address.
  */
 final readonly class DispatchableRequest

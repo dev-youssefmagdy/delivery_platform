@@ -77,6 +77,11 @@ interface ProviderProfileRepositoryInterface extends BaseRepositoryInterface
      */
     public function findManyForDispatch(array $ids): Collection;
 
+    /**
+     * A trip finished: one more completed job on the provider's public record.
+     */
+    public function incrementCompletedJobs(int $providerProfileId): void;
+
     public function setCurrentVehicle(ProviderProfile $profile, ?int $vehicleId): ProviderProfile;
 
     public function assignTo(ProviderProfile $profile, ?int $adminId): ProviderProfile;

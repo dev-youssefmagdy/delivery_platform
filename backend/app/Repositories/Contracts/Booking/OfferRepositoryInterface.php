@@ -64,6 +64,15 @@ interface OfferRepositoryInterface extends BaseRepositoryInterface
     public function accept(BookingOffer $offer, CarbonInterface $now): bool;
 
     /**
+     * The provider of the booking's accepted offer cancelled and the booking goes back to searching: frees the unique
+     * winner slot so another offer can win, keeps the offer row and its versions as history (close reason
+     * `provider_cancelled`). Call inside the transaction that holds the booking lock.
+     *
+     * @return int offers released (0 or 1)
+     */
+    public function releaseWinner(int $bookingId, CarbonInterface $now): int;
+
+    /**
      * Closes the given offers that are still active.
      *
      * @param list<int> $ids

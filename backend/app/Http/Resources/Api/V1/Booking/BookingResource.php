@@ -7,12 +7,14 @@ use App\Enums\Booking\BookingAction;
 use App\Enums\Booking\BookingStatus;
 use App\Enums\Common\ActorType;
 use App\Enums\Pricing\PriceFactor;
+use App\Enums\Settings\SettingKey;
 use App\Http\Resources\Api\V1\Catalog\TranslationMap;
 use App\Http\Resources\Api\V1\Offer\CustomerOfferResource;
 use App\Models\Booking;
 use App\Models\BookingOffer;
 use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
+use App\Services\Settings\SettingsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Crypt;
@@ -63,21 +65,96 @@ class BookingResource extends JsonResource
             'agreed_fare' => $booking->agreed_fare_minor === null ? null : ['amount_minor' => $booking->agreed_fare_minor, 'currency' => $booking->currency],
             'agreed_scope' => ($booking->agreed_scope ?? []) === [] ? new stdClass : $booking->agreed_scope,
             'trip_pin' => $this->tripPin($booking),
+            'trip' => $this->trip($booking),
+            'cancellation' => $this->cancellation($booking),
+            'final_fare' => $booking->final_fare_minor === null ? null : ['amount_minor' => $booking->final_fare_minor, 'currency' => $booking->currency],
+            'receipt' => $this->receipt($booking),
             'allowed_actions' => array_map(static fn (BookingAction $action): string => $action->value, $this->allowedActions),
             'timeline' => $booking->statusEvents->map(static fn (BookingStatusEvent $event): array => self::timelineEntry($event))->values()->all(),
         ];
     }
 
     /**
-     * The PIN the customer tells the driver at pickup: visible only while the driver is on the way or waiting.
+     * The PIN the customer tells the driver at pickup: visible only while the driver is on the way or waiting, and
+     * gone once the driver has entered it correctly.
      */
     private function tripPin(Booking $booking): ?string
     {
-        if ($booking->pin_encrypted === null || ! in_array($booking->status, [BookingStatus::ProviderSelected, BookingStatus::ProviderHeadingToPickup, BookingStatus::ProviderArrived], true)) {
+        if ($booking->pin_encrypted === null || $booking->pin_verified_at !== null || ! in_array($booking->status, [BookingStatus::ProviderSelected, BookingStatus::ProviderHeadingToPickup, BookingStatus::ProviderArrived], true)) {
             return null;
         }
 
         return Crypt::decryptString($booking->pin_encrypted);
+    }
+
+    /**
+     * Progress of the trip after selection. The provider's live position is available (on the customer's own channel)
+     * only while the provider serves the booking, from selection up to completion.
+     *
+     * @return array<string, mixed>
+     */
+    private function trip(Booking $booking): array
+    {
+        return [
+            'selected_at' => $booking->provider_selected_at?->toIso8601ZuluString(),
+            'heading_at' => $booking->heading_at?->toIso8601ZuluString(),
+            'arrived_at' => $booking->arrived_at?->toIso8601ZuluString(),
+            'free_wait_ends_at' => $booking->free_wait_ends_at?->toIso8601ZuluString(),
+            'started_at' => $booking->started_at?->toIso8601ZuluString(),
+            'completed_at' => $booking->completed_at?->toIso8601ZuluString(),
+            'pin' => [
+                'required' => (bool) ($booking->policy_snapshot['safety']['pin_required'] ?? false),
+                'verified' => $booking->pin_verified_at !== null,
+                'locked' => $booking->pin_locked_at !== null,
+            ],
+            'provider_location_visible' => $booking->status->isAssigned(),
+            'support_flagged' => $booking->support_flagged_at !== null,
+            'rating_window_ends_at' => $booking->completed_at?->toImmutable()->addHours(app(SettingsService::class)->int(SettingKey::RatingWindowHours))->toIso8601ZuluString(),
+        ];
+    }
+
+    /**
+     * How a cancelled booking ended and what the cancellation cost, as decided and snapshotted at the time.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function cancellation(Booking $booking): ?array
+    {
+        if ($booking->cancelled_at === null) {
+            return null;
+        }
+
+        return [
+            'by' => $booking->cancelled_by_type,
+            'reason_code' => $booking->cancellation_reason_code,
+            'fee' => ['amount_minor' => (int) ($booking->cancellation_fee_minor ?? 0), 'currency' => $booking->currency],
+            'basis' => $booking->cancellation_decision['basis'] ?? null,
+            'cancelled_at' => $booking->cancelled_at->toIso8601ZuluString(),
+        ];
+    }
+
+    /**
+     * Receipt basics once the trip is finished (SRS §6.7): the agreed and final amounts, payment state, times and the
+     * planned route size. Coupons, fees and tax appear with the money core (P3).
+     *
+     * @return array<string, mixed>|null
+     */
+    private function receipt(Booking $booking): ?array
+    {
+        if (! in_array($booking->status, [BookingStatus::Completed, BookingStatus::CompletedPendingPayment, BookingStatus::Disputed], true)) {
+            return null;
+        }
+
+        return [
+            'booking_code' => $booking->code,
+            'agreed_fare' => ['amount_minor' => $booking->agreed_fare_minor, 'currency' => $booking->currency],
+            'final_fare' => ['amount_minor' => $booking->final_fare_minor, 'currency' => $booking->currency],
+            'payment' => ['method' => $booking->payment_method->value, 'status' => $booking->payment_status->value],
+            'started_at' => $booking->started_at?->toIso8601ZuluString(),
+            'completed_at' => $booking->completed_at?->toIso8601ZuluString(),
+            'duration_s' => $booking->started_at !== null && $booking->completed_at !== null ? (int) $booking->started_at->diffInSeconds($booking->completed_at) : null,
+            'planned_distance_m' => $booking->route_snapshot['distance_m'] ?? null,
+        ];
     }
 
     /**

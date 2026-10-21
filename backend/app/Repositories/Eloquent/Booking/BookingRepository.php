@@ -43,6 +43,13 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
         return $booking;
     }
 
+    public function customerUuidOfBooking(string $bookingUuid): ?string
+    {
+        $uuid = DB::table('bookings')->join('users', 'users.id', '=', 'bookings.customer_id')->where('bookings.uuid', $bookingUuid)->value('users.uuid');
+
+        return is_string($uuid) ? $uuid : null;
+    }
+
     public function codeExists(string $code): bool
     {
         return $this->query()->where('code', $code)->exists();

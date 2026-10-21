@@ -537,6 +537,10 @@ return [
     'booking_action' => [
         'update_request' => 'تعديل الطلب',
         'select_offer' => 'اختيار سائق',
+        'cancel' => 'إلغاء الحجز',
+        'share' => 'مشاركة الرحلة',
+        'rate' => 'تقييم الرحلة',
+        'report' => 'الإبلاغ عن مشكلة',
     ],
 
     'offer_status' => [
@@ -610,4 +614,91 @@ return [
     ],
 
     // @admin-module:enums
+
+    'cancellation_stage' => [
+        'searching' => 'جارٍ البحث عن سائق',
+        'provider_selected' => 'تم اختيار السائق',
+        'heading_to_pickup' => 'السائق في الطريق',
+        'arrived' => 'وصل السائق',
+    ],
+
+    'cancellation_fee_type' => [
+        'none' => 'بدون رسوم',
+        'fixed' => 'مبلغ ثابت',
+        'percent' => 'نسبة من الأجرة',
+    ],
+
+    'cancellation_fee_recipient' => [
+        'provider' => 'مقدّم الخدمة',
+        'platform' => 'المنصة',
+    ],
+
+    'cancellation_reason' => [
+        'changed_mind' => 'غيّرت رأيي',
+        'wrong_pickup' => 'موقع الاستلام خاطئ',
+        'found_another_ride' => 'وجدت وسيلة أخرى',
+        'driver_too_far' => 'السائق بعيد جداً',
+        'driver_asked_to_cancel' => 'طلب مني السائق الإلغاء',
+        'waited_too_long' => 'انتظرت طويلاً',
+        'customer_no_show' => 'لم يحضر العميل',
+        'customer_unreachable' => 'لا يمكن الوصول إلى العميل',
+        'vehicle_problem' => 'مشكلة في المركبة',
+        'emergency' => 'حالة طارئة',
+        'wrong_request_details' => 'تفاصيل الطلب غير صحيحة',
+        'unsafe_pickup' => 'موقع الاستلام غير آمن',
+        'other' => 'سبب آخر',
+    ],
+
+    'support_flag_reason' => [
+        'pin_attempts_exceeded' => 'محاولات خاطئة كثيرة لرمز PIN',
+    ],
+
+    'report_category' => [
+        'safety' => 'السلامة',
+        'behaviour' => 'السلوك',
+        'fare_dispute' => 'خلاف على الأجرة',
+        'route_or_delay' => 'المسار أو التأخير',
+        'lost_item' => 'غرض مفقود',
+        'other' => 'أخرى',
+    ],
+
+    'report_status' => [
+        'open' => 'مفتوح',
+        'closed' => 'مغلق',
+    ],
+
+    'moderation_status' => [
+        'visible' => 'ظاهر',
+        'hidden' => 'مخفي',
+        'under_review' => 'قيد المراجعة',
+    ],
+
+    'rating_tag' => [
+        'professional' => 'احترافي',
+        'clean_vehicle' => 'مركبة نظيفة',
+        'safe_driving' => 'قيادة آمنة',
+        'good_communication' => 'تواصل جيد',
+        'on_time' => 'في الموعد',
+        'careful_with_items' => 'حريص على الأغراض',
+        'late' => 'متأخر',
+        'unsafe_driving' => 'قيادة غير آمنة',
+        'rude' => 'أسلوب فظ',
+        'dirty_vehicle' => 'مركبة غير نظيفة',
+        'respectful' => 'محترم',
+        'clear_instructions' => 'تعليمات واضحة',
+        'ready_at_pickup' => 'جاهز عند الاستلام',
+        'disrespectful' => 'قليل الاحترام',
+        'not_ready_at_pickup' => 'غير جاهز عند الاستلام',
+    ],
+
+    'provider_booking_action' => [
+        'acknowledge' => 'تأكيد المهمة',
+        'arrived' => 'لقد وصلت',
+        'verify_start_pin' => 'إدخال رمز الرحلة',
+        'start' => 'بدء الرحلة',
+        'complete' => 'إنهاء الرحلة',
+        'cancel' => 'إلغاء المهمة',
+        'rate_customer' => 'تقييم العميل',
+        'report' => 'الإبلاغ عن مشكلة',
+    ],
 ];

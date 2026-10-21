@@ -66,6 +66,14 @@ final class ProviderRequestService
     }
 
     /**
+     * The booking the provider is serving now (its current job), with what the trip screens need.
+     */
+    public function current(ProviderProfile $provider): ?Booking
+    {
+        return $this->bookings->currentForProvider($provider->id)?->load(['customer', 'stops']);
+    }
+
+    /**
      * Full booking details; only for the provider the customer selected (anybody else: 404, no existence oracle).
      */
     public function assigned(ProviderProfile $provider, string $bookingUuid): Booking

@@ -11,7 +11,12 @@ use App\Repositories\Contracts\Audit\AuditLogRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingOfferRepositoryInterface;
 use App\Repositories\Contracts\Booking\OfferRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingReportRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
+use App\Repositories\Contracts\Booking\CancellationPolicyRepositoryInterface;
+use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
+use App\Repositories\Contracts\Booking\ShareLinkRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStopRepositoryInterface;
 use App\Repositories\Contracts\Catalog\CatalogUsageRepositoryInterface;
 use App\Repositories\Contracts\Catalog\ServiceCategoryRepositoryInterface;
@@ -63,7 +68,12 @@ use App\Repositories\Eloquent\Admin\AdminSessionRepository;
 use App\Repositories\Eloquent\Admin\RoleRepository;
 use App\Repositories\Eloquent\Audit\AuditLogRepository;
 use App\Repositories\Eloquent\Booking\BookingRepository;
+use App\Repositories\Eloquent\Booking\BookingProofRepository;
+use App\Repositories\Eloquent\Booking\BookingReportRepository;
 use App\Repositories\Eloquent\Booking\BookingStatusEventRepository;
+use App\Repositories\Eloquent\Booking\CancellationPolicyRepository;
+use App\Repositories\Eloquent\Booking\RatingRepository;
+use App\Repositories\Eloquent\Booking\ShareLinkRepository;
 use App\Repositories\Eloquent\Booking\BookingStopRepository;
 use App\Repositories\Eloquent\Booking\OfferRepository;
 use App\Repositories\Eloquent\Catalog\CatalogUsageRepository;
@@ -173,6 +183,11 @@ class RepositoryServiceProvider extends ServiceProvider
         BookingRepositoryInterface::class => BookingRepository::class,
         BookingStopRepositoryInterface::class => BookingStopRepository::class,
         BookingStatusEventRepositoryInterface::class => BookingStatusEventRepository::class,
+        BookingProofRepositoryInterface::class => BookingProofRepository::class,
+        BookingReportRepositoryInterface::class => BookingReportRepository::class,
+        CancellationPolicyRepositoryInterface::class => CancellationPolicyRepository::class,
+        RatingRepositoryInterface::class => RatingRepository::class,
+        ShareLinkRepositoryInterface::class => ShareLinkRepository::class,
         // P2.4: the booking module's offer seam is now backed by the real offer tables (ADR-94).
         OfferRepositoryInterface::class => OfferRepository::class,
         BookingOfferRepositoryInterface::class => BookingOfferBridge::class,

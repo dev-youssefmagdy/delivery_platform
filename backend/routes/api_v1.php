@@ -10,7 +10,10 @@ use App\Http\Controllers\Api\V1\Common\HealthController;
 use App\Http\Controllers\Api\V1\Common\MediaController;
 use App\Http\Controllers\Api\V1\Common\PolicyController;
 use App\Http\Controllers\Api\V1\Customer\BookingController;
+use App\Http\Controllers\Api\V1\Customer\BookingCancellationController;
+use App\Http\Controllers\Api\V1\Customer\BookingFeedbackController;
 use App\Http\Controllers\Api\V1\Customer\BookingOfferController;
+use App\Http\Controllers\Api\V1\Customer\BookingShareController;
 use App\Http\Controllers\Api\V1\Geo\CityController;
 use App\Http\Controllers\Api\V1\Geo\PlaceController;
 use App\Http\Controllers\Api\V1\Geo\RouteController;
@@ -28,6 +31,8 @@ use App\Http\Controllers\Api\V1\Provider\DocumentController;
 use App\Http\Controllers\Api\V1\Provider\EligibilityController;
 use App\Http\Controllers\Api\V1\Provider\LocationController;
 use App\Http\Controllers\Api\V1\Provider\OfferController;
+use App\Http\Controllers\Api\V1\Provider\TripController;
+use App\Http\Controllers\Api\V1\Provider\TripFeedbackController;
 use App\Http\Controllers\Api\V1\Provider\RequestController;
 use App\Http\Controllers\Api\V1\Provider\VehicleController;
 use Illuminate\Http\Request;
@@ -125,6 +130,14 @@ Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bo
     Route::get('{booking}', [BookingController::class, 'show'])->whereUuid('booking')->name('show');
     Route::get('{booking}/offers', [BookingOfferController::class, 'index'])->whereUuid('booking')->name('offers.index');
 
+    // The trip after selection (P2.5). Cancelling, stopping a share and reporting never need a clean account standing: they
+    // reduce harm. `preview=true` on cancel only computes the fee and needs no Idempotency-Key.
+    Route::post('{booking}/cancel', [BookingCancellationController::class, 'cancel'])->whereUuid('booking')->middleware('idempotent:unless_preview')->name('cancel');
+    Route::post('{booking}/share', [BookingShareController::class, 'store'])->whereUuid('booking')->name('share.store');
+    Route::delete('{booking}/share', [BookingShareController::class, 'destroy'])->whereUuid('booking')->name('share.destroy');
+    Route::post('{booking}/rating', [BookingFeedbackController::class, 'rate'])->whereUuid('booking')->middleware('idempotent')->name('rating.store');
+    Route::post('{booking}/reports', [BookingFeedbackController::class, 'report'])->whereUuid('booking')->middleware('idempotent')->name('reports.store');
+
     Route::middleware('account.active:strict')->group(function (): void {
         Route::post('/', [BookingController::class, 'store'])->middleware('idempotent')->name('store');
         Route::patch('{booking}/request', [BookingController::class, 'updateRequest'])->whereUuid('booking')->middleware('idempotent')->name('request.update');
@@ -150,6 +163,7 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     // Negotiation (P2.4): masked request cards, own offers, and the full booking only once selected (Plan I10).
     Route::get('requests/available', [RequestController::class, 'available'])->name('requests.available');
     Route::get('offers', [OfferController::class, 'index'])->name('offers.index');
+    Route::get('bookings/active', [TripController::class, 'active'])->name('bookings.active');
     Route::get('bookings/{booking}', [RequestController::class, 'show'])->whereUuid('booking')->name('bookings.show');
     Route::get('vehicle-photos/{photo}/file', [VehicleController::class, 'photoFile'])->whereUuid('photo')->middleware('signed')->name('vehicle-photos.file');
 
@@ -162,6 +176,15 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::post('bookings/{booking}/offers/accept-customer-fare', [OfferController::class, 'acceptCustomerFare'])->whereUuid('booking')->middleware([RateLimiterName::Offers->middleware(), 'idempotent'])->name('offers.accept-customer-fare');
         Route::post('bookings/{booking}/offers', [OfferController::class, 'store'])->whereUuid('booking')->middleware([RateLimiterName::Offers->middleware(), 'idempotent'])->name('offers.store');
         Route::post('offers/{offer}/withdraw', [OfferController::class, 'withdraw'])->whereUuid('offer')->name('offers.withdraw');
+        // Trip lifecycle (P2.5): every write is idempotent and ownership-checked; transitions go through BookingTransitionService.
+        Route::post('bookings/{booking}/acknowledge', [TripController::class, 'acknowledge'])->whereUuid('booking')->middleware('idempotent')->name('trip.acknowledge');
+        Route::post('bookings/{booking}/arrived', [TripController::class, 'arrived'])->whereUuid('booking')->middleware('idempotent')->name('trip.arrived');
+        Route::post('bookings/{booking}/verify-start-pin', [TripController::class, 'verifyStartPin'])->whereUuid('booking')->middleware('idempotent')->name('trip.verify-start-pin');
+        Route::post('bookings/{booking}/start', [TripController::class, 'start'])->whereUuid('booking')->middleware('idempotent')->name('trip.start');
+        Route::post('bookings/{booking}/complete', [TripController::class, 'complete'])->whereUuid('booking')->middleware('idempotent')->name('trip.complete');
+        Route::post('bookings/{booking}/cancel', [TripController::class, 'cancel'])->whereUuid('booking')->middleware('idempotent:unless_preview')->name('trip.cancel');
+        Route::post('bookings/{booking}/rating', [TripFeedbackController::class, 'rate'])->whereUuid('booking')->middleware('idempotent')->name('trip.rating');
+        Route::post('bookings/{booking}/reports', [TripFeedbackController::class, 'report'])->whereUuid('booking')->middleware('idempotent')->name('trip.reports');
         Route::post('bookings/{booking}/skip', [RequestController::class, 'skip'])->whereUuid('booking')->name('requests.skip');
 
         Route::post('applications', [ApplicationController::class, 'store'])->middleware('idempotent')->name('applications.store');

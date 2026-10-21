@@ -8,8 +8,8 @@ use App\Repositories\Contracts\Dispatch\BookingParticipationRepositoryInterface;
 
 /**
  * Channel access for booking streams, against the real schema: `bookings.customer_id` is the owner, a provider takes part
- * when it was dispatched the request (`booking_dispatch_recipients`) or is the booking's selected provider
- * (`bookings.provider_id`). Everything else is denied.
+ * when it was dispatched the request (`booking_dispatch_recipients`) while the booking has no provider yet, or is the booking's selected provider
+ * (`bookings.provider_id`, which closes the stream to every other provider). Everything else is denied.
  */
 final class BookingParticipationRepository implements BookingParticipationRepositoryInterface
 {
@@ -26,7 +26,11 @@ final class BookingParticipationRepository implements BookingParticipationReposi
             return false;
         }
 
-        return $booking->provider_id === $providerProfileId
-            || DispatchRecipient::query()->where('booking_id', $booking->id)->where('provider_profile_id', $providerProfileId)->exists();
+        // Once a provider is selected, the stream belongs to that provider alone: other dispatched providers lose access.
+        if ($booking->provider_id !== null) {
+            return $booking->provider_id === $providerProfileId;
+        }
+
+        return DispatchRecipient::query()->where('booking_id', $booking->id)->where('provider_profile_id', $providerProfileId)->exists();
     }
 }

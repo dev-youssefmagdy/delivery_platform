@@ -110,6 +110,15 @@ final class OfferRepository extends BaseRepository implements OfferRepositoryInt
         return $rows === 1;
     }
 
+    public function releaseWinner(int $bookingId, CarbonInterface $now): int
+    {
+        return $this->query()->where('booking_id', $bookingId)->where('winner_marker', 1)->update([
+            'winner_marker' => null,
+            'close_reason' => 'provider_cancelled',
+            'updated_at' => $now,
+        ]);
+    }
+
     public function close(array $ids, OfferStatus $status, string $reason, CarbonInterface $now): int
     {
         if ($ids === []) {

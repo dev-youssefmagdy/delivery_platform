@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources\Api\V1\Offer;
 
+use App\Enums\Settings\SettingKey;
 use App\Models\ProviderProfile;
 use App\Models\Vehicle;
+use App\Services\Settings\SettingsService;
 use Illuminate\Support\Facades\URL;
 
 /**
@@ -28,9 +30,19 @@ final class ProviderIdentity
                 now()->addMinutes((int) config('identity.photo.url_ttl_minutes', 15)),
                 ['user' => $user->uuid, 'v' => substr(sha1($user->photo_path), 0, 12)],
             ),
-            'rating' => ['average' => round((float) $profile->rating_avg, 2), 'count' => $profile->rating_count],
+            'rating' => self::rating((float) $profile->rating_avg, $profile->rating_count),
             'completed_jobs' => $profile->completed_jobs,
         ];
+    }
+
+    /**
+     * A public score: the mean of visible ratings and how many there are; `provisional` until enough ratings exist.
+     *
+     * @return array{average: float, count: int, provisional: bool}
+     */
+    public static function rating(float $average, int $count): array
+    {
+        return ['average' => round($average, 2), 'count' => $count, 'provisional' => $count < app(SettingsService::class)->int(SettingKey::RatingMinSample)];
     }
 
     /**

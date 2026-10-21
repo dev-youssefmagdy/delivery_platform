@@ -33,7 +33,7 @@ final class StartBookingDispatch
         $request = $this->source->fromBooking($booking);
 
         if ($event->restart) {
-            $this->dispatch->restart($request);
+            $this->dispatch->restart($request, $event->keepProviderIds);
         } else {
             $this->dispatch->start($request);
         }

@@ -7,10 +7,11 @@ use App\DTOs\Location\LocationSample;
 use App\Enums\Location\LocationAnomaly;
 use App\Enums\Location\TrackingState;
 use App\Enums\Settings\SettingKey;
-use App\Events\Realtime\BookingLocationUpdated;
+use App\Events\Realtime\TripLocationUpdated;
 use App\Exceptions\ConflictException;
 use App\Models\ProviderLastLocation;
 use App\Models\ProviderProfile;
+use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Location\ProviderLastLocationRepositoryInterface;
 use App\Repositories\Contracts\Location\ProviderLocationRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderWorkloadRepositoryInterface;
@@ -38,6 +39,7 @@ final class LocationIngestService
         private readonly GeoService $geo,
         private readonly SettingsService $settings,
         private readonly EventSequencer $sequencer,
+        private readonly BookingRepositoryInterface $bookings,
     ) {}
 
     /**
@@ -159,7 +161,13 @@ final class LocationIngestService
 
     private function broadcast(string $bookingUuid, ProviderLastLocation $location): void
     {
-        BookingLocationUpdated::dispatch($bookingUuid, $this->sequencer->next($bookingUuid), [
+        $customerUuid = $this->bookings->customerUuidOfBooking($bookingUuid);
+
+        if ($customerUuid === null) {
+            return;
+        }
+
+        TripLocationUpdated::toCustomer($customerUuid, $bookingUuid, $this->sequencer->next($bookingUuid), [
             'lat' => round($location->point->lat, 6),
             'lng' => round($location->point->lng, 6),
             'heading' => $location->heading,

@@ -14,5 +14,8 @@ final class BookingEnteredSearch implements ShouldDispatchAfterCommit
 {
     use Dispatchable;
 
-    public function __construct(public readonly int $bookingId, public readonly bool $restart = false) {}
+    /**
+     * @param list<int> $keepProviderIds providers that stay marked as declined after a restart (the one that just cancelled the job)
+     */
+    public function __construct(public readonly int $bookingId, public readonly bool $restart = false, public readonly array $keepProviderIds = []) {}
 }

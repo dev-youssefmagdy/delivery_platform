@@ -27,6 +27,10 @@ final readonly class TransitionContext
         public bool $pinVerified = false,
         public bool $proofsSatisfied = false,
         public ?CarbonImmutable $at = null,
+        public ?string $reasonCode = null,
+        public ?CancellationDecision $feeDecision = null,
+        /** @var array<string, mixed> GPS evidence of an arrival (point, accuracy, distance to pickup) */
+        public array $evidence = [],
     ) {}
 
     /**

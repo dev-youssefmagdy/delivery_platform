@@ -4,6 +4,7 @@
 | Public website styles (P5.5). Independent from the admin panel (Plan §5.1).
 */
 @source '../views/website/**/*.blade.php';
+@source '../views/components/website/**/*.blade.php';
 @source '../views/welcome.blade.php';
 
 @theme {

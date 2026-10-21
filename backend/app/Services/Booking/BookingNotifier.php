@@ -19,4 +19,19 @@ class BookingNotifier
             'customer' => $booking->customer_id,
         ]);
     }
+
+    public function cancelled(Booking $booking, string $by, ?int $feeMinor): void
+    {
+        Log::info('booking.cancelled (notification stub, nothing sent)', ['booking' => $booking->uuid, 'by' => $by, 'fee_minor' => $feeMinor]);
+    }
+
+    public function providerCancelledRedispatch(Booking $booking): void
+    {
+        Log::info('booking.provider_cancelled_redispatch (notification stub, nothing sent)', ['booking' => $booking->uuid]);
+    }
+
+    public function completed(Booking $booking): void
+    {
+        Log::info('booking.completed (notification stub, nothing sent)', ['booking' => $booking->uuid]);
+    }
 }

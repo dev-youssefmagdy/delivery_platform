@@ -5,9 +5,12 @@ namespace App\Services\Booking;
 use App\DTOs\Booking\TransitionContext;
 use App\Enums\Booking\BookingStatus;
 use App\Enums\Common\ActorType;
+use App\Enums\Payments\PaymentMethodType;
+use App\Enums\Payments\PaymentStatus;
 use App\Enums\Provider\EligibilityScope;
 use App\Events\Booking\BookingEnteredSearch;
 use App\Events\Realtime\BookingStatusChanged;
+use App\Events\Realtime\TripStatusChanged;
 use App\Exceptions\BusinessRuleViolation;
 use App\Exceptions\ConflictException;
 use App\Exceptions\ForbiddenActionException;
@@ -16,6 +19,7 @@ use App\Models\BookingStatusEvent;
 use App\Models\ProviderProfile;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
+use App\Repositories\Contracts\Booking\ShareLinkRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Services\Dispatch\EventSequencer;
 use App\Services\Provider\ProviderEligibilityService;
@@ -41,6 +45,7 @@ final class BookingTransitionService
         private readonly ProviderProfileRepositoryInterface $providers,
         private readonly ProviderEligibilityService $eligibility,
         private readonly EventSequencer $sequencer,
+        private readonly ShareLinkRepositoryInterface $shareLinks,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -96,6 +101,7 @@ final class BookingTransitionService
             }
 
             $from = $locked->status;
+            $previousProviderId = $locked->provider_id;
 
             if (! $from->canTransitionTo($to)) {
                 throw ConflictException::make('booking_transition_invalid', context: ['from' => $from->value, 'to' => $to->value]);
@@ -122,21 +128,48 @@ final class BookingTransitionService
 
             $locked->refresh();
 
-            BookingStatusChanged::dispatch($locked->uuid, $sequence, ['status' => $to->value, 'previous_status' => $from->value, 'request_version' => $locked->request_version]);
+            if (in_array($to, [BookingStatus::Completed, BookingStatus::CompletedPendingPayment, BookingStatus::ExpiredNoProvider], true) || $to->isCancellation()) {
+                $this->shareLinks->revokeForBooking($locked->id, $context->now());
+            }
+
+            $payload = ['status' => $to->value, 'previous_status' => $from->value, 'request_version' => $locked->request_version];
+            BookingStatusChanged::dispatch($locked->uuid, $sequence, $payload);
+            $this->announceToParties($locked, $sequence, $payload + ['actor' => $context->actorType->value], $previousProviderId);
 
             // Back from `offers_received` the dispatch chain is still running and the window is unchanged.
             if ($to === BookingStatus::SearchingOffers && $from !== BookingStatus::OffersReceived) {
-                BookingEnteredSearch::dispatch($locked->id, restart: $from->isAssigned());
+                BookingEnteredSearch::dispatch($locked->id, restart: $from->isAssigned(), keepProviderIds: $from->isAssigned() && $previousProviderId !== null ? [$previousProviderId] : []);
             }
 
             return $locked;
         });
     }
 
+    /**
+     * The booking channel is shared with every dispatched provider while the search runs, so the parties also get the
+     * change on their own channels: the customer, the assigned provider, and a provider who just lost the booking
+     * (cancelled back to searching) so its app drops the job (ADR-98).
+     *
+     * @param array<string, mixed> $payload
+     */
+    private function announceToParties(Booking $booking, int $sequence, array $payload, ?int $previousProviderId): void
+    {
+        $booking->loadMissing('customer');
+        TripStatusChanged::toCustomer($booking->customer->uuid, $booking->uuid, $sequence, $payload);
+
+        foreach (array_unique(array_filter([$booking->provider_id, $previousProviderId])) as $providerId) {
+            $provider = $this->providers->find($providerId);
+
+            if ($provider instanceof ProviderProfile) {
+                TripStatusChanged::toProvider($provider->uuid, $booking->uuid, $sequence, $payload);
+            }
+        }
+    }
+
     private function guard(Booking $booking, BookingStatus $from, BookingStatus $to, TransitionContext $context): void
     {
         match ($to) {
-            BookingStatus::SearchingOffers => $this->guardToSearching($booking, $from),
+            BookingStatus::SearchingOffers => $this->guardToSearching($booking, $from, $context),
             BookingStatus::ExpiredNoProvider => $this->guardToExpired($booking, $context),
             BookingStatus::ProviderSelected => $this->guardToProviderSelected($booking, $context),
             BookingStatus::ProviderHeadingToPickup, BookingStatus::ProviderArrived => $this->requireAssignedProvider($booking, $context),
@@ -153,8 +186,12 @@ final class BookingTransitionService
      * Back to searching after a provider cancelled needs the category policy to allow automatic re-dispatch; a draft
      * needs its search window to be defined.
      */
-    private function guardToSearching(Booking $booking, BookingStatus $from): void
+    private function guardToSearching(Booking $booking, BookingStatus $from, TransitionContext $context): void
     {
+        if ($from->isAssigned()) {
+            $this->requireAssignedProvider($booking, $context);
+        }
+
         if ($this->searchTtlSeconds($booking) <= 0) {
             throw BusinessRuleViolation::make('booking_search_policy_missing');
         }
@@ -296,17 +333,50 @@ final class BookingTransitionService
 
         return match (true) {
             $to === BookingStatus::SearchingOffers && $from === BookingStatus::OffersReceived => [],
+            // Back to searching after the provider cancelled: nothing of the previous assignment survives on the
+            // booking (the history stays in the events and the closed offer), the PIN is regenerated at the next selection.
             $to === BookingStatus::SearchingOffers => [
                 'search_expires_at' => $now->addSeconds($this->searchTtlSeconds($booking)),
                 'provider_id' => null,
                 'selected_offer_id' => null,
+                'agreed_fare_minor' => null,
+                'agreed_offer_version_id' => null,
+                'agreed_scope' => null,
+                'provider_selected_at' => null,
+                'pin_hash' => null,
+                'pin_encrypted' => null,
+                'pin_attempts' => 0,
+                'pin_verified_at' => null,
+                'pin_locked_at' => null,
+                'support_flagged_at' => null,
+                'support_flag_reason' => null,
+                'heading_at' => null,
+                'arrived_at' => null,
+                'arrival_evidence' => null,
+                'free_wait_ends_at' => null,
             ],
             $to === BookingStatus::ProviderSelected => ['provider_id' => $context->providerId, 'selected_offer_id' => $context->offerId],
+            $to === BookingStatus::ProviderHeadingToPickup => ['heading_at' => $now],
+            $to === BookingStatus::ProviderArrived => [
+                'arrived_at' => $now,
+                'arrival_evidence' => $context->evidence === [] ? null : $context->evidence,
+                'free_wait_ends_at' => $now->addSeconds((int) ($booking->policy_snapshot['cancellation']['free_wait_seconds'] ?? 0)),
+            ],
+            $to === BookingStatus::InProgress && $from === BookingStatus::ProviderArrived => ['started_at' => $now],
             $to->isCancellation() => [
                 'cancelled_at' => $now,
                 'cancelled_by_type' => $context->actorType->value,
                 'cancelled_by_id' => $context->actorId,
                 'cancellation_reason' => $context->reason,
+                'cancellation_reason_code' => $context->reasonCode,
+                'cancellation_fee_minor' => $context->feeDecision?->feeMinor,
+                'cancellation_decision' => $context->feeDecision?->toArray(),
+            ],
+            $from === BookingStatus::InProgress && ($to === BookingStatus::Completed || $to === BookingStatus::CompletedPendingPayment) => [
+                'completed_at' => $now,
+                // Server-computed total: the agreed fare plus approved adjustments (none exist until P4).
+                'final_fare_minor' => $booking->agreed_fare_minor,
+                'payment_status' => $booking->payment_method === PaymentMethodType::Cash ? PaymentStatus::CashDue : PaymentStatus::Pending,
             ],
             $to === BookingStatus::Completed && $booking->completed_at === null => ['completed_at' => $now],
             $to === BookingStatus::CompletedPendingPayment && $booking->completed_at === null => ['completed_at' => $now],

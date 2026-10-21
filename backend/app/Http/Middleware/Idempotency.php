@@ -36,9 +36,12 @@ final class Idempotency
         private readonly CacheFactory $cache,
     ) {}
 
-    public function handle(Request $request, Closure $next): Response
+    /**
+     * @param string ...$options `unless_preview`: a request with `preview=true` only computes and writes nothing, so it needs no key
+     */
+    public function handle(Request $request, Closure $next, string ...$options): Response
     {
-        if ($request->isMethodSafe()) {
+        if ($request->isMethodSafe() || (in_array('unless_preview', $options, true) && $request->boolean('preview'))) {
             return $next($request);
         }
 

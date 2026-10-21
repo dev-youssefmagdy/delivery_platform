@@ -49,8 +49,47 @@ return [
     ],
 
     'booking' => [
+        'cancelled' => 'تم إلغاء الحجز.',
         'created' => 'تم إنشاء طلب الحجز.',
         'request_updated' => 'تم تحديث طلبك وسيُعاد إرساله إلى مقدّمي الخدمة.',
+    ],
+
+    'trip' => [
+        'acknowledged' => 'تم التأكيد. توجّه إلى نقطة الاستلام.',
+        'arrived' => 'تم تسجيل الوصول.',
+        'pin_verified' => 'تم التحقق من الرمز.',
+        'started' => 'بدأت الرحلة.',
+        'completed' => 'اكتملت الرحلة.',
+        'cancelled' => 'تم إلغاء الحجز.',
+        'cancelled_redispatch' => 'لقد ألغيت. يعود الطلب إلى سائقين آخرين.',
+    ],
+
+    'cancellation' => [
+        'preview' => 'هذه تكلفة الإلغاء الآن.',
+        'fee_notice' => 'تُطبّق رسوم إلغاء قدرها :amount.',
+        'free' => [
+            'no_provider' => 'مجاناً: لم يتم اختيار سائق بعد.',
+            'free_grace' => 'مجاناً: ما زلت ضمن فترة الإلغاء المجاني.',
+            'free_wait' => 'مجاناً: لم تنتهِ مدة انتظار السائق المجانية.',
+            'provider_fault' => 'مجاناً: السائق هو من طلب الإلغاء.',
+            'justified_reason' => 'لا رسوم لهذا السبب.',
+            'no_rule' => 'لا توجد رسوم إلغاء.',
+            'rule' => 'لا توجد رسوم إلغاء.',
+            'arrival_unverified' => 'لا توجد رسوم إلغاء.',
+        ],
+    ],
+
+    'share' => [
+        'created' => 'تم إنشاء رابط المشاركة.',
+        'revoked' => 'توقفت المشاركة.',
+    ],
+
+    'rating' => [
+        'created' => 'شكراً لتقييمك.',
+    ],
+
+    'report' => [
+        'created' => 'تم استلام بلاغك.',
     ],
 
     'pricing' => [
@@ -74,6 +113,30 @@ return [
     ],
 
     'errors' => [
+        'booking_not_cancellable' => 'لا يمكن إلغاء هذا الحجز بعد الآن.',
+        'cancellation_reason_not_allowed' => 'لا يمكن استخدام هذا السبب لهذا الحجز.',
+        'cancellation_note_required' => 'يرجى وصف السبب.',
+        'cancellation_fee_changed' => 'تغيّرت رسوم الإلغاء. راجعها قبل التأكيد.',
+        'no_show_too_early' => 'لا يمكن الإبلاغ عن عدم حضور العميل إلا بعد وصولك وانتهاء مدة الانتظار المجاني.',
+        'trip_pin_not_required' => 'هذه الرحلة لا تستخدم رمز PIN.',
+        'trip_pin_not_ready' => 'يمكن إدخال الرمز بعد وصولك فقط.',
+        'trip_pin_locked' => 'محاولات خاطئة كثيرة. تم قفل بدء الرحلة وإبلاغ الدعم.',
+        'trip_pin_invalid' => 'الرمز غير صحيح. المحاولات المتبقية: :attempts_remaining.',
+        'share_not_available' => 'يمكن مشاركة الرحلة فقط أثناء وجود سائق معيّن وقبل انتهائها.',
+        'rating_not_allowed' => 'لا يمكن تقييم هذه الرحلة.',
+        'rating_window_closed' => 'انتهت مهلة تقييم هذه الرحلة.',
+        'rating_tag_invalid' => 'إحدى العلامات المختارة غير صالحة.',
+        'rating_already_submitted' => 'لقد قيّمت هذه الرحلة بالفعل.',
+        'rating_disabled' => 'تقييم العملاء متوقف.',
+        'report_not_available' => 'يمكن تقديم بلاغ بعد تعيين سائق للحجز.',
+        'report_limit_reached' => 'بلغت الحد اليومي للبلاغات على هذا الحجز (:max).',
+        'cancellation_policy_overlap' => 'توجد سياسة أخرى مفعّلة بالنطاق نفسه تغطي جزءاً من هذه الفترة.',
+        'cancellation_policy_in_use' => 'أُنشئت حجوزات بهذه السياسة. عطّلها بدلاً من حذفها.',
+        'cancellation_policy_window_invalid' => 'يجب أن تكون نهاية الفترة بعد بدايتها.',
+        'cancellation_policy_rule_invalid' => 'قاعدة رسوم غير مكتملة أو غير صالحة.',
+        'cancellation_policy_reasons_invalid' => 'اختر سبباً واحداً على الأقل لكل طرف.',
+        'cancellation_policy_category_missing' => 'الخدمة المحددة غير موجودة.',
+        'cancellation_policy_zone_missing' => 'المنطقة المحددة غير موجودة.',
         'validation_failed' => 'البيانات المرسلة غير صالحة.',
         'unauthenticated' => 'يجب تسجيل الدخول أولًا.',
         'forbidden' => 'غير مسموح لك بتنفيذ هذا الإجراء.',

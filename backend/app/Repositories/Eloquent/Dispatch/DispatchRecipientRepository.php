@@ -67,8 +67,13 @@ final class DispatchRecipientRepository extends BaseRepository implements Dispat
         return $this->query()->where('booking_id', $bookingId)->where('wave', $wave)->count();
     }
 
-    public function clearForBooking(int $bookingId): void
+    public function clearForBooking(int $bookingId, array $keepDeclinedProviderIds = []): void
     {
-        $this->query()->where('booking_id', $bookingId)->delete();
+        $this->query()->where('booking_id', $bookingId)->when($keepDeclinedProviderIds !== [], static fn ($query) => $query->whereNotIn('provider_profile_id', $keepDeclinedProviderIds))->delete();
+
+        if ($keepDeclinedProviderIds !== []) {
+            $this->query()->where('booking_id', $bookingId)->whereIn('provider_profile_id', $keepDeclinedProviderIds)
+                ->update(['response' => DispatchResponse::Declined->value, 'responded_at' => now()]);
+        }
     }
 }

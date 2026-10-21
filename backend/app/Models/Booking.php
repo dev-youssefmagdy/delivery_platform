@@ -63,6 +63,21 @@ use LogicException;
  * @property int|null $agreed_offer_version_id
  * @property array<string, mixed>|null $agreed_scope
  * @property Carbon|null $provider_selected_at
+ * @property Carbon|null $heading_at
+ * @property Carbon|null $arrived_at
+ * @property array<string, mixed>|null $arrival_evidence
+ * @property Carbon|null $free_wait_ends_at
+ * @property Carbon|null $started_at
+ * @property int|null $final_fare_minor
+ * @property int|null $cancellation_policy_id
+ * @property string|null $cancellation_reason_code
+ * @property int|null $cancellation_fee_minor
+ * @property array<string, mixed>|null $cancellation_decision
+ * @property int $pin_attempts
+ * @property Carbon|null $pin_verified_at
+ * @property Carbon|null $pin_locked_at
+ * @property Carbon|null $support_flagged_at
+ * @property string|null $support_flag_reason
  * @property int|null $provider_id
  * @property Carbon|null $search_expires_at
  * @property string|null $pin_hash
@@ -102,12 +117,15 @@ class Booking extends Model
         'service_snapshot', 'policy_snapshot', 'commission_snapshot', 'payment_method', 'payment_status', 'coupon_reservation_id',
         'selected_offer_id', 'agreed_fare_minor', 'agreed_offer_version_id', 'agreed_scope', 'provider_selected_at', 'provider_id', 'search_expires_at', 'pin_hash', 'pin_encrypted', 'cancelled_at', 'cancelled_by_type',
         'cancelled_by_id', 'cancellation_reason', 'completed_at', 'idempotency_key', 'lock_version',
+        'heading_at', 'arrived_at', 'arrival_evidence', 'free_wait_ends_at', 'started_at', 'final_fare_minor', 'cancellation_policy_id',
+        'cancellation_reason_code', 'cancellation_fee_minor', 'cancellation_decision', 'pin_attempts', 'pin_verified_at', 'pin_locked_at',
+        'support_flagged_at', 'support_flag_reason',
     ];
 
     /**
      * @var array<string, mixed>
      */
-    protected $attributes = ['sequence' => 0, 'request_version' => 1, 'lock_version' => 0, 'service_details' => '[]'];
+    protected $attributes = ['sequence' => 0, 'request_version' => 1, 'lock_version' => 0, 'service_details' => '[]', 'pin_attempts' => 0];
 
     /**
      * @var list<string>
@@ -234,6 +252,18 @@ class Booking extends Model
             'agreed_fare_minor' => 'integer',
             'agreed_scope' => 'array',
             'provider_selected_at' => 'datetime',
+            'heading_at' => 'datetime',
+            'arrived_at' => 'datetime',
+            'arrival_evidence' => 'array',
+            'free_wait_ends_at' => 'datetime',
+            'started_at' => 'datetime',
+            'final_fare_minor' => 'integer',
+            'cancellation_fee_minor' => 'integer',
+            'cancellation_decision' => 'array',
+            'pin_attempts' => 'integer',
+            'pin_verified_at' => 'datetime',
+            'pin_locked_at' => 'datetime',
+            'support_flagged_at' => 'datetime',
             'search_expires_at' => 'datetime',
             'cancelled_at' => 'datetime',
             'completed_at' => 'datetime',

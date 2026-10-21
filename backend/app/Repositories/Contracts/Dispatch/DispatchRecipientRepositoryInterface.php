@@ -37,7 +37,10 @@ interface DispatchRecipientRepositoryInterface
     public function countForWave(int $bookingId, int $wave): int;
 
     /**
-     * Forgets who was notified (the request changed and dispatch starts over).
+     * Forgets who was notified (the request changed and dispatch starts over). The given providers stay on the list
+     * marked as declined, so they are neither notified again nor shown the request (a provider that cancelled the job).
+     *
+     * @param list<int> $keepDeclinedProviderIds
      */
-    public function clearForBooking(int $bookingId): void;
+    public function clearForBooking(int $bookingId, array $keepDeclinedProviderIds = []): void;
 }

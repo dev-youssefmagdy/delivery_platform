@@ -155,6 +155,11 @@ final class ProviderProfileRepository extends BaseRepository implements Provider
         return $this->query()->with(['user' => static fn ($query) => $query->withTrashed()])->whereKey($ids)->get();
     }
 
+    public function incrementCompletedJobs(int $providerProfileId): void
+    {
+        $this->query()->whereKey($providerProfileId)->increment('completed_jobs');
+    }
+
     public function setCurrentVehicle(ProviderProfile $profile, ?int $vehicleId): ProviderProfile
     {
         $profile->forceFill(['current_vehicle_id' => $vehicleId])->save();

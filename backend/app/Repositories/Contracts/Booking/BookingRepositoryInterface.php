@@ -38,6 +38,11 @@ interface BookingRepositoryInterface extends BaseRepositoryInterface
 
     public function findByUuidForUpdate(string $uuid): ?Booking;
 
+    /**
+     * The owner's public id (the realtime channel name of the customer), or null for an unknown booking.
+     */
+    public function customerUuidOfBooking(string $bookingUuid): ?string;
+
     public function findByIdempotencyKey(int $customerId, string $key): ?Booking;
 
     /**

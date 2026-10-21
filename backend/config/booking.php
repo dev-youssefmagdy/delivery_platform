@@ -39,4 +39,28 @@ return [
         // Digits of the trip PIN the customer shows the driver at pickup (P2.5 verifies it).
         'pin_digits' => 4,
     ],
+
+    // Trip lifecycle (P2.5).
+    'trip' => [
+        // An arrival reported farther than this from the pickup (metres) is stored but marked unverified: it never
+        // triggers a fee on its own (SRS §8.4: no automatic penalty from a single GPS signal).
+        'arrival_radius_m' => (int) env('BOOKING_ARRIVAL_RADIUS_M', 300),
+        // Positions older than this (seconds) are not used as arrival evidence when the app sends none.
+        'evidence_max_age_seconds' => 120,
+        // Reports one person may file per booking per day (abuse limit).
+        'reports_per_day' => 5,
+        // Longest free text of a report, a rating comment and a cancellation note.
+        'report_max_chars' => 2000,
+        'comment_max_chars' => 1000,
+        'cancellation_note_max_chars' => 255,
+        // Public trip-share page: the provider position is hidden when older than this (seconds).
+        'share_location_max_age_seconds' => 180,
+    ],
+
+    // What applies when no cancellation policy covers a category: a short free window after selection, no fees, every
+    // reason allowed. Admins configure real policies (Cancellation policies); a booking snapshots whichever applied.
+    'cancellation_defaults' => [
+        'free_grace_seconds' => 120,
+        'free_wait_seconds' => 300,
+    ],
 ];

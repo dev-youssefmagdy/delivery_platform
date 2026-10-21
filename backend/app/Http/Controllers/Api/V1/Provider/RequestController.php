@@ -9,6 +9,7 @@ use App\Http\Resources\Api\V1\Offer\ProviderAssignedBookingResource;
 use App\Http\Resources\Api\V1\Offer\ProviderRequestCardResource;
 use App\Http\Resources\Api\V1\Provider\EligibilityResource;
 use App\Models\Booking;
+use App\Services\Booking\ProviderActionResolver;
 use App\Services\Offers\OfferSubmissionService;
 use App\Services\Offers\ProviderRequestService;
 use App\Support\Http\ApiResponse;
@@ -27,6 +28,7 @@ final class RequestController extends Controller
     public function __construct(
         private readonly ProviderRequestService $requests,
         private readonly OfferSubmissionService $submission,
+        private readonly ProviderActionResolver $actions,
     ) {}
 
     public function available(Request $request): JsonResponse
@@ -55,6 +57,8 @@ final class RequestController extends Controller
 
     public function show(Request $request, string $booking): JsonResponse
     {
-        return ApiResponse::success(data: new ProviderAssignedBookingResource($this->requests->assigned($this->providerProfile($request), $booking)));
+        $assigned = $this->requests->assigned($this->providerProfile($request), $booking);
+
+        return ApiResponse::success(data: new ProviderAssignedBookingResource($assigned, $this->actions->forProvider($assigned)));
     }
 }

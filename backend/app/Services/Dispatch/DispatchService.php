@@ -46,10 +46,12 @@ final class DispatchService
     /**
      * Starts over for a changed request: every provider is eligible to be notified again (they saw an older version of
      * the request), and wave jobs of the previous generation stop on their own.
+     *
+     * @param list<int> $keepDeclinedProviderIds providers that are not asked again (the provider that cancelled this job)
      */
-    public function restart(DispatchableRequest $request): void
+    public function restart(DispatchableRequest $request, array $keepDeclinedProviderIds = []): void
     {
-        $this->recipients->clearForBooking($request->bookingId);
+        $this->recipients->clearForBooking($request->bookingId, $keepDeclinedProviderIds);
         $this->start($request);
     }
 

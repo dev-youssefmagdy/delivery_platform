@@ -13,7 +13,10 @@ use App\Services\Settings\SettingsService;
  */
 final class BookingSnapshotBuilder
 {
-    public function __construct(private readonly SettingsService $settings) {}
+    public function __construct(
+        private readonly SettingsService $settings,
+        private readonly CancellationPolicyResolver $cancellation,
+    ) {}
 
     /**
      * The request-dependent columns of a booking: places, schedule, details, fare, estimate and the two snapshots.
@@ -23,7 +26,10 @@ final class BookingSnapshotBuilder
      */
     public function requestAttributes(ValidatedBookingRequest $request): array
     {
+        $cancellation = $this->cancellation->resolve($request->category->id, $request->area->zone?->id, $request->validatedAt);
+
         return [
+            'cancellation_policy_id' => $cancellation['policy_id'],
             'service_category_id' => $request->category->id,
             'service_category_version_id' => $request->version->id,
             'city_id' => $request->area->city?->id,
@@ -43,7 +49,7 @@ final class BookingSnapshotBuilder
             'reference_estimate' => $request->guidance->toSnapshot(),
             'route_snapshot' => $request->route?->toArray(),
             'service_snapshot' => $this->serviceSnapshot($request),
-            'policy_snapshot' => $this->policySnapshot($request),
+            'policy_snapshot' => $this->policySnapshot($request) + ['cancellation' => $cancellation['snapshot']],
             'payment_method' => $request->paymentMethod,
         ];
     }

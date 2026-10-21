@@ -537,6 +537,10 @@ return [
     'booking_action' => [
         'update_request' => 'Edit the request',
         'select_offer' => 'Choose a driver',
+        'cancel' => 'Cancel the booking',
+        'share' => 'Share the trip',
+        'rate' => 'Rate the trip',
+        'report' => 'Report a problem',
     ],
 
     'offer_status' => [
@@ -610,4 +614,91 @@ return [
     ],
 
     // @admin-module:enums
+
+    'cancellation_stage' => [
+        'searching' => 'Searching for a driver',
+        'provider_selected' => 'Driver chosen',
+        'heading_to_pickup' => 'Driver on the way',
+        'arrived' => 'Driver arrived',
+    ],
+
+    'cancellation_fee_type' => [
+        'none' => 'No fee',
+        'fixed' => 'Fixed amount',
+        'percent' => 'Percentage of the fare',
+    ],
+
+    'cancellation_fee_recipient' => [
+        'provider' => 'Provider',
+        'platform' => 'Platform',
+    ],
+
+    'cancellation_reason' => [
+        'changed_mind' => 'I changed my mind',
+        'wrong_pickup' => 'Wrong pickup location',
+        'found_another_ride' => 'I found another ride',
+        'driver_too_far' => 'The driver is too far',
+        'driver_asked_to_cancel' => 'The driver asked me to cancel',
+        'waited_too_long' => 'Waited too long',
+        'customer_no_show' => 'Customer did not show up',
+        'customer_unreachable' => 'Customer is unreachable',
+        'vehicle_problem' => 'Vehicle problem',
+        'emergency' => 'Emergency',
+        'wrong_request_details' => 'Request details are wrong',
+        'unsafe_pickup' => 'Unsafe pickup location',
+        'other' => 'Other',
+    ],
+
+    'support_flag_reason' => [
+        'pin_attempts_exceeded' => 'Too many wrong PIN attempts',
+    ],
+
+    'report_category' => [
+        'safety' => 'Safety',
+        'behaviour' => 'Behaviour',
+        'fare_dispute' => 'Fare dispute',
+        'route_or_delay' => 'Route or delay',
+        'lost_item' => 'Lost item',
+        'other' => 'Other',
+    ],
+
+    'report_status' => [
+        'open' => 'Open',
+        'closed' => 'Closed',
+    ],
+
+    'moderation_status' => [
+        'visible' => 'Visible',
+        'hidden' => 'Hidden',
+        'under_review' => 'Under review',
+    ],
+
+    'rating_tag' => [
+        'professional' => 'Professional',
+        'clean_vehicle' => 'Clean vehicle',
+        'safe_driving' => 'Safe driving',
+        'good_communication' => 'Good communication',
+        'on_time' => 'On time',
+        'careful_with_items' => 'Careful with items',
+        'late' => 'Late',
+        'unsafe_driving' => 'Unsafe driving',
+        'rude' => 'Rude',
+        'dirty_vehicle' => 'Dirty vehicle',
+        'respectful' => 'Respectful',
+        'clear_instructions' => 'Clear instructions',
+        'ready_at_pickup' => 'Ready at pickup',
+        'disrespectful' => 'Disrespectful',
+        'not_ready_at_pickup' => 'Not ready at pickup',
+    ],
+
+    'provider_booking_action' => [
+        'acknowledge' => 'Confirm the job',
+        'arrived' => 'I have arrived',
+        'verify_start_pin' => 'Enter the trip PIN',
+        'start' => 'Start the trip',
+        'complete' => 'Complete the trip',
+        'cancel' => 'Cancel the job',
+        'rate_customer' => 'Rate the customer',
+        'report' => 'Report a problem',
+    ],
 ];

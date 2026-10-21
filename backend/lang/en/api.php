@@ -49,8 +49,47 @@ return [
     ],
 
     'booking' => [
+        'cancelled' => 'Booking cancelled.',
         'created' => 'Booking request created.',
         'request_updated' => 'Your request was updated and drivers are being asked again.',
+    ],
+
+    'trip' => [
+        'acknowledged' => 'Confirmed. Head to the pickup.',
+        'arrived' => 'Arrival recorded.',
+        'pin_verified' => 'PIN verified.',
+        'started' => 'Trip started.',
+        'completed' => 'Trip completed.',
+        'cancelled' => 'The booking was cancelled.',
+        'cancelled_redispatch' => 'You cancelled. The request goes back to other drivers.',
+    ],
+
+    'cancellation' => [
+        'preview' => 'Here is what cancelling now would cost.',
+        'fee_notice' => 'A cancellation fee of :amount applies.',
+        'free' => [
+            'no_provider' => 'Free: no driver has been chosen yet.',
+            'free_grace' => 'Free: you are still inside the free cancellation period.',
+            'free_wait' => 'Free: the driver\'s free waiting time has not ended.',
+            'provider_fault' => 'Free: the driver asked for the cancellation.',
+            'justified_reason' => 'No fee for this reason.',
+            'no_rule' => 'No cancellation fee applies.',
+            'rule' => 'No cancellation fee applies.',
+            'arrival_unverified' => 'No cancellation fee applies.',
+        ],
+    ],
+
+    'share' => [
+        'created' => 'Share link created.',
+        'revoked' => 'Sharing stopped.',
+    ],
+
+    'rating' => [
+        'created' => 'Thanks for your rating.',
+    ],
+
+    'report' => [
+        'created' => 'Your report was received.',
     ],
 
     'pricing' => [
@@ -74,6 +113,30 @@ return [
     ],
 
     'errors' => [
+        'booking_not_cancellable' => 'This booking can no longer be cancelled.',
+        'cancellation_reason_not_allowed' => 'This reason cannot be used for this booking.',
+        'cancellation_note_required' => 'Please describe the reason.',
+        'cancellation_fee_changed' => 'The cancellation fee changed. Review it before confirming.',
+        'no_show_too_early' => 'A no-show can only be reported after you arrived and the free waiting time ended.',
+        'trip_pin_not_required' => 'This trip does not use a PIN.',
+        'trip_pin_not_ready' => 'The PIN can only be entered after you arrived.',
+        'trip_pin_locked' => 'Too many wrong PIN entries. The trip start is locked and support was notified.',
+        'trip_pin_invalid' => 'The PIN is not correct. Attempts left: :attempts_remaining.',
+        'share_not_available' => 'The trip can only be shared while a driver is assigned and the trip is not finished.',
+        'rating_not_allowed' => 'This trip cannot be rated.',
+        'rating_window_closed' => 'The time to rate this trip has passed.',
+        'rating_tag_invalid' => 'One of the selected tags is not valid.',
+        'rating_already_submitted' => 'You already rated this trip.',
+        'rating_disabled' => 'Rating customers is turned off.',
+        'report_not_available' => 'A report can be filed once a driver was assigned to the booking.',
+        'report_limit_reached' => 'You reached the daily limit of reports for this booking (:max).',
+        'cancellation_policy_overlap' => 'Another enabled policy of the same scope already covers part of this period.',
+        'cancellation_policy_in_use' => 'Bookings were created under this policy. Disable it instead of deleting it.',
+        'cancellation_policy_window_invalid' => 'The end of the period must be after its start.',
+        'cancellation_policy_rule_invalid' => 'A fee rule is incomplete or invalid.',
+        'cancellation_policy_reasons_invalid' => 'Choose at least one reason for each side.',
+        'cancellation_policy_category_missing' => 'The selected service does not exist.',
+        'cancellation_policy_zone_missing' => 'The selected zone does not exist.',
         'validation_failed' => 'The submitted data is invalid.',
         'unauthenticated' => 'Please sign in first.',
         'forbidden' => 'You are not allowed to perform this action.',

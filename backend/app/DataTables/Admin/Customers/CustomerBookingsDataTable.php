@@ -10,7 +10,7 @@ use Yajra\DataTables\EloquentDataTable;
 
 /**
  * Bookings tab of the customer page: this customer's bookings, newest first, with status and payment badges. Free text
- * the customer wrote (addresses, details) is not shown here; the full Bookings module (P2.8) adds the detail screens.
+ * the customer wrote (addresses, details) is not shown here; the code links to the booking page (P2.8).
  */
 final class CustomerBookingsDataTable extends CustomerTabDataTable
 {
@@ -53,7 +53,7 @@ final class CustomerBookingsDataTable extends CustomerTabDataTable
     protected function configure(EloquentDataTable $table): void
     {
         $table->only(['code', 'service', 'booking_type', 'status', 'proposed_fare_minor', 'payment_method', 'payment_status', 'created_at']);
-        $table->editColumn('code', static fn (Model $row): string => '<span class="ltr-only">'.e((string) $row->getAttribute('code')).'</span>');
+        $table->editColumn('code', static fn (Model $row): string => '<a href="'.e(route('admin.bookings.show', $row)).'" class="ltr-only font-medium text-brand-700 hover:underline">'.e((string) $row->getAttribute('code')).'</a>');
         $table->addColumn('service', static function (Model $row): string {
             $name = $row instanceof Booking ? (array) ($row->service_snapshot['category']['name'] ?? []) : [];
 

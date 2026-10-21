@@ -5,7 +5,7 @@ namespace App\Services\Location;
 use App\Repositories\Contracts\Location\ProviderLocationRepositoryInterface;
 
 /**
- * Deletes old location history in chunks (ADR-83): rows without a booking after `retention_days`, rows of a booking after
+ * Deletes old location history in chunks (ADR-85): rows without a booking after `retention_days`, rows of a booking after
  * `booking_retention_days`.
  */
 final class LocationRetentionService

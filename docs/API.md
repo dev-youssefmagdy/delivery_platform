@@ -406,3 +406,21 @@ Admin (ADR-78..82; all write routes support Precognition, dangerous ones need a 
 | Document types | `documents.manage_types` | `GET/POST /admin/document-types`, `GET /{id}`, `/{id}/edit`, `PUT /{id}` (`lock_version`), `/activate`, `/deactivate` (`reason`), `DELETE /{id}` (`reason`, only unused types), `GET /{id}/requirements`, `POST /{id}/requirements` (`reason`), `DELETE /{id}/requirements/{requirement}` (`reason`); lookup `providers` (`drivers.view`) |
 
 Scheduled: `documents:check-expiry` (daily 02:00), `providers:reactivate-expired` (every minute).
+
+### 8.10 Availability, live location and realtime (P2.2)
+
+`provider` token only; reads are status-safe, writes need an active account. Positions are `{ lat, lng, recorded_at (ISO 8601, ms allowed), accuracy_m?, heading? (0-360), speed_mps?, source? (gps\|fused\|network) }`; `(0, 0)` and out-of-range values are `422`.
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/provider/availability` | `data = { availability, eligibility }`. `availability = { online, online_since, vehicle_id, last_offline_reason (OfflineReason\|null), active_booking_id, tracking: { state (TrackingState), interval_seconds, stale_after_seconds }, realtime: { channel: "private-provider.{uuid}" } }`; `eligibility = { eligible, reasons[] }` computed with the **working** scope (includes `location_stale` while offline, which is normal) |
+| POST | `/api/v1/provider/availability/online` | `{ vehicle_id? (uuid), location: {position} }` -> the availability. `422 provider_not_eligible` with `meta.reasons = [{reason, reference}]`; `422 vehicle_not_usable` (field `vehicle_id`); `422 outside_service_area`. Idempotent: going online while online only updates the vehicle and position |
+| POST | `/api/v1/provider/availability/offline` | `{ confirm?: bool }` -> the availability; `409 active_job_blocks_offline` when a job is in progress and `confirm` is not true (the job then keeps being tracked, `tracking.state` stays `active`/`to_pickup`) |
+| POST | `/api/v1/provider/location` | `{ samples: [position] }` (1..`LOCATION_MAX_BATCH` = 20), rate limited (`rate_limit_location_per_minute`, default 30). `data = { received, applied, flagged, stale, tracking: { state, interval_seconds } }`. `flagged` samples (impossible speed, future timestamp) are stored with an anomaly flag and do not move the driver; `stale` are older than the last trusted position. `409 location_not_tracking` when the provider is neither online nor serving a booking |
+| POST | `/api/v1/broadcasting/auth` | pusher-protocol private channel authorization (`socket_id`, `channel_name`) with the bearer token (`customer` or `provider`): `{ auth }` or `403` |
+
+`TrackingState`: `off`, `idle`, `to_pickup`, `active` (sampling interval from `config/location.php`: 0 / 30 / 10 / 5 s). `OfflineReason`: `provider_choice`, `stale_location`, `no_longer_eligible`, `account_changed`. New `EligibilityReason` values (working scope only): `location_stale`, `active_job_exists`, `cash_debt_limit_exceeded`. New error codes: `provider_not_eligible`, `vehicle_not_usable`, `outside_service_area`, `active_job_blocks_offline`, `location_not_tracking`.
+
+**Realtime (ADR-84..87).** Channels: `private-customer.{userUuid}`, `private-provider.{providerUuid}`, `private-booking.{bookingUuid}`, `private-admin.operations` (`bookings.view`). Every event is `{ booking_uuid, sequence, occurred_at, payload }` and a client refetches when `sequence` skips: `provider.availability_changed` (`{online, reason}`, provider channel, sequence per provider), `booking.requested` (provider channel; payload `{wave, distance_m, pickup_area:{lat,lng} (rounded ~1 km), search_expires_at, request}`; **no phone or address**), `booking.search_expanding` (booking channel; `{wave, radius_km}`), `booking.location_updated` (booking channel; `{lat, lng, heading, speed_mps, accuracy_m, recorded_at}`).
+
+Scheduled: `providers:sweep-stale` (every 30 s), `locations:prune` (daily 03:30).

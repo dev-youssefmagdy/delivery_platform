@@ -18,7 +18,7 @@
 | P1.5 | Geography: cities, service zones, availability, maps adapter | P0 | ✅ | 2026-10-21 |
 | P1.6 | Customers admin module | P0 | ✅ | 2026-10-21 |
 | P2.1 | Provider onboarding, vehicles, documents, verification | P0 | ✅ | 2026-10-22 |
-| P2.2 | Availability, live location, eligibility, dispatch engine | P0 | ❌ | — |
+| P2.2 | Availability, live location, eligibility, dispatch engine | P0 | ✅ | 2026-10-23 |
 | P2.3 | Reference pricing & booking creation | P0 | ❌ | — |
 | P2.4 | Offers, counter-offers & atomic selection | P0 | ❌ | — |
 | P2.5 | Trip lifecycle: heading, arrived, PIN, start, complete, cancellation v1, ratings, share link | P0 | ❌ | — |
@@ -51,6 +51,39 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P2.2 — Availability, live location, eligibility, dispatch engine · ✅ 2026-10-23
+
+Committed directly on `main` in small steps (no milestone branch, by instruction), after `b85fe50`. ADR-84..88.
+
+### What was built
+
+- **Schema (`create_provider_location_and_dispatch_tables`):** `provider_locations` (append-only history, POINT 4326 + spatial index, accuracy, heading, speed, source, `anomaly`, `booking_id`, ms timestamps), `provider_last_locations` (one row per provider with the resolved city), `booking_dispatch_recipients` (booking, provider, wave, distance, notified / seen / response), `provider_profiles.last_offline_reason`.
+- **Geo index:** `ProviderGeoIndex` with `RedisGeoIndex` (GEOADD / GEOSEARCH per city + TTL hash per provider) and `DatabaseGeoIndex`; `PROVIDER_GEO_INDEX` selects it (tests: database; the Redis twin is tested against a real local Redis).
+- **Eligibility:** `EligibilityScope::Working` adds `location_stale`, `active_job_exists`, `cash_debt_limit_exceeded` to the single service; active job and debt sit behind `ProviderWorkloadRepositoryInterface` (placeholder that answers "none" and throws once `bookings` / `wallets` exist).
+- **Services:** `AvailabilityService` (go online / offline with confirmation, force offline, stale sweep), `LocationIngestService` (batches, anomaly flags, history sampling, booking broadcast), `ProviderIndexPublisher`, `LocationRetentionService`, `FindEligibleProvidersService`, `DispatchService` + `DispatchBookingWave` (critical queue, unique per wave), `DispatchableRequest` / `DispatchableRequestSource` contract, `EventSequencer`; listener taking suspended providers offline; `SweepStaleProviders` (30 s) and `locations:prune` (daily).
+- **API (docs/API.md 8.10):** `GET /provider/availability`, `POST /provider/availability/online|offline`, `POST /provider/location`, `POST /broadcasting/auth`. New settings `location_max_speed_kmh`, `location_history_interval_seconds`.
+- **Realtime:** events `provider.availability_changed`, `booking.requested`, `booking.search_expanding`, `booking.location_updated`; `routes/channels.php` + `RealtimeChannelPolicy` for customer / provider / booking / admin.operations (permission gated).
+- **Flutter:** platform_core availability models / repository, `TrackingLocationSource` (foreground service), `RealtimeClient.connectionState`, `ApiException.meta`, auth endpoint fixed to the API base; driver_app availability card on the approved home (switch, eligibility reasons, rationale dialog before the OS prompt, vehicle picker, offline confirmation, tracking line, connection indicator), `TrackingController` (server-driven frequency, buffering, heartbeat) and `RealtimeController` (reconnect, refetch on reconnect / gap); Android / iOS background configuration; ARB ar/en regenerated.
+
+### Commands and results (2026-10-23)
+
+| Command | Result |
+|---|---|
+| `php artisan migrate`, rollback of the new migration and migrate again (local MySQL) | OK |
+| `scripts/check.sh` (the whole gate) | **All checks passed** |
+| `vendor/bin/pint --test` / `vendor/bin/phpstan analyse` (level 6) | passed / 0 errors |
+| `php artisan test --parallel` | passed: 722 tests, 5579 assertions (new: geo index on both implementations incl. real Redis, location ingest and anomalies, availability API, working eligibility matrix, dispatch waves with fake clock and Bus/Event fakes, channel authorization with real signing, retention) |
+| `npm run build` | built OK (no admin JS touched, so `scripts/browser-smoke.sh` was not re-run) |
+| customer_app / driver_app / platform_core: `dart format`, `flutter analyze`, `flutter test` | clean / no issues / customer_app 86, driver_app 109 (29 new: availability card, tracker, realtime controller), platform_core 163 (6 new: repository shapes, 422 meta) passed |
+
+### Known gaps / notes for P2.3
+
+- Dispatch is not wired to bookings: bind `DispatchableRequestSource`, call `DispatchService::start()`, replace `ProviderWorkloadRepository` (active booking with tracking state, debt in P3.1), complete `BookingParticipationRepository` (assumes `bookings.uuid`, `bookings.customer_user_id`) and add the two foreign keys (ADR-86).
+- `ProviderActivityRepository` still throws once bookings / wallets exist (P2.1 note).
+- No admin screen for locations or live ops yet (P2.8); the admin Echo client is not built, only the permission-gated channel.
+- Foreground service, background indicator and the live Reverb connection are untested on a device or against a running Reverb here; the Flutter tests use fakes.
+- Location history partitioning is a documented plan, not applied (ADR-85).
 
 ## P2.1 — Provider onboarding, vehicles, documents, verification · ✅ 2026-10-22
 

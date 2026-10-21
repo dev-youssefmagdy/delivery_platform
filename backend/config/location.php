@@ -24,7 +24,7 @@ return [
     // Moving this far from the position where the city was last resolved triggers a new zone lookup.
     'city_recheck_meters' => (int) env('LOCATION_CITY_RECHECK_METERS', 500),
 
-    // History retention (ADR-83): rows not tied to a booking, and rows of a booking (kept longer for disputes).
+    // History retention (ADR-85): rows not tied to a booking, and rows of a booking (kept longer for disputes).
     'retention_days' => (int) env('LOCATION_RETENTION_DAYS', 30),
     'booking_retention_days' => (int) env('LOCATION_BOOKING_RETENTION_DAYS', 90),
 

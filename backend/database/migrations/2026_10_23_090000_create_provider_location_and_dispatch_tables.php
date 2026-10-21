@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Append-only history (sampled). Retention: see DECISIONS ADR-83 (monthly partitions, 30 days online / 90 days
+        // Append-only history (sampled). Retention: see DECISIONS ADR-85 (monthly partitions, 30 days online / 90 days
         // for rows tied to a booking, pruned by `locations:prune`).
         Schema::create('provider_locations', function (Blueprint $table): void {
             $table->id();

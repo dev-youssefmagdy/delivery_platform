@@ -15,6 +15,8 @@ class BookingMap extends ConsumerStatefulWidget {
     this.pickup,
     this.destination,
     this.user,
+    this.provider,
+    this.route = const [],
     this.semanticLabel,
     this.onTap,
   });
@@ -22,6 +24,12 @@ class BookingMap extends ConsumerStatefulWidget {
   final LatLng? pickup;
   final LatLng? destination;
   final LatLng? user;
+
+  /// The assigned provider's smoothed position (live trip).
+  final LatLng? provider;
+
+  /// Planned route line, decoded from the booking's polyline.
+  final List<LatLng> route;
   final String? semanticLabel;
   final void Function(LatLng point)? onTap;
 
@@ -100,6 +108,16 @@ class _BookingMapState extends ConsumerState<BookingMap> {
             userAgentPackageName: 'com.example.customer_app',
             tileProvider: ref.watch(mapTileProviderProvider),
           ),
+          if (widget.route.length > 1)
+            PolylineLayer(
+              polylines: [
+                Polyline(
+                  points: widget.route,
+                  strokeWidth: 4,
+                  color: scheme.primary.withValues(alpha: 0.7),
+                ),
+              ],
+            ),
           MarkerLayer(
             markers: [
               if (widget.user != null)
@@ -144,11 +162,55 @@ class _BookingMapState extends ConsumerState<BookingMap> {
                 ),
             ],
           ),
+          if (widget.provider != null)
+            TweenAnimationBuilder<LatLng>(
+              tween: _LatLngTween(end: widget.provider!),
+              duration: const Duration(milliseconds: 1200),
+              curve: Curves.linear,
+              builder: (context, point, _) => MarkerLayer(
+                markers: [
+                  Marker(
+                    point: point,
+                    width: 36,
+                    height: 36,
+                    child: DecoratedBox(
+                      key: const Key('map-provider-marker'),
+                      decoration: BoxDecoration(
+                        color: scheme.tertiary,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: scheme.onTertiary, width: 3),
+                      ),
+                      child: Icon(
+                        Icons.directions_car,
+                        size: 18,
+                        color: scheme.onTertiary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           RichAttributionWidget(
             attributions: [TextSourceAttribution(env.mapAttribution)],
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Interpolates between two map positions, so the provider marker glides to
+/// each new fix instead of jumping.
+class _LatLngTween extends Tween<LatLng> {
+  _LatLngTween({required LatLng super.end});
+
+  @override
+  LatLng lerp(double t) {
+    final from = begin ?? end!;
+    final to = end!;
+    return LatLng(
+      from.latitude + (to.latitude - from.latitude) * t,
+      from.longitude + (to.longitude - from.longitude) * t,
     );
   }
 }

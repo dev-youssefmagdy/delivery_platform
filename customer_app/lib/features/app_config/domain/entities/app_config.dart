@@ -17,6 +17,7 @@ class AppConfig {
     this.minVersion,
     this.forceUpdate = false,
     this.policies = const {},
+    this.features = const {},
     this.fromCache = false,
   });
 
@@ -44,6 +45,12 @@ class AppConfig {
 
   /// Current published policy version per policy type (`terms`, `privacy` …).
   final Map<String, PolicyRef> policies;
+
+  /// Server feature flags (`features`): for example `wallet`, `offers`. A
+  /// missing key means the feature is off.
+  final Map<String, bool> features;
+
+  bool featureEnabled(String key) => features[key] ?? false;
 
   /// True when the server could not be reached and the last good copy is used.
   final bool fromCache;

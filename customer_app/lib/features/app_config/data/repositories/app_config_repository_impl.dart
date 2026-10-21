@@ -103,6 +103,7 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
             publishedAt: DateTime.tryParse(e.value.publishedAt ?? ''),
           ),
       },
+      features: dto.features,
       fromCache: fromCache,
     );
   }

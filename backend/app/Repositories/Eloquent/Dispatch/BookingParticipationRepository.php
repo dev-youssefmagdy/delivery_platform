@@ -2,35 +2,31 @@
 
 namespace App\Repositories\Eloquent\Dispatch;
 
+use App\Models\Booking;
+use App\Models\DispatchRecipient;
 use App\Repositories\Contracts\Dispatch\BookingParticipationRepositoryInterface;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 /**
- * Channel access for booking streams. Without a bookings table nobody participates in anything, which is the safe
- * answer. P2.3 only needs to add the selected-provider branch; dispatched recipients already work through the join.
+ * Channel access for booking streams, against the real schema: `bookings.customer_id` is the owner, a provider takes part
+ * when it was dispatched the request (`booking_dispatch_recipients`) or is the booking's selected provider
+ * (`bookings.provider_id`). Everything else is denied.
  */
 final class BookingParticipationRepository implements BookingParticipationRepositoryInterface
 {
     public function isCustomerOf(string $bookingUuid, int $userId): bool
     {
-        if (! Schema::hasTable('bookings')) {
-            return false;
-        }
-
-        return DB::table('bookings')->where('uuid', $bookingUuid)->where('customer_user_id', $userId)->exists();
+        return Booking::query()->where('uuid', $bookingUuid)->where('customer_id', $userId)->exists();
     }
 
     public function isProviderOf(string $bookingUuid, int $providerProfileId): bool
     {
-        if (! Schema::hasTable('bookings')) {
+        $booking = Booking::query()->select(['id', 'provider_id'])->where('uuid', $bookingUuid)->first();
+
+        if ($booking === null) {
             return false;
         }
 
-        return DB::table('booking_dispatch_recipients')
-            ->join('bookings', 'bookings.id', '=', 'booking_dispatch_recipients.booking_id')
-            ->where('bookings.uuid', $bookingUuid)
-            ->where('booking_dispatch_recipients.provider_profile_id', $providerProfileId)
-            ->exists();
+        return $booking->provider_id === $providerProfileId
+            || DispatchRecipient::query()->where('booking_id', $booking->id)->where('provider_profile_id', $providerProfileId)->exists();
     }
 }

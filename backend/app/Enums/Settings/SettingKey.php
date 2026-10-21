@@ -44,6 +44,10 @@ enum SettingKey: string implements HasLabel
     case OfferTtlSeconds = 'offer_ttl_seconds';
     case MaxOffersPerProviderPerBooking = 'max_offers_per_provider_per_booking';
     case MaxOfferRevisions = 'max_offer_revisions';
+    case MaxActiveOnDemandBookings = 'max_active_on_demand_bookings';
+    case ScheduledBookingMinLeadMinutes = 'scheduled_booking_min_lead_minutes';
+    case ScheduledBookingMaxDays = 'scheduled_booking_max_days';
+    case ScheduledSearchLeadMinutes = 'scheduled_search_lead_minutes';
     case RatingCustomerByProviderEnabled = 'rating_customer_by_provider_enabled';
 
     // Dispatch
@@ -141,6 +145,7 @@ enum SettingKey: string implements HasLabel
             self::SupportPhone, self::SupportEmail, self::SupportWhatsapp => SettingGroup::Support,
             self::OtpLength, self::OtpTtlSeconds, self::OtpResendCooldownSeconds, self::OtpMaxAttempts => SettingGroup::Otp,
             self::BookingSearchTtlSeconds, self::OfferTtlSeconds, self::MaxOffersPerProviderPerBooking, self::MaxOfferRevisions,
+            self::MaxActiveOnDemandBookings, self::ScheduledBookingMinLeadMinutes, self::ScheduledBookingMaxDays, self::ScheduledSearchLeadMinutes,
             self::RatingCustomerByProviderEnabled => SettingGroup::Booking,
             self::DispatchRadiusStepsKm, self::DispatchBatchSize, self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds,
             self::LocationMaxSpeedKmh, self::LocationHistoryIntervalSeconds,
@@ -185,7 +190,8 @@ enum SettingKey: string implements HasLabel
         return match ($this) {
             self::OtpTtlSeconds, self::OtpResendCooldownSeconds, self::BookingSearchTtlSeconds, self::OfferTtlSeconds,
             self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds, self::LocationHistoryIntervalSeconds, self::AdminLoginLockoutSeconds => 'seconds',
-            self::ShareLinkTtlMinutes => 'minutes',
+            self::ShareLinkTtlMinutes, self::ScheduledBookingMinLeadMinutes, self::ScheduledSearchLeadMinutes => 'minutes',
+            self::ScheduledBookingMaxDays => 'days',
             self::ProviderVerificationSlaHours => 'hours',
             self::ProviderDocumentExpiryWarningDays => 'days',
             self::DispatchRadiusStepsKm => 'km',
@@ -214,6 +220,10 @@ enum SettingKey: string implements HasLabel
             self::OfferTtlSeconds => [10, 1800],
             self::MaxOffersPerProviderPerBooking => [1, 10],
             self::MaxOfferRevisions => [0, 10],
+            self::MaxActiveOnDemandBookings => [1, 10],
+            self::ScheduledBookingMinLeadMinutes => [0, 1440],
+            self::ScheduledBookingMaxDays => [1, 90],
+            self::ScheduledSearchLeadMinutes => [1, 240],
             self::DispatchBatchSize => [1, 200],
             self::DispatchWaveIntervalSeconds => [5, 600],
             self::LocationStaleAfterSeconds => [10, 3600],
@@ -253,6 +263,10 @@ enum SettingKey: string implements HasLabel
             self::OfferTtlSeconds => 120,
             self::MaxOffersPerProviderPerBooking => 1,
             self::MaxOfferRevisions => 2,
+            self::MaxActiveOnDemandBookings => 1,
+            self::ScheduledBookingMinLeadMinutes => 30,
+            self::ScheduledBookingMaxDays => 14,
+            self::ScheduledSearchLeadMinutes => 20,
             self::RatingCustomerByProviderEnabled => true,
             self::DispatchRadiusStepsKm => [2.0, 4.0, 7.0],
             self::DispatchBatchSize => 10,

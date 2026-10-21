@@ -516,5 +516,72 @@ return [
         'reject' => 'رفض',
     ],
 
+    'booking_status' => [
+        'draft' => 'مسودة',
+        'searching_offers' => 'جارٍ البحث عن عروض',
+        'offers_received' => 'وصلت عروض',
+        'provider_selected' => 'تم اختيار مقدّم الخدمة',
+        'provider_heading_to_pickup' => 'مقدّم الخدمة في الطريق إليك',
+        'provider_arrived' => 'وصل مقدّم الخدمة',
+        'in_progress' => 'قيد التنفيذ',
+        'delivery_attempt_failed' => 'فشلت محاولة التسليم',
+        'completed_pending_payment' => 'اكتملت وبانتظار الدفع',
+        'completed' => 'مكتملة',
+        'disputed' => 'محل نزاع',
+        'cancelled_by_customer' => 'ألغاها العميل',
+        'cancelled_by_provider' => 'ألغاها مقدّم الخدمة',
+        'cancelled_by_operations' => 'ألغتها العمليات',
+        'expired_no_provider' => 'انتهى البحث دون عروض',
+    ],
+
+    'booking_action' => [
+        'update_request' => 'تعديل الطلب',
+    ],
+
+    'offer_invalidation_reason' => [
+        'request_changed' => 'تم تعديل الطلب',
+        'search_expired' => 'انتهت مدة البحث',
+        'booking_cancelled' => 'أُلغي الحجز',
+    ],
+
+    'payment_status' => [
+        'not_required' => 'لا يلزم دفع',
+        'pending' => 'بانتظار الدفع',
+        'requires_action' => 'يتطلب إجراء',
+        'authorized' => 'تم التفويض',
+        'paid' => 'مدفوع',
+        'failed' => 'فشل الدفع',
+        'partially_refunded' => 'مسترد جزئيًا',
+        'refunded' => 'مسترد',
+        'cash_due' => 'نقدًا عند التسليم',
+        'cash_collected' => 'تم استلام النقد',
+        'reconciliation_required' => 'تحتاج إلى تسوية',
+    ],
+
+    'fare_formula' => [
+        '1' => 'الإصدار 1: أساسي + كيلومتر + دقيقة + توقفات + إضافات',
+    ],
+
+    'surcharge_mode' => [
+        'fixed' => 'مبلغ ثابت',
+        'per_unit' => 'لكل وحدة',
+    ],
+
+    'price_factor' => [
+        'base' => 'الأجرة الأساسية',
+        'distance' => 'المسافة',
+        'duration' => 'المدة',
+        'stops' => 'التوقفات',
+        'surcharge' => 'إضافة',
+        'minimum_fare' => 'الحد الأدنى للأجرة',
+    ],
+
+    'fare_policy_state' => [
+        'current' => 'ساري',
+        'scheduled' => 'مجدول',
+        'expired' => 'منتهٍ',
+        'inactive' => 'معطّل',
+    ],
+
     // @admin-module:enums
 ];

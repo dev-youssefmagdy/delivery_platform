@@ -8,6 +8,9 @@ use App\Repositories\Contracts\Admin\AdminRepositoryInterface;
 use App\Repositories\Contracts\Admin\AdminSessionRepositoryInterface;
 use App\Repositories\Contracts\Admin\RoleRepositoryInterface;
 use App\Repositories\Contracts\Audit\AuditLogRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingStopRepositoryInterface;
 use App\Repositories\Contracts\Catalog\CatalogUsageRepositoryInterface;
 use App\Repositories\Contracts\Catalog\ServiceCategoryRepositoryInterface;
 use App\Repositories\Contracts\Catalog\ServiceCategoryVersionRepositoryInterface;
@@ -23,6 +26,7 @@ use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Demo\DemoItemRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\BookingParticipationRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
+use App\Repositories\Contracts\Finance\FinancialPositionRepositoryInterface;
 use App\Repositories\Contracts\Geography\CityRepositoryInterface;
 use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
 use App\Repositories\Contracts\Geography\ServiceZoneRepositoryInterface;
@@ -37,6 +41,7 @@ use App\Repositories\Contracts\Identity\UserRepositoryInterface;
 use App\Repositories\Contracts\Location\ProviderLastLocationRepositoryInterface;
 use App\Repositories\Contracts\Location\ProviderLocationRepositoryInterface;
 use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
+use App\Repositories\Contracts\Pricing\FarePolicyRepositoryInterface;
 use App\Repositories\Contracts\Provider\DocumentRequirementRepositoryInterface;
 use App\Repositories\Contracts\Provider\DocumentTypeRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderActivityRepositoryInterface;
@@ -55,6 +60,9 @@ use App\Repositories\Eloquent\Admin\AdminRepository;
 use App\Repositories\Eloquent\Admin\AdminSessionRepository;
 use App\Repositories\Eloquent\Admin\RoleRepository;
 use App\Repositories\Eloquent\Audit\AuditLogRepository;
+use App\Repositories\Eloquent\Booking\BookingRepository;
+use App\Repositories\Eloquent\Booking\BookingStatusEventRepository;
+use App\Repositories\Eloquent\Booking\BookingStopRepository;
 use App\Repositories\Eloquent\Catalog\CatalogUsageRepository;
 use App\Repositories\Eloquent\Catalog\ServiceCategoryRepository;
 use App\Repositories\Eloquent\Catalog\ServiceCategoryVersionRepository;
@@ -70,6 +78,7 @@ use App\Repositories\Eloquent\Customers\CustomerRepository;
 use App\Repositories\Eloquent\Demo\DemoItemRepository;
 use App\Repositories\Eloquent\Dispatch\BookingParticipationRepository;
 use App\Repositories\Eloquent\Dispatch\DispatchRecipientRepository;
+use App\Repositories\Eloquent\Finance\PreLedgerFinancialPositionRepository;
 use App\Repositories\Eloquent\Geography\CityRepository;
 use App\Repositories\Eloquent\Geography\SavedPlaceRepository;
 use App\Repositories\Eloquent\Geography\ServiceZoneRepository;
@@ -84,6 +93,7 @@ use App\Repositories\Eloquent\Identity\UserRepository;
 use App\Repositories\Eloquent\Location\ProviderLastLocationRepository;
 use App\Repositories\Eloquent\Location\ProviderLocationRepository;
 use App\Repositories\Eloquent\Policy\PolicyVersionRepository;
+use App\Repositories\Eloquent\Pricing\FarePolicyRepository;
 use App\Repositories\Eloquent\Provider\DocumentRequirementRepository;
 use App\Repositories\Eloquent\Provider\DocumentTypeRepository;
 use App\Repositories\Eloquent\Provider\ProviderActivityRepository;
@@ -155,5 +165,11 @@ class RepositoryServiceProvider extends ServiceProvider
         ProviderLastLocationRepositoryInterface::class => ProviderLastLocationRepository::class,
         DispatchRecipientRepositoryInterface::class => DispatchRecipientRepository::class,
         BookingParticipationRepositoryInterface::class => BookingParticipationRepository::class,
+        BookingRepositoryInterface::class => BookingRepository::class,
+        BookingStopRepositoryInterface::class => BookingStopRepository::class,
+        BookingStatusEventRepositoryInterface::class => BookingStatusEventRepository::class,
+        FarePolicyRepositoryInterface::class => FarePolicyRepository::class,
+        // Neutral until the ledger exists: P3.1 rebinds this to the ledger-backed repository (ADR-92).
+        FinancialPositionRepositoryInterface::class => PreLedgerFinancialPositionRepository::class,
     ];
 }

@@ -516,5 +516,72 @@ return [
         'reject' => 'Reject',
     ],
 
+    'booking_status' => [
+        'draft' => 'Draft',
+        'searching_offers' => 'Finding offers',
+        'offers_received' => 'Offers received',
+        'provider_selected' => 'Provider selected',
+        'provider_heading_to_pickup' => 'Provider on the way',
+        'provider_arrived' => 'Provider arrived',
+        'in_progress' => 'In progress',
+        'delivery_attempt_failed' => 'Delivery attempt failed',
+        'completed_pending_payment' => 'Completed, payment pending',
+        'completed' => 'Completed',
+        'disputed' => 'Disputed',
+        'cancelled_by_customer' => 'Cancelled by customer',
+        'cancelled_by_provider' => 'Cancelled by provider',
+        'cancelled_by_operations' => 'Cancelled by operations',
+        'expired_no_provider' => 'Expired, no offers',
+    ],
+
+    'booking_action' => [
+        'update_request' => 'Edit the request',
+    ],
+
+    'offer_invalidation_reason' => [
+        'request_changed' => 'The request was changed',
+        'search_expired' => 'The search window ended',
+        'booking_cancelled' => 'The booking was cancelled',
+    ],
+
+    'payment_status' => [
+        'not_required' => 'No payment required',
+        'pending' => 'Payment pending',
+        'requires_action' => 'Action required',
+        'authorized' => 'Authorized',
+        'paid' => 'Paid',
+        'failed' => 'Payment failed',
+        'partially_refunded' => 'Partially refunded',
+        'refunded' => 'Refunded',
+        'cash_due' => 'Cash due',
+        'cash_collected' => 'Cash collected',
+        'reconciliation_required' => 'Needs reconciliation',
+    ],
+
+    'fare_formula' => [
+        '1' => 'Version 1: base + per km + per minute + stops + surcharges',
+    ],
+
+    'surcharge_mode' => [
+        'fixed' => 'Fixed amount',
+        'per_unit' => 'Per unit',
+    ],
+
+    'price_factor' => [
+        'base' => 'Base fare',
+        'distance' => 'Distance',
+        'duration' => 'Duration',
+        'stops' => 'Stops',
+        'surcharge' => 'Surcharge',
+        'minimum_fare' => 'Minimum fare',
+    ],
+
+    'fare_policy_state' => [
+        'current' => 'Current',
+        'scheduled' => 'Scheduled',
+        'expired' => 'Expired',
+        'inactive' => 'Inactive',
+    ],
+
     // @admin-module:enums
 ];

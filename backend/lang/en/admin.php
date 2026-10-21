@@ -630,6 +630,22 @@ return [
                 'label' => 'Maximum offer revisions',
                 'description' => 'How many times a provider may revise an offer (0 disables revisions).',
             ],
+            'max_active_on_demand_bookings' => [
+                'label' => 'Active on-demand bookings per customer',
+                'description' => 'How many on-demand bookings a customer may have in progress at the same time.',
+            ],
+            'scheduled_booking_min_lead_minutes' => [
+                'label' => 'Earliest scheduled booking',
+                'description' => 'A scheduled booking must start at least this many minutes from now.',
+            ],
+            'scheduled_booking_max_days' => [
+                'label' => 'Furthest scheduled booking',
+                'description' => 'A scheduled booking may be at most this many days ahead.',
+            ],
+            'scheduled_search_lead_minutes' => [
+                'label' => 'Scheduled search lead time',
+                'description' => 'Providers are asked for offers this many minutes before the scheduled time.',
+            ],
             'rating_customer_by_provider_enabled' => [
                 'label' => 'Providers can rate customers',
                 'description' => 'When off, only customers rate providers.',

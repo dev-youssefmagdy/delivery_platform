@@ -3,39 +3,40 @@
 namespace App\Repositories\Eloquent\Provider;
 
 use App\DTOs\Location\ActiveBooking;
+use App\Enums\Booking\BookingStatus;
+use App\Enums\Location\TrackingState;
 use App\Models\ProviderProfile;
+use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Repositories\Contracts\Finance\FinancialPositionRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderWorkloadRepositoryInterface;
-use Illuminate\Support\Facades\Schema;
-use LogicException;
 
 /**
- * Honest placeholder: no bookings (P2.3) or wallets (P3.1) exist yet, so no provider has an active job or owes money.
- * It fails loudly once either table exists, so it must be replaced with the real queries in those milestones.
+ * The provider's current job comes from `bookings` (assigned statuses); cash debt comes from the financial position
+ * seam, which is neutral until the ledger exists (P3.1, ADR-92).
  */
 final class ProviderWorkloadRepository implements ProviderWorkloadRepositoryInterface
 {
-    private const FUTURE_TABLES = ['bookings', 'wallets'];
+    public function __construct(
+        private readonly BookingRepositoryInterface $bookings,
+        private readonly FinancialPositionRepositoryInterface $finances,
+    ) {}
 
     public function activeBooking(ProviderProfile $profile): ?ActiveBooking
     {
-        $this->assertNothingToCount();
+        $booking = $this->bookings->currentForProvider($profile->id);
 
-        return null;
+        if ($booking === null) {
+            return null;
+        }
+
+        return new ActiveBooking($booking->id, $booking->uuid, match ($booking->status) {
+            BookingStatus::ProviderSelected, BookingStatus::ProviderHeadingToPickup => TrackingState::ToPickup,
+            default => TrackingState::Active,
+        });
     }
 
     public function cashDebtMinor(ProviderProfile $profile): int
     {
-        $this->assertNothingToCount();
-
-        return 0;
-    }
-
-    private function assertNothingToCount(): void
-    {
-        foreach (self::FUTURE_TABLES as $table) {
-            if (Schema::hasTable($table)) {
-                throw new LogicException("ProviderWorkloadRepository must query [{$table}] now that it exists (P2.3 active job, P3.1 cash debt).");
-            }
-        }
+        return $this->finances->cashDebtMinor($profile);
     }
 }

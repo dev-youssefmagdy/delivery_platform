@@ -2,15 +2,20 @@
 
 namespace App\Repositories\Eloquent\Booking;
 
+use App\DTOs\Booking\BookingAdminFilterData;
 use App\DTOs\Booking\BookingListFilterData;
 use App\Enums\Booking\BookingStatus;
+use App\Enums\Booking\OfferStatus;
 use App\Enums\Catalog\BookingType;
 use App\Enums\Dispatch\DispatchResponse;
 use App\Models\Booking;
+use App\Models\ProviderProfile;
 use App\Models\User;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
+use App\Repositories\Eloquent\Concerns\FiltersByPhone;
 use Carbon\CarbonInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +25,8 @@ use Illuminate\Support\Facades\DB;
  */
 final class BookingRepository extends BaseRepository implements BookingRepositoryInterface
 {
+    use FiltersByPhone;
+
     private const ROUNDED_POINT = "ST_GeomFromText(CONCAT('POINT(', ROUND(ST_Longitude(%1\$s), 2), ' ', ROUND(ST_Latitude(%1\$s), 2), ')'), 4326, 'axis-order=long-lat')";
 
     public function __construct(Booking $model)
@@ -215,6 +222,81 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
 
             return count($ids);
         });
+    }
+
+    public function adminDatatableQuery(BookingAdminFilterData $filters): Builder
+    {
+        return $this->query()
+            ->select(['bookings.id', 'bookings.uuid', 'bookings.code', 'bookings.customer_id', 'bookings.provider_id', 'bookings.service_category_id', 'bookings.city_id', 'bookings.service_zone_id', 'bookings.booking_type', 'bookings.status', 'bookings.proposed_fare_minor', 'bookings.agreed_fare_minor', 'bookings.currency', 'bookings.payment_method', 'bookings.payment_status', 'bookings.service_snapshot', 'bookings.support_flagged_at', 'bookings.search_expires_at', 'bookings.created_at'])
+            ->with(['customer:id,uuid,name,phone_e164', 'provider.user:id,uuid,name,phone_e164', 'city'])
+            ->when($filters->code !== null, static fn (Builder $query) => $query->where('bookings.code', 'like', '%'.addcslashes(strtoupper((string) $filters->code), '%_\\').'%'))
+            ->when($filters->statuses !== [], static fn (Builder $query) => $query->whereIn('bookings.status', array_map(static fn (BookingStatus $status): string => $status->value, $filters->statuses)))
+            ->when($filters->serviceCategoryIds !== [], static fn (Builder $query) => $query->whereIn('bookings.service_category_id', $filters->serviceCategoryIds))
+            ->when($filters->bookingTypes !== [], static fn (Builder $query) => $query->whereIn('bookings.booking_type', array_map(static fn (BookingType $type): string => $type->value, $filters->bookingTypes)))
+            ->when($filters->cityIds !== [], static fn (Builder $query) => $query->whereIn('bookings.city_id', $filters->cityIds))
+            ->when($filters->zoneIds !== [], static fn (Builder $query) => $query->whereIn('bookings.service_zone_id', $filters->zoneIds))
+            ->when($filters->paymentStatuses !== [], static fn (Builder $query) => $query->whereIn('bookings.payment_status', array_map(static fn ($status): string => $status->value, $filters->paymentStatuses)))
+            ->when($filters->paymentMethods !== [], static fn (Builder $query) => $query->whereIn('bookings.payment_method', array_map(static fn ($method): string => $method->value, $filters->paymentMethods)))
+            ->when($filters->from !== null, static fn (Builder $query) => $query->where('bookings.created_at', '>=', $filters->from?->startOfDay()))
+            ->when($filters->to !== null, static fn (Builder $query) => $query->where('bookings.created_at', '<=', $filters->to?->endOfDay()))
+            ->when($filters->customerPhone !== null, fn (Builder $query) => $query->whereHas('customer', fn (Builder $inner) => $this->applyPhoneFilter($inner, (string) $filters->customerPhone)))
+            ->when($filters->providerPhone !== null, fn (Builder $query) => $query->whereHas('provider.user', fn (Builder $inner) => $this->applyPhoneFilter($inner, (string) $filters->providerPhone)))
+            ->when($filters->providerId !== null, static fn (Builder $query) => $query->where('bookings.provider_id', $filters->providerId))
+            ->when($filters->hasIncident !== null, static function (Builder $query) use ($filters): void {
+                $incident = static fn ($sub) => $sub->select(DB::raw(1))->from('booking_reports')->whereColumn('booking_reports.booking_id', 'bookings.id');
+
+                $filters->hasIncident
+                    ? $query->where(static fn (Builder $inner) => $inner->whereNotNull('bookings.support_flagged_at')->orWhereExists($incident))
+                    : $query->whereNull('bookings.support_flagged_at')->whereNotExists($incident);
+            });
+    }
+
+    public function noOfferQueueQuery(CarbonInterface $searchingBefore, CarbonInterface $expiredSince): Builder
+    {
+        return $this->query()
+            ->select(['bookings.id', 'bookings.uuid', 'bookings.code', 'bookings.customer_id', 'bookings.service_category_id', 'bookings.city_id', 'bookings.booking_type', 'bookings.status', 'bookings.proposed_fare_minor', 'bookings.currency', 'bookings.service_snapshot', 'bookings.search_expires_at', 'bookings.created_at', 'bookings.updated_at'])
+            ->selectRaw('(select count(*) from booking_dispatch_recipients r where r.booking_id = bookings.id) as recipients_count')
+            ->selectRaw('(select count(*) from booking_offers o where o.booking_id = bookings.id) as offers_count')
+            ->with(['customer:id,uuid,name,phone_e164', 'city'])
+            ->where(static fn (Builder $query) => $query
+                ->where(static fn (Builder $searching) => $searching
+                    ->whereIn('bookings.status', BookingStatus::searchingValues())
+                    ->whereNull('bookings.provider_id')
+                    ->where('bookings.created_at', '<=', $searchingBefore)
+                    ->whereNotExists(static fn ($sub) => $sub->select(DB::raw(1))->from('booking_offers')->whereColumn('booking_offers.booking_id', 'bookings.id')->whereIn('booking_offers.status', OfferStatus::activeValues())))
+                ->orWhere(static fn (Builder $expired) => $expired
+                    ->where('bookings.status', BookingStatus::ExpiredNoProvider->value)
+                    ->where('bookings.updated_at', '>=', $expiredSince)));
+    }
+
+    public function jobHistoryForProvider(ProviderProfile $profile, int $perPage): LengthAwarePaginator
+    {
+        return $this->query()
+            ->with(['customer:id,uuid,name', 'stops'])
+            ->where('provider_id', $profile->id)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate($perPage);
+    }
+
+    public function completedTotalsForProvider(int $providerProfileId): array
+    {
+        return DB::table('bookings')
+            ->where('provider_id', $providerProfileId)
+            ->whereIn('status', [BookingStatus::Completed->value, BookingStatus::CompletedPendingPayment->value])
+            ->groupBy('currency')
+            ->selectRaw('currency, count(*) as jobs, coalesce(sum(final_fare_minor), 0) as gross_minor')
+            ->get()
+            ->map(static fn (object $row): array => ['currency' => (string) $row->currency, 'jobs' => (int) $row->jobs, 'gross_minor' => (int) $row->gross_minor])
+            ->all();
+    }
+
+    public function findForAdmin(string $uuid): ?Booking
+    {
+        return $this->query()
+            ->with(['customer', 'provider.user', 'serviceCategory', 'city', 'serviceZone', 'stops'])
+            ->where('uuid', $uuid)
+            ->first();
     }
 
     /**

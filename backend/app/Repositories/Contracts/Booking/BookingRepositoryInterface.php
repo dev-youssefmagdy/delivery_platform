@@ -2,11 +2,14 @@
 
 namespace App\Repositories\Contracts\Booking;
 
+use App\DTOs\Booking\BookingAdminFilterData;
 use App\DTOs\Booking\BookingListFilterData;
 use App\Models\Booking;
+use App\Models\ProviderProfile;
 use App\Models\User;
 use App\Repositories\Contracts\BaseRepositoryInterface;
 use Carbon\CarbonInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -117,4 +120,39 @@ interface BookingRepositoryInterface extends BaseRepositoryInterface
      * @return int bookings scrubbed
      */
     public function scrubPersonalDataForCustomer(int $customerId): int;
+
+    /**
+     * Rows of the admin Bookings listing, filtered (Plan Appendix C). Selects the listing columns only; contact data is
+     * read through the `customer` and `provider.user` relations and shown masked.
+     *
+     * @return Builder<Booking>
+     */
+    public function adminDatatableQuery(BookingAdminFilterData $filters): Builder;
+
+    /**
+     * The no-offer queue: bookings still searching since before `$searchingBefore` without a provider, plus bookings
+     * that ended as `expired_no_provider` since `$expiredSince`.
+     *
+     * @return Builder<Booking>
+     */
+    public function noOfferQueueQuery(CarbonInterface $searchingBefore, CarbonInterface $expiredSince): Builder;
+
+    /**
+     * A page of the provider's jobs for the driver app, newest first (bookings the provider holds or held to the end).
+     *
+     * @return LengthAwarePaginator<int, Booking>
+     */
+    public function jobHistoryForProvider(ProviderProfile $profile, int $perPage): LengthAwarePaginator;
+
+    /**
+     * Completed jobs of the provider and the sum of their final fares per currency (gross, before any commission).
+     *
+     * @return list<array{currency: string, jobs: int, gross_minor: int}>
+     */
+    public function completedTotalsForProvider(int $providerProfileId): array;
+
+    /**
+     * The booking with every relation the admin show page needs.
+     */
+    public function findForAdmin(string $uuid): ?Booking;
 }

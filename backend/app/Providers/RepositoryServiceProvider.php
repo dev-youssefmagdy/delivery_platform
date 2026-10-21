@@ -47,6 +47,7 @@ use App\Repositories\Contracts\Identity\UserDeviceRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserRepositoryInterface;
 use App\Repositories\Contracts\Location\ProviderLastLocationRepositoryInterface;
 use App\Repositories\Contracts\Location\ProviderLocationRepositoryInterface;
+use App\Repositories\Contracts\Operations\OperationsMapRepositoryInterface;
 use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
 use App\Repositories\Contracts\Pricing\FarePolicyRepositoryInterface;
 use App\Repositories\Contracts\Provider\DocumentRequirementRepositoryInterface;
@@ -90,6 +91,7 @@ use App\Repositories\Eloquent\Customers\CustomerMessageRepository;
 use App\Repositories\Eloquent\Customers\CustomerRepository;
 use App\Repositories\Eloquent\Demo\DemoItemRepository;
 use App\Repositories\Eloquent\Dispatch\BookingParticipationRepository;
+use App\Repositories\Eloquent\Operations\OperationsMapRepository;
 use App\Repositories\Eloquent\Dispatch\DispatchRecipientRepository;
 use App\Repositories\Eloquent\Finance\PreLedgerFinancialPositionRepository;
 use App\Repositories\Eloquent\Geography\CityRepository;
@@ -180,6 +182,7 @@ class RepositoryServiceProvider extends ServiceProvider
         ProviderLastLocationRepositoryInterface::class => ProviderLastLocationRepository::class,
         DispatchRecipientRepositoryInterface::class => DispatchRecipientRepository::class,
         BookingParticipationRepositoryInterface::class => BookingParticipationRepository::class,
+        OperationsMapRepositoryInterface::class => OperationsMapRepository::class,
         BookingRepositoryInterface::class => BookingRepository::class,
         BookingStopRepositoryInterface::class => BookingStopRepository::class,
         BookingStatusEventRepositoryInterface::class => BookingStatusEventRepository::class,

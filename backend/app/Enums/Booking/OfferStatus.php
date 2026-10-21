@@ -3,13 +3,15 @@
 namespace App\Enums\Booking;
 
 use App\Enums\Concerns\EnumHelpers;
+use App\Enums\Contracts\HasColor;
 use App\Enums\Contracts\HasLabel;
+use App\Enums\Support\BadgeColor;
 
 /**
  * The offer lifecycle (SRS §8.2, Plan §7.2). `submitted` and `counter_offered` are the two active statuses; every
  * other status is final. Only the offer services change it.
  */
-enum OfferStatus: string implements HasLabel
+enum OfferStatus: string implements HasColor, HasLabel
 {
     use EnumHelpers;
 
@@ -62,5 +64,16 @@ enum OfferStatus: string implements HasLabel
     public function label(): string
     {
         return __("enums.offer_status.{$this->value}");
+    }
+
+    public function color(): BadgeColor
+    {
+        return match ($this) {
+            self::Submitted, self::CounterOffered => BadgeColor::Info,
+            self::AcceptedByCustomer => BadgeColor::Success,
+            self::RejectedByCustomer, self::LostBookingAssigned => BadgeColor::Neutral,
+            self::WithdrawnByProvider, self::Expired => BadgeColor::Warning,
+            self::InvalidatedRequestChanged, self::InvalidatedProviderUnavailable => BadgeColor::Danger,
+        };
     }
 }

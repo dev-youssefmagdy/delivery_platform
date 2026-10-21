@@ -2,6 +2,9 @@
 
 namespace App\Repositories\Eloquent\Booking;
 
+use App\DTOs\Booking\OfferFilterData;
+use App\DTOs\Operations\OfferStats;
+use App\Enums\Booking\OfferAnomaly;
 use App\Enums\Booking\OfferStatus;
 use App\Models\BookingOffer;
 use App\Models\BookingOfferVersion;
@@ -9,8 +12,10 @@ use App\Repositories\Contracts\Booking\OfferRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use App\Support\Money\Money;
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @extends BaseRepository<BookingOffer>
@@ -225,5 +230,78 @@ final class OfferRepository extends BaseRepository implements OfferRepositoryInt
     public function loadCard(BookingOffer $offer): BookingOffer
     {
         return $offer->load(['currentVersion', 'providerProfile.user', 'vehicle.vehicleCategory']);
+    }
+
+    public function adminDatatableQuery(OfferFilterData $filters): Builder
+    {
+        return $this->query()
+            ->join('bookings', 'bookings.id', '=', 'booking_offers.booking_id')
+            ->leftJoin('booking_offer_versions as current_version', 'current_version.id', '=', 'booking_offers.current_version_id')
+            ->select('booking_offers.*')
+            ->selectRaw('bookings.code as booking_code, bookings.uuid as booking_uuid, bookings.currency as booking_currency, bookings.proposed_fare_minor as customer_fare_minor, current_version.amount_minor as amount_minor, current_version.version as version_number')
+            ->selectRaw($this->anomalyExpression().' as anomaly')
+            ->with(['providerProfile.user:id,uuid,name,phone_e164'])
+            ->when($filters->bookingCode !== null, static fn (Builder $query) => $query->where('bookings.code', 'like', '%'.addcslashes(strtoupper((string) $filters->bookingCode), '%_\\').'%'))
+            ->when($filters->providerIds !== [], static fn (Builder $query) => $query->whereIn('booking_offers.provider_profile_id', $filters->providerIds))
+            ->when($filters->statuses !== [], static fn (Builder $query) => $query->whereIn('booking_offers.status', array_map(static fn (OfferStatus $status): string => $status->value, $filters->statuses)))
+            ->when($filters->kinds !== [], static fn (Builder $query) => $query->whereIn('booking_offers.kind', array_map(static fn ($kind): string => $kind->value, $filters->kinds)))
+            ->when($filters->amountMinMinor !== null, static fn (Builder $query) => $query->where('current_version.amount_minor', '>=', $filters->amountMinMinor))
+            ->when($filters->amountMaxMinor !== null, static fn (Builder $query) => $query->where('current_version.amount_minor', '<=', $filters->amountMaxMinor))
+            ->when($filters->anomaly instanceof OfferAnomaly, fn (Builder $query) => $query->whereRaw('('.$this->anomalyExpression().') = ?', [$filters->anomaly?->value]))
+            ->when($filters->from !== null, static fn (Builder $query) => $query->where('booking_offers.created_at', '>=', $filters->from?->startOfDay()))
+            ->when($filters->to !== null, static fn (Builder $query) => $query->where('booking_offers.created_at', '<=', $filters->to?->endOfDay()));
+    }
+
+    public function statsFor(OfferFilterData $filters): OfferStats
+    {
+        $base = DB::query()->fromSub($this->adminDatatableQuery($filters)->reorder()->toBase(), 'monitored');
+
+        $row = (clone $base)->selectRaw(
+            'count(*) as submitted, '
+            .'coalesce(sum(status = ?), 0) as selected, coalesce(sum(status = ?), 0) as expired, coalesce(sum(status = ?), 0) as withdrawn, '
+            .'coalesce(sum(anomaly is not null), 0) as flagged, count(distinct booking_id) as bookings_with_offers',
+            [OfferStatus::AcceptedByCustomer->value, OfferStatus::Expired->value, OfferStatus::WithdrawnByProvider->value],
+        )->first();
+
+        $bookings = DB::table('bookings')
+            ->when($filters->from !== null, static fn ($query) => $query->where('created_at', '>=', $filters->from?->startOfDay()))
+            ->when($filters->to !== null, static fn ($query) => $query->where('created_at', '<=', $filters->to?->endOfDay()))
+            ->count();
+
+        return new OfferStats(
+            submitted: (int) ($row->submitted ?? 0),
+            selected: (int) ($row->selected ?? 0),
+            expired: (int) ($row->expired ?? 0),
+            withdrawn: (int) ($row->withdrawn ?? 0),
+            flagged: (int) ($row->flagged ?? 0),
+            bookingsWithOffers: (int) ($row->bookings_with_offers ?? 0),
+            bookingsTotal: $bookings,
+        );
+    }
+
+    public function allForBookingWithVersions(int $bookingId): Collection
+    {
+        return $this->query()
+            ->where('booking_id', $bookingId)
+            ->with(['versions', 'providerProfile.user:id,uuid,name,phone_e164', 'vehicle.vehicleCategory'])
+            ->orderBy('id')
+            ->get();
+    }
+
+    /**
+     * SQL of the anomaly flag: the offer's current amount against `low_minor` / `high_minor` of the reference estimate
+     * stored on the booking. Ratios come from config (floats formatted here, never from user input).
+     */
+    private function anomalyExpression(): string
+    {
+        $low = number_format((float) config('booking.operations.anomaly_low_ratio', 0.5), 4, '.', '');
+        $high = number_format((float) config('booking.operations.anomaly_high_ratio', 2.0), 4, '.', '');
+        $refLow = "CAST(JSON_UNQUOTE(JSON_EXTRACT(bookings.reference_estimate, '\$.low_minor')) AS UNSIGNED)";
+        $refHigh = "CAST(JSON_UNQUOTE(JSON_EXTRACT(bookings.reference_estimate, '\$.high_minor')) AS UNSIGNED)";
+
+        return "CASE WHEN current_version.amount_minor IS NULL THEN NULL "
+            ."WHEN {$refLow} IS NOT NULL AND current_version.amount_minor < {$refLow} * {$low} THEN '".OfferAnomaly::VeryLow->value."' "
+            ."WHEN {$refHigh} IS NOT NULL AND current_version.amount_minor > {$refHigh} * {$high} THEN '".OfferAnomaly::VeryHigh->value."' "
+            .'ELSE NULL END';
     }
 }

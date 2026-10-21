@@ -63,4 +63,24 @@ return [
         'free_grace_seconds' => 120,
         'free_wait_seconds' => 300,
     ],
+
+    // Admin operations (P2.8): the no-offer queue, offer anomaly flags and the live map.
+    'operations' => [
+        // A booking still searching for longer than this many seconds without a selected provider is listed in the no-offer queue.
+        'no_offer_after_seconds' => (int) env('BOOKING_NO_OFFER_AFTER_SECONDS', 120),
+        // ...and so is one that ended as `expired_no_provider` within the last N hours.
+        'expired_window_hours' => (int) env('BOOKING_NO_OFFER_EXPIRED_HOURS', 24),
+        // Longest extension of a search window an operator may grant in one action (seconds).
+        'extend_search_max_seconds' => 1800,
+        'extend_search_default_seconds' => 300,
+        // An offer below `low_ratio` x the reference low, or above `high_ratio` x the reference high, is flagged.
+        'anomaly_low_ratio' => (float) env('OFFERS_ANOMALY_LOW_RATIO', 0.5),
+        'anomaly_high_ratio' => (float) env('OFFERS_ANOMALY_HIGH_RATIO', 2.0),
+        // Live map: markers per layer, freshness of a provider position and the minimum gap between two published moves.
+        'map_limit' => 1500,
+        'map_position_fresh_seconds' => 180,
+        'map_move_throttle_seconds' => 10,
+        // Provider job history page size (API).
+        'history_per_page' => 20,
+    ],
 ];

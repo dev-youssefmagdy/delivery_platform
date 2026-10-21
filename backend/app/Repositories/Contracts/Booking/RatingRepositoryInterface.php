@@ -3,6 +3,8 @@
 namespace App\Repositories\Contracts\Booking;
 
 use App\Models\BookingRating;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 interface RatingRepositoryInterface
 {
@@ -24,4 +26,18 @@ interface RatingRepositoryInterface
      * Writes the computed aggregate onto the rated profile (`rating_avg`, `rating_count`).
      */
     public function storeAggregate(string $rateeType, int $rateeId, string $average, int $count): void;
+
+    /**
+     * Both sides' ratings of the booking (admin show page).
+     *
+     * @return Collection<int, BookingRating>
+     */
+    public function forBooking(int $bookingId): Collection;
+
+    /**
+     * Ratings received by the customer or provider, with the booking code (ratings tabs of the admin).
+     *
+     * @return Builder<BookingRating>
+     */
+    public function datatableQueryForRatee(string $rateeType, int $rateeId): Builder;
 }

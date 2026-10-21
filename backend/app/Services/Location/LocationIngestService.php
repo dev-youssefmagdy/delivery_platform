@@ -7,6 +7,7 @@ use App\DTOs\Location\LocationSample;
 use App\Enums\Location\LocationAnomaly;
 use App\Enums\Location\TrackingState;
 use App\Enums\Settings\SettingKey;
+use App\Events\Realtime\ProviderPositionRecorded;
 use App\Events\Realtime\TripLocationUpdated;
 use App\Exceptions\ConflictException;
 use App\Models\ProviderLastLocation;
@@ -117,6 +118,7 @@ final class LocationIngestService
 
             if ($profile->is_online) {
                 $this->index->publish($profile, $stored);
+                ProviderPositionRecorded::dispatch($profile->uuid, $stored->point->lat, $stored->point->lng, $active !== null);
             }
 
             if ($active !== null) {

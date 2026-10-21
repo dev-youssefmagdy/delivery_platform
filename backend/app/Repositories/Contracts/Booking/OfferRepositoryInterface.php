@@ -2,12 +2,15 @@
 
 namespace App\Repositories\Contracts\Booking;
 
+use App\DTOs\Booking\OfferFilterData;
+use App\DTOs\Operations\OfferStats;
 use App\Enums\Booking\OfferStatus;
 use App\Models\BookingOffer;
 use App\Models\BookingOfferVersion;
 use App\Repositories\Contracts\BaseRepositoryInterface;
 use App\Support\Money\Money;
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 /**
@@ -123,4 +126,24 @@ interface OfferRepositoryInterface extends BaseRepositoryInterface
     public function activeOfProviderOn(int $providerProfileId, array $bookingIds): Collection;
 
     public function loadCard(BookingOffer $offer): BookingOffer;
+
+    /**
+     * Rows of the Offers monitor: each offer with its booking code, its current amount and the anomaly flag
+     * (`very_low` / `very_high` against the reference estimate stored on the booking, or null).
+     *
+     * @return Builder<BookingOffer>
+     */
+    public function adminDatatableQuery(OfferFilterData $filters): Builder;
+
+    /**
+     * Conversion numbers for the same filters (submitted to selected, response rate, flagged).
+     */
+    public function statsFor(OfferFilterData $filters): OfferStats;
+
+    /**
+     * Every offer of the booking with all of its versions, oldest first, for the admin show page.
+     *
+     * @return Collection<int, BookingOffer>
+     */
+    public function allForBookingWithVersions(int $bookingId): Collection;
 }

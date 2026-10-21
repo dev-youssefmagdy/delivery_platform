@@ -6,6 +6,8 @@ use App\Enums\Common\ActorType;
 use App\Enums\Reviews\ModerationStatus;
 use App\Models\BookingRating;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 final class RatingRepository implements RatingRepositoryInterface
@@ -37,5 +39,20 @@ final class RatingRepository implements RatingRepositoryInterface
         $table = $rateeType === ActorType::Provider->value ? 'provider_profiles' : 'users';
 
         DB::table($table)->where('id', $rateeId)->update(['rating_avg' => $average, 'rating_count' => $count]);
+    }
+
+    public function forBooking(int $bookingId): Collection
+    {
+        return BookingRating::query()->where('booking_id', $bookingId)->orderBy('id')->get();
+    }
+
+    public function datatableQueryForRatee(string $rateeType, int $rateeId): Builder
+    {
+        return BookingRating::query()
+            ->join('bookings', 'bookings.id', '=', 'booking_ratings.booking_id')
+            ->select('booking_ratings.*')
+            ->selectRaw('bookings.code as booking_code, bookings.uuid as booking_uuid')
+            ->where('booking_ratings.ratee_type', $rateeType)
+            ->where('booking_ratings.ratee_id', $rateeId);
     }
 }

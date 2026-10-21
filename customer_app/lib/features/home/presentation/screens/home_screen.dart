@@ -1,91 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:platform_core/platform_core.dart';
 
 import '../../../../app/l10n/generated/app_localizations.dart';
-import '../../../../app/router.dart';
-import '../../../auth/presentation/providers/auth_providers.dart';
-import '../../../auth/presentation/widgets/auth_error_text.dart';
-import '../../../catalog/presentation/widgets/service_picker.dart';
-import '../../../map/presentation/widgets/trip_location_panel.dart';
+import '../../../account/presentation/screens/account_screen.dart';
+import '../../../trips/presentation/screens/trips_screen.dart';
+import '../widgets/home_tab.dart';
 
-/// Post-login landing. Only reachable when signed in with a complete profile
-/// and current consents (router guard). Shows the service catalog (family and
-/// category selection, P1.4); trip points come from the map panel (P1.5). Hosts the language switch, sign-out and account deletion.
-class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+/// One bottom-navigation destination.
+class ShellTabSpec {
+  const ShellTabSpec({
+    required this.key,
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+    required this.builder,
+    this.featureKey,
+  });
 
-  @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+  final String key;
+  final IconData icon;
+  final IconData selectedIcon;
+  final String Function(AppLocalizations l10n) label;
+  final WidgetBuilder builder;
+
+  /// Server feature flag (`GET /config/app` `features`) that must be on for
+  /// the tab to exist. Wallet and Offers join here with their flags in P3.8;
+  /// until a flag is on the tab is not shown (no placeholder screens).
+  final String? featureKey;
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
-  // One key per deletion intent, kept across retries (Plan §6.2).
-  String? _deletionKey;
+final shellTabSpecs = <ShellTabSpec>[
+  ShellTabSpec(
+    key: 'home',
+    icon: Icons.home_outlined,
+    selectedIcon: Icons.home,
+    label: (l) => l.navHome,
+    builder: (_) => const HomeTab(),
+  ),
+  ShellTabSpec(
+    key: 'trips',
+    icon: Icons.history,
+    selectedIcon: Icons.history,
+    label: (l) => l.navTrips,
+    builder: (_) => const TripsScreen(),
+  ),
+  ShellTabSpec(
+    key: 'account',
+    icon: Icons.person_outline,
+    selectedIcon: Icons.person,
+    label: (l) => l.navAccount,
+    builder: (_) => const AccountScreen(),
+  ),
+];
 
-  Future<void> _delete() async {
-    final l10n = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
-    final confirmed = await showConfirmSheet(
-      context,
-      title: l10n.deleteAccountTitle,
-      message: l10n.deleteAccountBody,
-      confirmLabel: l10n.deleteAccountConfirm,
-      cancelLabel: l10n.actionCancel,
-      destructive: true,
-    );
-    if (!confirmed || !mounted) return;
-    final key = _deletionKey ??= newIdempotencyKey();
-    try {
-      await ref.read(authActionsProvider).requestDeletion(key);
-      _deletionKey = null;
-    } on Object catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(authErrorText(l10n, e))));
-    }
-  }
+class ShellTabNotifier extends Notifier<String> {
+  @override
+  String build() => 'home';
+
+  void select(String key) => state = key;
+}
+
+final shellTabProvider = NotifierProvider<ShellTabNotifier, String>(
+  ShellTabNotifier.new,
+);
+
+/// Post-login shell (router guard: signed in, profile complete, consents
+/// current): bottom navigation over Home, My Trips and Account.
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key, this.enabledFeatures});
+
+  /// Feature flags override for tests; the app reads them from the config.
+  final bool Function(String featureKey)? enabledFeatures;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final name = ref.watch(meProvider).value?.name;
+    final tabs = [
+      for (final t in shellTabSpecs)
+        if (t.featureKey == null || (enabledFeatures?.call(t.featureKey!) ?? false))
+          t,
+    ];
+    final selectedKey = ref.watch(shellTabProvider);
+    final index = tabs.indexWhere((t) => t.key == selectedKey).clamp(0, tabs.length - 1);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.homeTitle)),
-      body: ListView(
-        children: [
-          if (name != null) ListTile(title: Text(l10n.homeGreeting(name))),
-          const TripLocationPanel(),
-          const ServicePicker(),
-          ListTile(
-            key: const Key('home-saved-places'),
-            minTileHeight: context.density.minTouchTarget,
-            leading: const Icon(Icons.bookmarks_outlined),
-            title: Text(l10n.homeSavedPlaces),
-            onTap: () => context.push(Routes.savedPlaces),
-          ),
-          ListTile(
-            minTileHeight: context.density.minTouchTarget,
-            leading: const Icon(Icons.language),
-            title: Text(l10n.homeChangeLanguage),
-            onTap: () => context.go('${Routes.language}?from=settings'),
-          ),
-          ListTile(
-            key: const Key('home-logout'),
-            minTileHeight: context.density.minTouchTarget,
-            leading: const Icon(Icons.logout),
-            title: Text(l10n.homeLogout),
-            onTap: () => ref.read(authActionsProvider).logout(),
-          ),
-          ListTile(
-            key: const Key('home-delete-account'),
-            minTileHeight: context.density.minTouchTarget,
-            leading: Icon(
-              Icons.delete_outline,
-              color: Theme.of(context).colorScheme.error,
+      body: IndexedStack(
+        index: index,
+        children: [for (final t in tabs) t.builder(context)],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: index,
+        onDestinationSelected: (i) =>
+            ref.read(shellTabProvider.notifier).select(tabs[i].key),
+        destinations: [
+          for (final t in tabs)
+            NavigationDestination(
+              key: Key('nav-${t.key}'),
+              icon: Icon(t.icon),
+              selectedIcon: Icon(t.selectedIcon),
+              label: t.label(l10n),
             ),
-            title: Text(l10n.homeDeleteAccount),
-            onTap: _delete,
-          ),
         ],
       ),
     );

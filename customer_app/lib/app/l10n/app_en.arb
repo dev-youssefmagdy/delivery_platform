@@ -312,5 +312,459 @@
   "savedPlaceDelete": "Delete",
   "savedPlaceTypeTaken": "You already saved a place of this type. Delete it first.",
   "savedPlaceLimit": "You reached the maximum number of saved places.",
-  "homeSavedPlaces": "Saved places"
+  "homeSavedPlaces": "Saved places",
+  "navHome": "Home",
+  "navTrips": "My trips",
+  "navAccount": "Account",
+  "homeRequest": "Request now",
+  "homeRequestHintPickup": "Choose your pickup first.",
+  "homeRequestHintDestination": "Choose your destination to continue.",
+  "homeRequestHintService": "Choose a service to continue.",
+  "homeRequestHintActive": "You already have an active request. Finish or cancel it before requesting again.",
+  "homeActiveBooking": "Your current request",
+  "homeActiveBookingOpen": "View",
+  "bkFormTitle": "Confirm your request",
+  "bkFormIncompleteTitle": "Trip details are incomplete",
+  "bkFormIncompleteBody": "Choose pickup, destination and service on the home screen.",
+  "bkFormBackHome": "Go back",
+  "bkFormRouteLabel": "Route map",
+  "bkEstimateFailed": "Could not calculate the route right now.",
+  "bkRouteFacts": "{km} km · about {minutes} min",
+  "@bkRouteFacts": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bkPassengers": "Passengers",
+  "bkGuidanceTitle": "Reference price (guidance only)",
+  "bkGuidanceRange": "From {low} to {high}",
+  "@bkGuidanceRange": {
+    "placeholders": {
+      "low": {
+        "type": "String"
+      },
+      "high": {
+        "type": "String"
+      }
+    }
+  },
+  "bkGuidanceRecommended": "Suggested price: {fare}",
+  "@bkGuidanceRecommended": {
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      }
+    }
+  },
+  "bkGuidanceFactors": "How it is calculated",
+  "bkGuidanceNotice": "This is a reference estimate only; you choose the fare you offer.",
+  "bkGuidanceUnavailable": "No reference price is available for this service. Set the fare that suits you.",
+  "bkFactorBase": "Base fare",
+  "bkFactorDistance": "Distance",
+  "bkFactorDuration": "Duration",
+  "bkFactorStops": "Stops",
+  "bkFactorMinimum": "Minimum fare",
+  "bkFareTitle": "Your offered fare",
+  "bkFareLabel": "Fare ({currency})",
+  "@bkFareLabel": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareRequired": "Enter the fare you offer.",
+  "bkFareInvalid": "The fare is not valid.",
+  "bkFareBelowMin": "The fare is below the minimum ({min}).",
+  "@bkFareBelowMin": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareAboveMax": "The fare is above the maximum ({max}).",
+  "@bkFareAboveMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareBoundsBoth": "Allowed from {min} to {max}",
+  "@bkFareBoundsBoth": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareBoundsMin": "Minimum {min}",
+  "@bkFareBoundsMin": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareBoundsMax": "Maximum {max}",
+  "@bkFareBoundsMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "bkPaymentTitle": "Payment method",
+  "bkPaymentCash": "Cash",
+  "bkPaymentOther": "Other method",
+  "bkPaymentCashUnavailable": "Cash is not available for this service.",
+  "bkSummaryTitle": "Request summary",
+  "bkSummaryFare": "Fare: {fare}",
+  "@bkSummaryFare": {
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      }
+    }
+  },
+  "bkSummaryFareNone": "not set yet",
+  "bkSummaryPayment": "Payment: {method}",
+  "@bkSummaryPayment": {
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "bkSubmit": "Request now",
+  "bkStatusDraft": "Draft",
+  "bkStatusSearching": "Looking for offers",
+  "bkStatusOffersReceived": "Offers received",
+  "bkStatusExpired": "No provider found",
+  "bkStatusProviderSelected": "Provider selected",
+  "bkStatusHeading": "Provider is on the way",
+  "bkStatusArrived": "Provider has arrived",
+  "bkStatusInProgress": "Trip in progress",
+  "bkStatusDeliveryFailed": "Delivery attempt failed",
+  "bkStatusCompletedPending": "Completed, payment pending",
+  "bkStatusCompleted": "Completed",
+  "bkStatusDisputed": "Disputed",
+  "bkStatusCancelledCustomer": "Cancelled by you",
+  "bkStatusCancelledProvider": "Cancelled by the provider",
+  "bkStatusCancelledOps": "Cancelled by operations",
+  "bkStatusUnknown": "Unknown status",
+  "bkScreenTitle": "Request",
+  "bkYourFare": "Your offered fare",
+  "bkAgreedFare": "Agreed fare",
+  "bkSearching": "Looking for nearby providers…",
+  "bkSearchingLeft": "Searching… {time} left",
+  "@bkSearchingLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bkSearchEnding": "The search is ending…",
+  "bkOffersTitle": "Offers",
+  "bkSortPrice": "Lowest price",
+  "bkSortEta": "Fastest",
+  "bkSortRating": "Top rated",
+  "bkEditFare": "Edit fare",
+  "bkCancelBooking": "Cancel request",
+  "bkCancelTrip": "Cancel trip",
+  "bkWaitingOffersTitle": "Waiting for offers",
+  "bkWaitingOffersBody": "We sent your request to nearby providers. Offers appear here as soon as they arrive.",
+  "bkNoOffersTitle": "No offers yet",
+  "bkNoOffersBody": "The search window ended without offers. You can edit the fare or cancel.",
+  "bkNoOffersNoGuarantee": "Raising the fare does not guarantee offers.",
+  "bkOfferProviderFallback": "Provider",
+  "bkOfferCounter": "Counter-offer",
+  "bkOfferAcceptsFare": "Accepts your fare",
+  "bkOfferAccept": "Accept",
+  "bkOfferReject": "Decline",
+  "bkOfferEta": "Arrives in {minutes} min",
+  "@bkOfferEta": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bkOfferDistance": "{km} km away",
+  "@bkOfferDistance": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "bkOfferTrips": "{count} trips",
+  "@bkOfferTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bkOfferRating": "Rating {avg} ({count})",
+  "@bkOfferRating": {
+    "placeholders": {
+      "avg": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bkOfferRatingNew": "{avg} ({count}) early rating",
+  "@bkOfferRatingNew": {
+    "placeholders": {
+      "avg": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bkOfferExpiresIn": "Offer expires in {time}",
+  "@bkOfferExpiresIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bkOfferExpired": "This offer has expired",
+  "bkAcceptTitle": "Accept this offer?",
+  "bkAcceptBody": "This provider will be assigned to your trip.",
+  "bkAcceptBodyPrice": "Accept {name}'s offer at {price}?",
+  "@bkAcceptBodyPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bkEditFareTitle": "Edit your fare",
+  "bkEditFareWarn": "The search will restart with the new fare.",
+  "bkEditFareWarnOffers": "Note: changing the fare invalidates the current offers and restarts the search.",
+  "bkEditFareNoGuarantee": "Raising the fare does not guarantee offers.",
+  "bkEditFareSave": "Save fare",
+  "bkFareUpdated": "Fare updated and search restarted.",
+  "bkLiveMapLabel": "Live trip map",
+  "bkLocationWaiting": "Waiting for the provider's location…",
+  "bkLocationUpdated": "Location updated {seconds} s ago",
+  "@bkLocationUpdated": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "bkLocationStale": "The provider's location is old ({minutes} min or more). The connection may be weak.",
+  "@bkLocationStale": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bkSupportFlagged": "We noticed something that needs review and our support team is aware.",
+  "bkPinTitle": "Trip start PIN",
+  "bkPinHint": "Tell this PIN to the provider when you board. Do not share it with anyone else.",
+  "bkPinLocked": "Starting is locked after wrong PIN attempts. Contact support.",
+  "bkFreeWaitLeft": "Free waiting time left {time}",
+  "@bkFreeWaitLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFreeWaitOver": "Free waiting time is over",
+  "bkStepSelected": "Provider selected",
+  "bkStepHeading": "On the way to you",
+  "bkStepArrived": "Arrived at pickup",
+  "bkStepStarted": "Trip started",
+  "bkTimelineTitle": "Trip progress",
+  "bkShareTrip": "Share trip",
+  "bkShareStop": "Stop sharing",
+  "bkShareStopped": "Trip sharing stopped.",
+  "bkShareMessage": "Follow my trip live: {url}",
+  "@bkShareMessage": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "bkSafety": "Safety",
+  "bkSafetyTitle": "Safety and help",
+  "bkSafetyNotice": "The full SOS feature is coming soon. In danger, call your local emergency services directly. These are the contacts available now.",
+  "bkSafetyYourContact": "Your emergency contact",
+  "bkSafetySupport": "Platform support",
+  "bkSafetyWhatsapp": "Support WhatsApp",
+  "bkSafetyNothingConfigured": "No contacts are set up yet. You can add an emergency contact in your profile.",
+  "bkCancelTitle": "Cancel request",
+  "bkCancelReasonTitle": "Reason for cancelling",
+  "bkCancelNote": "Note (optional)",
+  "bkCancelPickReason": "Choose a reason.",
+  "bkCancelContinue": "Continue",
+  "bkCancelKeep": "Keep my request",
+  "bkCancelFree": "Cancelling now is free.",
+  "bkCancelFeeDue": "Cancellation fee: {fee}",
+  "@bkCancelFeeDue": {
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "bkCancelConfirm": "Confirm cancellation",
+  "bkCancelConfirmFee": "Confirm and accept {fee} fee",
+  "@bkCancelConfirmFee": {
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "bkCancelledTitle": "This request was cancelled",
+  "bkCancelledFee": "Cancellation fee: {fee}",
+  "@bkCancelledFee": {
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "bkCancelledNoFee": "No fee.",
+  "bkReasonChangedMind": "I changed my mind",
+  "bkReasonWrongPickup": "Wrong pickup point",
+  "bkReasonFoundAnother": "I found another ride",
+  "bkReasonDriverTooFar": "Provider is too far",
+  "bkReasonDriverAsked": "Provider asked me to cancel",
+  "bkReasonWaitedTooLong": "I waited too long",
+  "bkReasonOther": "Other reason",
+  "bkNoProviderTitle": "We could not find a provider",
+  "bkNoProviderBody": "The search ended without offers. You can try again or change the fare.",
+  "bkTryAgain": "Try again",
+  "bkEditPriceAgain": "Edit fare and retry",
+  "bkRebook": "Book again",
+  "bkReceiptTitle": "Receipt",
+  "bkReceiptCode": "Request number",
+  "bkReceiptTotal": "Total",
+  "bkReceiptPayment": "Payment method",
+  "bkReceiptPaymentStatus": "Payment status",
+  "bkReceiptDuration": "Trip duration",
+  "bkReceiptDistance": "Planned distance",
+  "bkMinutes": "{count} min",
+  "@bkMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bkKilometres": "{km} km",
+  "@bkKilometres": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "bkPaymentStatusCashDue": "Cash due to the provider",
+  "bkPaymentStatusPaid": "Paid",
+  "bkPaymentStatusPending": "Pending",
+  "bkPaymentStatusOther": "Not specified",
+  "bkRatingTitle": "Rate your provider",
+  "bkRatingPickStars": "Choose a star rating.",
+  "bkRatingComment": "Private comment (optional)",
+  "bkRatingSubmit": "Submit rating",
+  "bkRatingThanks": "Thanks for your rating.",
+  "bkRating1": "Poor",
+  "bkRating2": "Fair",
+  "bkRating3": "Good",
+  "bkRating4": "Very good",
+  "bkRating5": "Excellent",
+  "bkTagProfessional": "Professional",
+  "bkTagCleanVehicle": "Clean vehicle",
+  "bkTagSafeDriving": "Safe driving",
+  "bkTagGoodCommunication": "Good communication",
+  "bkTagOnTime": "On time",
+  "bkTagCarefulWithItems": "Careful with items",
+  "bkTagLate": "Late",
+  "bkTagUnsafeDriving": "Unsafe driving",
+  "bkTagRude": "Rude",
+  "bkTagDirtyVehicle": "Dirty vehicle",
+  "bkReportIssue": "Report an issue",
+  "bkReportTitle": "Report an issue",
+  "bkReportDescription": "Describe what happened",
+  "bkReportDescriptionShort": "Write a description of at least 10 characters.",
+  "bkReportPickCategory": "Choose the type of issue.",
+  "bkReportSubmit": "Send report",
+  "bkReportSent": "Your report was sent and will be reviewed.",
+  "bkReportSafety": "Safety",
+  "bkReportBehaviour": "Behaviour",
+  "bkReportFareDispute": "Fare dispute",
+  "bkReportRoute": "Route or delay",
+  "bkReportLostItem": "Lost item",
+  "bkReportOther": "Other",
+  "bkErrOutsideArea": "This location is outside the service area.",
+  "bkErrCategoryUnavailable": "This service is not available at your location right now.",
+  "bkErrDropoffRequired": "A destination is required for this service.",
+  "bkErrFareBelow": "The fare is below the allowed minimum.",
+  "bkErrFareAbove": "The fare is above the allowed maximum.",
+  "bkErrCapacity": "Passengers or load exceed what this service allows.",
+  "bkErrPayment": "This payment method is not available for this service.",
+  "bkErrActiveBooking": "You already have an active request.",
+  "bkErrAccount": "This cannot be done because of your account status. Contact support.",
+  "bkErrMaps": "Maps are temporarily unavailable. Try again shortly.",
+  "bkErrNotEditable": "The request cannot be edited once a provider is chosen or the search ended.",
+  "bkErrChangedMeanwhile": "The request changed in the meantime. We refreshed it; try again.",
+  "bkErrAlreadyAssigned": "A provider was already assigned to this request. We refreshed the screen.",
+  "bkErrOfferExpired": "This offer expired. We refreshed the offers.",
+  "bkErrOfferGone": "This offer is no longer available. We refreshed the offers.",
+  "bkErrSearchEnded": "The search for offers has ended for this request.",
+  "bkErrNotCancellable": "This request can no longer be cancelled.",
+  "bkErrFeeChanged": "The cancellation fee changed. Review the new fee and confirm again.",
+  "bkErrCancelNote": "Add a note explaining the reason.",
+  "bkErrShare": "This trip cannot be shared right now.",
+  "bkErrRatingDone": "You already rated this trip.",
+  "bkErrRatingClosed": "This trip cannot be rated now.",
+  "bkErrReportClosed": "This trip cannot be reported now.",
+  "bkErrReportLimit": "You reached the report limit for this trip.",
+  "bkErrInProgress": "The previous action is still running. Wait a moment.",
+  "tripsTitle": "My trips",
+  "tripsEmptyTitle": "No trips yet",
+  "tripsEmptyBody": "Your requests and past trips will appear here.",
+  "tripsEmptyFilteredTitle": "No trips match these filters",
+  "tripsEmptyFilteredBody": "Try changing or clearing the filters.",
+  "tripsFilter": "Filter",
+  "tripsFilterStatus": "Status",
+  "tripsFilterService": "Service",
+  "tripsFilterAllServices": "All services",
+  "tripsFilterFrom": "From date",
+  "tripsFilterTo": "To date",
+  "tripsStatusCompleted": "Completed",
+  "tripsStatusCancelled": "Cancelled",
+  "tripsStatusActive": "In progress",
+  "tripsApply": "Apply",
+  "tripsClearFilters": "Clear filters"
 }

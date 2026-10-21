@@ -9,6 +9,10 @@ import '../features/auth/presentation/screens/auth_screen.dart';
 import '../features/auth/presentation/screens/consent_screen.dart';
 import '../features/auth/presentation/screens/otp_screen.dart';
 import '../features/auth/presentation/screens/profile_screen.dart';
+import '../features/booking/presentation/screens/booking_form_screen.dart';
+import '../features/booking/presentation/screens/booking_screen.dart';
+import '../features/booking/presentation/screens/cancel_booking_screen.dart';
+import '../features/booking/presentation/screens/report_screen.dart';
 import '../features/catalog/presentation/screens/service_details_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/map/presentation/providers/map_providers.dart';
@@ -34,6 +38,13 @@ abstract final class Routes {
   static const placeSearch = '/place-search';
   static const pinAdjust = '/pin-adjust';
   static const savedPlaces = '/saved-places';
+  static const bookingNew = '/booking/new';
+
+  /// A booking at any stage; also the target of deep links and notification
+  /// taps (push wiring in P3.6).
+  static String booking(String id) => '/booking/$id';
+  static String bookingCancel(String id) => '/booking/$id/cancel';
+  static String bookingReport(String id) => '/booking/$id/report';
 }
 
 /// Where the splash screen sends the user.
@@ -77,7 +88,7 @@ const _readyOnly = {
 
 /// Pure redirect rules (unit tested). Returns null to stay.
 String? computeRedirect({required String location, required AuthStage stage}) {
-  if (_readyOnly.contains(location)) {
+  if (_readyOnly.contains(location) || location.startsWith('/booking/')) {
     if (stage == AuthStage.ready) return null;
     return stage == AuthStage.signedOut ? Routes.splash : routeForStage(stage);
   }
@@ -147,6 +158,27 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.savedPlaces,
         builder: (_, _) => const SavedPlacesScreen(),
+      ),
+      GoRoute(
+        path: Routes.bookingNew,
+        builder: (_, _) => const BookingFormScreen(),
+      ),
+      GoRoute(
+        path: '/booking/:id',
+        builder: (_, state) =>
+            BookingScreen(bookingId: state.pathParameters['id']!),
+        routes: [
+          GoRoute(
+            path: 'cancel',
+            builder: (_, state) =>
+                CancelBookingScreen(bookingId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: 'report',
+            builder: (_, state) =>
+                ReportScreen(bookingId: state.pathParameters['id']!),
+          ),
+        ],
       ),
     ],
   );

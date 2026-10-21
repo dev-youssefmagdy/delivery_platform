@@ -665,4 +665,812 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeSavedPlaces => 'Saved places';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navTrips => 'My trips';
+
+  @override
+  String get navAccount => 'Account';
+
+  @override
+  String get homeRequest => 'Request now';
+
+  @override
+  String get homeRequestHintPickup => 'Choose your pickup first.';
+
+  @override
+  String get homeRequestHintDestination =>
+      'Choose your destination to continue.';
+
+  @override
+  String get homeRequestHintService => 'Choose a service to continue.';
+
+  @override
+  String get homeRequestHintActive =>
+      'You already have an active request. Finish or cancel it before requesting again.';
+
+  @override
+  String get homeActiveBooking => 'Your current request';
+
+  @override
+  String get homeActiveBookingOpen => 'View';
+
+  @override
+  String get bkFormTitle => 'Confirm your request';
+
+  @override
+  String get bkFormIncompleteTitle => 'Trip details are incomplete';
+
+  @override
+  String get bkFormIncompleteBody =>
+      'Choose pickup, destination and service on the home screen.';
+
+  @override
+  String get bkFormBackHome => 'Go back';
+
+  @override
+  String get bkFormRouteLabel => 'Route map';
+
+  @override
+  String get bkEstimateFailed => 'Could not calculate the route right now.';
+
+  @override
+  String bkRouteFacts(String km, int minutes) {
+    return '$km km · about $minutes min';
+  }
+
+  @override
+  String get bkPassengers => 'Passengers';
+
+  @override
+  String get bkGuidanceTitle => 'Reference price (guidance only)';
+
+  @override
+  String bkGuidanceRange(String low, String high) {
+    return 'From $low to $high';
+  }
+
+  @override
+  String bkGuidanceRecommended(String fare) {
+    return 'Suggested price: $fare';
+  }
+
+  @override
+  String get bkGuidanceFactors => 'How it is calculated';
+
+  @override
+  String get bkGuidanceNotice =>
+      'This is a reference estimate only; you choose the fare you offer.';
+
+  @override
+  String get bkGuidanceUnavailable =>
+      'No reference price is available for this service. Set the fare that suits you.';
+
+  @override
+  String get bkFactorBase => 'Base fare';
+
+  @override
+  String get bkFactorDistance => 'Distance';
+
+  @override
+  String get bkFactorDuration => 'Duration';
+
+  @override
+  String get bkFactorStops => 'Stops';
+
+  @override
+  String get bkFactorMinimum => 'Minimum fare';
+
+  @override
+  String get bkFareTitle => 'Your offered fare';
+
+  @override
+  String bkFareLabel(String currency) {
+    return 'Fare ($currency)';
+  }
+
+  @override
+  String get bkFareRequired => 'Enter the fare you offer.';
+
+  @override
+  String get bkFareInvalid => 'The fare is not valid.';
+
+  @override
+  String bkFareBelowMin(String min) {
+    return 'The fare is below the minimum ($min).';
+  }
+
+  @override
+  String bkFareAboveMax(String max) {
+    return 'The fare is above the maximum ($max).';
+  }
+
+  @override
+  String bkFareBoundsBoth(String min, String max) {
+    return 'Allowed from $min to $max';
+  }
+
+  @override
+  String bkFareBoundsMin(String min) {
+    return 'Minimum $min';
+  }
+
+  @override
+  String bkFareBoundsMax(String max) {
+    return 'Maximum $max';
+  }
+
+  @override
+  String get bkPaymentTitle => 'Payment method';
+
+  @override
+  String get bkPaymentCash => 'Cash';
+
+  @override
+  String get bkPaymentOther => 'Other method';
+
+  @override
+  String get bkPaymentCashUnavailable =>
+      'Cash is not available for this service.';
+
+  @override
+  String get bkSummaryTitle => 'Request summary';
+
+  @override
+  String bkSummaryFare(String fare) {
+    return 'Fare: $fare';
+  }
+
+  @override
+  String get bkSummaryFareNone => 'not set yet';
+
+  @override
+  String bkSummaryPayment(String method) {
+    return 'Payment: $method';
+  }
+
+  @override
+  String get bkSubmit => 'Request now';
+
+  @override
+  String get bkStatusDraft => 'Draft';
+
+  @override
+  String get bkStatusSearching => 'Looking for offers';
+
+  @override
+  String get bkStatusOffersReceived => 'Offers received';
+
+  @override
+  String get bkStatusExpired => 'No provider found';
+
+  @override
+  String get bkStatusProviderSelected => 'Provider selected';
+
+  @override
+  String get bkStatusHeading => 'Provider is on the way';
+
+  @override
+  String get bkStatusArrived => 'Provider has arrived';
+
+  @override
+  String get bkStatusInProgress => 'Trip in progress';
+
+  @override
+  String get bkStatusDeliveryFailed => 'Delivery attempt failed';
+
+  @override
+  String get bkStatusCompletedPending => 'Completed, payment pending';
+
+  @override
+  String get bkStatusCompleted => 'Completed';
+
+  @override
+  String get bkStatusDisputed => 'Disputed';
+
+  @override
+  String get bkStatusCancelledCustomer => 'Cancelled by you';
+
+  @override
+  String get bkStatusCancelledProvider => 'Cancelled by the provider';
+
+  @override
+  String get bkStatusCancelledOps => 'Cancelled by operations';
+
+  @override
+  String get bkStatusUnknown => 'Unknown status';
+
+  @override
+  String get bkScreenTitle => 'Request';
+
+  @override
+  String get bkYourFare => 'Your offered fare';
+
+  @override
+  String get bkAgreedFare => 'Agreed fare';
+
+  @override
+  String get bkSearching => 'Looking for nearby providers…';
+
+  @override
+  String bkSearchingLeft(String time) {
+    return 'Searching… $time left';
+  }
+
+  @override
+  String get bkSearchEnding => 'The search is ending…';
+
+  @override
+  String get bkOffersTitle => 'Offers';
+
+  @override
+  String get bkSortPrice => 'Lowest price';
+
+  @override
+  String get bkSortEta => 'Fastest';
+
+  @override
+  String get bkSortRating => 'Top rated';
+
+  @override
+  String get bkEditFare => 'Edit fare';
+
+  @override
+  String get bkCancelBooking => 'Cancel request';
+
+  @override
+  String get bkCancelTrip => 'Cancel trip';
+
+  @override
+  String get bkWaitingOffersTitle => 'Waiting for offers';
+
+  @override
+  String get bkWaitingOffersBody =>
+      'We sent your request to nearby providers. Offers appear here as soon as they arrive.';
+
+  @override
+  String get bkNoOffersTitle => 'No offers yet';
+
+  @override
+  String get bkNoOffersBody =>
+      'The search window ended without offers. You can edit the fare or cancel.';
+
+  @override
+  String get bkNoOffersNoGuarantee =>
+      'Raising the fare does not guarantee offers.';
+
+  @override
+  String get bkOfferProviderFallback => 'Provider';
+
+  @override
+  String get bkOfferCounter => 'Counter-offer';
+
+  @override
+  String get bkOfferAcceptsFare => 'Accepts your fare';
+
+  @override
+  String get bkOfferAccept => 'Accept';
+
+  @override
+  String get bkOfferReject => 'Decline';
+
+  @override
+  String bkOfferEta(int minutes) {
+    return 'Arrives in $minutes min';
+  }
+
+  @override
+  String bkOfferDistance(String km) {
+    return '$km km away';
+  }
+
+  @override
+  String bkOfferTrips(int count) {
+    return '$count trips';
+  }
+
+  @override
+  String bkOfferRating(String avg, int count) {
+    return 'Rating $avg ($count)';
+  }
+
+  @override
+  String bkOfferRatingNew(String avg, int count) {
+    return '$avg ($count) early rating';
+  }
+
+  @override
+  String bkOfferExpiresIn(String time) {
+    return 'Offer expires in $time';
+  }
+
+  @override
+  String get bkOfferExpired => 'This offer has expired';
+
+  @override
+  String get bkAcceptTitle => 'Accept this offer?';
+
+  @override
+  String get bkAcceptBody => 'This provider will be assigned to your trip.';
+
+  @override
+  String bkAcceptBodyPrice(String price, String name) {
+    return 'Accept $name\'s offer at $price?';
+  }
+
+  @override
+  String get bkEditFareTitle => 'Edit your fare';
+
+  @override
+  String get bkEditFareWarn => 'The search will restart with the new fare.';
+
+  @override
+  String get bkEditFareWarnOffers =>
+      'Note: changing the fare invalidates the current offers and restarts the search.';
+
+  @override
+  String get bkEditFareNoGuarantee =>
+      'Raising the fare does not guarantee offers.';
+
+  @override
+  String get bkEditFareSave => 'Save fare';
+
+  @override
+  String get bkFareUpdated => 'Fare updated and search restarted.';
+
+  @override
+  String get bkLiveMapLabel => 'Live trip map';
+
+  @override
+  String get bkLocationWaiting => 'Waiting for the provider\'s location…';
+
+  @override
+  String bkLocationUpdated(int seconds) {
+    return 'Location updated $seconds s ago';
+  }
+
+  @override
+  String bkLocationStale(int minutes) {
+    return 'The provider\'s location is old ($minutes min or more). The connection may be weak.';
+  }
+
+  @override
+  String get bkSupportFlagged =>
+      'We noticed something that needs review and our support team is aware.';
+
+  @override
+  String get bkPinTitle => 'Trip start PIN';
+
+  @override
+  String get bkPinHint =>
+      'Tell this PIN to the provider when you board. Do not share it with anyone else.';
+
+  @override
+  String get bkPinLocked =>
+      'Starting is locked after wrong PIN attempts. Contact support.';
+
+  @override
+  String bkFreeWaitLeft(String time) {
+    return 'Free waiting time left $time';
+  }
+
+  @override
+  String get bkFreeWaitOver => 'Free waiting time is over';
+
+  @override
+  String get bkStepSelected => 'Provider selected';
+
+  @override
+  String get bkStepHeading => 'On the way to you';
+
+  @override
+  String get bkStepArrived => 'Arrived at pickup';
+
+  @override
+  String get bkStepStarted => 'Trip started';
+
+  @override
+  String get bkTimelineTitle => 'Trip progress';
+
+  @override
+  String get bkShareTrip => 'Share trip';
+
+  @override
+  String get bkShareStop => 'Stop sharing';
+
+  @override
+  String get bkShareStopped => 'Trip sharing stopped.';
+
+  @override
+  String bkShareMessage(String url) {
+    return 'Follow my trip live: $url';
+  }
+
+  @override
+  String get bkSafety => 'Safety';
+
+  @override
+  String get bkSafetyTitle => 'Safety and help';
+
+  @override
+  String get bkSafetyNotice =>
+      'The full SOS feature is coming soon. In danger, call your local emergency services directly. These are the contacts available now.';
+
+  @override
+  String get bkSafetyYourContact => 'Your emergency contact';
+
+  @override
+  String get bkSafetySupport => 'Platform support';
+
+  @override
+  String get bkSafetyWhatsapp => 'Support WhatsApp';
+
+  @override
+  String get bkSafetyNothingConfigured =>
+      'No contacts are set up yet. You can add an emergency contact in your profile.';
+
+  @override
+  String get bkCancelTitle => 'Cancel request';
+
+  @override
+  String get bkCancelReasonTitle => 'Reason for cancelling';
+
+  @override
+  String get bkCancelNote => 'Note (optional)';
+
+  @override
+  String get bkCancelPickReason => 'Choose a reason.';
+
+  @override
+  String get bkCancelContinue => 'Continue';
+
+  @override
+  String get bkCancelKeep => 'Keep my request';
+
+  @override
+  String get bkCancelFree => 'Cancelling now is free.';
+
+  @override
+  String bkCancelFeeDue(String fee) {
+    return 'Cancellation fee: $fee';
+  }
+
+  @override
+  String get bkCancelConfirm => 'Confirm cancellation';
+
+  @override
+  String bkCancelConfirmFee(String fee) {
+    return 'Confirm and accept $fee fee';
+  }
+
+  @override
+  String get bkCancelledTitle => 'This request was cancelled';
+
+  @override
+  String bkCancelledFee(String fee) {
+    return 'Cancellation fee: $fee';
+  }
+
+  @override
+  String get bkCancelledNoFee => 'No fee.';
+
+  @override
+  String get bkReasonChangedMind => 'I changed my mind';
+
+  @override
+  String get bkReasonWrongPickup => 'Wrong pickup point';
+
+  @override
+  String get bkReasonFoundAnother => 'I found another ride';
+
+  @override
+  String get bkReasonDriverTooFar => 'Provider is too far';
+
+  @override
+  String get bkReasonDriverAsked => 'Provider asked me to cancel';
+
+  @override
+  String get bkReasonWaitedTooLong => 'I waited too long';
+
+  @override
+  String get bkReasonOther => 'Other reason';
+
+  @override
+  String get bkNoProviderTitle => 'We could not find a provider';
+
+  @override
+  String get bkNoProviderBody =>
+      'The search ended without offers. You can try again or change the fare.';
+
+  @override
+  String get bkTryAgain => 'Try again';
+
+  @override
+  String get bkEditPriceAgain => 'Edit fare and retry';
+
+  @override
+  String get bkRebook => 'Book again';
+
+  @override
+  String get bkReceiptTitle => 'Receipt';
+
+  @override
+  String get bkReceiptCode => 'Request number';
+
+  @override
+  String get bkReceiptTotal => 'Total';
+
+  @override
+  String get bkReceiptPayment => 'Payment method';
+
+  @override
+  String get bkReceiptPaymentStatus => 'Payment status';
+
+  @override
+  String get bkReceiptDuration => 'Trip duration';
+
+  @override
+  String get bkReceiptDistance => 'Planned distance';
+
+  @override
+  String bkMinutes(int count) {
+    return '$count min';
+  }
+
+  @override
+  String bkKilometres(String km) {
+    return '$km km';
+  }
+
+  @override
+  String get bkPaymentStatusCashDue => 'Cash due to the provider';
+
+  @override
+  String get bkPaymentStatusPaid => 'Paid';
+
+  @override
+  String get bkPaymentStatusPending => 'Pending';
+
+  @override
+  String get bkPaymentStatusOther => 'Not specified';
+
+  @override
+  String get bkRatingTitle => 'Rate your provider';
+
+  @override
+  String get bkRatingPickStars => 'Choose a star rating.';
+
+  @override
+  String get bkRatingComment => 'Private comment (optional)';
+
+  @override
+  String get bkRatingSubmit => 'Submit rating';
+
+  @override
+  String get bkRatingThanks => 'Thanks for your rating.';
+
+  @override
+  String get bkRating1 => 'Poor';
+
+  @override
+  String get bkRating2 => 'Fair';
+
+  @override
+  String get bkRating3 => 'Good';
+
+  @override
+  String get bkRating4 => 'Very good';
+
+  @override
+  String get bkRating5 => 'Excellent';
+
+  @override
+  String get bkTagProfessional => 'Professional';
+
+  @override
+  String get bkTagCleanVehicle => 'Clean vehicle';
+
+  @override
+  String get bkTagSafeDriving => 'Safe driving';
+
+  @override
+  String get bkTagGoodCommunication => 'Good communication';
+
+  @override
+  String get bkTagOnTime => 'On time';
+
+  @override
+  String get bkTagCarefulWithItems => 'Careful with items';
+
+  @override
+  String get bkTagLate => 'Late';
+
+  @override
+  String get bkTagUnsafeDriving => 'Unsafe driving';
+
+  @override
+  String get bkTagRude => 'Rude';
+
+  @override
+  String get bkTagDirtyVehicle => 'Dirty vehicle';
+
+  @override
+  String get bkReportIssue => 'Report an issue';
+
+  @override
+  String get bkReportTitle => 'Report an issue';
+
+  @override
+  String get bkReportDescription => 'Describe what happened';
+
+  @override
+  String get bkReportDescriptionShort =>
+      'Write a description of at least 10 characters.';
+
+  @override
+  String get bkReportPickCategory => 'Choose the type of issue.';
+
+  @override
+  String get bkReportSubmit => 'Send report';
+
+  @override
+  String get bkReportSent => 'Your report was sent and will be reviewed.';
+
+  @override
+  String get bkReportSafety => 'Safety';
+
+  @override
+  String get bkReportBehaviour => 'Behaviour';
+
+  @override
+  String get bkReportFareDispute => 'Fare dispute';
+
+  @override
+  String get bkReportRoute => 'Route or delay';
+
+  @override
+  String get bkReportLostItem => 'Lost item';
+
+  @override
+  String get bkReportOther => 'Other';
+
+  @override
+  String get bkErrOutsideArea => 'This location is outside the service area.';
+
+  @override
+  String get bkErrCategoryUnavailable =>
+      'This service is not available at your location right now.';
+
+  @override
+  String get bkErrDropoffRequired =>
+      'A destination is required for this service.';
+
+  @override
+  String get bkErrFareBelow => 'The fare is below the allowed minimum.';
+
+  @override
+  String get bkErrFareAbove => 'The fare is above the allowed maximum.';
+
+  @override
+  String get bkErrCapacity =>
+      'Passengers or load exceed what this service allows.';
+
+  @override
+  String get bkErrPayment =>
+      'This payment method is not available for this service.';
+
+  @override
+  String get bkErrActiveBooking => 'You already have an active request.';
+
+  @override
+  String get bkErrAccount =>
+      'This cannot be done because of your account status. Contact support.';
+
+  @override
+  String get bkErrMaps =>
+      'Maps are temporarily unavailable. Try again shortly.';
+
+  @override
+  String get bkErrNotEditable =>
+      'The request cannot be edited once a provider is chosen or the search ended.';
+
+  @override
+  String get bkErrChangedMeanwhile =>
+      'The request changed in the meantime. We refreshed it; try again.';
+
+  @override
+  String get bkErrAlreadyAssigned =>
+      'A provider was already assigned to this request. We refreshed the screen.';
+
+  @override
+  String get bkErrOfferExpired =>
+      'This offer expired. We refreshed the offers.';
+
+  @override
+  String get bkErrOfferGone =>
+      'This offer is no longer available. We refreshed the offers.';
+
+  @override
+  String get bkErrSearchEnded =>
+      'The search for offers has ended for this request.';
+
+  @override
+  String get bkErrNotCancellable => 'This request can no longer be cancelled.';
+
+  @override
+  String get bkErrFeeChanged =>
+      'The cancellation fee changed. Review the new fee and confirm again.';
+
+  @override
+  String get bkErrCancelNote => 'Add a note explaining the reason.';
+
+  @override
+  String get bkErrShare => 'This trip cannot be shared right now.';
+
+  @override
+  String get bkErrRatingDone => 'You already rated this trip.';
+
+  @override
+  String get bkErrRatingClosed => 'This trip cannot be rated now.';
+
+  @override
+  String get bkErrReportClosed => 'This trip cannot be reported now.';
+
+  @override
+  String get bkErrReportLimit => 'You reached the report limit for this trip.';
+
+  @override
+  String get bkErrInProgress =>
+      'The previous action is still running. Wait a moment.';
+
+  @override
+  String get tripsTitle => 'My trips';
+
+  @override
+  String get tripsEmptyTitle => 'No trips yet';
+
+  @override
+  String get tripsEmptyBody => 'Your requests and past trips will appear here.';
+
+  @override
+  String get tripsEmptyFilteredTitle => 'No trips match these filters';
+
+  @override
+  String get tripsEmptyFilteredBody => 'Try changing or clearing the filters.';
+
+  @override
+  String get tripsFilter => 'Filter';
+
+  @override
+  String get tripsFilterStatus => 'Status';
+
+  @override
+  String get tripsFilterService => 'Service';
+
+  @override
+  String get tripsFilterAllServices => 'All services';
+
+  @override
+  String get tripsFilterFrom => 'From date';
+
+  @override
+  String get tripsFilterTo => 'To date';
+
+  @override
+  String get tripsStatusCompleted => 'Completed';
+
+  @override
+  String get tripsStatusCancelled => 'Cancelled';
+
+  @override
+  String get tripsStatusActive => 'In progress';
+
+  @override
+  String get tripsApply => 'Apply';
+
+  @override
+  String get tripsClearFilters => 'Clear filters';
 }

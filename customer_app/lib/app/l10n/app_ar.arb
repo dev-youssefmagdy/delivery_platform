@@ -322,5 +322,459 @@
   "savedPlaceDelete": "حذف",
   "savedPlaceTypeTaken": "لديك مكان محفوظ من هذا النوع. احذفه أولاً.",
   "savedPlaceLimit": "وصلت إلى الحد الأقصى للأماكن المحفوظة.",
-  "homeSavedPlaces": "الأماكن المحفوظة"
+  "homeSavedPlaces": "الأماكن المحفوظة",
+  "navHome": "الرئيسية",
+  "navTrips": "رحلاتي",
+  "navAccount": "حسابي",
+  "homeRequest": "اطلب الآن",
+  "homeRequestHintPickup": "حدد نقطة الانطلاق أولاً.",
+  "homeRequestHintDestination": "حدد وجهتك للمتابعة.",
+  "homeRequestHintService": "اختر الخدمة المناسبة للمتابعة.",
+  "homeRequestHintActive": "لديك طلب جارٍ بالفعل. أكمله أو ألغِه قبل طلب جديد.",
+  "homeActiveBooking": "طلبك الحالي",
+  "homeActiveBookingOpen": "عرض",
+  "bkFormTitle": "تأكيد الطلب",
+  "bkFormIncompleteTitle": "بيانات الرحلة غير مكتملة",
+  "bkFormIncompleteBody": "حدد نقطة الانطلاق والوجهة والخدمة من الشاشة الرئيسية.",
+  "bkFormBackHome": "العودة",
+  "bkFormRouteLabel": "خريطة المسار",
+  "bkEstimateFailed": "تعذر حساب المسار حالياً.",
+  "bkRouteFacts": "المسافة {km} كم · حوالي {minutes} دقيقة",
+  "@bkRouteFacts": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bkPassengers": "عدد الركاب",
+  "bkGuidanceTitle": "السعر المرجعي (للاسترشاد فقط)",
+  "bkGuidanceRange": "من {low} إلى {high}",
+  "@bkGuidanceRange": {
+    "placeholders": {
+      "low": {
+        "type": "String"
+      },
+      "high": {
+        "type": "String"
+      }
+    }
+  },
+  "bkGuidanceRecommended": "السعر المقترح: {fare}",
+  "@bkGuidanceRecommended": {
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      }
+    }
+  },
+  "bkGuidanceFactors": "كيف حُسب",
+  "bkGuidanceNotice": "هذا تقدير مرجعي فقط، وأنت من يحدد السعر الذي تعرضه.",
+  "bkGuidanceUnavailable": "لا يتوفر سعر مرجعي لهذه الخدمة. حدد السعر الذي يناسبك.",
+  "bkFactorBase": "رسم البدء",
+  "bkFactorDistance": "المسافة",
+  "bkFactorDuration": "المدة",
+  "bkFactorStops": "التوقفات",
+  "bkFactorMinimum": "الحد الأدنى للأجرة",
+  "bkFareTitle": "السعر الذي تعرضه",
+  "bkFareLabel": "السعر ({currency})",
+  "@bkFareLabel": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareRequired": "أدخل السعر الذي تعرضه.",
+  "bkFareInvalid": "السعر غير صالح.",
+  "bkFareBelowMin": "السعر أقل من الحد الأدنى ({min}).",
+  "@bkFareBelowMin": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareAboveMax": "السعر أعلى من الحد الأقصى ({max}).",
+  "@bkFareAboveMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareBoundsBoth": "المسموح من {min} إلى {max}",
+  "@bkFareBoundsBoth": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareBoundsMin": "الحد الأدنى {min}",
+  "@bkFareBoundsMin": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFareBoundsMax": "الحد الأقصى {max}",
+  "@bkFareBoundsMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "bkPaymentTitle": "طريقة الدفع",
+  "bkPaymentCash": "نقداً",
+  "bkPaymentOther": "وسيلة أخرى",
+  "bkPaymentCashUnavailable": "الدفع النقدي غير متاح لهذه الخدمة.",
+  "bkSummaryTitle": "ملخص الطلب",
+  "bkSummaryFare": "السعر: {fare}",
+  "@bkSummaryFare": {
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      }
+    }
+  },
+  "bkSummaryFareNone": "لم يُحدد بعد",
+  "bkSummaryPayment": "الدفع: {method}",
+  "@bkSummaryPayment": {
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "bkSubmit": "اطلب الآن",
+  "bkStatusDraft": "مسودة",
+  "bkStatusSearching": "جارٍ البحث عن عروض",
+  "bkStatusOffersReceived": "وصلتك عروض",
+  "bkStatusExpired": "لم نجد مقدم خدمة",
+  "bkStatusProviderSelected": "تم اختيار مقدم الخدمة",
+  "bkStatusHeading": "مقدم الخدمة في الطريق إليك",
+  "bkStatusArrived": "وصل مقدم الخدمة",
+  "bkStatusInProgress": "الرحلة جارية",
+  "bkStatusDeliveryFailed": "تعذر التسليم",
+  "bkStatusCompletedPending": "مكتملة، بانتظار الدفع",
+  "bkStatusCompleted": "مكتملة",
+  "bkStatusDisputed": "محل نزاع",
+  "bkStatusCancelledCustomer": "ألغيتها أنت",
+  "bkStatusCancelledProvider": "ألغاها مقدم الخدمة",
+  "bkStatusCancelledOps": "ألغتها الإدارة",
+  "bkStatusUnknown": "حالة غير معروفة",
+  "bkScreenTitle": "الطلب",
+  "bkYourFare": "سعرك المعروض",
+  "bkAgreedFare": "السعر المتفق عليه",
+  "bkSearching": "جارٍ البحث عن مقدمي خدمة قريبين…",
+  "bkSearchingLeft": "جارٍ البحث… المتبقي {time}",
+  "@bkSearchingLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bkSearchEnding": "ينتهي البحث الآن…",
+  "bkOffersTitle": "العروض",
+  "bkSortPrice": "الأقل سعراً",
+  "bkSortEta": "الأسرع وصولاً",
+  "bkSortRating": "الأعلى تقييماً",
+  "bkEditFare": "تعديل السعر",
+  "bkCancelBooking": "إلغاء الطلب",
+  "bkCancelTrip": "إلغاء الرحلة",
+  "bkWaitingOffersTitle": "بانتظار العروض",
+  "bkWaitingOffersBody": "أرسلنا طلبك إلى مقدمي الخدمة القريبين. ستظهر العروض هنا فور وصولها.",
+  "bkNoOffersTitle": "لم تصلك عروض بعد",
+  "bkNoOffersBody": "انتهت مدة البحث دون عروض. يمكنك تعديل السعر أو إلغاء الطلب.",
+  "bkNoOffersNoGuarantee": "رفع السعر لا يضمن وصول عروض.",
+  "bkOfferProviderFallback": "مقدم الخدمة",
+  "bkOfferCounter": "عرض سعر مختلف",
+  "bkOfferAcceptsFare": "يقبل سعرك",
+  "bkOfferAccept": "قبول",
+  "bkOfferReject": "رفض",
+  "bkOfferEta": "يصل خلال {minutes} د",
+  "@bkOfferEta": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bkOfferDistance": "يبعد {km} كم",
+  "@bkOfferDistance": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "bkOfferTrips": "{count} رحلة",
+  "@bkOfferTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bkOfferRating": "التقييم {avg} ({count})",
+  "@bkOfferRating": {
+    "placeholders": {
+      "avg": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bkOfferRatingNew": "{avg} ({count}) تقييم أولي",
+  "@bkOfferRatingNew": {
+    "placeholders": {
+      "avg": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bkOfferExpiresIn": "ينتهي العرض بعد {time}",
+  "@bkOfferExpiresIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bkOfferExpired": "انتهى هذا العرض",
+  "bkAcceptTitle": "قبول العرض؟",
+  "bkAcceptBody": "سيتم اختيار مقدم الخدمة هذا لرحلتك.",
+  "bkAcceptBodyPrice": "قبول عرض {name} بسعر {price}؟",
+  "@bkAcceptBodyPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bkEditFareTitle": "تعديل السعر",
+  "bkEditFareWarn": "سيُعاد البحث عن مقدمي خدمة بالسعر الجديد.",
+  "bkEditFareWarnOffers": "تنبيه: تعديل السعر يلغي العروض الحالية ويعيد البحث من جديد.",
+  "bkEditFareNoGuarantee": "رفع السعر لا يضمن وصول عروض.",
+  "bkEditFareSave": "حفظ السعر",
+  "bkFareUpdated": "تم تحديث السعر وإعادة البحث.",
+  "bkLiveMapLabel": "خريطة الرحلة المباشرة",
+  "bkLocationWaiting": "بانتظار موقع مقدم الخدمة…",
+  "bkLocationUpdated": "آخر تحديث للموقع منذ {seconds} ث",
+  "@bkLocationUpdated": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "bkLocationStale": "موقع مقدم الخدمة قديم (منذ {minutes} د أو أكثر). قد يكون الاتصال ضعيفاً.",
+  "@bkLocationStale": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "bkSupportFlagged": "لاحظنا أمراً يحتاج مراجعة وفريق الدعم على علم به.",
+  "bkPinTitle": "رمز بدء الرحلة",
+  "bkPinHint": "أخبر مقدم الخدمة بهذا الرمز عند الركوب. لا تشاركه مع أحد غيره.",
+  "bkPinLocked": "تم إيقاف بدء الرحلة بعد محاولات رمز خاطئة. تواصل مع الدعم.",
+  "bkFreeWaitLeft": "وقت الانتظار المجاني المتبقي {time}",
+  "@bkFreeWaitLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bkFreeWaitOver": "انتهى وقت الانتظار المجاني",
+  "bkStepSelected": "تم اختيار مقدم الخدمة",
+  "bkStepHeading": "في الطريق إليك",
+  "bkStepArrived": "وصل إلى نقطة الانطلاق",
+  "bkStepStarted": "بدأت الرحلة",
+  "bkTimelineTitle": "مراحل الرحلة",
+  "bkShareTrip": "مشاركة الرحلة",
+  "bkShareStop": "إيقاف المشاركة",
+  "bkShareStopped": "تم إيقاف مشاركة الرحلة.",
+  "bkShareMessage": "تابع رحلتي مباشرة: {url}",
+  "@bkShareMessage": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "bkSafety": "الأمان",
+  "bkSafetyTitle": "الأمان والمساعدة",
+  "bkSafetyNotice": "خاصية الطوارئ (SOS) الكاملة قادمة قريباً. في الحالات الخطرة اتصل بخدمات الطوارئ المحلية مباشرة. هذه جهات الاتصال المتاحة حالياً.",
+  "bkSafetyYourContact": "جهة اتصال الطوارئ الخاصة بك",
+  "bkSafetySupport": "دعم المنصة",
+  "bkSafetyWhatsapp": "واتساب الدعم",
+  "bkSafetyNothingConfigured": "لم تتم إضافة جهات اتصال بعد. يمكنك إضافة جهة اتصال طوارئ من ملفك الشخصي.",
+  "bkCancelTitle": "إلغاء الطلب",
+  "bkCancelReasonTitle": "سبب الإلغاء",
+  "bkCancelNote": "ملاحظة (اختياري)",
+  "bkCancelPickReason": "اختر سبب الإلغاء.",
+  "bkCancelContinue": "متابعة",
+  "bkCancelKeep": "الإبقاء على الطلب",
+  "bkCancelFree": "الإلغاء الآن مجاني.",
+  "bkCancelFeeDue": "رسوم الإلغاء: {fee}",
+  "@bkCancelFeeDue": {
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "bkCancelConfirm": "تأكيد الإلغاء",
+  "bkCancelConfirmFee": "تأكيد الإلغاء ودفع {fee}",
+  "@bkCancelConfirmFee": {
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "bkCancelledTitle": "تم إلغاء الطلب",
+  "bkCancelledFee": "رسوم الإلغاء: {fee}",
+  "@bkCancelledFee": {
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "bkCancelledNoFee": "دون رسوم.",
+  "bkReasonChangedMind": "غيرت رأيي",
+  "bkReasonWrongPickup": "نقطة الانطلاق خاطئة",
+  "bkReasonFoundAnother": "وجدت وسيلة أخرى",
+  "bkReasonDriverTooFar": "مقدم الخدمة بعيد",
+  "bkReasonDriverAsked": "طلب مني مقدم الخدمة الإلغاء",
+  "bkReasonWaitedTooLong": "انتظرت طويلاً",
+  "bkReasonOther": "سبب آخر",
+  "bkNoProviderTitle": "لم نجد مقدم خدمة",
+  "bkNoProviderBody": "انتهى البحث دون عروض. يمكنك المحاولة مرة أخرى أو تعديل السعر.",
+  "bkTryAgain": "حاول مرة أخرى",
+  "bkEditPriceAgain": "تعديل السعر والمحاولة",
+  "bkRebook": "اطلب مرة أخرى",
+  "bkReceiptTitle": "الإيصال",
+  "bkReceiptCode": "رقم الطلب",
+  "bkReceiptTotal": "الإجمالي",
+  "bkReceiptPayment": "طريقة الدفع",
+  "bkReceiptPaymentStatus": "حالة الدفع",
+  "bkReceiptDuration": "مدة الرحلة",
+  "bkReceiptDistance": "المسافة المخططة",
+  "bkMinutes": "{count} دقيقة",
+  "@bkMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bkKilometres": "{km} كم",
+  "@bkKilometres": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "bkPaymentStatusCashDue": "نقداً عند الوصول",
+  "bkPaymentStatusPaid": "مدفوعة",
+  "bkPaymentStatusPending": "قيد الانتظار",
+  "bkPaymentStatusOther": "غير محدد",
+  "bkRatingTitle": "قيّم مقدم الخدمة",
+  "bkRatingPickStars": "اختر عدد النجوم.",
+  "bkRatingComment": "تعليق خاص (اختياري)",
+  "bkRatingSubmit": "إرسال التقييم",
+  "bkRatingThanks": "شكراً لتقييمك.",
+  "bkRating1": "سيئة",
+  "bkRating2": "مقبولة",
+  "bkRating3": "جيدة",
+  "bkRating4": "جيدة جداً",
+  "bkRating5": "ممتازة",
+  "bkTagProfessional": "محترف",
+  "bkTagCleanVehicle": "مركبة نظيفة",
+  "bkTagSafeDriving": "قيادة آمنة",
+  "bkTagGoodCommunication": "تواصل جيد",
+  "bkTagOnTime": "في الموعد",
+  "bkTagCarefulWithItems": "حرص على الأغراض",
+  "bkTagLate": "تأخر",
+  "bkTagUnsafeDriving": "قيادة غير آمنة",
+  "bkTagRude": "أسلوب غير لائق",
+  "bkTagDirtyVehicle": "مركبة غير نظيفة",
+  "bkReportIssue": "الإبلاغ عن مشكلة",
+  "bkReportTitle": "الإبلاغ عن مشكلة",
+  "bkReportDescription": "صف ما حدث",
+  "bkReportDescriptionShort": "اكتب وصفاً من 10 أحرف على الأقل.",
+  "bkReportPickCategory": "اختر نوع المشكلة.",
+  "bkReportSubmit": "إرسال البلاغ",
+  "bkReportSent": "تم إرسال بلاغك وسنراجعه.",
+  "bkReportSafety": "السلامة",
+  "bkReportBehaviour": "السلوك",
+  "bkReportFareDispute": "خلاف على السعر",
+  "bkReportRoute": "المسار أو التأخير",
+  "bkReportLostItem": "شيء مفقود",
+  "bkReportOther": "أخرى",
+  "bkErrOutsideArea": "هذا الموقع خارج منطقة الخدمة.",
+  "bkErrCategoryUnavailable": "هذه الخدمة غير متاحة حالياً في موقعك.",
+  "bkErrDropoffRequired": "حدد الوجهة لهذه الخدمة.",
+  "bkErrFareBelow": "السعر أقل من الحد الأدنى المسموح.",
+  "bkErrFareAbove": "السعر أعلى من الحد الأقصى المسموح.",
+  "bkErrCapacity": "تفاصيل الحمولة أو عدد الركاب تتجاوز المسموح لهذه الخدمة.",
+  "bkErrPayment": "طريقة الدفع غير متاحة لهذه الخدمة.",
+  "bkErrActiveBooking": "لديك طلب جارٍ بالفعل.",
+  "bkErrAccount": "لا يمكن تنفيذ الطلب بسبب حالة حسابك. تواصل مع الدعم.",
+  "bkErrMaps": "خدمة الخرائط غير متاحة مؤقتاً. حاول بعد قليل.",
+  "bkErrNotEditable": "لا يمكن تعديل الطلب بعد اختيار مقدم الخدمة أو انتهاء البحث.",
+  "bkErrChangedMeanwhile": "تغيّر الطلب في هذه الأثناء. حدّثنا الشاشة، حاول مرة أخرى.",
+  "bkErrAlreadyAssigned": "اختيار مقدم خدمة آخر تم بالفعل لهذا الطلب. حدّثنا الشاشة.",
+  "bkErrOfferExpired": "انتهى هذا العرض. حدّثنا قائمة العروض.",
+  "bkErrOfferGone": "لم يعد هذا العرض متاحاً. حدّثنا قائمة العروض.",
+  "bkErrSearchEnded": "انتهى البحث عن عروض لهذا الطلب.",
+  "bkErrNotCancellable": "لا يمكن إلغاء هذا الطلب الآن.",
+  "bkErrFeeChanged": "تغيّرت رسوم الإلغاء. راجع الرسوم الجديدة ثم أكّد.",
+  "bkErrCancelNote": "اكتب ملاحظة توضح سبب الإلغاء.",
+  "bkErrShare": "لا يمكن مشاركة هذه الرحلة الآن.",
+  "bkErrRatingDone": "قيّمت هذه الرحلة بالفعل.",
+  "bkErrRatingClosed": "لا يمكن تقييم هذه الرحلة الآن.",
+  "bkErrReportClosed": "لا يمكن الإبلاغ عن هذه الرحلة الآن.",
+  "bkErrReportLimit": "وصلت إلى الحد الأقصى من البلاغات لهذه الرحلة.",
+  "bkErrInProgress": "العملية السابقة ما زالت قيد التنفيذ. انتظر لحظات.",
+  "tripsTitle": "رحلاتي",
+  "tripsEmptyTitle": "لا توجد رحلات بعد",
+  "tripsEmptyBody": "ستظهر هنا طلباتك ورحلاتك السابقة.",
+  "tripsEmptyFilteredTitle": "لا نتائج بهذه التصفية",
+  "tripsEmptyFilteredBody": "جرّب تغيير التصفية أو مسحها.",
+  "tripsFilter": "تصفية",
+  "tripsFilterStatus": "الحالة",
+  "tripsFilterService": "الخدمة",
+  "tripsFilterAllServices": "كل الخدمات",
+  "tripsFilterFrom": "من تاريخ",
+  "tripsFilterTo": "إلى تاريخ",
+  "tripsStatusCompleted": "مكتملة",
+  "tripsStatusCancelled": "ملغاة",
+  "tripsStatusActive": "جارية",
+  "tripsApply": "تطبيق",
+  "tripsClearFilters": "مسح التصفية"
 }

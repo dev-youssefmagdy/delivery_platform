@@ -1243,6 +1243,1446 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الأماكن المحفوظة'**
   String get homeSavedPlaces;
+
+  /// No description provided for @navHome.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرئيسية'**
+  String get navHome;
+
+  /// No description provided for @navTrips.
+  ///
+  /// In ar, this message translates to:
+  /// **'رحلاتي'**
+  String get navTrips;
+
+  /// No description provided for @navAccount.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسابي'**
+  String get navAccount;
+
+  /// No description provided for @homeRequest.
+  ///
+  /// In ar, this message translates to:
+  /// **'اطلب الآن'**
+  String get homeRequest;
+
+  /// No description provided for @homeRequestHintPickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدد نقطة الانطلاق أولاً.'**
+  String get homeRequestHintPickup;
+
+  /// No description provided for @homeRequestHintDestination.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدد وجهتك للمتابعة.'**
+  String get homeRequestHintDestination;
+
+  /// No description provided for @homeRequestHintService.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر الخدمة المناسبة للمتابعة.'**
+  String get homeRequestHintService;
+
+  /// No description provided for @homeRequestHintActive.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك طلب جارٍ بالفعل. أكمله أو ألغِه قبل طلب جديد.'**
+  String get homeRequestHintActive;
+
+  /// No description provided for @homeActiveBooking.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبك الحالي'**
+  String get homeActiveBooking;
+
+  /// No description provided for @homeActiveBookingOpen.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض'**
+  String get homeActiveBookingOpen;
+
+  /// No description provided for @bkFormTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد الطلب'**
+  String get bkFormTitle;
+
+  /// No description provided for @bkFormIncompleteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'بيانات الرحلة غير مكتملة'**
+  String get bkFormIncompleteTitle;
+
+  /// No description provided for @bkFormIncompleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدد نقطة الانطلاق والوجهة والخدمة من الشاشة الرئيسية.'**
+  String get bkFormIncompleteBody;
+
+  /// No description provided for @bkFormBackHome.
+  ///
+  /// In ar, this message translates to:
+  /// **'العودة'**
+  String get bkFormBackHome;
+
+  /// No description provided for @bkFormRouteLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'خريطة المسار'**
+  String get bkFormRouteLabel;
+
+  /// No description provided for @bkEstimateFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر حساب المسار حالياً.'**
+  String get bkEstimateFailed;
+
+  /// No description provided for @bkRouteFacts.
+  ///
+  /// In ar, this message translates to:
+  /// **'المسافة {km} كم · حوالي {minutes} دقيقة'**
+  String bkRouteFacts(String km, int minutes);
+
+  /// No description provided for @bkPassengers.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد الركاب'**
+  String get bkPassengers;
+
+  /// No description provided for @bkGuidanceTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر المرجعي (للاسترشاد فقط)'**
+  String get bkGuidanceTitle;
+
+  /// No description provided for @bkGuidanceRange.
+  ///
+  /// In ar, this message translates to:
+  /// **'من {low} إلى {high}'**
+  String bkGuidanceRange(String low, String high);
+
+  /// No description provided for @bkGuidanceRecommended.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر المقترح: {fare}'**
+  String bkGuidanceRecommended(String fare);
+
+  /// No description provided for @bkGuidanceFactors.
+  ///
+  /// In ar, this message translates to:
+  /// **'كيف حُسب'**
+  String get bkGuidanceFactors;
+
+  /// No description provided for @bkGuidanceNotice.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا تقدير مرجعي فقط، وأنت من يحدد السعر الذي تعرضه.'**
+  String get bkGuidanceNotice;
+
+  /// No description provided for @bkGuidanceUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يتوفر سعر مرجعي لهذه الخدمة. حدد السعر الذي يناسبك.'**
+  String get bkGuidanceUnavailable;
+
+  /// No description provided for @bkFactorBase.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسم البدء'**
+  String get bkFactorBase;
+
+  /// No description provided for @bkFactorDistance.
+  ///
+  /// In ar, this message translates to:
+  /// **'المسافة'**
+  String get bkFactorDistance;
+
+  /// No description provided for @bkFactorDuration.
+  ///
+  /// In ar, this message translates to:
+  /// **'المدة'**
+  String get bkFactorDuration;
+
+  /// No description provided for @bkFactorStops.
+  ///
+  /// In ar, this message translates to:
+  /// **'التوقفات'**
+  String get bkFactorStops;
+
+  /// No description provided for @bkFactorMinimum.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحد الأدنى للأجرة'**
+  String get bkFactorMinimum;
+
+  /// No description provided for @bkFareTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر الذي تعرضه'**
+  String get bkFareTitle;
+
+  /// No description provided for @bkFareLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر ({currency})'**
+  String bkFareLabel(String currency);
+
+  /// No description provided for @bkFareRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل السعر الذي تعرضه.'**
+  String get bkFareRequired;
+
+  /// No description provided for @bkFareInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر غير صالح.'**
+  String get bkFareInvalid;
+
+  /// No description provided for @bkFareBelowMin.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر أقل من الحد الأدنى ({min}).'**
+  String bkFareBelowMin(String min);
+
+  /// No description provided for @bkFareAboveMax.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر أعلى من الحد الأقصى ({max}).'**
+  String bkFareAboveMax(String max);
+
+  /// No description provided for @bkFareBoundsBoth.
+  ///
+  /// In ar, this message translates to:
+  /// **'المسموح من {min} إلى {max}'**
+  String bkFareBoundsBoth(String min, String max);
+
+  /// No description provided for @bkFareBoundsMin.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحد الأدنى {min}'**
+  String bkFareBoundsMin(String min);
+
+  /// No description provided for @bkFareBoundsMax.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحد الأقصى {max}'**
+  String bkFareBoundsMax(String max);
+
+  /// No description provided for @bkPaymentTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'طريقة الدفع'**
+  String get bkPaymentTitle;
+
+  /// No description provided for @bkPaymentCash.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقداً'**
+  String get bkPaymentCash;
+
+  /// No description provided for @bkPaymentOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'وسيلة أخرى'**
+  String get bkPaymentOther;
+
+  /// No description provided for @bkPaymentCashUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدفع النقدي غير متاح لهذه الخدمة.'**
+  String get bkPaymentCashUnavailable;
+
+  /// No description provided for @bkSummaryTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملخص الطلب'**
+  String get bkSummaryTitle;
+
+  /// No description provided for @bkSummaryFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر: {fare}'**
+  String bkSummaryFare(String fare);
+
+  /// No description provided for @bkSummaryFareNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يُحدد بعد'**
+  String get bkSummaryFareNone;
+
+  /// No description provided for @bkSummaryPayment.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدفع: {method}'**
+  String bkSummaryPayment(String method);
+
+  /// No description provided for @bkSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'اطلب الآن'**
+  String get bkSubmit;
+
+  /// No description provided for @bkStatusDraft.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسودة'**
+  String get bkStatusDraft;
+
+  /// No description provided for @bkStatusSearching.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ البحث عن عروض'**
+  String get bkStatusSearching;
+
+  /// No description provided for @bkStatusOffersReceived.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلتك عروض'**
+  String get bkStatusOffersReceived;
+
+  /// No description provided for @bkStatusExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم نجد مقدم خدمة'**
+  String get bkStatusExpired;
+
+  /// No description provided for @bkStatusProviderSelected.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم اختيار مقدم الخدمة'**
+  String get bkStatusProviderSelected;
+
+  /// No description provided for @bkStatusHeading.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقدم الخدمة في الطريق إليك'**
+  String get bkStatusHeading;
+
+  /// No description provided for @bkStatusArrived.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصل مقدم الخدمة'**
+  String get bkStatusArrived;
+
+  /// No description provided for @bkStatusInProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرحلة جارية'**
+  String get bkStatusInProgress;
+
+  /// No description provided for @bkStatusDeliveryFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر التسليم'**
+  String get bkStatusDeliveryFailed;
+
+  /// No description provided for @bkStatusCompletedPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'مكتملة، بانتظار الدفع'**
+  String get bkStatusCompletedPending;
+
+  /// No description provided for @bkStatusCompleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'مكتملة'**
+  String get bkStatusCompleted;
+
+  /// No description provided for @bkStatusDisputed.
+  ///
+  /// In ar, this message translates to:
+  /// **'محل نزاع'**
+  String get bkStatusDisputed;
+
+  /// No description provided for @bkStatusCancelledCustomer.
+  ///
+  /// In ar, this message translates to:
+  /// **'ألغيتها أنت'**
+  String get bkStatusCancelledCustomer;
+
+  /// No description provided for @bkStatusCancelledProvider.
+  ///
+  /// In ar, this message translates to:
+  /// **'ألغاها مقدم الخدمة'**
+  String get bkStatusCancelledProvider;
+
+  /// No description provided for @bkStatusCancelledOps.
+  ///
+  /// In ar, this message translates to:
+  /// **'ألغتها الإدارة'**
+  String get bkStatusCancelledOps;
+
+  /// No description provided for @bkStatusUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'حالة غير معروفة'**
+  String get bkStatusUnknown;
+
+  /// No description provided for @bkScreenTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلب'**
+  String get bkScreenTitle;
+
+  /// No description provided for @bkYourFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'سعرك المعروض'**
+  String get bkYourFare;
+
+  /// No description provided for @bkAgreedFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر المتفق عليه'**
+  String get bkAgreedFare;
+
+  /// No description provided for @bkSearching.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ البحث عن مقدمي خدمة قريبين…'**
+  String get bkSearching;
+
+  /// No description provided for @bkSearchingLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ البحث… المتبقي {time}'**
+  String bkSearchingLeft(String time);
+
+  /// No description provided for @bkSearchEnding.
+  ///
+  /// In ar, this message translates to:
+  /// **'ينتهي البحث الآن…'**
+  String get bkSearchEnding;
+
+  /// No description provided for @bkOffersTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'العروض'**
+  String get bkOffersTitle;
+
+  /// No description provided for @bkSortPrice.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأقل سعراً'**
+  String get bkSortPrice;
+
+  /// No description provided for @bkSortEta.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأسرع وصولاً'**
+  String get bkSortEta;
+
+  /// No description provided for @bkSortRating.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأعلى تقييماً'**
+  String get bkSortRating;
+
+  /// No description provided for @bkEditFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل السعر'**
+  String get bkEditFare;
+
+  /// No description provided for @bkCancelBooking.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء الطلب'**
+  String get bkCancelBooking;
+
+  /// No description provided for @bkCancelTrip.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء الرحلة'**
+  String get bkCancelTrip;
+
+  /// No description provided for @bkWaitingOffersTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'بانتظار العروض'**
+  String get bkWaitingOffersTitle;
+
+  /// No description provided for @bkWaitingOffersBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أرسلنا طلبك إلى مقدمي الخدمة القريبين. ستظهر العروض هنا فور وصولها.'**
+  String get bkWaitingOffersBody;
+
+  /// No description provided for @bkNoOffersTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تصلك عروض بعد'**
+  String get bkNoOffersTitle;
+
+  /// No description provided for @bkNoOffersBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت مدة البحث دون عروض. يمكنك تعديل السعر أو إلغاء الطلب.'**
+  String get bkNoOffersBody;
+
+  /// No description provided for @bkNoOffersNoGuarantee.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفع السعر لا يضمن وصول عروض.'**
+  String get bkNoOffersNoGuarantee;
+
+  /// No description provided for @bkOfferProviderFallback.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقدم الخدمة'**
+  String get bkOfferProviderFallback;
+
+  /// No description provided for @bkOfferCounter.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض سعر مختلف'**
+  String get bkOfferCounter;
+
+  /// No description provided for @bkOfferAcceptsFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'يقبل سعرك'**
+  String get bkOfferAcceptsFare;
+
+  /// No description provided for @bkOfferAccept.
+  ///
+  /// In ar, this message translates to:
+  /// **'قبول'**
+  String get bkOfferAccept;
+
+  /// No description provided for @bkOfferReject.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض'**
+  String get bkOfferReject;
+
+  /// No description provided for @bkOfferEta.
+  ///
+  /// In ar, this message translates to:
+  /// **'يصل خلال {minutes} د'**
+  String bkOfferEta(int minutes);
+
+  /// No description provided for @bkOfferDistance.
+  ///
+  /// In ar, this message translates to:
+  /// **'يبعد {km} كم'**
+  String bkOfferDistance(String km);
+
+  /// No description provided for @bkOfferTrips.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} رحلة'**
+  String bkOfferTrips(int count);
+
+  /// No description provided for @bkOfferRating.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقييم {avg} ({count})'**
+  String bkOfferRating(String avg, int count);
+
+  /// No description provided for @bkOfferRatingNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'{avg} ({count}) تقييم أولي'**
+  String bkOfferRatingNew(String avg, int count);
+
+  /// No description provided for @bkOfferExpiresIn.
+  ///
+  /// In ar, this message translates to:
+  /// **'ينتهي العرض بعد {time}'**
+  String bkOfferExpiresIn(String time);
+
+  /// No description provided for @bkOfferExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهى هذا العرض'**
+  String get bkOfferExpired;
+
+  /// No description provided for @bkAcceptTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'قبول العرض؟'**
+  String get bkAcceptTitle;
+
+  /// No description provided for @bkAcceptBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيتم اختيار مقدم الخدمة هذا لرحلتك.'**
+  String get bkAcceptBody;
+
+  /// No description provided for @bkAcceptBodyPrice.
+  ///
+  /// In ar, this message translates to:
+  /// **'قبول عرض {name} بسعر {price}؟'**
+  String bkAcceptBodyPrice(String price, String name);
+
+  /// No description provided for @bkEditFareTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل السعر'**
+  String get bkEditFareTitle;
+
+  /// No description provided for @bkEditFareWarn.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيُعاد البحث عن مقدمي خدمة بالسعر الجديد.'**
+  String get bkEditFareWarn;
+
+  /// No description provided for @bkEditFareWarnOffers.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنبيه: تعديل السعر يلغي العروض الحالية ويعيد البحث من جديد.'**
+  String get bkEditFareWarnOffers;
+
+  /// No description provided for @bkEditFareNoGuarantee.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفع السعر لا يضمن وصول عروض.'**
+  String get bkEditFareNoGuarantee;
+
+  /// No description provided for @bkEditFareSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ السعر'**
+  String get bkEditFareSave;
+
+  /// No description provided for @bkFareUpdated.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تحديث السعر وإعادة البحث.'**
+  String get bkFareUpdated;
+
+  /// No description provided for @bkLiveMapLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'خريطة الرحلة المباشرة'**
+  String get bkLiveMapLabel;
+
+  /// No description provided for @bkLocationWaiting.
+  ///
+  /// In ar, this message translates to:
+  /// **'بانتظار موقع مقدم الخدمة…'**
+  String get bkLocationWaiting;
+
+  /// No description provided for @bkLocationUpdated.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر تحديث للموقع منذ {seconds} ث'**
+  String bkLocationUpdated(int seconds);
+
+  /// No description provided for @bkLocationStale.
+  ///
+  /// In ar, this message translates to:
+  /// **'موقع مقدم الخدمة قديم (منذ {minutes} د أو أكثر). قد يكون الاتصال ضعيفاً.'**
+  String bkLocationStale(int minutes);
+
+  /// No description provided for @bkSupportFlagged.
+  ///
+  /// In ar, this message translates to:
+  /// **'لاحظنا أمراً يحتاج مراجعة وفريق الدعم على علم به.'**
+  String get bkSupportFlagged;
+
+  /// No description provided for @bkPinTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز بدء الرحلة'**
+  String get bkPinTitle;
+
+  /// No description provided for @bkPinHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخبر مقدم الخدمة بهذا الرمز عند الركوب. لا تشاركه مع أحد غيره.'**
+  String get bkPinHint;
+
+  /// No description provided for @bkPinLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إيقاف بدء الرحلة بعد محاولات رمز خاطئة. تواصل مع الدعم.'**
+  String get bkPinLocked;
+
+  /// No description provided for @bkFreeWaitLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقت الانتظار المجاني المتبقي {time}'**
+  String bkFreeWaitLeft(String time);
+
+  /// No description provided for @bkFreeWaitOver.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهى وقت الانتظار المجاني'**
+  String get bkFreeWaitOver;
+
+  /// No description provided for @bkStepSelected.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم اختيار مقدم الخدمة'**
+  String get bkStepSelected;
+
+  /// No description provided for @bkStepHeading.
+  ///
+  /// In ar, this message translates to:
+  /// **'في الطريق إليك'**
+  String get bkStepHeading;
+
+  /// No description provided for @bkStepArrived.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصل إلى نقطة الانطلاق'**
+  String get bkStepArrived;
+
+  /// No description provided for @bkStepStarted.
+  ///
+  /// In ar, this message translates to:
+  /// **'بدأت الرحلة'**
+  String get bkStepStarted;
+
+  /// No description provided for @bkTimelineTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراحل الرحلة'**
+  String get bkTimelineTitle;
+
+  /// No description provided for @bkShareTrip.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة الرحلة'**
+  String get bkShareTrip;
+
+  /// No description provided for @bkShareStop.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف المشاركة'**
+  String get bkShareStop;
+
+  /// No description provided for @bkShareStopped.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إيقاف مشاركة الرحلة.'**
+  String get bkShareStopped;
+
+  /// No description provided for @bkShareMessage.
+  ///
+  /// In ar, this message translates to:
+  /// **'تابع رحلتي مباشرة: {url}'**
+  String bkShareMessage(String url);
+
+  /// No description provided for @bkSafety.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأمان'**
+  String get bkSafety;
+
+  /// No description provided for @bkSafetyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأمان والمساعدة'**
+  String get bkSafetyTitle;
+
+  /// No description provided for @bkSafetyNotice.
+  ///
+  /// In ar, this message translates to:
+  /// **'خاصية الطوارئ (SOS) الكاملة قادمة قريباً. في الحالات الخطرة اتصل بخدمات الطوارئ المحلية مباشرة. هذه جهات الاتصال المتاحة حالياً.'**
+  String get bkSafetyNotice;
+
+  /// No description provided for @bkSafetyYourContact.
+  ///
+  /// In ar, this message translates to:
+  /// **'جهة اتصال الطوارئ الخاصة بك'**
+  String get bkSafetyYourContact;
+
+  /// No description provided for @bkSafetySupport.
+  ///
+  /// In ar, this message translates to:
+  /// **'دعم المنصة'**
+  String get bkSafetySupport;
+
+  /// No description provided for @bkSafetyWhatsapp.
+  ///
+  /// In ar, this message translates to:
+  /// **'واتساب الدعم'**
+  String get bkSafetyWhatsapp;
+
+  /// No description provided for @bkSafetyNothingConfigured.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تتم إضافة جهات اتصال بعد. يمكنك إضافة جهة اتصال طوارئ من ملفك الشخصي.'**
+  String get bkSafetyNothingConfigured;
+
+  /// No description provided for @bkCancelTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء الطلب'**
+  String get bkCancelTitle;
+
+  /// No description provided for @bkCancelReasonTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب الإلغاء'**
+  String get bkCancelReasonTitle;
+
+  /// No description provided for @bkCancelNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة (اختياري)'**
+  String get bkCancelNote;
+
+  /// No description provided for @bkCancelPickReason.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر سبب الإلغاء.'**
+  String get bkCancelPickReason;
+
+  /// No description provided for @bkCancelContinue.
+  ///
+  /// In ar, this message translates to:
+  /// **'متابعة'**
+  String get bkCancelContinue;
+
+  /// No description provided for @bkCancelKeep.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإبقاء على الطلب'**
+  String get bkCancelKeep;
+
+  /// No description provided for @bkCancelFree.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإلغاء الآن مجاني.'**
+  String get bkCancelFree;
+
+  /// No description provided for @bkCancelFeeDue.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسوم الإلغاء: {fee}'**
+  String bkCancelFeeDue(String fee);
+
+  /// No description provided for @bkCancelConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد الإلغاء'**
+  String get bkCancelConfirm;
+
+  /// No description provided for @bkCancelConfirmFee.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد الإلغاء ودفع {fee}'**
+  String bkCancelConfirmFee(String fee);
+
+  /// No description provided for @bkCancelledTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إلغاء الطلب'**
+  String get bkCancelledTitle;
+
+  /// No description provided for @bkCancelledFee.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسوم الإلغاء: {fee}'**
+  String bkCancelledFee(String fee);
+
+  /// No description provided for @bkCancelledNoFee.
+  ///
+  /// In ar, this message translates to:
+  /// **'دون رسوم.'**
+  String get bkCancelledNoFee;
+
+  /// No description provided for @bkReasonChangedMind.
+  ///
+  /// In ar, this message translates to:
+  /// **'غيرت رأيي'**
+  String get bkReasonChangedMind;
+
+  /// No description provided for @bkReasonWrongPickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقطة الانطلاق خاطئة'**
+  String get bkReasonWrongPickup;
+
+  /// No description provided for @bkReasonFoundAnother.
+  ///
+  /// In ar, this message translates to:
+  /// **'وجدت وسيلة أخرى'**
+  String get bkReasonFoundAnother;
+
+  /// No description provided for @bkReasonDriverTooFar.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقدم الخدمة بعيد'**
+  String get bkReasonDriverTooFar;
+
+  /// No description provided for @bkReasonDriverAsked.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب مني مقدم الخدمة الإلغاء'**
+  String get bkReasonDriverAsked;
+
+  /// No description provided for @bkReasonWaitedTooLong.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتظرت طويلاً'**
+  String get bkReasonWaitedTooLong;
+
+  /// No description provided for @bkReasonOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب آخر'**
+  String get bkReasonOther;
+
+  /// No description provided for @bkNoProviderTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم نجد مقدم خدمة'**
+  String get bkNoProviderTitle;
+
+  /// No description provided for @bkNoProviderBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهى البحث دون عروض. يمكنك المحاولة مرة أخرى أو تعديل السعر.'**
+  String get bkNoProviderBody;
+
+  /// No description provided for @bkTryAgain.
+  ///
+  /// In ar, this message translates to:
+  /// **'حاول مرة أخرى'**
+  String get bkTryAgain;
+
+  /// No description provided for @bkEditPriceAgain.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل السعر والمحاولة'**
+  String get bkEditPriceAgain;
+
+  /// No description provided for @bkRebook.
+  ///
+  /// In ar, this message translates to:
+  /// **'اطلب مرة أخرى'**
+  String get bkRebook;
+
+  /// No description provided for @bkReceiptTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإيصال'**
+  String get bkReceiptTitle;
+
+  /// No description provided for @bkReceiptCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم الطلب'**
+  String get bkReceiptCode;
+
+  /// No description provided for @bkReceiptTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجمالي'**
+  String get bkReceiptTotal;
+
+  /// No description provided for @bkReceiptPayment.
+  ///
+  /// In ar, this message translates to:
+  /// **'طريقة الدفع'**
+  String get bkReceiptPayment;
+
+  /// No description provided for @bkReceiptPaymentStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'حالة الدفع'**
+  String get bkReceiptPaymentStatus;
+
+  /// No description provided for @bkReceiptDuration.
+  ///
+  /// In ar, this message translates to:
+  /// **'مدة الرحلة'**
+  String get bkReceiptDuration;
+
+  /// No description provided for @bkReceiptDistance.
+  ///
+  /// In ar, this message translates to:
+  /// **'المسافة المخططة'**
+  String get bkReceiptDistance;
+
+  /// No description provided for @bkMinutes.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} دقيقة'**
+  String bkMinutes(int count);
+
+  /// No description provided for @bkKilometres.
+  ///
+  /// In ar, this message translates to:
+  /// **'{km} كم'**
+  String bkKilometres(String km);
+
+  /// No description provided for @bkPaymentStatusCashDue.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقداً عند الوصول'**
+  String get bkPaymentStatusCashDue;
+
+  /// No description provided for @bkPaymentStatusPaid.
+  ///
+  /// In ar, this message translates to:
+  /// **'مدفوعة'**
+  String get bkPaymentStatusPaid;
+
+  /// No description provided for @bkPaymentStatusPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد الانتظار'**
+  String get bkPaymentStatusPending;
+
+  /// No description provided for @bkPaymentStatusOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير محدد'**
+  String get bkPaymentStatusOther;
+
+  /// No description provided for @bkRatingTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيّم مقدم الخدمة'**
+  String get bkRatingTitle;
+
+  /// No description provided for @bkRatingPickStars.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر عدد النجوم.'**
+  String get bkRatingPickStars;
+
+  /// No description provided for @bkRatingComment.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعليق خاص (اختياري)'**
+  String get bkRatingComment;
+
+  /// No description provided for @bkRatingSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال التقييم'**
+  String get bkRatingSubmit;
+
+  /// No description provided for @bkRatingThanks.
+  ///
+  /// In ar, this message translates to:
+  /// **'شكراً لتقييمك.'**
+  String get bkRatingThanks;
+
+  /// No description provided for @bkRating1.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيئة'**
+  String get bkRating1;
+
+  /// No description provided for @bkRating2.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقبولة'**
+  String get bkRating2;
+
+  /// No description provided for @bkRating3.
+  ///
+  /// In ar, this message translates to:
+  /// **'جيدة'**
+  String get bkRating3;
+
+  /// No description provided for @bkRating4.
+  ///
+  /// In ar, this message translates to:
+  /// **'جيدة جداً'**
+  String get bkRating4;
+
+  /// No description provided for @bkRating5.
+  ///
+  /// In ar, this message translates to:
+  /// **'ممتازة'**
+  String get bkRating5;
+
+  /// No description provided for @bkTagProfessional.
+  ///
+  /// In ar, this message translates to:
+  /// **'محترف'**
+  String get bkTagProfessional;
+
+  /// No description provided for @bkTagCleanVehicle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مركبة نظيفة'**
+  String get bkTagCleanVehicle;
+
+  /// No description provided for @bkTagSafeDriving.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيادة آمنة'**
+  String get bkTagSafeDriving;
+
+  /// No description provided for @bkTagGoodCommunication.
+  ///
+  /// In ar, this message translates to:
+  /// **'تواصل جيد'**
+  String get bkTagGoodCommunication;
+
+  /// No description provided for @bkTagOnTime.
+  ///
+  /// In ar, this message translates to:
+  /// **'في الموعد'**
+  String get bkTagOnTime;
+
+  /// No description provided for @bkTagCarefulWithItems.
+  ///
+  /// In ar, this message translates to:
+  /// **'حرص على الأغراض'**
+  String get bkTagCarefulWithItems;
+
+  /// No description provided for @bkTagLate.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأخر'**
+  String get bkTagLate;
+
+  /// No description provided for @bkTagUnsafeDriving.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيادة غير آمنة'**
+  String get bkTagUnsafeDriving;
+
+  /// No description provided for @bkTagRude.
+  ///
+  /// In ar, this message translates to:
+  /// **'أسلوب غير لائق'**
+  String get bkTagRude;
+
+  /// No description provided for @bkTagDirtyVehicle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مركبة غير نظيفة'**
+  String get bkTagDirtyVehicle;
+
+  /// No description provided for @bkReportIssue.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإبلاغ عن مشكلة'**
+  String get bkReportIssue;
+
+  /// No description provided for @bkReportTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإبلاغ عن مشكلة'**
+  String get bkReportTitle;
+
+  /// No description provided for @bkReportDescription.
+  ///
+  /// In ar, this message translates to:
+  /// **'صف ما حدث'**
+  String get bkReportDescription;
+
+  /// No description provided for @bkReportDescriptionShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب وصفاً من 10 أحرف على الأقل.'**
+  String get bkReportDescriptionShort;
+
+  /// No description provided for @bkReportPickCategory.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر نوع المشكلة.'**
+  String get bkReportPickCategory;
+
+  /// No description provided for @bkReportSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال البلاغ'**
+  String get bkReportSubmit;
+
+  /// No description provided for @bkReportSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال بلاغك وسنراجعه.'**
+  String get bkReportSent;
+
+  /// No description provided for @bkReportSafety.
+  ///
+  /// In ar, this message translates to:
+  /// **'السلامة'**
+  String get bkReportSafety;
+
+  /// No description provided for @bkReportBehaviour.
+  ///
+  /// In ar, this message translates to:
+  /// **'السلوك'**
+  String get bkReportBehaviour;
+
+  /// No description provided for @bkReportFareDispute.
+  ///
+  /// In ar, this message translates to:
+  /// **'خلاف على السعر'**
+  String get bkReportFareDispute;
+
+  /// No description provided for @bkReportRoute.
+  ///
+  /// In ar, this message translates to:
+  /// **'المسار أو التأخير'**
+  String get bkReportRoute;
+
+  /// No description provided for @bkReportLostItem.
+  ///
+  /// In ar, this message translates to:
+  /// **'شيء مفقود'**
+  String get bkReportLostItem;
+
+  /// No description provided for @bkReportOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخرى'**
+  String get bkReportOther;
+
+  /// No description provided for @bkErrOutsideArea.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الموقع خارج منطقة الخدمة.'**
+  String get bkErrOutsideArea;
+
+  /// No description provided for @bkErrCategoryUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه الخدمة غير متاحة حالياً في موقعك.'**
+  String get bkErrCategoryUnavailable;
+
+  /// No description provided for @bkErrDropoffRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدد الوجهة لهذه الخدمة.'**
+  String get bkErrDropoffRequired;
+
+  /// No description provided for @bkErrFareBelow.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر أقل من الحد الأدنى المسموح.'**
+  String get bkErrFareBelow;
+
+  /// No description provided for @bkErrFareAbove.
+  ///
+  /// In ar, this message translates to:
+  /// **'السعر أعلى من الحد الأقصى المسموح.'**
+  String get bkErrFareAbove;
+
+  /// No description provided for @bkErrCapacity.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفاصيل الحمولة أو عدد الركاب تتجاوز المسموح لهذه الخدمة.'**
+  String get bkErrCapacity;
+
+  /// No description provided for @bkErrPayment.
+  ///
+  /// In ar, this message translates to:
+  /// **'طريقة الدفع غير متاحة لهذه الخدمة.'**
+  String get bkErrPayment;
+
+  /// No description provided for @bkErrActiveBooking.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك طلب جارٍ بالفعل.'**
+  String get bkErrActiveBooking;
+
+  /// No description provided for @bkErrAccount.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن تنفيذ الطلب بسبب حالة حسابك. تواصل مع الدعم.'**
+  String get bkErrAccount;
+
+  /// No description provided for @bkErrMaps.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمة الخرائط غير متاحة مؤقتاً. حاول بعد قليل.'**
+  String get bkErrMaps;
+
+  /// No description provided for @bkErrNotEditable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن تعديل الطلب بعد اختيار مقدم الخدمة أو انتهاء البحث.'**
+  String get bkErrNotEditable;
+
+  /// No description provided for @bkErrChangedMeanwhile.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيّر الطلب في هذه الأثناء. حدّثنا الشاشة، حاول مرة أخرى.'**
+  String get bkErrChangedMeanwhile;
+
+  /// No description provided for @bkErrAlreadyAssigned.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار مقدم خدمة آخر تم بالفعل لهذا الطلب. حدّثنا الشاشة.'**
+  String get bkErrAlreadyAssigned;
+
+  /// No description provided for @bkErrOfferExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهى هذا العرض. حدّثنا قائمة العروض.'**
+  String get bkErrOfferExpired;
+
+  /// No description provided for @bkErrOfferGone.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يعد هذا العرض متاحاً. حدّثنا قائمة العروض.'**
+  String get bkErrOfferGone;
+
+  /// No description provided for @bkErrSearchEnded.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهى البحث عن عروض لهذا الطلب.'**
+  String get bkErrSearchEnded;
+
+  /// No description provided for @bkErrNotCancellable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن إلغاء هذا الطلب الآن.'**
+  String get bkErrNotCancellable;
+
+  /// No description provided for @bkErrFeeChanged.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيّرت رسوم الإلغاء. راجع الرسوم الجديدة ثم أكّد.'**
+  String get bkErrFeeChanged;
+
+  /// No description provided for @bkErrCancelNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب ملاحظة توضح سبب الإلغاء.'**
+  String get bkErrCancelNote;
+
+  /// No description provided for @bkErrShare.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن مشاركة هذه الرحلة الآن.'**
+  String get bkErrShare;
+
+  /// No description provided for @bkErrRatingDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيّمت هذه الرحلة بالفعل.'**
+  String get bkErrRatingDone;
+
+  /// No description provided for @bkErrRatingClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن تقييم هذه الرحلة الآن.'**
+  String get bkErrRatingClosed;
+
+  /// No description provided for @bkErrReportClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن الإبلاغ عن هذه الرحلة الآن.'**
+  String get bkErrReportClosed;
+
+  /// No description provided for @bkErrReportLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلت إلى الحد الأقصى من البلاغات لهذه الرحلة.'**
+  String get bkErrReportLimit;
+
+  /// No description provided for @bkErrInProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'العملية السابقة ما زالت قيد التنفيذ. انتظر لحظات.'**
+  String get bkErrInProgress;
+
+  /// No description provided for @tripsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رحلاتي'**
+  String get tripsTitle;
+
+  /// No description provided for @tripsEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد رحلات بعد'**
+  String get tripsEmptyTitle;
+
+  /// No description provided for @tripsEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستظهر هنا طلباتك ورحلاتك السابقة.'**
+  String get tripsEmptyBody;
+
+  /// No description provided for @tripsEmptyFilteredTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا نتائج بهذه التصفية'**
+  String get tripsEmptyFilteredTitle;
+
+  /// No description provided for @tripsEmptyFilteredBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'جرّب تغيير التصفية أو مسحها.'**
+  String get tripsEmptyFilteredBody;
+
+  /// No description provided for @tripsFilter.
+  ///
+  /// In ar, this message translates to:
+  /// **'تصفية'**
+  String get tripsFilter;
+
+  /// No description provided for @tripsFilterStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحالة'**
+  String get tripsFilterStatus;
+
+  /// No description provided for @tripsFilterService.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخدمة'**
+  String get tripsFilterService;
+
+  /// No description provided for @tripsFilterAllServices.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل الخدمات'**
+  String get tripsFilterAllServices;
+
+  /// No description provided for @tripsFilterFrom.
+  ///
+  /// In ar, this message translates to:
+  /// **'من تاريخ'**
+  String get tripsFilterFrom;
+
+  /// No description provided for @tripsFilterTo.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلى تاريخ'**
+  String get tripsFilterTo;
+
+  /// No description provided for @tripsStatusCompleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'مكتملة'**
+  String get tripsStatusCompleted;
+
+  /// No description provided for @tripsStatusCancelled.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملغاة'**
+  String get tripsStatusCancelled;
+
+  /// No description provided for @tripsStatusActive.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارية'**
+  String get tripsStatusActive;
+
+  /// No description provided for @tripsApply.
+  ///
+  /// In ar, this message translates to:
+  /// **'تطبيق'**
+  String get tripsApply;
+
+  /// No description provided for @tripsClearFilters.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسح التصفية'**
+  String get tripsClearFilters;
 }
 
 class _AppLocalizationsDelegate

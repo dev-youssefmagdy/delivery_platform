@@ -14,6 +14,9 @@ import { initDatePickers } from './core/date-pickers.js';
 import { initMaps } from './core/maps.js';
 import { initZoneOverlap } from './core/zone-overlap.js';
 import { initCharts } from './core/charts.js';
+import { initRealtimeStatus } from './core/realtime.js';
+import { initLiveRefresh } from './core/live-refresh.js';
+import { initOperationsMap } from './core/operations-map.js';
 import { initExports } from './core/exports.js';
 import { askConfirm, confirmDialog, initConfirmActions } from './core/confirm-action.js';
 import { adminModal, initModalTriggers } from './core/modal.js';
@@ -38,6 +41,9 @@ const Admin = {
         initMaps(root);
         initZoneOverlap(root);
         initCharts(root);
+        initRealtimeStatus(root);
+        initLiveRefresh(root);
+        initOperationsMap(root);
     },
 };
 

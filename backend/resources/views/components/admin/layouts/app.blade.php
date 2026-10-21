@@ -7,6 +7,7 @@
         'csrf' => csrf_token(),
         'i18n' => trans('admin.js'),
         'maps' => config('admin.maps'),
+        'realtime' => config('broadcasting.default') === 'reverb' && config('admin.realtime.key') ? config('admin.realtime') : null,
         'loginUrl' => route('admin.login'),
     ];
 @endphp

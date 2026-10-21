@@ -112,6 +112,17 @@ return [
     /*
     | Map inputs/previews (Leaflet). Tiles are fetched by the admin's browser.
     */
+    /*
+    | Realtime for the admin panel (Echo over Reverb, channel `private-admin.operations`). The browser connects with the
+    | public key only; with no key the panel shows "Realtime is not configured" and lists keep their polling refresh.
+    */
+    'realtime' => [
+        'key' => env('REVERB_APP_KEY'),
+        'host' => env('ADMIN_REALTIME_HOST', env('REVERB_HOST')),
+        'port' => (int) env('ADMIN_REALTIME_PORT', env('REVERB_PORT', 8080)),
+        'scheme' => env('ADMIN_REALTIME_SCHEME', env('REVERB_SCHEME', 'http')),
+    ],
+
     'maps' => [
         'tile_url' => env('ADMIN_MAP_TILE_URL', 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
         'attribution' => env('ADMIN_MAP_ATTRIBUTION', '&copy; OpenStreetMap contributors'),

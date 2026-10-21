@@ -51,6 +51,20 @@ function handleXhrError(xhr) {
     toast.error(body.message || xhr.statusText, { requestId: body.meta?.request_id ?? xhr.getResponseHeader?.('X-Request-Id') });
 }
 
+/**
+ * Listings may return `stats` next to their rows (the Offers monitor). Elements inside [data-stats-for="<table id>"]
+ * carrying data-stat="<key>" show the value of that key after every draw.
+ */
+function updateStats(tableId, stats) {
+    document.querySelectorAll(`[data-stats-for="${tableId}"] [data-stat]`).forEach((node) => {
+        const value = stats[node.dataset.stat];
+
+        if (value !== undefined) {
+            node.textContent = String(value);
+        }
+    });
+}
+
 export const AdminTables = {
     init(root = document) {
         root.querySelectorAll('table[data-admin-table]').forEach((el) => this.mount(el));
@@ -75,6 +89,8 @@ export const AdminTables = {
         $(el).on('xhr.dt', (_event, _settings, json, xhr) => {
             if (json === null) {
                 handleXhrError(xhr);
+            } else if (json.stats) {
+                updateStats(el.id, json.stats);
             }
         });
 

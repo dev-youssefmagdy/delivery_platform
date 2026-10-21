@@ -9,7 +9,7 @@ import { config } from './config.js';
  */
 let leafletPromise = null;
 
-async function leaflet() {
+export async function leaflet() {
     leafletPromise ??= (async () => {
         const [{ default: L }, icon, icon2x, shadow] = await Promise.all([
             import('leaflet'),
@@ -29,7 +29,7 @@ async function leaflet() {
     return leafletPromise;
 }
 
-function baseMap(L, el, center, zoom, interactive = true) {
+export function baseMap(L, el, center, zoom, interactive = true, extra = {}) {
     const maps = config().maps || {};
     const map = L.map(el, {
         center: center || [maps.default_center?.lat ?? 30.0444, maps.default_center?.lng ?? 31.2357],
@@ -39,6 +39,7 @@ function baseMap(L, el, center, zoom, interactive = true) {
         zoomControl: interactive,
         doubleClickZoom: interactive,
         keyboard: interactive,
+        ...extra,
     });
 
     L.tileLayer(maps.tile_url || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

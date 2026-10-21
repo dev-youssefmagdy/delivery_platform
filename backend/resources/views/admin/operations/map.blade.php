@@ -33,6 +33,7 @@
             data-snapshot-url="{{ route('admin.operations.map.snapshot') }}"
             data-snapshot='@json($snapshot)'
             data-poll-seconds="30"
+            data-status-labels='@json(collect(\App\Enums\Booking\BookingStatus::cases())->mapWithKeys(fn ($status) => [$status->value => $status->label()]))'
             role="application"
             aria-label="{{ __('admin.operations.title') }}"
         ></div>

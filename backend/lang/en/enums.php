@@ -536,12 +536,38 @@ return [
 
     'booking_action' => [
         'update_request' => 'Edit the request',
+        'select_offer' => 'Choose a driver',
+    ],
+
+    'offer_status' => [
+        'submitted' => 'Offer at your fare',
+        'counter_offered' => 'Counter-offer',
+        'accepted_by_customer' => 'Chosen',
+        'rejected_by_customer' => 'Declined',
+        'withdrawn_by_provider' => 'Withdrawn',
+        'expired' => 'Expired',
+        'invalidated_request_changed' => 'Request changed',
+        'invalidated_provider_unavailable' => 'Driver unavailable',
+        'lost_booking_assigned' => 'Another driver was chosen',
+    ],
+
+    'offer_kind' => [
+        'accept_customer_fare' => 'Accepts your fare',
+        'counter_offer' => 'Counter-offer',
+    ],
+
+    'fare_hint' => [
+        'below_reference_estimate' => 'Below the usual price guide',
+        'above_reference_estimate' => 'Above the usual price guide',
+        'below_recent_offers' => 'Lower than the other offers',
+        'above_recent_offers' => 'Higher than the other offers',
     ],
 
     'offer_invalidation_reason' => [
         'request_changed' => 'The request was changed',
         'search_expired' => 'The search window ended',
         'booking_cancelled' => 'The booking was cancelled',
+        'provider_unavailable' => 'The driver became unavailable',
     ],
 
     'payment_status' => [

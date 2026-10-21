@@ -15,6 +15,19 @@ enum OfferInvalidationReason: string implements HasLabel
     case RequestChanged = 'request_changed';
     case SearchExpired = 'search_expired';
     case BookingCancelled = 'booking_cancelled';
+    case ProviderUnavailable = 'provider_unavailable';
+
+    /**
+     * The final offer status this reason leads to.
+     */
+    public function offerStatus(): OfferStatus
+    {
+        return match ($this) {
+            self::RequestChanged => OfferStatus::InvalidatedRequestChanged,
+            self::SearchExpired, self::BookingCancelled => OfferStatus::Expired,
+            self::ProviderUnavailable => OfferStatus::InvalidatedProviderUnavailable,
+        };
+    }
 
     public function label(): string
     {

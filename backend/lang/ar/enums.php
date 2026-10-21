@@ -536,12 +536,38 @@ return [
 
     'booking_action' => [
         'update_request' => 'تعديل الطلب',
+        'select_offer' => 'اختيار سائق',
+    ],
+
+    'offer_status' => [
+        'submitted' => 'عرض بسعرك',
+        'counter_offered' => 'عرض بسعر مختلف',
+        'accepted_by_customer' => 'تم اختياره',
+        'rejected_by_customer' => 'تم رفضه',
+        'withdrawn_by_provider' => 'تم سحبه',
+        'expired' => 'انتهت مدته',
+        'invalidated_request_changed' => 'تغيّر الطلب',
+        'invalidated_provider_unavailable' => 'السائق غير متاح',
+        'lost_booking_assigned' => 'تم اختيار سائق آخر',
+    ],
+
+    'offer_kind' => [
+        'accept_customer_fare' => 'يقبل سعرك',
+        'counter_offer' => 'عرض بسعر مختلف',
+    ],
+
+    'fare_hint' => [
+        'below_reference_estimate' => 'أقل من السعر الإرشادي المعتاد',
+        'above_reference_estimate' => 'أعلى من السعر الإرشادي المعتاد',
+        'below_recent_offers' => 'أقل من العروض الأخرى',
+        'above_recent_offers' => 'أعلى من العروض الأخرى',
     ],
 
     'offer_invalidation_reason' => [
         'request_changed' => 'تم تعديل الطلب',
         'search_expired' => 'انتهت مدة البحث',
         'booking_cancelled' => 'أُلغي الحجز',
+        'provider_unavailable' => 'أصبح السائق غير متاح',
     ],
 
     'payment_status' => [

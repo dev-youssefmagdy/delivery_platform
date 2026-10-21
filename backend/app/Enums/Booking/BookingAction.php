@@ -14,6 +14,7 @@ enum BookingAction: string implements HasLabel
     use EnumHelpers;
 
     case UpdateRequest = 'update_request';
+    case SelectOffer = 'select_offer';
 
     public function label(): string
     {

@@ -59,6 +59,10 @@ use LogicException;
  * @property PaymentStatus $payment_status
  * @property int|null $coupon_reservation_id
  * @property int|null $selected_offer_id
+ * @property int|null $agreed_fare_minor
+ * @property int|null $agreed_offer_version_id
+ * @property array<string, mixed>|null $agreed_scope
+ * @property Carbon|null $provider_selected_at
  * @property int|null $provider_id
  * @property Carbon|null $search_expires_at
  * @property string|null $pin_hash
@@ -96,7 +100,7 @@ class Booking extends Model
         'booking_type', 'sequence', 'request_version', 'pickup_point', 'pickup_address', 'dropoff_point', 'dropoff_address', 'scheduled_at',
         'passengers', 'luggage_count', 'cargo_weight_kg', 'service_details', 'proposed_fare', 'reference_estimate', 'route_snapshot',
         'service_snapshot', 'policy_snapshot', 'commission_snapshot', 'payment_method', 'payment_status', 'coupon_reservation_id',
-        'selected_offer_id', 'provider_id', 'search_expires_at', 'pin_hash', 'pin_encrypted', 'cancelled_at', 'cancelled_by_type',
+        'selected_offer_id', 'agreed_fare_minor', 'agreed_offer_version_id', 'agreed_scope', 'provider_selected_at', 'provider_id', 'search_expires_at', 'pin_hash', 'pin_encrypted', 'cancelled_at', 'cancelled_by_type',
         'cancelled_by_id', 'cancellation_reason', 'completed_at', 'idempotency_key', 'lock_version',
     ];
 
@@ -172,6 +176,14 @@ class Booking extends Model
     }
 
     /**
+     * @return HasMany<BookingOffer, $this>
+     */
+    public function offers(): HasMany
+    {
+        return $this->hasMany(BookingOffer::class);
+    }
+
+    /**
      * @return HasMany<BookingStop, $this>
      */
     public function stops(): HasMany
@@ -219,6 +231,9 @@ class Booking extends Model
             'commission_snapshot' => 'array',
             'payment_method' => PaymentMethodType::class,
             'payment_status' => PaymentStatus::class,
+            'agreed_fare_minor' => 'integer',
+            'agreed_scope' => 'array',
+            'provider_selected_at' => 'datetime',
             'search_expires_at' => 'datetime',
             'cancelled_at' => 'datetime',
             'completed_at' => 'datetime',

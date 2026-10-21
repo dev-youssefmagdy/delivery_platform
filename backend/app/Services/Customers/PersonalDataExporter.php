@@ -3,11 +3,16 @@
 namespace App\Services\Customers;
 
 use App\Models\AccountDeletionRequest;
+use App\Models\Booking;
+use App\Models\BookingStatusEvent;
+use App\Models\BookingStop;
 use App\Models\CustomerMessage;
 use App\Models\SavedPlace;
 use App\Models\User;
 use App\Models\UserConsent;
 use App\Models\UserDevice;
+use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerMessageRepositoryInterface;
 use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
@@ -18,7 +23,7 @@ use App\Repositories\Contracts\Identity\UserDeviceRepositoryInterface;
 /**
  * Builds the machine-readable copy of everything the platform holds about one customer (data-subject access
  * request, SRS §16.2 / §13.3). Push tokens and secrets are never included. Modules that store customer data later
- * (bookings, payments, tickets, ratings) add their section here; until then `sections_pending` says so honestly.
+ * (payments, tickets, ratings) add their section here; until then `sections_pending` says so honestly.
  */
 final class PersonalDataExporter
 {
@@ -29,6 +34,8 @@ final class PersonalDataExporter
         private readonly SavedPlaceRepositoryInterface $savedPlaces,
         private readonly AccountDeletionRequestRepositoryInterface $deletionRequests,
         private readonly CustomerMessageRepositoryInterface $messages,
+        private readonly BookingRepositoryInterface $bookings,
+        private readonly BookingStatusEventRepositoryInterface $bookingEvents,
     ) {}
 
     /**
@@ -93,7 +100,41 @@ final class PersonalDataExporter
                 'sent_at' => $message->created_at?->toIso8601String(),
                 'read_at' => $message->read_at?->toIso8601String(),
             ])->all(),
-            'sections_pending' => ['bookings', 'payments', 'coupon_usage', 'support_tickets', 'ratings'],
+            'bookings' => $this->bookings->exportForCustomer($customer->id)->map(fn (Booking $booking): array => $this->booking($booking))->all(),
+            'sections_pending' => ['payments', 'coupon_usage', 'support_tickets', 'ratings'],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function booking(Booking $booking): array
+    {
+        return [
+            'id' => $booking->uuid,
+            'code' => $booking->code,
+            'service' => $booking->service_snapshot['category']['name'] ?? null,
+            'booking_type' => $booking->booking_type->value,
+            'status' => $booking->status->value,
+            'created_at' => $booking->created_at->toIso8601String(),
+            'scheduled_at' => $booking->scheduled_at?->toIso8601String(),
+            'completed_at' => $booking->completed_at?->toIso8601String(),
+            'cancelled_at' => $booking->cancelled_at?->toIso8601String(),
+            'pickup' => ['lat' => $booking->pickup_point->lat, 'lng' => $booking->pickup_point->lng, 'address' => $booking->pickup_address],
+            'dropoff' => $booking->dropoff_point === null ? null : ['lat' => $booking->dropoff_point->lat, 'lng' => $booking->dropoff_point->lng, 'address' => $booking->dropoff_address],
+            'stops' => $booking->stops->map(static fn (BookingStop $stop): array => ['position' => $stop->position, 'lat' => $stop->point->lat, 'lng' => $stop->point->lng, 'address' => $stop->address])->all(),
+            'passengers' => $booking->passengers,
+            'service_details' => $booking->service_details,
+            'proposed_fare_minor' => $booking->proposed_fare_minor,
+            'currency' => $booking->currency,
+            'payment_method' => $booking->payment_method->value,
+            'payment_status' => $booking->payment_status->value,
+            'timeline' => $this->bookingEvents->forBooking($booking)->map(static fn (BookingStatusEvent $event): array => [
+                'from' => $event->from_status?->value,
+                'to' => $event->to_status->value,
+                'actor' => $event->actor_type,
+                'at' => $event->created_at->toIso8601String(),
+            ])->all(),
         ];
     }
 }

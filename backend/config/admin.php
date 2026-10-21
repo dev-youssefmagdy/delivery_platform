@@ -92,6 +92,7 @@ return [
         'vehicle-categories' => App\Support\Admin\Lookups\VehicleCategoryLookup::class,
         'cities' => App\Support\Admin\Lookups\CityLookup::class,
         'providers' => App\Support\Admin\Lookups\ProviderLookup::class,
+        'zones' => App\Support\Admin\Lookups\ZoneLookup::class,
         // @admin-module:lookups
     ],
 

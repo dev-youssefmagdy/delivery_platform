@@ -27,9 +27,10 @@ final class FarePolicyRepository extends BaseRepository implements FarePolicyRep
             ->when($filters->categoryIds !== [], static fn (Builder $query) => $query->whereIn('service_category_id', $filters->categoryIds))
             ->when($filters->zoneIds !== [], static fn (Builder $query) => $query->whereIn('service_zone_id', $filters->zoneIds))
             ->when($filters->active !== null, static fn (Builder $query) => $query->where('active', $filters->active))
-            ->when($filters->effectiveOn !== null, static fn (Builder $query) => $query
-                ->whereDate('effective_from', '<=', $filters->effectiveOn?->toDateString())
-                ->where(static fn (Builder $inner) => $inner->whereNull('effective_to')->orWhereDate('effective_to', '>', $filters->effectiveOn?->toDateString())));
+            ->when($filters->effectiveTo !== null, static fn (Builder $query) => $query->where('effective_from', '<=', $filters->effectiveTo?->endOfDay()))
+            ->when($filters->effectiveFrom !== null, static fn (Builder $query) => $query->where(static fn (Builder $inner) => $inner
+                ->whereNull('effective_to')
+                ->orWhere('effective_to', '>', $filters->effectiveFrom?->startOfDay())));
     }
 
     public function effectiveFor(int $serviceCategoryId, ?int $serviceZoneId, CarbonInterface $at): ?FarePolicy

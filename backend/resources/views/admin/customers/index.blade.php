@@ -15,10 +15,7 @@
         <x-admin.filters.date-range name="created_at" :label="__('admin.customers.fields.registered')" />
         <x-admin.filters.remote-select name="city_ids" :label="__('admin.customers.filters.city')" lookup="cities" multiple />
         <x-admin.filters.boolean name="deletion_requested" :label="__('admin.customers.fields.deletion_requested')" />
-        <div class="min-w-0">
-            <p class="form-label">{{ __('admin.customers.filters.active_booking') }}</p>
-            <p class="text-sm text-slate-500">{{ __('admin.common.available_after', ['milestone' => 'P2.3', 'module' => __('admin.customers.tabs.bookings')]) }}</p>
-        </div>
+        <x-admin.filters.boolean name="has_active_booking" :label="__('admin.customers.filters.active_booking')" />
     </x-admin.filters-card>
 
     <x-admin.card :padding="false" class="p-4">

@@ -3,6 +3,7 @@
 namespace App\Repositories\Eloquent\Customers;
 
 use App\DTOs\Customers\CustomerFilterData;
+use App\Enums\Booking\BookingStatus;
 use App\Enums\Identity\DeletionRequestStatus;
 use App\Enums\Identity\UserStatus;
 use App\Models\User;
@@ -46,6 +47,9 @@ final class CustomerRepository extends BaseRepository implements CustomerReposit
                 ->join('service_zones', static fn ($join) => $join->whereRaw('ST_Contains(service_zones.polygon, saved_places.point)'))
                 ->whereColumn('saved_places.user_id', 'users.id')
                 ->whereIn('service_zones.city_id', $filters->cityIds)))
+            ->when($filters->hasActiveBooking !== null, static fn (Builder $query) => $filters->hasActiveBooking
+                ? $query->whereExists(static fn ($sub) => $sub->select(DB::raw(1))->from('bookings')->whereColumn('bookings.customer_id', 'users.id')->whereIn('bookings.status', BookingStatus::inFlightValues()))
+                : $query->whereNotExists(static fn ($sub) => $sub->select(DB::raw(1))->from('bookings')->whereColumn('bookings.customer_id', 'users.id')->whereIn('bookings.status', BookingStatus::inFlightValues())))
             ->when($filters->deletionRequested !== null, static fn (Builder $query) => $filters->deletionRequested
                 ? $query->whereHas('deletionRequests', static fn (Builder $inner) => $inner->where('status', DeletionRequestStatus::Pending->value))
                 : $query->whereDoesntHave('deletionRequests', static fn (Builder $inner) => $inner->where('status', DeletionRequestStatus::Pending->value)));

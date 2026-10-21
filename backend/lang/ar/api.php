@@ -270,5 +270,6 @@ return [
         'fare_policy_surcharge_invalid' => 'إضافة سعرية غير مكتملة أو غير صالحة.',
         'fare_policy_category_missing' => 'الخدمة المحددة غير موجودة.',
         'fare_policy_zone_missing' => 'المنطقة المحددة غير موجودة.',
+        'zone_has_active_bookings_cannot_delete' => 'لا تزال لدى هذه المنطقة :count حجوزات نشطة، لذا لا يمكن حذفها.',
     ],
 ];

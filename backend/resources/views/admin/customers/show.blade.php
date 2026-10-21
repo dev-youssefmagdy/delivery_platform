@@ -96,7 +96,7 @@
                 @endif
             </x-admin.tabs.panel>
 
-            <x-admin.tabs.panel id="bookings"><x-admin.available-after :title="__('admin.customers.tabs.bookings')" milestone="P2.3" :module="__('admin.customers.modules.bookings')" /></x-admin.tabs.panel>
+            <x-admin.tabs.panel id="bookings" :url="route('admin.customers.tabs.bookings', $customer)" />
             <x-admin.tabs.panel id="payments"><x-admin.available-after :title="__('admin.customers.tabs.payments')" milestone="P3.2" :module="__('admin.customers.modules.payments')" /></x-admin.tabs.panel>
             <x-admin.tabs.panel id="coupons"><x-admin.available-after :title="__('admin.customers.tabs.coupons')" milestone="P3.3" :module="__('admin.customers.modules.coupons')" /></x-admin.tabs.panel>
             <x-admin.tabs.panel id="tickets"><x-admin.available-after :title="__('admin.customers.tabs.tickets')" milestone="P3.7" :module="__('admin.customers.modules.tickets')" /></x-admin.tabs.panel>

@@ -225,6 +225,15 @@ return [
             'icon' => 'document',
             'permission' => App\Enums\Admin\AdminPermission::DocumentsManageTypes,
         ],
+        [
+            'key' => 'fare_policies',
+            'group' => 'pricing',
+            'label' => 'admin.fare_policies.menu',
+            'route' => 'admin.fare-policies.index',
+            'active' => 'admin.fare-policies.*',
+            'icon' => 'tag',
+            'permission' => App\Enums\Admin\AdminPermission::FarePoliciesManage,
+        ],
         // @admin-module:menu
     ],
 ];

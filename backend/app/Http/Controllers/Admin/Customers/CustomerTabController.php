@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Customers;
 
 use App\DataTables\Admin\Customers\CustomerAuditDataTable;
+use App\DataTables\Admin\Customers\CustomerBookingsDataTable;
 use App\DataTables\Admin\Customers\CustomerConsentsDataTable;
 use App\DataTables\Admin\Customers\CustomerDeletionRequestsDataTable;
 use App\DataTables\Admin\Customers\CustomerDevicesDataTable;
@@ -17,6 +18,11 @@ use App\Models\User;
  */
 final class CustomerTabController extends AdminController
 {
+    public function bookings(CustomerBookingsDataTable $table, User $customer): mixed
+    {
+        return $table->render('admin.customers.tabs.table', ['intro' => __('admin.customers.bookings.intro')]);
+    }
+
     public function devices(CustomerDevicesDataTable $table, User $customer): mixed
     {
         return $table->render('admin.customers.tabs.table', ['intro' => __('admin.customers.devices.intro')]);

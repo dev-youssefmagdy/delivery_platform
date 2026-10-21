@@ -270,5 +270,6 @@ return [
         'fare_policy_surcharge_invalid' => 'A surcharge is incomplete or invalid.',
         'fare_policy_category_missing' => 'The selected service does not exist.',
         'fare_policy_zone_missing' => 'The selected zone does not exist.',
+        'zone_has_active_bookings_cannot_delete' => 'This zone still has :count active bookings, so it cannot be deleted.',
     ],
 ];

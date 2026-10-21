@@ -10,6 +10,7 @@ use App\Enums\Geo\ZoneStatus;
 use App\Exceptions\BusinessRuleViolation;
 use App\Exceptions\ConflictException;
 use App\Models\ServiceZone;
+use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Catalog\ServiceCategoryRepositoryInterface;
 use App\Repositories\Contracts\Geography\CityRepositoryInterface;
 use App\Repositories\Contracts\Geography\ServiceZoneRepositoryInterface;
@@ -34,6 +35,7 @@ final class ServiceZoneService
         private readonly ZoneServiceCategoryRepositoryInterface $links,
         private readonly CityRepositoryInterface $cities,
         private readonly ServiceCategoryRepositoryInterface $categories,
+        private readonly BookingRepositoryInterface $bookings,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
     ) {}
@@ -91,16 +93,26 @@ final class ServiceZoneService
         });
     }
 
-    public function suspend(ServiceZone $zone, string $reason, ?Authenticatable $actor): ServiceZone
+    /**
+     * Suspending stops new bookings in the zone but not the ones in flight, so the admin must acknowledge them
+     * (`confirm_active_bookings`), exactly like deactivating a category (ADR-66, ADR-93).
+     */
+    public function suspend(ServiceZone $zone, string $reason, ?Authenticatable $actor, bool $confirmActiveBookings = false): ServiceZone
     {
-        return $this->db->transaction(function () use ($zone, $reason, $actor): ServiceZone {
+        return $this->db->transaction(function () use ($zone, $reason, $actor, $confirmActiveBookings): ServiceZone {
             $locked = $this->lock($zone);
 
             if ($locked->status !== ZoneStatus::Active) {
                 throw BusinessRuleViolation::make('zone_not_active');
             }
 
-            return $this->setStatus($locked, ZoneStatus::Suspended, $actor, $reason);
+            $activeBookings = $this->bookings->inFlightCountForZone($locked->id);
+
+            if ($activeBookings > 0 && ! $confirmActiveBookings) {
+                throw BusinessRuleViolation::make('zone_has_active_bookings', 'confirm_active_bookings', ['count' => $activeBookings]);
+            }
+
+            return $this->setStatus($locked, ZoneStatus::Suspended, $actor, $reason, ['active_bookings' => $activeBookings, 'confirmed_active_bookings' => $confirmActiveBookings]);
         });
     }
 
@@ -111,6 +123,12 @@ final class ServiceZoneService
 
             if ($locked->status === ZoneStatus::Active) {
                 throw BusinessRuleViolation::make('zone_active_cannot_delete');
+            }
+
+            $activeBookings = $this->bookings->inFlightCountForZone($locked->id);
+
+            if ($activeBookings > 0) {
+                throw BusinessRuleViolation::make('zone_has_active_bookings_cannot_delete', null, ['count' => $activeBookings]);
             }
 
             $before = $locked->auditSnapshot();
@@ -176,11 +194,14 @@ final class ServiceZoneService
         return $this->zones->overlapping($polygon, $exceptZoneId);
     }
 
-    private function setStatus(ServiceZone $zone, ZoneStatus $status, ?Authenticatable $actor, ?string $reason): ServiceZone
+    /**
+     * @param array<string, mixed> $meta
+     */
+    private function setStatus(ServiceZone $zone, ZoneStatus $status, ?Authenticatable $actor, ?string $reason, array $meta = []): ServiceZone
     {
         $from = $zone->status;
         $this->zones->update($zone, ['status' => $status, 'lock_version' => $zone->lock_version + 1]);
-        $this->audit->record(AuditAction::StatusChanged, $zone, $actor, ['status' => $from->value], ['status' => $status->value], $reason);
+        $this->audit->record(AuditAction::StatusChanged, $zone, $actor, ['status' => $from->value], ['status' => $status->value], $reason, $meta);
 
         return $zone;
     }

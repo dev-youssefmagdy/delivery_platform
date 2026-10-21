@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 
 /**
  * Filters of the Customers listing (Plan Appendix C: uuid/phone/name, status, registered range, city,
- * has active booking, deletion requested). "Has active booking" is not offered until bookings exist (P2.3);
- * "city" matches customers with a saved place inside a zone of that city (ADR-76).
+ * has active booking, deletion requested). "Has active booking" matches customers with a booking still in flight
+ * (`BookingStatus::inFlight()`); "city" matches customers with a saved place inside a zone of that city (ADR-76).
  */
 final readonly class CustomerFilterData implements FilterData
 {
@@ -28,6 +28,7 @@ final readonly class CustomerFilterData implements FilterData
         public ?CarbonImmutable $registeredTo = null,
         public array $cityIds = [],
         public ?bool $deletionRequested = null,
+        public ?bool $hasActiveBooking = null,
     ) {}
 
     public static function fromRequest(Request $request): static
@@ -42,12 +43,13 @@ final readonly class CustomerFilterData implements FilterData
             registeredTo: $to,
             cityIds: self::idListFilter($input, 'city_ids'),
             deletionRequested: self::boolFilter($input, 'deletion_requested'),
+            hasActiveBooking: self::boolFilter($input, 'has_active_booking'),
         );
     }
 
     public function activeCount(): int
     {
-        return self::countActive([$this->search, $this->statuses, $this->registeredFrom ?? $this->registeredTo, $this->cityIds, $this->deletionRequested]);
+        return self::countActive([$this->search, $this->statuses, $this->registeredFrom ?? $this->registeredTo, $this->cityIds, $this->deletionRequested, $this->hasActiveBooking]);
     }
 
     public function toArray(): array
@@ -58,6 +60,7 @@ final readonly class CustomerFilterData implements FilterData
             'created_at' => array_filter(['from' => $this->registeredFrom?->toDateString(), 'to' => $this->registeredTo?->toDateString()]),
             'city_ids' => $this->cityIds,
             'deletion_requested' => $this->deletionRequested === null ? null : ($this->deletionRequested ? '1' : '0'),
+            'has_active_booking' => $this->hasActiveBooking === null ? null : ($this->hasActiveBooking ? '1' : '0'),
         ], static fn (mixed $value): bool => $value !== null && $value !== []);
     }
 }

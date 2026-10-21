@@ -10,7 +10,7 @@
             <x-admin.confirm-action :url="route('admin.service-zones.activate', ['serviceZone' => $zone, 'from_show' => 1])" :title="__('admin.service_zones.confirm.activate_title')" :message="__('admin.service_zones.confirm.activate_message')" :confirm-label="__('admin.geo.actions.activate')" variant="success" icon="play">{{ __('admin.geo.actions.activate') }}</x-admin.confirm-action>
         @endcan
         @can('suspend', $zone)
-            <x-admin.confirm-action :url="route('admin.service-zones.suspend', ['serviceZone' => $zone, 'from_show' => 1])" :title="__('admin.service_zones.confirm.suspend_title')" :message="__('admin.service_zones.confirm.suspend_message')" :confirm-label="__('admin.geo.actions.suspend')" reason-required icon="pause">{{ __('admin.geo.actions.suspend') }}</x-admin.confirm-action>
+            <x-admin.button variant="danger" icon="pause" data-modal-open="suspend-zone">{{ __('admin.geo.actions.suspend') }}</x-admin.button>
         @endcan
         @can('delete', $zone)
             <x-admin.confirm-action :url="route('admin.service-zones.destroy', ['serviceZone' => $zone, 'from_show' => 1])" method="DELETE" :title="__('admin.confirm.delete_title')" :message="__('admin.confirm.delete_message')" reason-required icon="trash">{{ __('admin.common.delete') }}</x-admin.confirm-action>
@@ -74,4 +74,20 @@
             <x-admin.tabs.panel id="activity" :url="route('admin.service-zones.activity', $zone)" />
         </x-admin.tabs>
     </x-admin.card>
+
+    @can('suspend', $zone)
+        <x-admin.action-modal
+            id="suspend-zone"
+            :title="__('admin.service_zones.confirm.suspend_title')"
+            :message="__('admin.service_zones.confirm.suspend_message')"
+            :action="route('admin.service-zones.suspend', ['serviceZone' => $zone, 'from_show' => 1])"
+            :submit="__('admin.geo.actions.suspend')"
+            icon="pause"
+        >
+            @if ($activeBookings > 0)
+                <x-admin.alert type="warning">{{ __('admin.service_zones.confirm.active_bookings', ['count' => $activeBookings]) }}</x-admin.alert>
+                <x-admin.form.checkbox name="confirm_active_bookings" :label="__('admin.service_zones.confirm.confirm_active_bookings')" id="suspend-zone-confirm-bookings" />
+            @endif
+        </x-admin.action-modal>
+    @endcan
 </x-admin.layouts.app>

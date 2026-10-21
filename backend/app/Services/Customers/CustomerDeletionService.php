@@ -9,6 +9,7 @@ use App\Exceptions\BusinessRuleViolation;
 use App\Models\AccountDeletionRequest;
 use App\Models\Admin;
 use App\Models\User;
+use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerActivityRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
@@ -34,6 +35,7 @@ final class CustomerDeletionService
         private readonly AccountDeletionRequestRepositoryInterface $requests,
         private readonly CustomerActivityRepositoryInterface $activity,
         private readonly AccountScrubber $scrubber,
+        private readonly BookingRepositoryInterface $bookings,
         private readonly ProviderDeletionService $providerDeletions,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -64,6 +66,7 @@ final class CustomerDeletionService
             }
 
             $previousStatus = $locked->status;
+            $scrubbedBookings = $this->bookings->scrubPersonalDataForCustomer($locked->id);
             $photoPath = $this->scrubber->scrub($locked);
 
             $this->requests->update($request, [
@@ -80,7 +83,7 @@ final class CustomerDeletionService
                 before: ['status' => $previousStatus->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid],
+                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings],
             );
 
             return $request;

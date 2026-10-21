@@ -15,6 +15,7 @@ use App\Http\Requests\Admin\Geography\SuspendServiceZoneRequest;
 use App\Http\Requests\Admin\Geography\UpdateServiceZoneRequest;
 use App\Http\Requests\Admin\Geography\UpdateZoneAvailabilityRequest;
 use App\Models\ServiceZone;
+use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Catalog\ServiceCategoryRepositoryInterface;
 use App\Repositories\Contracts\Geography\ServiceZoneRepositoryInterface;
 use App\Repositories\Contracts\Geography\ZoneServiceCategoryRepositoryInterface;
@@ -54,6 +55,7 @@ final class ServiceZoneController extends AdminController
         ServiceZoneRepositoryInterface $zones,
         ServiceCategoryRepositoryInterface $categories,
         ZoneServiceCategoryRepositoryInterface $links,
+        BookingRepositoryInterface $bookings,
     ): View {
         $serviceZone->load('city.country');
 
@@ -63,6 +65,7 @@ final class ServiceZoneController extends AdminController
             'overlaps' => $zones->overlapping($serviceZone->polygon, $serviceZone->id),
             'categories' => $categories->allOrdered(),
             'links' => $links->forZone($serviceZone->id),
+            'activeBookings' => $bookings->inFlightCountForZone($serviceZone->id),
         ]);
     }
 
@@ -99,7 +102,7 @@ final class ServiceZoneController extends AdminController
 
     public function suspend(SuspendServiceZoneRequest $request, ServiceZone $serviceZone): AdminFormResponse
     {
-        $this->service->suspend($serviceZone, (string) $request->reason(), $this->actor());
+        $this->service->suspend($serviceZone, (string) $request->reason(), $this->actor(), $request->boolean('confirm_active_bookings'));
 
         return $this->afterStateChange($request->boolean('from_show'), __('admin.service_zones.suspended'), route('admin.service-zones.show', $serviceZone));
     }

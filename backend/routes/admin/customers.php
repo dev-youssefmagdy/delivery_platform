@@ -26,6 +26,7 @@ Route::prefix('customers')->name('customers.')->group(function (): void {
     });
 
     Route::controller(CustomerTabController::class)->prefix('{customer:uuid}/tabs')->name('tabs.')->whereUuid('customer')->group(function (): void {
+        Route::get('bookings', 'bookings')->withTrashed()->name('bookings')->can('view', 'customer');
         Route::get('devices', 'devices')->withTrashed()->name('devices')->can('view', 'customer');
         Route::get('consents', 'consents')->withTrashed()->name('consents')->can('view', 'customer');
         Route::get('saved-places', 'savedPlaces')->withTrashed()->name('saved-places')->can('viewPii', 'customer');

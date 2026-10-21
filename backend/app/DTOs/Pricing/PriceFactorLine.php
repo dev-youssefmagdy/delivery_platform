@@ -7,7 +7,8 @@ use App\Support\Money\Money;
 
 /**
  * One component of a reference price. `label` is only set for surcharges (it is the admin's own wording); the other
- * factors are named by their code so apps localise them.
+ * factors are named by their code so apps localise them. `quantity` is a plain number; `unit` (`km`, `min`) says what it
+ * counts and is a code, never display text.
  */
 final readonly class PriceFactorLine
 {
@@ -19,10 +20,11 @@ final readonly class PriceFactorLine
         public Money $amount,
         public ?string $quantity = null,
         public ?array $label = null,
+        public ?string $unit = null,
     ) {}
 
     /**
-     * @return array{code: string, label: string, amount_minor: int, quantity: string|null}
+     * @return array{code: string, label: string, amount_minor: int, quantity: string|null, unit: string|null}
      */
     public function toArray(): array
     {
@@ -34,16 +36,17 @@ final readonly class PriceFactorLine
             'label' => $custom ?? $this->factor->label(),
             'amount_minor' => $this->amount->amount,
             'quantity' => $this->quantity,
+            'unit' => $this->unit,
         ];
     }
 
     /**
      * Locale-independent form stored in the booking snapshot.
      *
-     * @return array{code: string, amount_minor: int, quantity: string|null, label: array<string, string|null>|null}
+     * @return array{code: string, amount_minor: int, quantity: string|null, unit: string|null, label: array<string, string|null>|null}
      */
     public function toSnapshot(): array
     {
-        return ['code' => $this->factor->value, 'amount_minor' => $this->amount->amount, 'quantity' => $this->quantity, 'label' => $this->label];
+        return ['code' => $this->factor->value, 'amount_minor' => $this->amount->amount, 'quantity' => $this->quantity, 'unit' => $this->unit, 'label' => $this->label];
     }
 }

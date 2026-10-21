@@ -102,6 +102,7 @@ class BookingResource extends JsonResource
                     'label' => $custom ?? (PriceFactor::tryFrom((string) $factor['code'])?->label() ?? (string) $factor['code']),
                     'amount_minor' => $factor['amount_minor'],
                     'quantity' => $factor['quantity'] ?? null,
+                    'unit' => $factor['unit'] ?? null,
                 ];
             }, (array) ($estimate['factors'] ?? [])),
             'notice' => (string) __('api.pricing.guidance_notice'),

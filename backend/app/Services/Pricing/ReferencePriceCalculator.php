@@ -39,12 +39,14 @@ final class ReferencePriceCalculator
         $lines[] = new PriceFactorLine(
             PriceFactor::Distance,
             Money::of(self::ratio($policy->perKmMinor, $distanceMeters, 1000), $currency),
-            self::decimal($distanceMeters, 1000).' km',
+            self::decimal($distanceMeters, 1000),
+            unit: 'km',
         );
         $lines[] = new PriceFactorLine(
             PriceFactor::Duration,
             Money::of(self::ratio($policy->perMinMinor, $durationSeconds, 60), $currency),
-            self::decimal($durationSeconds, 60).' min',
+            self::decimal($durationSeconds, 60),
+            unit: 'min',
         );
 
         if ($stopCount > 0 && $policy->stopFeeMinor > 0) {

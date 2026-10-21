@@ -41,7 +41,7 @@ php artisan cache:clear >/dev/null 2>&1
 php artisan migrate:fresh --force --seed --no-interaction >/dev/null || exit 1
 php artisan tinker --execute '
 $admin = App\Models\Admin::factory()->create(["name" => getenv("ADMIN_NAME"), "email" => getenv("ADMIN_EMAIL"), "password" => getenv("ADMIN_PASSWORD")]);
-$admin->givePermissionTo(["dashboard.view", "services.manage", "customers.view", "customers.view_pii", "customers.suspend", "drivers.view", "drivers.verify", "drivers.reject", "documents.view", "vehicles.view", "vehicles.approve", "vehicles.reject"]);
+$admin->givePermissionTo(["dashboard.view", "services.manage", "customers.view", "customers.view_pii", "customers.suspend", "drivers.view", "drivers.verify", "drivers.reject", "documents.view", "vehicles.view", "vehicles.approve", "vehicles.reject", "fare_policies.manage"]);
 $customer = App\Models\User::factory()->create(["name" => "Smoke Customer", "phone_e164" => "+201009998877"]);
 App\Models\CustomerProfile::query()->create(["user_id" => $customer->id]);
 ' >/dev/null || exit 1

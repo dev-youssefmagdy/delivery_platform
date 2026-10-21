@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleSeeder::class,
             CatalogSeeder::class,
+            FarePolicySeeder::class,
             GeographySeeder::class,
             DocumentTypeSeeder::class,
             ProviderSeeder::class,

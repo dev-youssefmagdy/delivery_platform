@@ -14,6 +14,9 @@
 //      the contact details, and the suspend modal going through Precognition before the real submit.
 //   7. (P2.1) the verification review screen: the document viewer loads a private file through a short-lived signed
 //      URL, and rejecting a document goes through the confirm dialog with a mandatory reason (Precognition first).
+//   8. (P2.3) fare policies: a server-side rule (period end before start) is caught by the Precognition call and
+//      blocks the real PUT; the corrected form validates, saves and redirects; the calculator tab validates, then
+//      posts and swaps the result in; and the customer page's Bookings tab lazy-loads its own DataTable.
 //
 // Environment: BASE_URL, ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME, CHROME_BIN (optional), CDP_PORT (optional).
 import { spawn } from 'node:child_process';
@@ -289,7 +292,53 @@ try {
     check(await page.waitFor("document.readyState === 'complete' && document.body.innerText.includes('Rejected') && !!document.querySelector('[data-document-viewer]')", 'rejected state', 12000), 'page reloads showing the document as rejected');
     check(page.jsErrors.length === 0, `no JavaScript errors on the review screen${page.jsErrors.length ? ': ' + page.jsErrors[0] : ''}`);
 
-    // 8. Sign out through the account menu form.
+    // 8. Fare policies (P2.3): Precognition blocks a server-side rule, then the corrected form saves; calculator; bookings tab.
+    page.jsErrors.length = 0;
+    await page.goto('/admin/fare-policies');
+    check(await page.waitFor("document.querySelectorAll('#fare-policies-table tbody a[href*=\"/admin/fare-policies/\"]').length > 0", 'policy rows', 12000), 'fare policies listing loads rows through the DataTable');
+    check(await page.eval("(() => { const card = document.querySelector('[data-filters-for=\"fare-policies-table\"]'); return !!card && getComputedStyle(card.closest('[x-show]')).display === 'none'; })()"), 'the filters card is collapsed on load');
+    const policyHref = await page.eval("document.querySelector('#fare-policies-table tbody a[href*=\"/admin/fare-policies/\"]').getAttribute('href')");
+    const policyPath = new URL(policyHref, BASE_URL).pathname;
+    await page.goto(`${policyPath}/edit`);
+    const policyForm = `document.querySelector('form[data-ajax-form][action*="/fare-policies/"]')`;
+    await page.eval(setField('effective_to', '2000-01-01 00:00'));
+    page.requests.length = 0;
+    await page.eval(`${policyForm}.requestSubmit()`);
+    const periodShown = await page.waitFor(`${errorText('effective_to')} !== ''`, 'period error');
+    if (!periodShown) console.log('   invalid fields:', await page.eval("Array.from(document.querySelectorAll('[data-ajax-form] :invalid')).map((el) => el.name + '=' + el.value + ' (' + el.validationMessage + ')').join(' | ')"), '| errors:', await page.eval("Array.from(document.querySelectorAll('[data-error-for]')).map((el) => el.dataset.errorFor + ':' + el.textContent.trim()).filter((t) => !t.endsWith(':')).join(' | ')"));
+    check(periodShown, 'period ending before it starts: the server error is shown inline');
+    const blocked = page.writes('/admin/fare-policies/');
+    check(blocked.length === 1 && isPrecognitive(blocked[0]), `only the Precognition call was sent, no real submit (${blocked.length} writes)`);
+
+    await page.eval(setField('effective_to', ''));
+    await page.eval(setField('notes', 'Checked in the browser smoke test'));
+    page.requests.length = 0;
+    await page.eval(`${policyForm}.requestSubmit()`);
+    for (let i = 0; i < 100 && page.writes('/admin/fare-policies/').length < 2; i++) await sleep(100);
+    const saved = page.writes('/admin/fare-policies/');
+    check(saved.length === 2 && isPrecognitive(saved[0]) && !isPrecognitive(saved[1]), `corrected form: Precognition call, then the real submit (${saved.map((r) => r.method).join(',')})`);
+    check(await page.waitFor(`location.pathname === ${JSON.stringify(policyPath)} && document.body.innerText.includes('Checked in the browser smoke test')`, 'show page after save', 12000), 'saving redirects to the policy page showing the new note');
+
+    await page.eval("document.querySelector('[data-tab-trigger=\"calculator\"]').click()");
+    await sleep(300);
+    page.requests.length = 0;
+    await page.eval(setField('distance_km', '10'));
+    await page.eval(setField('duration_min', '20'));
+    await page.eval("document.querySelector('form[action$=\"/preview\"]').requestSubmit()");
+    check(await page.waitFor("(document.querySelector('#fare-preview-result')?.innerText || '').trim().length > 20", 'calculator result', 12000), 'the calculator swaps the result in after validation');
+    const previews = page.writes('/preview');
+    check(previews.length === 2 && isPrecognitive(previews[0]) && !isPrecognitive(previews[1]), `calculator: Precognition call, then the real submit (${previews.length} writes)`);
+    check(page.jsErrors.length === 0, `no JavaScript errors on the fare policy pages${page.jsErrors.length ? ': ' + page.jsErrors[0] : ''}`);
+
+    await page.goto(new URL(customerHref, BASE_URL).pathname);
+    check(await page.waitFor("!!document.querySelector('[data-tab-trigger=\"bookings\"]')", 'customer tabs'), 'customer page has a Bookings tab');
+    page.requests.length = 0;
+    await page.eval("document.querySelector('[data-tab-trigger=\"bookings\"]').click()");
+    check(await page.waitFor("!!document.querySelector('#customer-bookings-table') && document.querySelectorAll('#customer-bookings-table thead th').length >= 6", 'bookings table', 12000), 'the Bookings tab lazy-loads its own DataTable');
+    check(await page.waitFor("(document.querySelector('#customer-bookings-table tbody tr')?.textContent || '').trim() !== ''", 'bookings body'), 'the Bookings DataTable drew its body (empty state, no fake rows)');
+    check(page.requests.filter((r) => r.url.includes('/tabs/bookings')).length >= 2, 'tab fragment and DataTable AJAX were separate requests');
+
+    // 9. Sign out through the account menu form.
     await page.eval("document.querySelector('form[action$=\"/admin/logout\"] button[type=submit]').closest('form').requestSubmit()");
     check(await page.waitFor("location.pathname === '/admin/login'", 'back at login after logout', 12000), 'logout returns to the login page');
 

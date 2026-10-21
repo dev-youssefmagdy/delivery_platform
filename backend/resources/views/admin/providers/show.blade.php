@@ -93,7 +93,7 @@
             <x-admin.tabs.panel id="vehicles" :url="route('admin.providers.tabs.vehicles', $provider)" />
             <x-admin.tabs.panel id="documents" :url="route('admin.providers.tabs.documents', $provider)" />
             <x-admin.tabs.panel id="history" :url="route('admin.providers.tabs.history', $provider)" />
-            <x-admin.tabs.panel id="jobs"><x-admin.available-after :title="__('admin.providers.tabs.jobs')" milestone="P2.5" :module="__('admin.providers.modules.jobs')" /></x-admin.tabs.panel>
+            <x-admin.tabs.panel id="jobs"><x-admin.available-after :title="__('admin.providers.tabs.jobs')" milestone="P2.8" :module="__('admin.providers.modules.jobs')" /></x-admin.tabs.panel>
             <x-admin.tabs.panel id="earnings"><x-admin.available-after :title="__('admin.providers.tabs.earnings')" milestone="P3.4" :module="__('admin.providers.modules.earnings')" /></x-admin.tabs.panel>
             <x-admin.tabs.panel id="data-requests" :url="route('admin.providers.tabs.deletion-requests', $provider)" />
             <x-admin.tabs.panel id="audit" :url="route('admin.providers.tabs.audit', $provider)" />

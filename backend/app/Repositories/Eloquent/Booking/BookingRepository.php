@@ -196,8 +196,15 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
                 'pickup_point' => DB::raw(sprintf(self::ROUNDED_POINT, 'pickup_point')),
                 'dropoff_point' => DB::raw('IF(dropoff_point IS NULL, NULL, '.sprintf(self::ROUNDED_POINT, 'dropoff_point').')'),
                 'route_snapshot' => DB::raw("JSON_REMOVE(route_snapshot, '\$.polyline')"),
+                // GPS evidence of the arrival holds the provider's coordinates at the pickup.
+                'arrival_evidence' => null,
                 'updated_at' => now(),
             ]);
+
+            // Free text the customer wrote on the trip, and the public links to it, go with the account.
+            DB::table('booking_ratings')->whereIn('booking_id', $ids)->where('rater_type', 'customer')->update(['comment' => null, 'updated_at' => now()]);
+            DB::table('booking_reports')->whereIn('booking_id', $ids)->where('reporter_type', 'customer')->update(['description' => '[removed]', 'updated_at' => now()]);
+            DB::table('booking_share_links')->whereIn('booking_id', $ids)->delete();
 
             DB::table('booking_stops')->whereIn('booking_id', $ids)->update([
                 'address' => null,

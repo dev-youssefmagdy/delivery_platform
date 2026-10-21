@@ -4,6 +4,7 @@ namespace App\Services\Customers;
 
 use App\Models\AccountDeletionRequest;
 use App\Models\Booking;
+use App\Models\BookingReport;
 use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
 use App\Models\CustomerMessage;
@@ -11,7 +12,9 @@ use App\Models\SavedPlace;
 use App\Models\User;
 use App\Models\UserConsent;
 use App\Models\UserDevice;
+use App\Repositories\Contracts\Booking\BookingReportRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerMessageRepositoryInterface;
 use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
@@ -35,6 +38,8 @@ final class PersonalDataExporter
         private readonly AccountDeletionRequestRepositoryInterface $deletionRequests,
         private readonly CustomerMessageRepositoryInterface $messages,
         private readonly BookingRepositoryInterface $bookings,
+        private readonly RatingRepositoryInterface $ratings,
+        private readonly BookingReportRepositoryInterface $reports,
         private readonly BookingStatusEventRepositoryInterface $bookingEvents,
     ) {}
 
@@ -108,6 +113,22 @@ final class PersonalDataExporter
     /**
      * @return array<string, mixed>
      */
+    /**
+     * What this customer wrote about the trip: their rating of the provider and their reports.
+     *
+     * @return array<string, mixed>
+     */
+    private function feedback(Booking $booking): array
+    {
+        $rating = $this->ratings->findForSide($booking->id, 'customer');
+        $reports = $this->reports->forReporterType($booking->id, 'customer');
+
+        return [
+            'rating' => $rating === null ? null : ['stars' => $rating->stars, 'tags' => $rating->tags, 'comment' => $rating->comment],
+            'reports' => $reports->map(static fn (BookingReport $report): array => ['category' => $report->category->value, 'description' => $report->description, 'at' => $report->created_at->toIso8601String()])->all(),
+        ];
+    }
+
     private function booking(Booking $booking): array
     {
         return [
@@ -129,6 +150,14 @@ final class PersonalDataExporter
             'currency' => $booking->currency,
             'payment_method' => $booking->payment_method->value,
             'payment_status' => $booking->payment_status->value,
+            'agreed_fare_minor' => $booking->agreed_fare_minor,
+            'final_fare_minor' => $booking->final_fare_minor,
+            'cancellation' => $booking->cancelled_at === null ? null : [
+                'by' => $booking->cancelled_by_type,
+                'reason_code' => $booking->cancellation_reason_code,
+                'fee_minor' => $booking->cancellation_fee_minor,
+            ],
+            'ratings_and_reports' => $this->feedback($booking),
             'timeline' => $this->bookingEvents->forBooking($booking)->map(static fn (BookingStatusEvent $event): array => [
                 'from' => $event->from_status?->value,
                 'to' => $event->to_status->value,

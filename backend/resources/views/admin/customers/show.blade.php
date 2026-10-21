@@ -100,7 +100,7 @@
             <x-admin.tabs.panel id="payments"><x-admin.available-after :title="__('admin.customers.tabs.payments')" milestone="P3.2" :module="__('admin.customers.modules.payments')" /></x-admin.tabs.panel>
             <x-admin.tabs.panel id="coupons"><x-admin.available-after :title="__('admin.customers.tabs.coupons')" milestone="P3.3" :module="__('admin.customers.modules.coupons')" /></x-admin.tabs.panel>
             <x-admin.tabs.panel id="tickets"><x-admin.available-after :title="__('admin.customers.tabs.tickets')" milestone="P3.7" :module="__('admin.customers.modules.tickets')" /></x-admin.tabs.panel>
-            <x-admin.tabs.panel id="ratings"><x-admin.available-after :title="__('admin.customers.tabs.ratings')" milestone="P2.5" :module="__('admin.customers.modules.ratings')" /></x-admin.tabs.panel>
+            <x-admin.tabs.panel id="ratings"><x-admin.available-after :title="__('admin.customers.tabs.ratings')" milestone="P2.8" :module="__('admin.customers.modules.ratings')" /></x-admin.tabs.panel>
 
             <x-admin.tabs.panel id="consents" :url="route('admin.customers.tabs.consents', $customer)" />
             <x-admin.tabs.panel id="devices" :url="route('admin.customers.tabs.devices', $customer)" />

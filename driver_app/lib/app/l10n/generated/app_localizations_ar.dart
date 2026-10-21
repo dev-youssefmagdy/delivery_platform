@@ -745,8 +745,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vsEligibilityTitle => 'الجاهزية للعمل';
 
   @override
-  String get vsEligible =>
-      'تستوفي كل المتطلبات. الاتصال بالإنترنت لاستقبال الطلبات يتوفر في التحديث القادم.';
+  String get vsEligible => 'أنت تستوفي كل شروط العمل.';
 
   @override
   String get vsNotEligible => 'لم تكتمل جاهزيتك للعمل بعد:';
@@ -893,4 +892,140 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get obErrPolicyStale => 'تغيّرت الشروط. حدّث الصفحة وحاول مرة أخرى.';
+
+  @override
+  String get erLocationStale =>
+      'موقعك غير متاح أو قديم. فعّل الموقع وحاول مرة أخرى.';
+
+  @override
+  String get erActiveJobExists => 'لديك مهمة نشطة بالفعل.';
+
+  @override
+  String get erCashDebtLimitExceeded =>
+      'العمولة غير المسددة تجاوزت الحد المسموح. سدّدها لتتمكن من الاتصال.';
+
+  @override
+  String get avTitle => 'التواجد';
+
+  @override
+  String get avOnlineTitle => 'أنت متصل';
+
+  @override
+  String get avOfflineTitle => 'أنت غير متصل';
+
+  @override
+  String get avOnlineBody => 'ستظهر هنا الطلبات الجديدة القريبة منك.';
+
+  @override
+  String get avOfflineBody => 'فعّل التواجد لاستقبال الطلبات.';
+
+  @override
+  String get avSwitchLabel => 'استقبال الطلبات';
+
+  @override
+  String get avReasonsTitle => 'لا يمكنك الاتصال بعد:';
+
+  @override
+  String get avVehicleLabel => 'المركبة';
+
+  @override
+  String get avNoLocationNote =>
+      'تتم مشاركة موقعك فقط أثناء الاتصال أو تنفيذ مهمة.';
+
+  @override
+  String get avTrackingOff => 'مشاركة الموقع متوقفة';
+
+  @override
+  String get avTrackingIdle => 'نشارك موقعك أثناء انتظار الطلبات';
+
+  @override
+  String get avTrackingToPickup => 'نشارك موقعك في الطريق إلى نقطة الاستلام';
+
+  @override
+  String get avTrackingActive => 'نشارك موقعك أثناء المهمة';
+
+  @override
+  String avTrackingEvery(int seconds) {
+    return 'يتم التحديث كل $seconds ثانية';
+  }
+
+  @override
+  String get avUploadFailed => 'تعذر إرسال موقعك. نعيد المحاولة.';
+
+  @override
+  String get avRealtimeConnected => 'مباشر';
+
+  @override
+  String get avRealtimeConnecting => 'جارٍ الاتصال';
+
+  @override
+  String get avRealtimeDisconnected => 'لا يوجد اتصال مباشر، نعيد المحاولة';
+
+  @override
+  String get avPermissionDenied => 'اسمح بالوصول إلى الموقع لتتمكن من الاتصال.';
+
+  @override
+  String get avPermissionForever =>
+      'الموقع محظور لهذا التطبيق. افتح الإعدادات للسماح به.';
+
+  @override
+  String get avServiceDisabled => 'خدمات الموقع متوقفة على هذا الجهاز.';
+
+  @override
+  String get avOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String get avPositionUnavailable =>
+      'تعذر تحديد موقعك. حاول في مكان إشارته أفضل.';
+
+  @override
+  String get avOutsideArea => 'أنت خارج مناطق الخدمة.';
+
+  @override
+  String get avVehicleNotUsable => 'لا يمكن استخدام هذه المركبة الآن.';
+
+  @override
+  String get avOfflineStale => 'تم إيقاف اتصالك لأن موقعك توقف عن التحديث.';
+
+  @override
+  String get avOfflineIneligible =>
+      'تم إيقاف اتصالك لأنك لم تعد تستوفي الشروط.';
+
+  @override
+  String get avOfflineAccount => 'تم إيقاف اتصالك لأن حالة حسابك تغيرت.';
+
+  @override
+  String get avRationaleTitle => 'لماذا نحتاج موقعك';
+
+  @override
+  String get avRationaleBody =>
+      'نستخدم موقعك فقط أثناء الاتصال وأثناء المهام: لإظهارك للعملاء القريبين، وإرشادك إلى نقطة الاستلام، وتتبع الرحلة والحفاظ على أمانها. نتوقف فور إيقاف اتصالك. أثناء الاتصال يبقى إشعار ظاهراً على الشاشة وقد يستمر تحديث الموقع عندما يكون التطبيق في الخلفية.';
+
+  @override
+  String get avRationaleContinue => 'متابعة';
+
+  @override
+  String get avRationaleCancel => 'ليس الآن';
+
+  @override
+  String get avOfflineConfirmTitle => 'لديك مهمة جارية';
+
+  @override
+  String get avOfflineConfirmBody =>
+      'إيقاف الاتصال يوقف الطلبات الجديدة. تستمر مهمتك الحالية ويستمر إرسال موقعك حتى تنتهي.';
+
+  @override
+  String get avOfflineConfirmAction => 'إيقاف الاتصال';
+
+  @override
+  String get avStayOnline => 'البقاء متصلاً';
+
+  @override
+  String get avActiveJobBanner => 'مهمة جارية';
+
+  @override
+  String get avNotificationTitle => 'أنت متصل';
+
+  @override
+  String get avNotificationText => 'نشارك موقعك لاستقبال الطلبات';
 }

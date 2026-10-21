@@ -35,6 +35,13 @@
 	<string>Choose photos of your documents and vehicle for your driver application.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to show you to nearby customers and track trips.</string>
+	<!-- App Store justification for the "location" background mode: a driver who is online or on a job keeps sharing
+	     the position while the app is in the background (the system location indicator is shown, tracking stops
+	     as soon as the driver goes offline and has no job). -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

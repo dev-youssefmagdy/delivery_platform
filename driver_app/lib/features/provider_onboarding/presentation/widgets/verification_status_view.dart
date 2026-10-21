@@ -15,9 +15,14 @@ class VerificationStatusView extends ConsumerWidget {
     super.key,
     required this.application,
     required this.onContinue,
+    this.header,
   });
 
   final ProviderApplication application;
+
+  /// Shown above the headline: the driver home's availability card once the
+  /// application is approved (P2.2).
+  final Widget? header;
 
   /// Opens the wizard to fix and resubmit (or continue a draft).
   final VoidCallback onContinue;
@@ -96,6 +101,7 @@ class VerificationStatusView extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsetsDirectional.all(AppSpacing.md),
       children: [
+        if (header != null) ...[header!, const SizedBox(height: AppSpacing.md)],
         Icon(icon, size: 56, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: AppSpacing.md),
         Center(

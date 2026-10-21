@@ -23,6 +23,7 @@ class ApiException implements Exception {
     this.fieldErrors = const {},
     this.requestId,
     this.retryAfterSeconds,
+    this.meta = const {},
   });
 
   final ApiFailureKind kind;
@@ -39,6 +40,10 @@ class ApiException implements Exception {
   final Map<String, List<String>> fieldErrors;
   final String? requestId;
   final int? retryAfterSeconds;
+
+  /// Machine extras of the envelope `meta` (for example the typed `reasons`
+  /// of `provider_not_eligible`).
+  final Map<String, dynamic> meta;
 
   bool get isSessionExpired => kind == ApiFailureKind.unauthenticated;
   bool get isOffline =>

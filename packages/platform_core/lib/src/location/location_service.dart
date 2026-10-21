@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, TargetPlatform;
 import 'package:geolocator/geolocator.dart';
 
 import '../enums/location_source.dart';
@@ -115,5 +117,68 @@ class LocationPermissionFlow {
     }
     if (!await showRationale()) return LocationPermissionState.denied;
     return _service.request();
+  }
+}
+
+/// What the Android foreground-service notification says while the app keeps
+/// tracking in the background (always visible: the driver can see and stop it).
+class TrackingNotice {
+  const TrackingNotice({required this.title, required this.text});
+
+  final String title;
+  final String text;
+}
+
+/// Continuous position source for the driver's availability and active jobs.
+/// Separate from [LocationService] (one-off reads and permissions) because it
+/// runs as a foreground service on Android and keeps the iOS background
+/// location indicator visible; stopping the subscription stops the service.
+abstract interface class TrackingLocationSource {
+  /// Positions at most every [interval] while the stream is listened to.
+  Stream<GeoPoint> track({
+    required Duration interval,
+    required TrackingNotice notice,
+  });
+}
+
+class GeolocatorTrackingSource implements TrackingLocationSource {
+  const GeolocatorTrackingSource();
+
+  @override
+  Stream<GeoPoint> track({
+    required Duration interval,
+    required TrackingNotice notice,
+  }) {
+    final settings = switch (defaultTargetPlatform) {
+      TargetPlatform.android => AndroidSettings(
+        accuracy: LocationAccuracy.high,
+        intervalDuration: interval,
+        foregroundNotificationConfig: ForegroundNotificationConfig(
+          notificationTitle: notice.title,
+          notificationText: notice.text,
+          notificationChannelName: notice.title,
+          enableWakeLock: true,
+          setOngoing: true,
+        ),
+      ),
+      TargetPlatform.iOS || TargetPlatform.macOS => AppleSettings(
+        accuracy: LocationAccuracy.high,
+        activityType: ActivityType.automotiveNavigation,
+        pauseLocationUpdatesAutomatically: false,
+        allowBackgroundLocationUpdates: true,
+        showBackgroundLocationIndicator: true,
+      ),
+      _ => const LocationSettings(accuracy: LocationAccuracy.high),
+    };
+    return Geolocator.getPositionStream(locationSettings: settings).map(
+      (p) => GeoPoint(
+        latitude: p.latitude,
+        longitude: p.longitude,
+        accuracyMeters: p.accuracy,
+        heading: p.heading,
+        speedMps: p.speed,
+        capturedAt: p.timestamp,
+      ),
+    );
   }
 }

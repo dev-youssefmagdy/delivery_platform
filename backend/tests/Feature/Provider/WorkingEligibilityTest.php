@@ -10,6 +10,7 @@ use App\Services\Provider\ProviderEligibilityService;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use LogicException;
 use Tests\Concerns\BuildsDispatch;
 use Tests\TestCase;
 
@@ -99,13 +100,9 @@ class WorkingEligibilityTest extends TestCase
         $this->assertNull($repository->activeBooking($provider));
         $this->assertSame(0, $repository->cashDebtMinor($provider));
 
-        \Illuminate\Support\Facades\Schema::create('bookings', static fn ($table) => $table->id());
+        \Illuminate\Support\Facades\Schema::partialMock()->shouldReceive('hasTable')->with('bookings')->andReturn(true);
 
-        try {
-            $this->expectException(\LogicException::class);
-            $repository->activeBooking($provider);
-        } finally {
-            \Illuminate\Support\Facades\Schema::drop('bookings');
-        }
+        $this->expectException(LogicException::class);
+        $repository->activeBooking($provider);
     }
 }

@@ -19,8 +19,14 @@ class RealtimeEvent {
   int? get sequence => data['sequence'] as int?;
 }
 
+/// Where the realtime connection stands, for the state indicator in the apps.
+enum RealtimeConnectionState { disconnected, connecting, connected }
+
 /// Realtime events are hints only; callers refetch authoritative state.
 abstract interface class RealtimeClient {
+  /// Emits on every change of the connection (connected, dropped, retrying).
+  Stream<RealtimeConnectionState> get connectionState;
+
   /// Emits after the first connect and after every reconnect. Subscribers must
   /// refetch snapshots (events may have been missed while offline).
   Stream<void> get connected;
@@ -45,10 +51,15 @@ class PusherRealtimeClient implements RealtimeClient {
   PusherChannelsClient? _client;
   final _channels = <String, PrivateChannel>{};
   final _connected = StreamController<void>.broadcast();
+  final _state = StreamController<RealtimeConnectionState>.broadcast();
+  StreamSubscription<PusherChannelsClientLifeCycleState>? _lifecycleSub;
   StreamSubscription<void>? _connectedSub;
 
   @override
   Stream<void> get connected => _connected.stream;
+
+  @override
+  Stream<RealtimeConnectionState> get connectionState => _state.stream;
 
   PusherChannelsClient _ensureClient() {
     return _client ??= () {
@@ -70,6 +81,21 @@ class PusherRealtimeClient implements RealtimeClient {
       _connectedSub = client.onConnectionEstablished.listen(
         (_) => _connected.add(null),
       );
+      _lifecycleSub = client.lifecycleStream.listen((event) {
+        final state = switch (event) {
+          PusherChannelsClientLifeCycleState.establishedConnection =>
+            RealtimeConnectionState.connected,
+          PusherChannelsClientLifeCycleState.pendingConnection ||
+          PusherChannelsClientLifeCycleState.reconnecting =>
+            RealtimeConnectionState.connecting,
+          PusherChannelsClientLifeCycleState.connectionError ||
+          PusherChannelsClientLifeCycleState.disconnected ||
+          PusherChannelsClientLifeCycleState.disposed =>
+            RealtimeConnectionState.disconnected,
+          _ => null,
+        };
+        if (state != null) _state.add(state);
+      });
       return client;
     }();
   }
@@ -89,7 +115,7 @@ class PusherRealtimeClient implements RealtimeClient {
       authorizationDelegate:
           EndpointAuthorizableChannelTokenAuthorizationDelegate.forPrivateChannel(
             authorizationEndpoint: Uri.parse(
-              '${_env.apiOrigin}/broadcasting/auth',
+              '${_env.apiBaseUrl.replaceAll(RegExp(r'/+$'), '')}/broadcasting/auth',
             ),
             headers: {
               'Accept': 'application/json',
@@ -121,7 +147,9 @@ class PusherRealtimeClient implements RealtimeClient {
 
   void dispose() {
     _connectedSub?.cancel();
+    _lifecycleSub?.cancel();
     _connected.close();
+    _state.close();
     _client?.dispose();
   }
 }

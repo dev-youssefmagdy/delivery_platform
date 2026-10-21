@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:platform_core/platform_core.dart';
 
@@ -576,4 +578,222 @@ class FakePhotoHandler implements PhotoFieldHandler {
     picks++;
     return path;
   }
+}
+
+/// Scriptable availability API: the last answer is kept the way the server
+/// would, so tests can drive the switch and the tracker.
+class FakeAvailabilityRepository implements AvailabilityRepository {
+  FakeAvailabilityRepository({
+    this.online = false,
+    this.eligibility = const EligibilityInfo(eligible: true),
+    this.activeBookingId,
+  });
+
+  bool online;
+  EligibilityInfo eligibility;
+  String? activeBookingId;
+  String vehicleId = 'veh-1';
+  OfflineReason? lastOfflineReason;
+  TrackingState trackingState = TrackingState.idle;
+  int intervalSeconds = 30;
+
+  Object? snapshotError;
+  Object? onlineError;
+  Object? offlineError;
+  Object? uploadError;
+  final calls = <String>[];
+  final onlineRequests = <({GeoPoint location, String? vehicleId})>[];
+  final offlineConfirmations = <bool>[];
+  final uploads = <List<GeoPoint>>[];
+
+  /// The plan the next upload answer carries (null = unchanged).
+  TrackingPlan? nextUploadPlan;
+
+  @override
+  ApiClient get api => throw UnimplementedError();
+
+  TrackingPlan get _plan => online || activeBookingId != null
+      ? TrackingPlan(
+          state: activeBookingId != null ? TrackingState.active : trackingState,
+          intervalSeconds: intervalSeconds,
+        )
+      : TrackingPlan.off;
+
+  ProviderAvailability get _availability => ProviderAvailability(
+    online: online,
+    vehicleId: vehicleId,
+    lastOfflineReason: lastOfflineReason,
+    activeBookingId: activeBookingId,
+    tracking: _plan,
+    channel: 'private-provider.prov-1',
+  );
+
+  @override
+  Future<AvailabilitySnapshot> snapshot() async {
+    calls.add('snapshot');
+    if (snapshotError != null) throw snapshotError!;
+    return AvailabilitySnapshot(
+      availability: _availability,
+      eligibility: eligibility,
+    );
+  }
+
+  @override
+  Future<ProviderAvailability> goOnline({
+    required GeoPoint location,
+    String? vehicleId,
+  }) async {
+    calls.add('online');
+    onlineRequests.add((location: location, vehicleId: vehicleId));
+    if (onlineError != null) throw onlineError!;
+    online = true;
+    if (vehicleId != null) this.vehicleId = vehicleId;
+    return _availability;
+  }
+
+  @override
+  Future<ProviderAvailability> goOffline({bool confirm = false}) async {
+    calls.add('offline');
+    offlineConfirmations.add(confirm);
+    if (offlineError != null) throw offlineError!;
+    if (activeBookingId != null && !confirm) {
+      throw const ApiException(
+        kind: ApiFailureKind.conflict,
+        code: 'active_job_blocks_offline',
+        message: null,
+        statusCode: 409,
+      );
+    }
+    online = false;
+    lastOfflineReason = OfflineReason.providerChoice;
+    return _availability;
+  }
+
+  @override
+  Future<LocationUploadResult> uploadLocations(List<GeoPoint> points) async {
+    calls.add('upload');
+    uploads.add(List.of(points));
+    if (uploadError != null) throw uploadError!;
+    final plan = nextUploadPlan ?? _plan;
+    return LocationUploadResult(
+      received: points.length,
+      applied: points.length,
+      flagged: 0,
+      tracking: plan,
+    );
+  }
+}
+
+/// Position stream the test pushes into; remembers how it was asked for.
+class FakeTrackingSource implements TrackingLocationSource {
+  final starts = <Duration>[];
+  final notices = <TrackingNotice>[];
+  int cancelled = 0;
+  StreamController<GeoPoint>? _controller;
+
+  bool get listening => _controller?.hasListener ?? false;
+
+  void emit(GeoPoint point) => _controller?.add(point);
+
+  @override
+  Stream<GeoPoint> track({
+    required Duration interval,
+    required TrackingNotice notice,
+  }) {
+    starts.add(interval);
+    notices.add(notice);
+    _controller = StreamController<GeoPoint>(onCancel: () => cancelled++);
+    return _controller!.stream;
+  }
+}
+
+/// Realtime connection scripted by the test.
+class FakeRealtimeClient implements RealtimeClient {
+  final _connected = StreamController<void>.broadcast();
+  final _state = StreamController<RealtimeConnectionState>.broadcast();
+  final _events = StreamController<RealtimeEvent>.broadcast();
+  final subscribed = <String>[];
+  final unsubscribed = <String>[];
+  int connects = 0;
+  int disconnects = 0;
+  Object? connectError;
+
+  @override
+  Stream<void> get connected => _connected.stream;
+
+  @override
+  Stream<RealtimeConnectionState> get connectionState => _state.stream;
+
+  @override
+  Future<void> connect() async {
+    connects++;
+    if (connectError != null) throw connectError!;
+    _state.add(RealtimeConnectionState.connected);
+    _connected.add(null);
+  }
+
+  @override
+  Future<Stream<RealtimeEvent>> subscribePrivate(String channel) async {
+    subscribed.add(channel);
+    return _events.stream;
+  }
+
+  @override
+  void unsubscribe(String channel) => unsubscribed.add(channel);
+
+  @override
+  Future<void> disconnect() async => disconnects++;
+
+  void setState(RealtimeConnectionState state) => _state.add(state);
+
+  void reconnect() {
+    _state.add(RealtimeConnectionState.connected);
+    _connected.add(null);
+  }
+
+  void emit(String name, Map<String, dynamic> data) => _events.add(
+    RealtimeEvent(channel: 'provider.prov-1', name: name, data: data),
+  );
+}
+
+/// Scriptable permission and position (never touches geolocator).
+class FakeLocationService implements LocationService {
+  FakeLocationService({
+    this.permission = LocationPermissionState.granted,
+    GeoPoint? position,
+  }) : position = position ?? GeoPoint(latitude: 30.05, longitude: 31.25);
+
+  LocationPermissionState permission;
+  GeoPoint? position;
+  LocationPermissionState? grantOnRequest;
+  int requests = 0;
+  int settingsOpened = 0;
+  int locationSettingsOpened = 0;
+  bool throwOnCurrent = false;
+
+  @override
+  Future<LocationPermissionState> status() async => permission;
+
+  @override
+  Future<LocationPermissionState> request() async {
+    requests++;
+    permission = grantOnRequest ?? permission;
+    return permission;
+  }
+
+  @override
+  Future<GeoPoint?> current() async {
+    if (throwOnCurrent) throw StateError('no fix');
+    return permission == LocationPermissionState.granted ? position : null;
+  }
+
+  @override
+  Stream<GeoPoint> watch({int distanceFilterMeters = 20}) =>
+      const Stream.empty();
+
+  @override
+  Future<void> openAppSettings() async => settingsOpened++;
+
+  @override
+  Future<void> openLocationSettings() async => locationSettingsOpened++;
 }

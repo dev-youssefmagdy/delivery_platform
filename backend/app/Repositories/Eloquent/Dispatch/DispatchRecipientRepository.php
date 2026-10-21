@@ -41,7 +41,7 @@ final class DispatchRecipientRepository extends BaseRepository implements Dispat
         return $recorded;
     }
 
-    public function find(int $bookingId, int $providerProfileId): ?DispatchRecipient
+    public function findRecipient(int $bookingId, int $providerProfileId): ?DispatchRecipient
     {
         return $this->query()->where('booking_id', $bookingId)->where('provider_profile_id', $providerProfileId)->first();
     }

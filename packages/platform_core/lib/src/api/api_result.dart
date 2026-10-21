@@ -50,6 +50,7 @@ abstract final class EnvelopeParser {
     final fields = <String, List<String>>{};
     String? requestId = requestIdHeader;
     int? retryAfter = int.tryParse(retryAfterHeader ?? '');
+    var extras = const <String, dynamic>{};
 
     if (env != null) {
       message = env['message'] as String?;
@@ -67,6 +68,7 @@ abstract final class EnvelopeParser {
       }
       final meta = env['meta'];
       if (meta is Map) {
+        extras = Map<String, dynamic>.from(meta);
         final rid = meta['request_id'];
         if (rid is String && rid.isNotEmpty) requestId = rid;
         final ra = meta['retry_after'];
@@ -82,6 +84,7 @@ abstract final class EnvelopeParser {
       fieldErrors: fields,
       requestId: requestId,
       retryAfterSeconds: retryAfter,
+      meta: extras,
     );
   }
 

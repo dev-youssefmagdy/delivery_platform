@@ -6,6 +6,7 @@ import 'package:platform_core/platform_core.dart';
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../availability/presentation/widgets/availability_card.dart';
 import '../providers/provider_onboarding_providers.dart';
 import '../widgets/onboarding_labels.dart';
 import '../widgets/onboarding_wizard.dart';
@@ -101,6 +102,14 @@ class ProviderOnboardingScreen extends ConsumerWidget {
                       ref.read(applicationProvider.notifier).reload(),
                   child: VerificationStatusView(
                     application: app,
+                    header: app.status == ProviderStatus.approved
+                        ? AvailabilityCard(
+                            vehicles: [
+                              for (final v in app.vehicles)
+                                if (v.status == VehicleStatus.approved) v,
+                            ],
+                          )
+                        : null,
                     onContinue: () =>
                         ref.read(wizardOpenProvider.notifier).open(),
                   ),

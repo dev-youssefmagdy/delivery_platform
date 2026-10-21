@@ -23,7 +23,7 @@ interface DispatchRecipientRepositoryInterface
      */
     public function recordWave(int $bookingId, int $wave, array $rows): array;
 
-    public function find(int $bookingId, int $providerProfileId): ?DispatchRecipient;
+    public function findRecipient(int $bookingId, int $providerProfileId): ?DispatchRecipient;
 
     public function markSeen(int $bookingId, int $providerProfileId): void;
 

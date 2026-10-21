@@ -16,6 +16,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Concerns\BuildsDispatch;
 use Tests\TestCase;
+use Throwable;
 
 /**
  * Both ProviderGeoIndex implementations answer the same questions the same way: radius, nearest first, freshness,
@@ -44,7 +45,7 @@ class ProviderGeoIndexTest extends TestCase
         if ($driver === 'redis') {
             try {
                 app('redis')->connection()->ping();
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 $this->markTestSkipped('Redis is not available.');
             }
 
@@ -63,7 +64,7 @@ class ProviderGeoIndexTest extends TestCase
             if (config('location.index') === 'redis' || app()->bound(RedisGeoIndex::class)) {
                 app(RedisGeoIndex::class)->flush();
             }
-        } catch (\Throwable) {
+        } catch (Throwable) {
         }
 
         parent::tearDown();

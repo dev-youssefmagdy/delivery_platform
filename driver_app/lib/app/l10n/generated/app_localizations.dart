@@ -1487,7 +1487,7 @@ abstract class AppLocalizations {
   /// No description provided for @vsEligible.
   ///
   /// In ar, this message translates to:
-  /// **'تستوفي كل المتطلبات. الاتصال بالإنترنت لاستقبال الطلبات يتوفر في التحديث القادم.'**
+  /// **'أنت تستوفي كل شروط العمل.'**
   String get vsEligible;
 
   /// No description provided for @vsNotEligible.
@@ -1759,6 +1759,258 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تغيّرت الشروط. حدّث الصفحة وحاول مرة أخرى.'**
   String get obErrPolicyStale;
+
+  /// No description provided for @erLocationStale.
+  ///
+  /// In ar, this message translates to:
+  /// **'موقعك غير متاح أو قديم. فعّل الموقع وحاول مرة أخرى.'**
+  String get erLocationStale;
+
+  /// No description provided for @erActiveJobExists.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك مهمة نشطة بالفعل.'**
+  String get erActiveJobExists;
+
+  /// No description provided for @erCashDebtLimitExceeded.
+  ///
+  /// In ar, this message translates to:
+  /// **'العمولة غير المسددة تجاوزت الحد المسموح. سدّدها لتتمكن من الاتصال.'**
+  String get erCashDebtLimitExceeded;
+
+  /// No description provided for @avTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التواجد'**
+  String get avTitle;
+
+  /// No description provided for @avOnlineTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت متصل'**
+  String get avOnlineTitle;
+
+  /// No description provided for @avOfflineTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت غير متصل'**
+  String get avOfflineTitle;
+
+  /// No description provided for @avOnlineBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستظهر هنا الطلبات الجديدة القريبة منك.'**
+  String get avOnlineBody;
+
+  /// No description provided for @avOfflineBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'فعّل التواجد لاستقبال الطلبات.'**
+  String get avOfflineBody;
+
+  /// No description provided for @avSwitchLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'استقبال الطلبات'**
+  String get avSwitchLabel;
+
+  /// No description provided for @avReasonsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكنك الاتصال بعد:'**
+  String get avReasonsTitle;
+
+  /// No description provided for @avVehicleLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'المركبة'**
+  String get avVehicleLabel;
+
+  /// No description provided for @avNoLocationNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تتم مشاركة موقعك فقط أثناء الاتصال أو تنفيذ مهمة.'**
+  String get avNoLocationNote;
+
+  /// No description provided for @avTrackingOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة الموقع متوقفة'**
+  String get avTrackingOff;
+
+  /// No description provided for @avTrackingIdle.
+  ///
+  /// In ar, this message translates to:
+  /// **'نشارك موقعك أثناء انتظار الطلبات'**
+  String get avTrackingIdle;
+
+  /// No description provided for @avTrackingToPickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'نشارك موقعك في الطريق إلى نقطة الاستلام'**
+  String get avTrackingToPickup;
+
+  /// No description provided for @avTrackingActive.
+  ///
+  /// In ar, this message translates to:
+  /// **'نشارك موقعك أثناء المهمة'**
+  String get avTrackingActive;
+
+  /// No description provided for @avTrackingEvery.
+  ///
+  /// In ar, this message translates to:
+  /// **'يتم التحديث كل {seconds} ثانية'**
+  String avTrackingEvery(int seconds);
+
+  /// No description provided for @avUploadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر إرسال موقعك. نعيد المحاولة.'**
+  String get avUploadFailed;
+
+  /// No description provided for @avRealtimeConnected.
+  ///
+  /// In ar, this message translates to:
+  /// **'مباشر'**
+  String get avRealtimeConnected;
+
+  /// No description provided for @avRealtimeConnecting.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ الاتصال'**
+  String get avRealtimeConnecting;
+
+  /// No description provided for @avRealtimeDisconnected.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد اتصال مباشر، نعيد المحاولة'**
+  String get avRealtimeDisconnected;
+
+  /// No description provided for @avPermissionDenied.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسمح بالوصول إلى الموقع لتتمكن من الاتصال.'**
+  String get avPermissionDenied;
+
+  /// No description provided for @avPermissionForever.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموقع محظور لهذا التطبيق. افتح الإعدادات للسماح به.'**
+  String get avPermissionForever;
+
+  /// No description provided for @avServiceDisabled.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمات الموقع متوقفة على هذا الجهاز.'**
+  String get avServiceDisabled;
+
+  /// No description provided for @avOpenSettings.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح الإعدادات'**
+  String get avOpenSettings;
+
+  /// No description provided for @avPositionUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تحديد موقعك. حاول في مكان إشارته أفضل.'**
+  String get avPositionUnavailable;
+
+  /// No description provided for @avOutsideArea.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت خارج مناطق الخدمة.'**
+  String get avOutsideArea;
+
+  /// No description provided for @avVehicleNotUsable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن استخدام هذه المركبة الآن.'**
+  String get avVehicleNotUsable;
+
+  /// No description provided for @avOfflineStale.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إيقاف اتصالك لأن موقعك توقف عن التحديث.'**
+  String get avOfflineStale;
+
+  /// No description provided for @avOfflineIneligible.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إيقاف اتصالك لأنك لم تعد تستوفي الشروط.'**
+  String get avOfflineIneligible;
+
+  /// No description provided for @avOfflineAccount.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إيقاف اتصالك لأن حالة حسابك تغيرت.'**
+  String get avOfflineAccount;
+
+  /// No description provided for @avRationaleTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لماذا نحتاج موقعك'**
+  String get avRationaleTitle;
+
+  /// No description provided for @avRationaleBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نستخدم موقعك فقط أثناء الاتصال وأثناء المهام: لإظهارك للعملاء القريبين، وإرشادك إلى نقطة الاستلام، وتتبع الرحلة والحفاظ على أمانها. نتوقف فور إيقاف اتصالك. أثناء الاتصال يبقى إشعار ظاهراً على الشاشة وقد يستمر تحديث الموقع عندما يكون التطبيق في الخلفية.'**
+  String get avRationaleBody;
+
+  /// No description provided for @avRationaleContinue.
+  ///
+  /// In ar, this message translates to:
+  /// **'متابعة'**
+  String get avRationaleContinue;
+
+  /// No description provided for @avRationaleCancel.
+  ///
+  /// In ar, this message translates to:
+  /// **'ليس الآن'**
+  String get avRationaleCancel;
+
+  /// No description provided for @avOfflineConfirmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك مهمة جارية'**
+  String get avOfflineConfirmTitle;
+
+  /// No description provided for @avOfflineConfirmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف الاتصال يوقف الطلبات الجديدة. تستمر مهمتك الحالية ويستمر إرسال موقعك حتى تنتهي.'**
+  String get avOfflineConfirmBody;
+
+  /// No description provided for @avOfflineConfirmAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف الاتصال'**
+  String get avOfflineConfirmAction;
+
+  /// No description provided for @avStayOnline.
+  ///
+  /// In ar, this message translates to:
+  /// **'البقاء متصلاً'**
+  String get avStayOnline;
+
+  /// No description provided for @avActiveJobBanner.
+  ///
+  /// In ar, this message translates to:
+  /// **'مهمة جارية'**
+  String get avActiveJobBanner;
+
+  /// No description provided for @avNotificationTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت متصل'**
+  String get avNotificationTitle;
+
+  /// No description provided for @avNotificationText.
+  ///
+  /// In ar, this message translates to:
+  /// **'نشارك موقعك لاستقبال الطلبات'**
+  String get avNotificationText;
 }
 
 class _AppLocalizationsDelegate

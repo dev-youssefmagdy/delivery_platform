@@ -108,6 +108,9 @@ String eligibilityReasonLabel(AppLocalizations l10n, EligibilityReason r) =>
       EligibilityReason.serviceNotApproved => l10n.erServiceNotApproved,
       EligibilityReason.vehicleCategoryMismatch =>
         l10n.erVehicleCategoryMismatch,
+      EligibilityReason.locationStale => l10n.erLocationStale,
+      EligibilityReason.activeJobExists => l10n.erActiveJobExists,
+      EligibilityReason.cashDebtLimitExceeded => l10n.erCashDebtLimitExceeded,
       EligibilityReason.unknown => l10n.erUnknown,
     };
 

@@ -763,8 +763,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vsEligibilityTitle => 'Ready to work';
 
   @override
-  String get vsEligible =>
-      'You meet every requirement. Going online to receive requests arrives in the next update.';
+  String get vsEligible => 'You meet every requirement to work.';
 
   @override
   String get vsNotEligible => 'You are not ready to work yet:';
@@ -923,4 +922,145 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get obErrPolicyStale =>
       'The terms changed. Refresh the page and try again.';
+
+  @override
+  String get erLocationStale =>
+      'Your location is missing or out of date. Turn on location and try again.';
+
+  @override
+  String get erActiveJobExists => 'You already have an active job.';
+
+  @override
+  String get erCashDebtLimitExceeded =>
+      'Your unsettled commission is over the allowed limit. Settle it to go online.';
+
+  @override
+  String get avTitle => 'Availability';
+
+  @override
+  String get avOnlineTitle => 'You are online';
+
+  @override
+  String get avOfflineTitle => 'You are offline';
+
+  @override
+  String get avOnlineBody => 'New requests near you will appear here.';
+
+  @override
+  String get avOfflineBody => 'Turn on availability to receive requests.';
+
+  @override
+  String get avSwitchLabel => 'Receive requests';
+
+  @override
+  String get avReasonsTitle => 'You cannot go online yet:';
+
+  @override
+  String get avVehicleLabel => 'Vehicle';
+
+  @override
+  String get avNoLocationNote =>
+      'Your location is shared only while you are online or on a job.';
+
+  @override
+  String get avTrackingOff => 'Location sharing is off';
+
+  @override
+  String get avTrackingIdle =>
+      'Sharing your location while you wait for requests';
+
+  @override
+  String get avTrackingToPickup =>
+      'Sharing your location on the way to the pickup';
+
+  @override
+  String get avTrackingActive => 'Sharing your location during the job';
+
+  @override
+  String avTrackingEvery(int seconds) {
+    return 'Updates every $seconds s';
+  }
+
+  @override
+  String get avUploadFailed => 'Could not send your location. Retrying.';
+
+  @override
+  String get avRealtimeConnected => 'Live';
+
+  @override
+  String get avRealtimeConnecting => 'Connecting';
+
+  @override
+  String get avRealtimeDisconnected => 'No live connection, reconnecting';
+
+  @override
+  String get avPermissionDenied => 'Allow location access to go online.';
+
+  @override
+  String get avPermissionForever =>
+      'Location is blocked for this app. Open settings to allow it.';
+
+  @override
+  String get avServiceDisabled =>
+      'Location services are turned off on this device.';
+
+  @override
+  String get avOpenSettings => 'Open settings';
+
+  @override
+  String get avPositionUnavailable =>
+      'We could not get your position. Try again where the signal is better.';
+
+  @override
+  String get avOutsideArea => 'You are outside the service areas.';
+
+  @override
+  String get avVehicleNotUsable => 'This vehicle cannot be used right now.';
+
+  @override
+  String get avOfflineStale =>
+      'You were taken offline because your location stopped updating.';
+
+  @override
+  String get avOfflineIneligible =>
+      'You were taken offline because you no longer meet the requirements.';
+
+  @override
+  String get avOfflineAccount =>
+      'You were taken offline because your account status changed.';
+
+  @override
+  String get avRationaleTitle => 'Why we need your location';
+
+  @override
+  String get avRationaleBody =>
+      'We use your location only while you are online and during jobs: to show you to nearby customers, guide you to the pickup, track the trip and keep it safe. We stop as soon as you go offline. While you are online a notification stays on the screen and location may keep updating when the app is in the background.';
+
+  @override
+  String get avRationaleContinue => 'Continue';
+
+  @override
+  String get avRationaleCancel => 'Not now';
+
+  @override
+  String get avOfflineConfirmTitle => 'You have a job in progress';
+
+  @override
+  String get avOfflineConfirmBody =>
+      'Going offline stops new requests. Your current job continues and keeps sharing your location until it ends.';
+
+  @override
+  String get avOfflineConfirmAction => 'Go offline';
+
+  @override
+  String get avStayOnline => 'Stay online';
+
+  @override
+  String get avActiveJobBanner => 'A job is in progress';
+
+  @override
+  String get avNotificationTitle => 'You are online';
+
+  @override
+  String get avNotificationText => 'Sharing your location to receive requests';
 }

@@ -3,6 +3,7 @@ import 'package:driver_app/core/providers.dart';
 import 'package:driver_app/features/app_config/domain/entities/app_config.dart';
 import 'package:driver_app/features/app_config/presentation/providers/app_config_providers.dart';
 import 'package:driver_app/features/auth/presentation/providers/auth_providers.dart';
+import 'package:driver_app/features/availability/presentation/providers/availability_providers.dart';
 import 'package:driver_app/features/provider_onboarding/presentation/providers/provider_onboarding_providers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +35,10 @@ Future<ProviderContainer> pumpApp(
   FakeProviderRepository? provider,
   FakeCatalogRepository? catalog,
   FakePhotoHandler? photos,
+  FakeAvailabilityRepository? availability,
+  FakeLocationService? location,
+  FakeTrackingSource? tracking,
+  FakeRealtimeClient? realtime,
 }) async {
   SharedPreferences.setMockInitialValues(prefs);
   final sp = await SharedPreferences.getInstance();
@@ -56,6 +61,18 @@ Future<ProviderContainer> pumpApp(
       ),
       catalogRepositoryProvider.overrideWithValue(
         catalog ?? FakeCatalogRepository(),
+      ),
+      availabilityRepositoryProvider.overrideWithValue(
+        availability ?? FakeAvailabilityRepository(),
+      ),
+      locationServiceProvider.overrideWithValue(
+        location ?? FakeLocationService(),
+      ),
+      trackingSourceProvider.overrideWithValue(
+        tracking ?? FakeTrackingSource(),
+      ),
+      realtimeClientProvider.overrideWithValue(
+        realtime ?? FakeRealtimeClient(),
       ),
       photoPickerFactoryProvider.overrideWithValue(
         ({required cameraLabel, required galleryLabel}) =>

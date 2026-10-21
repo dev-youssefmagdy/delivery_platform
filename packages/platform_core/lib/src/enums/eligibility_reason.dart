@@ -13,6 +13,9 @@ enum EligibilityReason implements ApiEnum {
   vehicleNotApproved('vehicle_not_approved'),
   serviceNotApproved('service_not_approved'),
   vehicleCategoryMismatch('vehicle_category_mismatch'),
+  locationStale('location_stale'),
+  activeJobExists('active_job_exists'),
+  cashDebtLimitExceeded('cash_debt_limit_exceeded'),
   unknown('');
 
   const EligibilityReason(this.value);

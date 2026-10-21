@@ -29,6 +29,8 @@ export 'src/l10n/locale_preference.dart';
 export 'src/location/location_service.dart';
 export 'src/money/money.dart';
 export 'src/money/money_formatter.dart';
+export 'src/provider/availability_models.dart';
+export 'src/provider/availability_repository.dart';
 export 'src/provider/provider_models.dart';
 export 'src/provider/provider_repository.dart';
 export 'src/realtime/realtime_client.dart';

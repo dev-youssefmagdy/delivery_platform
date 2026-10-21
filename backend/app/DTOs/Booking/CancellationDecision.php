@@ -30,6 +30,10 @@ final readonly class CancellationDecision
 
     public const BASIS_ARRIVAL_UNVERIFIED = 'arrival_unverified';
 
+    public const BASIS_WAIVED_BY_OPERATIONS = 'waived_by_operations';
+
+    public const BASIS_OPERATIONS_POLICY = 'operations_applied_policy';
+
     public function __construct(
         public ActorType $actor,
         public CancellationStage $stage,

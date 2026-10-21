@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\V1\Provider\ApplicationController;
 use App\Http\Controllers\Api\V1\Provider\AvailabilityController;
 use App\Http\Controllers\Api\V1\Provider\DocumentController;
 use App\Http\Controllers\Api\V1\Provider\EligibilityController;
+use App\Http\Controllers\Api\V1\Provider\JobHistoryController;
 use App\Http\Controllers\Api\V1\Provider\LocationController;
 use App\Http\Controllers\Api\V1\Provider\OfferController;
 use App\Http\Controllers\Api\V1\Provider\TripController;
@@ -163,6 +164,8 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     // Negotiation (P2.4): masked request cards, own offers, and the full booking only once selected (Plan I10).
     Route::get('requests/available', [RequestController::class, 'available'])->name('requests.available');
     Route::get('offers', [OfferController::class, 'index'])->name('offers.index');
+    // Job history (P2.8): the driver's own bookings, newest first, paginated.
+    Route::get('bookings', [JobHistoryController::class, 'index'])->name('bookings.index');
     Route::get('bookings/active', [TripController::class, 'active'])->name('bookings.active');
     Route::get('bookings/{booking}', [RequestController::class, 'show'])->whereUuid('booking')->name('bookings.show');
     Route::get('vehicle-photos/{photo}/file', [VehicleController::class, 'photoFile'])->whereUuid('photo')->middleware('signed')->name('vehicle-photos.file');

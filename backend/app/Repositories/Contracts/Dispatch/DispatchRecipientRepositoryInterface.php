@@ -43,4 +43,9 @@ interface DispatchRecipientRepositoryInterface
      * @param list<int> $keepDeclinedProviderIds
      */
     public function clearForBooking(int $bookingId, array $keepDeclinedProviderIds = []): void;
+
+    /**
+     * Highest wave that notified anyone, 0 when dispatch has not reached a provider yet.
+     */
+    public function lastWave(int $bookingId): int;
 }

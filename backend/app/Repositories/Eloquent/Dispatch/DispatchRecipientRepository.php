@@ -76,4 +76,9 @@ final class DispatchRecipientRepository extends BaseRepository implements Dispat
                 ->update(['response' => DispatchResponse::Declined->value, 'responded_at' => now()]);
         }
     }
+
+    public function lastWave(int $bookingId): int
+    {
+        return (int) DispatchRecipient::query()->where('booking_id', $bookingId)->max('wave');
+    }
 }

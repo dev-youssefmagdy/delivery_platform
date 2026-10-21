@@ -20,6 +20,7 @@ use App\Models\DemoItem;
 use App\Models\DispatchRecipient;
 use App\Models\DocumentRequirement;
 use App\Models\DocumentType;
+use App\Models\CancellationPolicy;
 use App\Models\FarePolicy;
 use App\Models\IdempotencyKey;
 use App\Models\OtpChallenge;
@@ -143,6 +144,7 @@ class AppServiceProvider extends ServiceProvider
             'booking_stop' => BookingStop::class,
             'booking_status_event' => BookingStatusEvent::class,
             'fare_policy' => FarePolicy::class,
+            'cancellation_policy' => CancellationPolicy::class,
             // @admin-module:morph-map
         ]);
 

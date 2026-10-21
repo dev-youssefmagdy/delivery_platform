@@ -234,6 +234,15 @@ return [
             'icon' => 'tag',
             'permission' => App\Enums\Admin\AdminPermission::FarePoliciesManage,
         ],
+        [
+            'key' => 'cancellation_policies',
+            'group' => 'pricing',
+            'label' => 'admin.cancellation_policies.menu',
+            'route' => 'admin.cancellation-policies.index',
+            'active' => 'admin.cancellation-policies.*',
+            'icon' => 'banknotes',
+            'permission' => App\Enums\Admin\AdminPermission::CancellationPoliciesManage,
+        ],
         // @admin-module:menu
     ],
 ];

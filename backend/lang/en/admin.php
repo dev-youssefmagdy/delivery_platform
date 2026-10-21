@@ -1715,4 +1715,55 @@ return [
     ],
 
     // @admin-module:lang
+
+    'cancellation_policies' => [
+        'menu' => 'Cancellation policies',
+        'title' => 'Cancellation policies',
+        'subtitle' => 'Free cancellation time, waiting time, fees per stage and the reasons each side may use. Fees are calculated and recorded on the booking; charging them arrives with the money core.',
+        'create_title' => 'New cancellation policy',
+        'edit_title' => 'Edit cancellation policy',
+        'show_title' => 'Cancellation policy',
+        'edit_notice' => 'Changes apply to new bookings only. Bookings already created keep the policy they were made under.',
+        'fee_notice' => 'Nothing is owed before a driver is chosen. An arrival without verified GPS evidence is treated as "driver on the way", and a customer cancellation inside the free grace period is always free.',
+        'created' => 'Cancellation policy created.',
+        'updated' => 'Cancellation policy updated.',
+        'deleted' => 'Cancellation policy deleted.',
+        'activated' => 'Cancellation policy enabled.',
+        'deactivated' => 'Cancellation policy disabled.',
+        'all_services' => 'All services',
+        'all_zones' => 'All zones',
+        'open_ended' => 'No end date',
+        'seconds' => ':count s',
+        'fields' => [
+            'name' => 'Name', 'service' => 'Service', 'zone' => 'Zone', 'free_grace' => 'Free cancellation period',
+            'free_wait' => 'Free waiting time', 'effective_from' => 'Effective from', 'effective_to' => 'Effective until',
+            'notes' => 'Internal notes', 'state' => 'State', 'enabled' => 'Enabled', 'bookings' => 'Bookings created under it',
+            'customer_reasons' => 'Reasons customers may use', 'provider_reasons' => 'Reasons providers may use',
+        ],
+        'hints' => [
+            'service' => 'Leave empty for every service. A service policy wins over the default.',
+            'zone' => 'Leave empty for the whole market. A zone policy wins inside its zone.',
+            'effective_to' => 'Leave empty for no end date.',
+            'free_grace' => 'Seconds after the provider was chosen during which the customer cancels for free.',
+            'free_wait' => 'Seconds the provider waits after arriving before a no-show can be reported.',
+        ],
+        'sections' => [
+            'scope' => 'Scope', 'scope_hint' => 'Which bookings the policy governs. The scope cannot change later.',
+            'period' => 'Period', 'period_hint' => 'Only one enabled policy of the same scope may be in effect at a time.',
+            'timing' => 'Free time', 'timing_hint' => 'Cancellations and waiting that never cost anything.',
+            'rules' => 'Fees', 'rules_hint' => 'At most one rule per side and stage. A stage without a rule costs nothing.',
+            'reasons' => 'Reasons', 'reasons_hint' => 'The reason categories offered in the apps.',
+            'notes' => 'Notes',
+        ],
+        'rules' => [
+            'add' => 'Add a fee rule', 'actor' => 'Who cancels', 'stage' => 'Stage', 'fee_type' => 'Fee type',
+            'amount' => 'Fixed amount', 'percent' => 'Percent of the fare', 'cap' => 'Cap', 'recipient' => 'Goes to',
+            'none' => 'No fee rules: cancelling never costs anything under this policy.',
+        ],
+        'filters' => ['effective_on' => 'In effect during'],
+        'confirm' => [
+            'activate_title' => 'Enable this policy?', 'activate_message' => 'It applies to new bookings of its scope.',
+            'deactivate_title' => 'Disable this policy?', 'deactivate_message' => 'New bookings of its scope fall back to the next policy or the defaults.',
+        ],
+    ],
 ];

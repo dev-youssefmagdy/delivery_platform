@@ -701,4 +701,11 @@ return [
         'rate_customer' => 'تقييم العميل',
         'report' => 'الإبلاغ عن مشكلة',
     ],
+
+    'cancellation_policy_state' => [
+        'current' => 'سارية',
+        'scheduled' => 'مجدولة',
+        'expired' => 'منتهية',
+        'inactive' => 'معطّلة',
+    ],
 ];

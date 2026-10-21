@@ -701,4 +701,11 @@ return [
         'rate_customer' => 'Rate the customer',
         'report' => 'Report a problem',
     ],
+
+    'cancellation_policy_state' => [
+        'current' => 'Current',
+        'scheduled' => 'Scheduled',
+        'expired' => 'Expired',
+        'inactive' => 'Disabled',
+    ],
 ];

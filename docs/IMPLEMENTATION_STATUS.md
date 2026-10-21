@@ -20,7 +20,7 @@
 | P2.1 | Provider onboarding, vehicles, documents, verification | P0 | ✅ | 2026-10-22 |
 | P2.2 | Availability, live location, eligibility, dispatch engine | P0 | ✅ | 2026-10-23 |
 | P2.3 | Reference pricing & booking creation | P0 | ✅ | 2026-10-24 |
-| P2.4 | Offers, counter-offers & atomic selection | P0 | ❌ | — |
+| P2.4 | Offers, counter-offers & atomic selection | P0 | 🟡 | 2026-10-25 |
 | P2.5 | Trip lifecycle: heading, arrived, PIN, start, complete, cancellation v1, ratings, share link | P0 | ❌ | — |
 | P2.6 | Customer app: complete ride flow | P0 | ❌ | — |
 | P2.7 | Driver app: complete ride flow | P0 | ❌ | — |
@@ -51,6 +51,35 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P2.4 — Offers, counter-offers & atomic selection · 🟡 2026-10-25 (gate NOT run)
+
+Committed directly on `main` in small steps. ADR-94..97. **By user instruction no test, pint, phpstan, `php artisan test`, build or `scripts/check.sh` was written or run for this milestone, so it is not marked done.** Every test that should exist is listed in `/var/www/delivery_platform/MISSED_TESTS.md` (P2.4 section), including the parallel Process-pool race tests.
+
+### What was built
+
+- **Schema** (`create_booking_offers_tables`): `booking_offers` (state only; `active_marker` and `winner_marker` unique indexes give one active offer per provider and exactly one winner per booking), append-only `booking_offer_versions` (amount, currency, note, scope), `bookings.agreed_*` columns and the `selected_offer_id` foreign key. Migration ran, rolled back and ran again on local MySQL.
+- **Services** (`App\Services\Offers`): `OfferSubmissionService` (accept customer fare, counter-offer, revision as a new version, withdraw, skip; all guards under the booking lock), `OfferSelectionService` (the critical section, calls `BookingTransitionService::transition(ProviderSelected, TransitionContext(providerId, offerId))`, copies agreed fare and scope, generates the trip PIN, closes the losers), `OfferExpiryService` + `ExpireOffer` job + `offers:expire` (every 5 s), `ProviderOfferInvalidator` (hooked into `AvailabilityService::takeOffline`), `OfferSettlement` (back to `searching_offers` when the last offer ends), `OfferCloser`, `OfferNotifier`, `BookingOfferBridge` (rebinding of `BookingOfferRepositoryInterface`; `PreOfferBookingOfferRepository` deleted), `ProviderRequestService`, `CustomerOfferService`.
+- **API** (docs/API.md 8.12): provider `requests/available` (masked cards), `bookings/{b}/offers/accept-customer-fare`, `bookings/{b}/offers`, `offers/{o}/withdraw`, `bookings/{b}/skip`, `offers`, `bookings/{b}` (full details, selected provider only); customer `bookings/{b}/offers`, `offers/{o}/accept`, `offers/{o}/reject`. Booking detail gained `provider`, `vehicle`, `agreed_fare`, `agreed_scope`, `trip_pin`, `select_offer`.
+- **Realtime**: `booking.offer_received/updated/expired`, `booking.provider_selected` on the customer and provider private channels (not the shared booking channel, ADR-96).
+- **QA helpers**: `qa:race-accept`, `qa:race-offer` (Process pool, local only; how to run in docs/SETUP.md).
+
+### Sanity checks actually run (no test suites)
+
+`php -l` on every new and edited PHP file (clean); `php artisan migrate`, `migrate:rollback --step=1`, `migrate` (OK); `php artisan route:list` (12 new routes present); `php artisan schedule:list` (`offers:expire` every 5 s); `php artisan offers:expire` (ran, 0 expired); container resolution of every new service and controller through `php artisan tinker`; a tinker script inside a rolled-back transaction proving at database level: version rows are immutable, a second active offer for the same provider and booking is refused, the customer summary counts the open offer, `OfferRepository::accept()` succeeds once and refuses the second call.
+
+### Not verified (needs the tests in MISSED_TESTS.md)
+
+The full flows (submission guards, selection under concurrency, expiry by sweep, provider-unavailable hook, staged disclosure) have not been exercised end to end because eligible providers need the test fixtures; pint and phpstan were not run (new files may need formatting; `new static` in `OfferEvent` may trigger a phpstan rule).
+
+### Known gaps / notes for P2.5
+
+- P2.5 owns everything after selection: heading / arrived / PIN verification (`pin_hash` is bcrypt, `pin_encrypted` Crypt), start, complete, cancellation. When a provider cancels and the booking goes back to `searching_offers` (`auto_redispatch`), `BookingTransitionService` clears `provider_id` / `selected_offer_id` but **not** `agreed_*`, `pin_*`, `provider_selected_at`, and the accepted offer keeps `winner_marker = 1` (so a new winner on that booking is impossible): P2.5 must clear the agreed columns and release the old winner marker (and decide the status of that offer) in that flow.
+- The customer app (P2.6) must subscribe to `private-customer.{uuid}` for offers; the driver app (P2.7) to `private-provider.{uuid}`.
+- Eligibility lost without going offline (cash debt over the limit) is only enforced at selection.
+- Commission preview is `available: false` until P3.1; `fare_hint` is informational; no extra settings were added for it.
+- Queue: `ExpireOffer` and the dispatch waves need a real queue worker (`QUEUE_CONNECTION=redis`); the tests must fake those jobs.
+- Provider phone is shown to the selected provider as-is; a masking/relay adapter is not built (SRS says optional).
 
 ## P2.3 — Reference pricing & booking creation · ✅ 2026-10-24
 

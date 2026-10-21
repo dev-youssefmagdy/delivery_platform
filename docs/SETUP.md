@@ -118,3 +118,9 @@ make browser-smoke              # real-browser check of the admin login form (ne
 - `Access denied for user` in tests → the user lacks the `delivery_platform_testing\_%` grant (needed by `--parallel`).
 - `Unable to locate file in Vite manifest` → run `npm run build`.
 - Stale config in tests → `php artisan config:clear` (the `composer test` script does it).
+
+## Offers and negotiation (P2.4)
+
+The scheduler also runs `offers:expire` every 5 seconds; each offer additionally gets a delayed `ExpireOffer` job on the `critical` queue, so the same real queue worker as for dispatch waves is required (`QUEUE_CONNECTION=redis`, never `sync` outside tests). Customers receive offers on `private-customer.{uuid}`, so the Reverb / WebSocket server must be running for live cards; the apps still read `GET /bookings/{booking}/offers` after a sequence gap. Optional env: `BOOKING_OFFER_SHOW_PLATE` (default true), `BOOKING_OFFER_SWEEP_BATCH` (default 200).
+
+Concurrency proof by hand (needs MySQL and a booking in `offers_received` with two or more offers, made through the API or the seeder): `php artisan qa:race-accept {booking-uuid} --workers=8` starts 8 real processes that each choose one of the offers at the same time and prints PASS when exactly one won; add `--repeat-key` to make every worker send the same request (all must agree). `php artisan qa:race-offer {booking-uuid} {provider-uuid} --workers=8 [--repeat-key]` hammers one provider's counter-offers and checks the offer and revision limits. Both refuse to run outside `local` / `testing`.

@@ -437,7 +437,7 @@ Scheduled: `providers:sweep-stale` (every 30 s), `locations:prune` (daily 03:30)
 | GET | `/api/v1/bookings/{booking}` | Booking uuid. Detail below |
 | PATCH | `/api/v1/bookings/{booking}/request` | Any of `pickup`, `dropoff`, `stops` (array, may be empty), `scheduled_at`, `passengers`, `service_details`, `proposed_fare_minor`; at least one. Only while `searching_offers` / `offers_received`; the whole request is validated again, active offers are invalidated (`invalidated_request_changed`), the search window restarts and dispatch starts over. `409 booking_not_editable` once a provider is selected or the search ended; `409 booking_request_changed_meanwhile` when another change got in first |
 
-**Booking detail** (`data`): `{ id, code (BK-XXXXXX), status, status_label, booking_type, service, proposed_fare, payment, created_at, pickup:{lat,lng,address}, dropoff, stops:[{position,lat,lng,address}], scheduled_at, passengers, service_details, reference_estimate (same shape as price_guidance plus available:false/reason), route:{distance_m,duration_s,polyline}, search_expires_at, request_version, offers:{active_count,best_fare_minor}, provider (null until the selection stage, P2.4), allowed_actions[] (computed by the server; today only update_request), timeline:[{type: status|note, status, previous_status, reason (customer/system codes only), actor, at, sequence}] }`. The trip PIN and any provider data are never part of it before their stage.
+**Booking detail** (`data`): `{ id, code (BK-XXXXXX), status, status_label, booking_type, service, proposed_fare, payment, created_at, pickup:{lat,lng,address}, dropoff, stops:[{position,lat,lng,address}], scheduled_at, passengers, service_details, reference_estimate (same shape as price_guidance plus available:false/reason), route:{distance_m,duration_s,polyline}, search_expires_at, request_version, offers:{active_count,best_fare_minor}, provider, vehicle, agreed_fare, agreed_scope, trip_pin (null until selection, P2.4), allowed_actions[] (computed by the server; update_request, select_offer), timeline:[{type: status|note, status, previous_status, reason (customer/system codes only), actor, at, sequence}] }`. The trip PIN and any provider data are never part of it before their stage.
 
 **Errors (422 unless noted, `errors._code`; field in brackets).** `outside_service_area` [pickup], `category_unavailable` [service_category_id], `dropoff_required` / `dropoff_outside_service_area` [dropoff], `booking_type_not_allowed`, `scheduled_at_required` / `scheduled_at_not_allowed` / `scheduled_too_soon` / `scheduled_too_far` [scheduled_at], `stops_not_supported` / `too_many_stops` [stops], `passengers_required` / `passengers_mismatch` / `capacity_exceeded` [passengers], `luggage_exceeded`, `weight_exceeded`, `fare_below_minimum` / `fare_above_maximum` [proposed_fare_minor], `currency_mismatch`, `payment_method_unavailable` [payment_method], `service_details.*` (form schema errors, `validation_failed`), `503 maps_unavailable`, `409 customer_has_active_booking`, `403 account_restricted|account_suspended|...`, `422 idempotency_key_reused`.
 
@@ -446,3 +446,35 @@ Scheduled: `providers:sweep-stale` (every 30 s), `locations:prune` (daily 03:30)
 **Realtime on `private-booking.{uuid}`** (sequence = `bookings.sequence`, shared with the status events): `booking.status_changed` (`{status, previous_status, request_version}`), `booking.request_changed` (`{request_version, changed[]}`), plus the P2.2 events. **Scheduled:** `bookings:expire-searches` every 5 s (expires searches whose window ended, releases scheduled bookings that are due); a delayed `ExpireBookingSearch` job ends each window at the exact second.
 
 **Admin (no API):** Pricing > Fare policies (`fare_policies.manage`), the Bookings tab of a customer, filter "has active booking" in Customers.
+
+### 8.12 Offers, counter-offers and selection (P2.4)
+
+Money is integer minor units. Provider writes need an active account, `Idempotency-Key` (UUID) on the three create/choose calls and the `offers` rate limit (20/min) on the two provider submissions. Offer cards and offer events are private to the customer (ADR-96).
+
+**Provider (`provider` token)**
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/provider/requests/available` | Open requests dispatched to the provider (searching, window open, not declined). `data` = masked cards `{ id, status, booking_type, service, pickup_area:{name,lat,lng} (2 decimals), dropoff_area, distance_to_pickup_m, proposed_fare, counter_offer:{allowed,min_minor,max_minor}, details:{distance_m,duration_s,stops,passengers,luggage_count,cargo_weight_kg,scheduled_at,payment_method,restricted_pickup}, expires_at, my_offer }`. Never address, name or phone. An ineligible provider gets `data: []`, `meta.eligible: false` and `meta.eligibility` (typed reasons). Listing marks the requests seen |
+| POST | `/api/v1/provider/bookings/{booking}/offers/accept-customer-fare` | Body: `{ eta_minutes?, note? }` (the amount is the customer's fare, read server side). `201` (or `200` for a repeat / revision) with the offer |
+| POST | `/api/v1/provider/bookings/{booking}/offers` | Counter-offer: `{ amount_minor, currency?, note?, scope? (object, max 4 KB), eta_minutes? }`. With an active offer on the booking this appends the next version (limited by `max_revisions`). `data` = offer + `fare_hints[]` + `earnings_preview {available:false, gross_minor, commission_minor:null, net_minor:null}`; `meta.replayed` |
+| POST | `/api/v1/provider/offers/{offer}/withdraw` | While active. `409 offer_not_withdrawable` once chosen or closed; `403 offer_not_yours` |
+| POST | `/api/v1/provider/bookings/{booking}/skip` | "Not for me": records the response, no penalty. `409 offer_withdraw_first` while an offer is active |
+| GET | `/api/v1/provider/offers` | Own offers, newest first: `{ id, booking_id, status, state (pending/selected/rejected/expired/invalidated/withdrawn), kind, amount, version, revision_count, note, scope, eta_seconds, distance_m, expires_at, closed_at }` |
+| GET | `/api/v1/provider/bookings/{booking}` | Full booking, only for the selected provider (others 404): addresses, stops, service details, `customer:{name,phone}`, `agreed_fare`, `agreed_scope` |
+
+**Customer (`customer` token)**
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/bookings/{booking}/offers` | Active, unexpired offers, cheapest first: `{ id, status, kind, is_counter_offer, amount, version, revision_count, note, scope, eta_seconds, distance_m, expires_at, provider:{id,display_name,photo_url,rating:{average,count},completed_jobs}, vehicle:{category,make,model,year,color,plate,capabilities,passenger_capacity} }`; `meta.booking_status` |
+| POST | `/api/v1/bookings/{booking}/offers/{offer}/accept` | Atomic selection (strict account, Idempotency-Key). `200` with the booking (`provider`, `vehicle`, `agreed_fare`, `agreed_scope`, `trip_pin` while the driver is on the way) and `meta.replayed` |
+| POST | `/api/v1/bookings/{booking}/offers/{offer}/reject` | Declines one offer; the booking returns to `searching_offers` if it was the last one and the window is open |
+
+`GET /bookings/{booking}` now also carries `provider`, `vehicle`, `agreed_fare`, `agreed_scope`, `trip_pin` and `allowed_actions` may contain `select_offer` (status `offers_received`).
+
+**Errors.** 409: `booking_already_assigned`, `offer_expired`, `offer_not_active`, `offer_provider_unavailable` (customer accept/reject: `meta.booking` holds the fresh booking; `meta.booking_status` / `meta.offer_status` on all), `booking_not_open_for_offers`, `booking_search_expired`, `offer_not_withdrawable`, `offer_withdraw_first`, `offer_idempotency_conflict`. 403: `offer_not_dispatched`, `offer_not_yours`. 422: `provider_not_eligible` (`meta.reasons`), `offer_vehicle_missing`, `counter_offers_disabled`, `offer_amount_invalid`, `offer_amount_out_of_bounds` (`meta.min/max`), `offer_currency_mismatch`, `offer_amount_same_as_fare`, `offer_limit_reached`, `offer_revisions_exceeded`. Another customer's booking or offer is 404.
+
+**Realtime (payload `{booking_uuid, sequence, occurred_at, payload}`)**: on `private-customer.{uuid}`: `booking.offer_received` / `booking.offer_updated` (`{offer: card, booking_id}`), `booking.offer_expired` (`{offer_id, booking_id, status, state}`), `booking.provider_selected` (`{offer: card, booking_id, status}`); on `private-provider.{uuid}`: `booking.offer_expired` and `booking.offer_updated` for the provider's own offers (`{offer_id, booking_id, status, state}`), `booking.provider_selected` for the winner (`{offer_id, booking_id, status, agreed_fare}`). The booking channel carries only `booking.status_changed`.
+
+**Scheduler / jobs:** `offers:expire` every 5 s; `ExpireOffer` delayed per offer (critical queue). **QA:** `php artisan qa:race-accept {booking}` and `qa:race-offer {booking} {provider}` (local only).

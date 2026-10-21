@@ -3,6 +3,8 @@
 namespace Tests\Concerns;
 
 use App\Enums\Catalog\BookingType;
+use App\Jobs\Booking\ExpireBookingSearch;
+use App\Jobs\Dispatch\DispatchBookingWave;
 use App\Models\FarePolicy;
 use App\Models\ServiceCategory;
 use App\Models\ServiceZone;
@@ -11,6 +13,7 @@ use App\Models\VehicleCategory;
 use App\Services\Catalog\ServiceCategoryPublisher;
 use App\Services\Catalog\ServiceFormSchemaService;
 use Database\Seeders\CurrencySeeder;
+use Illuminate\Support\Facades\Bus;
 use Laravel\Sanctum\Sanctum;
 
 /**
@@ -23,15 +26,21 @@ trait BuildsBookings
     use BuildsCustomers;
     use BuildsDispatch;
 
+    /**
+     * Currencies, and the booking jobs faked: the test queue is `sync`, which ignores delays, so a real
+     * DispatchBookingWave chain would keep scheduling its next wave forever. Tests that exercise the jobs run them by hand.
+     */
     protected function seedBookingReferenceData(): void
     {
         $this->seed(CurrencySeeder::class);
+        Bus::fake([DispatchBookingWave::class, ExpireBookingSearch::class]);
     }
 
     /**
      * @param array<string, mixed> $attributes
+     * @param list<array<string, mixed>>|null $fields form schema fields; defaults to passengers, luggage, child seat and notes
      */
-    protected function rideCategory(array $attributes = []): ServiceCategory
+    protected function rideCategory(array $attributes = [], ?array $fields = null): ServiceCategory
     {
         $category = ServiceCategory::factory()->create($attributes + [
             'allowed_booking_types' => [BookingType::OnDemand->value, BookingType::Scheduled->value],
@@ -47,7 +56,7 @@ trait BuildsBookings
         $category->vehicleCategories()->attach(VehicleCategory::factory()->create(['passenger_capacity' => 4]));
 
         $draft = app(ServiceFormSchemaService::class)->draftFor($category);
-        $draft->fields = [
+        $draft->fields = $fields ?? [
             $this->schemaField('passengers', 'integer', required: true, min: 1, max: 4),
             $this->schemaField('luggage', 'integer', min: 0, max: 2),
             $this->schemaField('child_seat', 'boolean'),

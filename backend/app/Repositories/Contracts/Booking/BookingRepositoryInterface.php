@@ -25,7 +25,7 @@ interface BookingRepositoryInterface extends BaseRepositoryInterface
     public function insertDraft(array $attributes): Booking;
 
     /**
-     * Writes any column, `status` included (the model refuses a changed status outside BookingStatusGate::run(),
+     * Writes any column, `status` included (the model refuses a changed status unless the write runs inside the status gate,
      * which only BookingTransitionService opens).
      *
      * @param array<string, mixed> $attributes

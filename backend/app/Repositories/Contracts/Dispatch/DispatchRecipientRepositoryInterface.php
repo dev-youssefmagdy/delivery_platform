@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts\Dispatch;
 
 use App\Enums\Dispatch\DispatchResponse;
 use App\Models\DispatchRecipient;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 interface DispatchRecipientRepositoryInterface
@@ -48,4 +49,11 @@ interface DispatchRecipientRepositoryInterface
      * Highest wave that notified anyone, 0 when dispatch has not reached a provider yet.
      */
     public function lastWave(int $bookingId): int;
+
+    /**
+     * Recipients of the booking with the provider (admin Dispatch tab): wave, distance, notified, seen and response.
+     *
+     * @return Builder<DispatchRecipient>
+     */
+    public function datatableQuery(int $bookingId): Builder;
 }

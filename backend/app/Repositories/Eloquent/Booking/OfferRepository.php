@@ -241,6 +241,7 @@ final class OfferRepository extends BaseRepository implements OfferRepositoryInt
             ->selectRaw('bookings.code as booking_code, bookings.uuid as booking_uuid, bookings.currency as booking_currency, bookings.proposed_fare_minor as customer_fare_minor, current_version.amount_minor as amount_minor, current_version.version as version_number')
             ->selectRaw($this->anomalyExpression().' as anomaly')
             ->with(['providerProfile.user:id,uuid,name,phone_e164'])
+            ->when($filters->bookingId !== null, static fn (Builder $query) => $query->where('booking_offers.booking_id', $filters->bookingId))
             ->when($filters->bookingCode !== null, static fn (Builder $query) => $query->where('bookings.code', 'like', '%'.addcslashes(strtoupper((string) $filters->bookingCode), '%_\\').'%'))
             ->when($filters->providerIds !== [], static fn (Builder $query) => $query->whereIn('booking_offers.provider_profile_id', $filters->providerIds))
             ->when($filters->statuses !== [], static fn (Builder $query) => $query->whereIn('booking_offers.status', array_map(static fn (OfferStatus $status): string => $status->value, $filters->statuses)))

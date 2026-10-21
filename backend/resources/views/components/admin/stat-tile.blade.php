@@ -1,4 +1,4 @@
-@props(['label', 'value', 'icon' => null, 'tone' => 'primary', 'hint' => null, 'href' => null])
+@props(['label', 'value', 'icon' => null, 'tone' => 'primary', 'hint' => null, 'href' => null, 'stat' => null])
 @php
     $tones = [
         'primary' => 'bg-brand-50 text-brand-700',
@@ -18,7 +18,7 @@
     @endif
     <div class="min-w-0">
         <p class="truncate text-sm text-slate-500">{{ $label }}</p>
-        <p class="mt-0.5 text-2xl font-semibold text-slate-900 tabular-nums">{{ $value }}</p>
+        <p class="mt-0.5 text-2xl font-semibold text-slate-900 tabular-nums" @if ($stat) data-stat="{{ $stat }}" @endif>{{ $value }}</p>
         @if ($hint)
             <p class="mt-0.5 truncate text-xs text-slate-500">{{ $hint }}</p>
         @endif

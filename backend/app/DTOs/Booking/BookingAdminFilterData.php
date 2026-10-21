@@ -93,11 +93,10 @@ final readonly class BookingAdminFilterData implements FilterData
             'has_incident' => $this->hasIncident === null ? null : ($this->hasIncident ? '1' : '0'),
         ], static fn (mixed $value): bool => $value !== null && $value !== []);
     }
-
     /**
-     * The same filters narrowed to one provider (Jobs tab of the provider page).
+     * Bookings of one provider (the Jobs tab of the provider page); not a user filter, so it is not in the URL.
      */
-    public function forProvider(int $providerId): self
+    public static function forProvider(int $providerId): self
     {
         return new self(providerId: $providerId);
     }

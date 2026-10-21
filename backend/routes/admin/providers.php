@@ -29,6 +29,8 @@ Route::prefix('providers')->name('providers.')->group(function (): void {
         Route::get('vehicles', 'vehicles')->name('vehicles')->can('view', 'provider');
         Route::get('documents', 'documents')->name('documents')->can('view', 'provider');
         Route::get('history', 'history')->name('history')->can('view', 'provider');
+        Route::get('jobs', 'jobs')->name('jobs')->can('view', 'provider');
+        Route::get('earnings', 'earnings')->name('earnings')->can('view', 'provider');
         Route::get('deletion-requests', 'deletionRequests')->name('deletion-requests')->can('view', 'provider');
         Route::get('audit', 'audit')->name('audit')->can('view', 'provider');
     });

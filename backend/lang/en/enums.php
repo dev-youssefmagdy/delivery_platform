@@ -708,4 +708,22 @@ return [
         'expired' => 'Expired',
         'inactive' => 'Disabled',
     ],
+
+    'booking_override_action' => [
+        'cancel_by_operations' => 'Cancel by operations',
+        'extend_search' => 'Extend search',
+        'redispatch_now' => 'Re-dispatch now',
+        'force_transition' => 'Force status',
+        'lift_pin_lock' => 'Lift PIN lock',
+    ],
+
+    'operations_cancellation_fee' => [
+        'waive' => 'Waive the fee',
+        'apply_policy' => 'Apply the booking\'s cancellation policy',
+    ],
+
+    'offer_anomaly' => [
+        'very_low' => 'Very low',
+        'very_high' => 'Very high',
+    ],
 ];

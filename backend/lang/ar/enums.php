@@ -708,4 +708,22 @@ return [
         'expired' => 'منتهية',
         'inactive' => 'معطّلة',
     ],
+
+    'booking_override_action' => [
+        'cancel_by_operations' => 'إلغاء من العمليات',
+        'extend_search' => 'تمديد البحث',
+        'redispatch_now' => 'إعادة الإرسال الآن',
+        'force_transition' => 'فرض الحالة',
+        'lift_pin_lock' => 'رفع قفل الرمز',
+    ],
+
+    'operations_cancellation_fee' => [
+        'waive' => 'إسقاط الرسوم',
+        'apply_policy' => 'تطبيق سياسة الإلغاء الخاصة بالحجز',
+    ],
+
+    'offer_anomaly' => [
+        'very_low' => 'منخفض جدًا',
+        'very_high' => 'مرتفع جدًا',
+    ],
 ];

@@ -33,6 +33,7 @@ final readonly class OfferFilterData implements FilterData
         public ?OfferAnomaly $anomaly = null,
         public ?CarbonImmutable $from = null,
         public ?CarbonImmutable $to = null,
+        public ?int $bookingId = null,
     ) {}
 
     public static function fromRequest(Request $request): static
@@ -53,6 +54,14 @@ final readonly class OfferFilterData implements FilterData
             from: $from,
             to: $to,
         );
+    }
+
+    /**
+     * All offers of one booking (the Offers tab of the booking page); not a user filter, so it is not in the URL.
+     */
+    public static function forBooking(int $bookingId): self
+    {
+        return new self(bookingId: $bookingId);
     }
 
     public function activeCount(): int

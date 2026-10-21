@@ -28,4 +28,9 @@ final class BookingReportRepository implements BookingReportRepositoryInterface
             ->where('created_at', '>=', $since)
             ->count();
     }
+
+    public function forBooking(int $bookingId): Collection
+    {
+        return BookingReport::query()->where('booking_id', $bookingId)->orderBy('id')->get();
+    }
 }

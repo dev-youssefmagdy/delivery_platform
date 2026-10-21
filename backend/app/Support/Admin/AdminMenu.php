@@ -28,7 +28,7 @@ final class AdminMenu
             }
 
             $groupKey = (string) ($item['group'] ?? 'system');
-            $active = request()->routeIs((string) ($item['active'] ?? $item['route']));
+            $active = request()->routeIs(...explode('|', (string) ($item['active'] ?? $item['route'])));
 
             $tree[$groupKey][] = [
                 'key' => (string) $item['key'],

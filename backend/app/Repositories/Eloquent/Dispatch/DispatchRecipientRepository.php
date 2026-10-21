@@ -6,6 +6,7 @@ use App\Enums\Dispatch\DispatchResponse;
 use App\Models\DispatchRecipient;
 use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 /**
@@ -80,5 +81,12 @@ final class DispatchRecipientRepository extends BaseRepository implements Dispat
     public function lastWave(int $bookingId): int
     {
         return (int) DispatchRecipient::query()->where('booking_id', $bookingId)->max('wave');
+    }
+
+    public function datatableQuery(int $bookingId): Builder
+    {
+        return DispatchRecipient::query()
+            ->with('providerProfile.user:id,uuid,name,phone_e164')
+            ->where('booking_id', $bookingId);
     }
 }

@@ -22,4 +22,14 @@ final class ProviderJobHistoryService
     {
         return $this->bookings->jobHistoryForProvider($profile, max(1, min(50, $perPage ?? (int) config('booking.operations.history_per_page', 20))));
     }
+
+    /**
+     * Completed jobs and their gross final fares per currency (admin earnings tab, before commission).
+     *
+     * @return list<array{currency: string, jobs: int, gross_minor: int}>
+     */
+    public function completedTotals(ProviderProfile $profile): array
+    {
+        return $this->bookings->completedTotalsForProvider($profile->id);
+    }
 }

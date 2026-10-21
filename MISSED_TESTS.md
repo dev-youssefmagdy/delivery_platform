@@ -134,3 +134,114 @@ Add a PHPUnit testsuite `Concurrency` to `phpunit.xml` (directory `tests/Concurr
 
 - Run `php artisan qa:race-accept {booking} --workers=8` and `qa:race-offer` against the local MySQL after creating a booking, two or more provider offers (API) and read the PASS line.
 - With Reverb running, subscribe a client to `private-customer.{uuid}` and confirm `booking.offer_received` arrives when a provider offers, and that a dispatched provider subscribed to `private-booking.{uuid}` receives no offer events.
+
+## P2.5 — Trip lifecycle, cancellation v1, ratings, share link, reports
+
+Status: **no P2.5 test was written or run** (user instruction). A rolled-back tinker script exercised the happy path (acknowledge, arrived with and without GPS, wrong PIN x5 and lock, correct PIN, start, complete, ratings both ways, duplicate rating, report, cancel preview and commit, fee-changed conflict, share view and revocation, provider cancel with re-dispatch, ownership 404) and a second one the cancellation-policy service (create, overlap, deactivate, delete, invalid rule); neither replaces the tests below.
+
+Likely to break in existing tests and why:
+- `tests/Feature/Location/LocationIngestTest.php` asserts `BookingLocationUpdated` on the booking channel. The class was deleted: the event is now `TripLocationUpdated` on `private-customer.{uuid}`; `LocationIngestService` has a new constructor dependency (`BookingRepositoryInterface`).
+- Tests that build `BookingTransitionService` or `BookingSnapshotBuilder` by hand (new constructor args: `ShareLinkRepositoryInterface`, `CancellationPolicyResolver`), and any test that asserts the exact `policy_snapshot` keys (new `cancellation`) or the exact `allowed_actions` list (now also `cancel`, `share`, `rate`, `report`).
+- `tests/Feature/Offers/*` that read `GET /provider/bookings/{booking}` (resource now has `allowed_actions`, `trip`, `cancellation_terms`; the customer phone is `null` unless `direct_phone_exposure` is on) and the channel-authorization tests (a dispatched provider can no longer join `booking.{uuid}` once another provider is assigned).
+- `tests/Feature/Booking/*` that call `DispatchRecipientRepositoryInterface::clearForBooking` or `BookingEnteredSearch` with positional args; anything counting settings in the catalog (3 new keys: `ride_pin_max_attempts`, `rating_window_hours`, `rating_min_sample`) or enum translation completeness.
+- `tests/Feature/Customers/*` for anonymisation and export (they now also scrub `arrival_evidence`, rating comments, report texts, share links, and export `ratings_and_reports`).
+
+Helpers to add: `Tests\Concerns\BuildsTrips` with `assignedBooking(BookingStatus $status = ProviderSelected, array $policy = [])` (booking + approved provider + vehicle + accepted offer row + `agreed_fare_minor` 5000 + PIN `1234` stored with `Hash::make` and `Crypt::encryptString`, snapshot with `safety.pin_required = true`, a `cancellation` snapshot and `dispatch.auto_redispatch`), `actingAsProviderFor(Booking)`, `policySnapshotWith(array $cancellationRules)`, `CancellationPolicy::factory()` (+ `database/factories/CancellationPolicyFactory.php`).
+
+### tests/Feature/Trip/ProviderTripLifecycleTest.php
+
+- `test_full_happy_path_from_selected_to_completed`: acknowledge -> arrived (with GPS at the pickup) -> verify-start-pin (correct) -> start -> complete; each answers 200 with the booking, statuses `provider_heading_to_pickup`, `provider_arrived`, `in_progress`, `completed`; `booking_status_events` has contiguous sequences with actor `provider`; `heading_at`, `arrived_at`, `started_at`, `completed_at` set; `final_fare_minor == agreed_fare_minor`; cash booking ends `completed` with `payment_status = cash_due`; a non-cash booking ends `completed_pending_payment` with `pending`; provider `completed_jobs` +1; share links of the booking are revoked.
+- `test_allowed_actions_follow_the_status`: for each status the provider resource lists exactly the expected actions (start only after the PIN is verified or when not required; `verify_start_pin` disappears when verified or locked; `rate_customer` after completion while the setting is on and not yet rated).
+- `test_start_without_pin_is_422_booking_pin_required` and `test_start_without_pickup_proof_is_422_when_required` (`pickup_proof_required`; passes once a `booking_proofs` row of type `pickup_pin` exists).
+- `test_start_not_required_when_category_has_no_pin`: snapshot `pin_required = false` -> start works from `provider_arrived`, `verify-start-pin` answers 422 `trip_pin_not_required`.
+- `test_complete_requires_delivery_proofs_from_the_snapshot`: `delivery_proof_types = ['photo']` -> 422 `booking_proof_required` until a photo proof row exists.
+- `test_complete_refuses_booking_without_agreed_fare`: `agreed_fare_minor = null` -> 422 `booking_fare_not_agreed`.
+- `test_other_provider_gets_404_on_every_action`: acknowledge, arrived, verify-start-pin, start, complete, cancel, rating, reports with a second approved provider's token -> 404 for each; the booking is unchanged; a customer token on provider routes is 403.
+- `test_actions_out_of_order_are_409`: start from `provider_selected`, arrived from `provider_selected`, complete from `provider_arrived` -> 409 `booking_transition_invalid`; a booking in another state is never changed.
+- `test_repeating_an_action_is_a_replay_not_an_error`: acknowledge twice with different keys -> second is 200 with `meta.replayed = true` and exactly one status event; same key replays the stored response (`Idempotent-Replayed`); same key with a different body -> 422 `idempotency_key_reused`; missing key -> 422 `idempotency_key_required` on all six writes.
+- `test_arrival_evidence_verified_within_radius_and_unverified_otherwise`: fix at the pickup -> `arrival_evidence.verified = true`, `distance_to_pickup_m` small; fix 5 km away, stale `recorded_at`, no fix and no last position -> stored with `verified = false`, the arrival still succeeds; no fix but a fresh `provider_last_locations` row -> `source = last_known`.
+- `test_free_wait_timer_starts_at_arrival`: `free_wait_ends_at = arrived_at + policy_snapshot.cancellation.free_wait_seconds` (0 seconds when the snapshot has none).
+- `test_active_endpoint_returns_current_job_or_null`: `GET /provider/bookings/active` returns the assigned booking, `null` after completion.
+- `test_status_events_reach_customer_and_provider_channels`: `Event::fake` + assertDispatched for `TripStatusChanged` with channels `customer.{uuid}` and `provider.{uuid}` and `BookingStatusChanged` on `booking.{uuid}` for every transition, same sequence; after a provider cancel with re-dispatch the old provider also receives it.
+- `test_provider_phone_is_masked_unless_direct_exposure_enabled`: `customer.phone` null and `phone_masked` set (setting off); real phone and `contact_mode = direct` when on.
+
+### tests/Feature/Trip/TripPinTest.php
+
+- `test_correct_pin_marks_verified_and_records_proof`: `pin_verified_at` set, one `booking_proofs` row (`pickup_pin`, actor provider); a second call with the PIN is a replay (no second proof); the customer's `trip_pin` is `null` afterwards and `trip.pin.verified = true`.
+- `test_wrong_pin_counts_and_reports_attempts_remaining`: 422 `trip_pin_invalid` with `meta.attempts_remaining` 4, 3, 2, 1; `pin_attempts` persisted (the failed request must not roll the counter back).
+- `test_attempt_limit_locks_start_and_flags_support`: 5th wrong entry -> 409 `trip_pin_locked`; `pin_locked_at`, `support_flagged_at`, `support_flag_reason = pin_attempts_exceeded`; a `pin_locked` note event; `TripSupportFlagged` dispatched to customer and provider channels; the correct PIN afterwards is still refused (409) and `start` stays 422; limit follows the `ride_pin_max_attempts` setting (set 2).
+- `test_pin_only_before_arrival_is_409_trip_pin_not_ready`: from `provider_heading_to_pickup`.
+- `test_pin_comparison_is_constant_time`: source grep that `TripPinService` uses `hash_equals` and never `===` on the PIN.
+- `test_pin_is_visible_to_customer_only_while_waiting`: `trip_pin` present for `provider_selected`, `provider_heading_to_pickup`, `provider_arrived`; absent in `in_progress`, when verified and for another customer (404).
+- Concurrency (`tests/Concurrency`): 8 parallel wrong PINs with limit 5 -> `pin_attempts` ends at 5, exactly one `pin_locked` note, no deadlock.
+
+### tests/Feature/Trip/CancellationTest.php
+
+- `test_customer_preview_writes_nothing`: `POST /bookings/{b}/cancel {reason_code, preview:true}` without an Idempotency-Key -> 200, `committed = false`, `data = null`, `meta.cancellation` complete; booking, events and offers unchanged.
+- `test_preview_and_commit_agree`: for every stage and rule shape (fixed, percent, percent with cap, none, free grace, free wait, arrival unverified, driver asked to cancel) the committed `cancellation_fee_minor` and `cancellation_decision` equal the preview; committing without `accepted_fee_minor` or with another amount when a fee is due -> 409 `cancellation_fee_changed` with the fresh decision in `meta.cancellation` and the booking untouched; fee 0 needs no acknowledgement.
+- `test_fee_decision_table`: `CancellationFeeCalculator` unit test (below) plus feature checks that searching is always free and a customer inside `free_grace_seconds` after `provider_selected_at` is free in every stage.
+- `test_customer_can_cancel_from_draft_to_arrived_but_not_after_start`: 200 for draft, searching, offers_received (active offers become `expired`), selected, heading, arrived; 409 `booking_not_cancellable` for `in_progress`, `completed`, `expired_no_provider`; another customer's booking is 404; the customer can cancel while the account is restricted.
+- `test_cancel_reason_rules`: a code of the provider list on the customer endpoint -> 422; a code excluded by the policy snapshot -> 422 `cancellation_reason_not_allowed`; `other` without a note -> 422 `cancellation_note_required`; note longer than 255 -> 422.
+- `test_customer_cancel_is_idempotent`: same key replays; a second cancel with a new key on an already cancelled booking replays the stored decision (`meta.replayed`).
+- `test_cancel_records_actor_reason_and_notifies_provider`: `cancelled_by_type = customer`, `cancellation_reason_code`, `cancellation_decision` JSON, status event metadata; `TripStatusChanged` to the assigned provider; share links revoked.
+- `test_provider_cancel_with_auto_redispatch_returns_to_searching`: booking `searching_offers` with `provider_id`, `selected_offer_id`, `agreed_*`, `provider_selected_at`, `pin_hash`, `pin_encrypted`, `pin_attempts`, `pin_verified_at`, `pin_locked_at`, `heading_at`, `arrived_at`, `arrival_evidence`, `free_wait_ends_at`, `support_flag*` all cleared/zeroed, new `search_expires_at`, `request_version` unchanged; the old offer keeps status `accepted_by_customer`, `winner_marker = null`, `close_reason = provider_cancelled`, versions intact; `BookingEnteredSearch` has `restart` and `keepProviderIds = [provider]`; the cancelling provider's recipient row is `declined` and it is not dispatched again nor listed in `requests/available`; a second provider can win the booking afterwards (new PIN, new agreed fare) and the unique winner index does not block it.
+- `test_provider_cancel_without_redispatch_ends_cancelled_by_provider`: snapshot `auto_redispatch = false` -> `cancelled_by_provider`, `provider_id` kept, fee decision stored, share links revoked.
+- `test_provider_cancel_rules`: only from selected/heading/arrived (409 `booking_not_cancellable` from `in_progress`); customer-list reason -> 422; `customer_no_show` before arrival or before `free_wait_ends_at` -> 422 `no_show_too_early` with `meta.grace_ends_at`, accepted after; justified reasons carry no fee, `vehicle_problem` follows the provider rule; `preview=true` writes nothing and needs no key.
+- `test_provider_cancel_reaches_customer_and_old_provider_channels`.
+- Concurrency: provider cancel racing a customer accept/cancel on the same booking -> exactly one outcome, no half state (offer winner marker and booking assignment always agree).
+
+### tests/Unit/Booking/CancellationFeeCalculatorTest.php
+
+Table test with `Booking::factory()->make()` and snapshots: stages x actors x rules (none, fixed, percent half-up e.g. 1250 bp of 3333, cap, `value` 10000), `free_grace` boundary (`==` is free, +1 s is not), `free_wait` boundary, unverified arrival -> heading rule with basis `arrival_unverified`, justified provider reasons, `driver_asked_to_cancel`, no policy in the snapshot -> defaults (no fee), unsupported stage (`in_progress`, `completed`) -> `booking_not_cancellable`; `CancellationDecision::toArray()` shape; `CancellationPolicyResolver::resolve` precedence (zone > category > market default > built-in defaults, inactive / expired / future ignored).
+
+### tests/Feature/Admin/Booking/CancellationPolicyAdminTest.php
+
+Mirror of `FarePolicyAdminTest`: permission matrix (`cancellation_policies.manage` only; 403 otherwise), listing DataTable with every filter (name, services, zones, enabled, in effect on) and the filters card collapsed by default, create via Precognition (422 inline errors for bad percent, fixed amount of 0, searching stage, duplicate rule per actor+stage, empty reasons, reasons of the wrong side) then real post; overlap -> 422 `cancellation_policy_overlap` on create, update and activate; edit keeps scope; stale `lock_version` -> 409; deactivate and delete need a reason; delete refused with bookings (`cancellation_policy_in_use`); audit rows with before/after; new bookings snapshot the policy in force (`policy_snapshot.cancellation.id` = policy id, `bookings.cancellation_policy_id`) and editing the policy later does not change an existing booking's decision; sidebar entry only for the permission.
+
+### tests/Feature/Trip/ShareLinkTest.php
+
+- `test_customer_creates_share_link_for_assigned_booking`: 201 with `url` and `expires_at = now + share_link_ttl_minutes`; only the SHA-256 is stored (`token_hash` != token; token not in DB); a second call revokes the first; 409 `share_not_available` for searching, completed, cancelled; another customer's booking 404; `DELETE` revokes all.
+- `test_public_page_minimises_data`: `GET /t/{token}` 200, `noindex` meta and `X-Robots-Tag`, `Cache-Control: no-store`, `Referrer-Policy: no-referrer`; body contains provider first name, vehicle, status; does NOT contain the customer's name or phone, addresses, fare, offer amounts, provider surname or phone, coordinates beyond 5 decimals.
+- `test_position_only_when_fresh`: position from `provider_last_locations` shown when younger than 180 s, hidden when older; `/t/{token}/data` JSON shape.
+- `test_expired_revoked_unknown_and_finished_links_look_the_same`: 404 with the same view for each (after `travel()` past the expiry, after cancel/complete, random 43-char token, malformed token -> route 404).
+- `test_share_routes_are_throttled`: 61st request in a minute -> 429.
+
+### tests/Feature/Trip/RatingTest.php
+
+- `test_customer_rates_provider_once_after_completion`: 201 with tags and comment; the provider's `rating_avg` and `rating_count` recomputed; duplicate -> 409 `rating_already_submitted` (also under a forced race: two inserts, unique index `booking_ratings_one_per_side`); not completed -> 422 `rating_not_allowed`; after `rating_window_hours` -> 422 `rating_window_closed`; stars 0 / 6 -> 422; a tag of the customer list on a provider rating -> 422; comment over 1000 -> 422; another customer's booking 404.
+- `test_provider_rates_customer_only_when_enabled`: setting off -> 422 `rating_disabled`; on -> 201 and `users.rating_avg` updated; one per booking.
+- `test_aggregate_formula_and_provisional_flag`: `RatingAggregationService::average()` (e.g. stars 5,4,4 -> `4.33`; 5,5,4 -> `4.67`; half-up at the third decimal; none -> `0.00`); hidden / under_review ratings excluded after `recompute`; `ProviderIdentity::rating()['provisional']` true below `rating_min_sample`.
+- `test_rate_action_in_allowed_actions`: `rate` present for a completed unrated booking inside the window, absent after rating, after the window and for non-completed bookings.
+
+### tests/Feature/Trip/BookingReportTest.php
+
+- 201 with a stored `booking_reports` row (`status = open`) for customer and provider; 422 `report_not_available` for a booking that never had a provider; daily limit (5) -> 422 `report_limit_reached`; description under 5 or over 2000 characters -> 422; unknown category -> 422; other customer's booking 404; no rating needed first.
+
+### tests/Feature/Trip/CustomerBookingResourceTest.php
+
+`GET /bookings/{b}` after each status: `trip` block, `provider_location_visible` only for assigned statuses, `cancellation` after a cancel, `final_fare` and `receipt` after completion (duration, planned distance, payment), `rating_window_ends_at`, `allowed_actions` list per status (cancel until arrival, share while assigned, rate/report after), timeline hides provider/operations reasons.
+
+### tests/Feature/Realtime/TripChannelsTest.php
+
+- `booking.location_updated` is dispatched as `TripLocationUpdated` on `customer.{uuid}` only (never `booking.*`) while the provider has an assigned booking, and not at all after completion or when the provider has no booking.
+- `RealtimeChannelPolicy::joinBooking`: before selection a dispatched provider can join; after another provider is selected it cannot; the selected provider and the customer can.
+- `booking.support_flagged` goes to both party channels with the booking sequence.
+
+### tests/Unit
+
+- `tests/Unit/Enums/CancellationReasonTest.php`: `forActor` lists are disjoint except `other`; every case of the new enums (`CancellationStage`, `CancellationFeeType`, `CancellationFeeRecipient`, `CancellationReason`, `SupportFlagReason`, `ReportCategory`, `ReportStatus`, `ModerationStatus`, `RatingTag`, `ProviderBookingAction`, `CancellationPolicyState`, `BookingAction` new cases) has `ar` and `en` translations; `CancellationStage::of` maps every `BookingStatus`.
+- `tests/Unit/Booking/BookingTransitionServiceTest.php` (extend the exhaustive matrix test): the provider-cancel edge `provider_selected|heading|arrived -> searching_offers` needs the assigned provider (403 otherwise) and `auto_redispatch`; `searching_offers` from `offers_received` leaves the assignment columns untouched; `in_progress -> cancelled_by_customer` stays invalid; the source-grep test that only the transition service writes `bookings.status` still passes (nothing new writes it).
+- `tests/Unit/Models/BookingProofTest.php`: append-only (update and delete throw).
+- `tests/Unit/Support/Idempotency/PreviewBypassTest.php`: `idempotent:unless_preview` skips the key requirement only when `preview` is true; other unsafe calls still need the key.
+
+### Console / seeders / misc
+
+- Settings catalog test: the three new keys have type, bounds, default, labels in `ar` and `en`, and appear in Settings > Safety / Booking forms.
+- Personal data: anonymisation nulls `arrival_evidence`, customer rating comments, report descriptions (`[removed]`) and deletes share links; the export contains `agreed_fare_minor`, `final_fare_minor`, `cancellation` and `ratings_and_reports`.
+- `website` routes: `route('website.trip-share', ['token' => ...])` generates the URL returned by the share endpoint.
+
+### Manual / browser
+
+- With Reverb running: customer app subscribed to `private-customer.{uuid}` sees `booking.status_changed` for acknowledge / arrived / start / complete / provider cancel and `booking.location_updated` while the driver moves; a second dispatched provider subscribed to `private-booking.{uuid}` receives no location or offer data after the selection.
+- Open a real share link in a phone browser: renders RTL in Arabic, refreshes status every 15 s, becomes the "not available" page after the trip ends; `curl -I` shows the hardening headers.
+- Admin > Pricing > Cancellation policies in the browser: collapsed filters card, Precognition errors inline before submit, repeater adds/removes rules, Arabic RTL layout.

@@ -21,7 +21,7 @@
 | P2.2 | Availability, live location, eligibility, dispatch engine | P0 | ✅ | 2026-10-23 |
 | P2.3 | Reference pricing & booking creation | P0 | ✅ | 2026-10-24 |
 | P2.4 | Offers, counter-offers & atomic selection | P0 | 🟡 | 2026-10-25 |
-| P2.5 | Trip lifecycle: heading, arrived, PIN, start, complete, cancellation v1, ratings, share link | P0 | ❌ | — |
+| P2.5 | Trip lifecycle: heading, arrived, PIN, start, complete, cancellation v1, ratings, share link | P0 | 🟡 | 2026-10-26 |
 | P2.6 | Customer app: complete ride flow | P0 | ❌ | — |
 | P2.7 | Driver app: complete ride flow | P0 | ❌ | — |
 | P2.8 | Admin: bookings, offers monitor, live operations v1 | P0 | ❌ | — |
@@ -51,6 +51,37 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P2.5 — Trip lifecycle, cancellation v1, ratings, share link · 🟡 2026-10-26 (gate NOT run)
+
+Committed directly on `main` in small steps. ADR-98..102. **By user instruction no test, pint, phpstan, `php artisan test`, build or `scripts/check.sh` was written or run, so the milestone is not marked done.** Every test that should exist is in `/var/www/delivery_platform/MISSED_TESTS.md` (P2.5 section, including which existing tests are likely to break).
+
+### What was built
+
+- **Schema** (`2026_10_26_090000_create_trip_lifecycle_tables`, migrate / rollback / migrate checked): trip columns on `bookings` (heading, arrival + GPS evidence, free-wait end, start, PIN attempts / verified / locked, support flag, `final_fare_minor`, cancellation code / fee / decision, `cancellation_policy_id`); `booking_proofs` (append-only), `cancellation_policies`, `booking_ratings`, `booking_share_links` (token hash only), `booking_reports`; `rating_avg` / `rating_count` on `users`.
+- **Provider API** (idempotent, ownership-checked, through `BookingTransitionService`): `GET bookings/active`, `acknowledge`, `arrived` (GPS evidence), `verify-start-pin` (constant-time compare, attempt limit, lock + support flag), `start`, `complete` (final fare = agreed snapshot, cash gives `cash_due`), `cancel` (preview), `rating`, `reports`; the booking resource now carries trip state, PIN state, cancellation terms, masked phone per setting and server-computed `allowed_actions`.
+- **Cancellation v1**: `CancellationFeeCalculator` (pure), `CancellationService`, customer `POST /bookings/{b}/cancel` with `preview=true` (no key) and fee acknowledgement on commit, provider cancel with auto re-dispatch (clears assignment, agreed fare, PIN, arrival data and the old winner marker, keeps history, never re-asks that provider). Fees are only computed and snapshotted (ledger posting is P3.5).
+- **Admin**: Cancellation policies module under Pricing (Tailwind components, Precognition form with fee-rule repeater, Yajra table with collapsed filters card, audit, `lock_version`, overlap guard, reasons required for dangerous actions).
+- **Share trip**: `POST/DELETE /bookings/{b}/share`, public `/t/{token}` page + `/t/{token}/data` (noindex, no-store, throttled, minimal data, same 404 for every failure).
+- **Ratings** (once per side, window, tags, documented mean + provisional flag), **reports** (`booking_reports`, daily limit), receipt basics and `trip` / `cancellation` / `final_fare` / `receipt` blocks on the customer booking.
+- **Realtime to the customer channel** (ADR-98): `booking.status_changed` and `booking.location_updated` (moved off the shared booking channel) on `private-customer.{uuid}`, status also on `private-provider.{uuid}`, `booking.support_flagged` on both; the booking stream is closed to non-selected providers.
+- Anonymisation scrubs arrival coordinates, comments, report texts and share links; the export lists ratings and reports. Settings: `ride_pin_max_attempts`, `rating_window_hours`, `rating_min_sample`.
+
+### Files / modules touched
+
+`app/Services/Booking/{TripLifecycleService,TripPinService,CancellationService,CancellationFeeCalculator,CancellationPolicyResolver,CancellationPolicyService,ShareLinkService,TripShareViewService,RatingService,RatingAggregationService,BookingReportService,ProviderActionResolver}`, `BookingTransitionService`, `BookingSnapshotBuilder`, `BookingActionResolver`; new repositories under `Repositories/*/Booking`; controllers `Api/V1/Provider/{TripController,TripFeedbackController}`, `Api/V1/Customer/{BookingCancellationController,BookingShareController,BookingFeedbackController}`, `Website/TripShareController`, `Admin/Booking/CancellationPolicyController`; requests/resources under `Trip`; events `PartyEvent`, `TripStatusChanged`, `TripLocationUpdated`, `TripSupportFlagged`; `routes/api_v1.php`, `routes/website.php`, `routes/admin/cancellation-policies.php`; views `admin/cancellation-policies/*`, `website/trip-share*.blade.php`, `components/website/layouts/app`; lang `ar` / `en` (`admin`, `api`, `enums`, `website`).
+
+### Commands and results
+
+Not run (by instruction): pint, phpstan, `php artisan test`, `npm run build`, `scripts/check.sh`. Run: `php -l` on every new / changed file, `migrate` + `migrate:rollback --step=1` + `migrate`, `route:list` (all new routes present), container resolution of every new service and controller, `view:cache`, and two rolled-back tinker scenarios (trip + cancellation + share + ratings + reports; cancellation-policy service), all with the expected output.
+
+### Known gaps / notes for the next milestones
+
+- **P2.6 customer app:** subscribe to `private-customer.{uuid}` (status, location, support-flag and offer events) and refetch `GET /bookings/{b}` on a sequence gap; render buttons from `allowed_actions`; show `trip_pin` while it is not null; cancel flow = preview call (no key), show `meta.cancellation.message`, then commit with `accepted_fee_minor`; share returns a URL; rating / report forms; `provider_location_visible` tells when the map marker is allowed.
+- **P2.7 driver app:** subscribe to `private-provider.{uuid}`, load `GET /provider/bookings/active` on start and on any status event; buttons from `allowed_actions`; send the GPS fix with `arrived`; PIN entry shows `attempts_remaining` and the lock state; a status event for a booking you no longer hold (re-dispatch) means drop the job; all writes need `Idempotency-Key`.
+- Lifting a PIN lock, operations cancellation / override, the customer Ratings and provider Jobs admin tabs (placeholders now say P2.8) and the live operations screens are P2.8. Fee posting is P3.5; online-payment completion (`completed_pending_payment`) P3.2; photo / signature / OTP proof upload endpoints P4 (`POST /proofs` is not built yet; the table and guards are). `completed_at` + payment window for tips is P3.2.
+- Customer-side call relay does not exist: with `direct_phone_exposure` off the provider only sees a masked number until chat (P3.7).
+- No default cancellation policy is seeded: without one the built-in defaults (120 s free, no fees) apply.
 
 ## P2.4 — Offers, counter-offers & atomic selection · 🟡 2026-10-25 (gate NOT run)
 

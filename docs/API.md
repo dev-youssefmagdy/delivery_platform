@@ -421,7 +421,7 @@ Scheduled: `documents:check-expiry` (daily 02:00), `providers:reactivate-expired
 
 `TrackingState`: `off`, `idle`, `to_pickup`, `active` (sampling interval from `config/location.php`: 0 / 30 / 10 / 5 s). `OfflineReason`: `provider_choice`, `stale_location`, `no_longer_eligible`, `account_changed`. New `EligibilityReason` values (working scope only): `location_stale`, `active_job_exists`, `cash_debt_limit_exceeded`. New error codes: `provider_not_eligible`, `vehicle_not_usable`, `outside_service_area`, `active_job_blocks_offline`, `location_not_tracking`.
 
-**Realtime (ADR-84..87).** Channels: `private-customer.{userUuid}`, `private-provider.{providerUuid}`, `private-booking.{bookingUuid}`, `private-admin.operations` (`bookings.view`). Every event is `{ booking_uuid, sequence, occurred_at, payload }` and a client refetches when `sequence` skips: `provider.availability_changed` (`{online, reason}`, provider channel, sequence per provider), `booking.requested` (provider channel; payload `{wave, distance_m, pickup_area:{lat,lng} (rounded ~1 km), search_expires_at, request}`; **no phone or address**), `booking.search_expanding` (booking channel; `{wave, radius_km}`), `booking.location_updated` (booking channel; `{lat, lng, heading, speed_mps, accuracy_m, recorded_at}`).
+**Realtime (ADR-84..87).** Channels: `private-customer.{userUuid}`, `private-provider.{providerUuid}`, `private-booking.{bookingUuid}`, `private-admin.operations` (`bookings.view`). Every event is `{ booking_uuid, sequence, occurred_at, payload }` and a client refetches when `sequence` skips: `provider.availability_changed` (`{online, reason}`, provider channel, sequence per provider), `booking.requested` (provider channel; payload `{wave, distance_m, pickup_area:{lat,lng} (rounded ~1 km), search_expires_at, request}`; **no phone or address**), `booking.search_expanding` (booking channel; `{wave, radius_km}`), `booking.location_updated` (since P2.5 on `private-customer.{uuid}`, not the booking channel; `{lat, lng, heading, speed_mps, accuracy_m, recorded_at}`).
 
 Scheduled: `providers:sweep-stale` (every 30 s), `locations:prune` (daily 03:30).
 
@@ -478,3 +478,37 @@ Money is integer minor units. Provider writes need an active account, `Idempoten
 **Realtime (payload `{booking_uuid, sequence, occurred_at, payload}`)**: on `private-customer.{uuid}`: `booking.offer_received` / `booking.offer_updated` (`{offer: card, booking_id}`), `booking.offer_expired` (`{offer_id, booking_id, status, state}`), `booking.provider_selected` (`{offer: card, booking_id, status}`); on `private-provider.{uuid}`: `booking.offer_expired` and `booking.offer_updated` for the provider's own offers (`{offer_id, booking_id, status, state}`), `booking.provider_selected` for the winner (`{offer_id, booking_id, status, agreed_fare}`). The booking channel carries only `booking.status_changed`.
 
 **Scheduler / jobs:** `offers:expire` every 5 s; `ExpireOffer` delayed per offer (critical queue). **QA:** `php artisan qa:race-accept {booking}` and `qa:race-offer {booking} {provider}` (local only).
+
+### 8.13 Trip lifecycle, cancellation, share, ratings, reports (P2.5)
+
+Money is integer minor units. Every write needs an `Idempotency-Key` (UUID); `cancel` with `preview=true` does not. Provider writes need an active account and ownership (another provider's booking is `404`). The booking is returned as the caller sees it, with server-computed `allowed_actions`. Errors use the envelope: `409 booking_transition_invalid`, `422 booking_pin_required` / `booking_proof_required`, `409 trip_pin_not_ready` / `trip_pin_locked`, `422 trip_pin_invalid` (`meta.attempts_remaining`), `422 trip_pin_not_required`, `409 booking_not_cancellable`, `422 cancellation_reason_not_allowed` / `cancellation_note_required` / `no_show_too_early`, `409 cancellation_fee_changed` (`meta.cancellation` = fresh decision), `409 share_not_available`, `422 rating_not_allowed` / `rating_window_closed` / `rating_tag_invalid` / `rating_disabled`, `409 rating_already_submitted`, `422 report_not_available` / `report_limit_reached`.
+
+**Provider (`provider` token)**
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/provider/bookings/active` | The current job or `data: null`. Same shape as the show endpoint |
+| GET | `/api/v1/provider/bookings/{booking}` | Now also `trip {heading_at, arrived_at, arrival_verified, free_wait_ends_at, started_at, completed_at, pin {required, verified, locked, attempts_remaining}, support_flagged}`, `cancellation_terms {free_wait_seconds, reasons[], provider_fees[], redispatch}`, `final_fare`, `allowed_actions[]` (`acknowledge`, `arrived`, `verify_start_pin`, `start`, `complete`, `cancel`, `rate_customer`, `report`) and `customer {name, phone (null unless direct exposure), phone_masked, contact_mode, rating}` |
+| POST | `/api/v1/provider/bookings/{booking}/acknowledge` | `provider_selected` to `provider_heading_to_pickup` |
+| POST | `/api/v1/provider/bookings/{booking}/arrived` | Body (all optional): `{ lat, lng, accuracy_m, recorded_at }`. Stores GPS evidence, starts the free-wait timer; never blocked by missing GPS |
+| POST | `/api/v1/provider/bookings/{booking}/verify-start-pin` | `{ pin }` (4-8 digits). Wrong entries are counted; at `ride_pin_max_attempts` the start is locked (`409 trip_pin_locked`) and support is flagged |
+| POST | `/api/v1/provider/bookings/{booking}/start` | Needs the verified PIN (when required) and the pickup proof (when required) |
+| POST | `/api/v1/provider/bookings/{booking}/complete` | Needs the delivery proofs of the category (none for rides). Final fare = agreed fare snapshot; cash gives `payment_status = cash_due` and status `completed` |
+| POST | `/api/v1/provider/bookings/{booking}/cancel` | `{ reason_code, note?, preview? }` (provider reasons: `customer_no_show`, `customer_unreachable`, `vehicle_problem`, `emergency`, `wrong_request_details`, `unsafe_pickup`, `other`). `meta {cancellation, committed, redispatched, replayed}`; with auto re-dispatch `data` is null and the booking goes back to searching |
+| POST | `/api/v1/provider/bookings/{booking}/rating` | Rates the customer (setting `rating_customer_by_provider_enabled`): `{ stars 1-5, tags[], comment? }` |
+| POST | `/api/v1/provider/bookings/{booking}/reports` | `{ category, description }` |
+
+**Customer (`customer` token)**
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/api/v1/bookings/{booking}/cancel` | `{ reason_code, note?, preview?, accepted_fee_minor? }` (customer reasons: `changed_mind`, `wrong_pickup`, `found_another_ride`, `driver_too_far`, `driver_asked_to_cancel`, `waited_too_long`, `other`). `preview=true`: `data` null, `meta.cancellation` = `{actor, stage, stage_label, fee {amount_minor, currency}, fee_formatted, free, basis, message, recipient, policy_id, rule, grace_ends_at, decided_at}` and `committed: false`. Commit: the booking (`cancellation {by, reason_code, fee, basis, cancelled_at}`); a due fee needs `accepted_fee_minor` equal to the preview |
+| POST / DELETE | `/api/v1/bookings/{booking}/share` | `201 { url, expires_at }` (token shown once); `DELETE` stops sharing |
+| POST | `/api/v1/bookings/{booking}/rating` | Once, finished trips, inside the window: `{ stars, tags[], comment? }` |
+| POST | `/api/v1/bookings/{booking}/reports` | `{ category (safety, behaviour, fare_dispute, route_or_delay, lost_item, other), description }` |
+
+`GET /bookings/{booking}` now also returns `trip {selected_at, heading_at, arrived_at, free_wait_ends_at, started_at, completed_at, pin {required, verified, locked}, provider_location_visible, support_flagged, rating_window_ends_at}`, `cancellation`, `final_fare`, `receipt` (completed bookings) and `allowed_actions` with `cancel`, `share`, `rate`, `report`; `trip_pin` disappears once the driver entered it. Provider ratings carry `provisional` (`rating {average, count, provisional}`).
+
+**Public page.** `GET /t/{token}` (HTML, noindex) and `GET /t/{token}/data` (JSON poll): status, provider first name, vehicle, last position while fresh, planned duration, expiry. Invalid / expired / revoked / finished: the same 404.
+
+**Realtime (payload `{booking_uuid, sequence, occurred_at, payload}`).** `booking.status_changed` (`{status, previous_status, request_version, actor}`) on `private-customer.{uuid}`, `private-provider.{uuid}` (assigned and previous provider) and `private-booking.{uuid}`; `booking.location_updated` on `private-customer.{uuid}` only (selection to completion); `booking.support_flagged` (`{reason}`) on both party channels. After a provider cancel with re-dispatch the customer sees `provider_selected` -> `searching_offers` and the old provider's app gets the same status event.

@@ -23,7 +23,7 @@
 | P2.4 | Offers, counter-offers & atomic selection | P0 | 🟡 | 2026-10-25 |
 | P2.5 | Trip lifecycle: heading, arrived, PIN, start, complete, cancellation v1, ratings, share link | P0 | 🟡 | 2026-10-26 |
 | P2.6 | Customer app: complete ride flow | P0 | 🟡 | 2026-10-27 |
-| P2.7 | Driver app: complete ride flow | P0 | ❌ | — |
+| P2.7 | Driver app: complete ride flow | P0 | 🟡 | 2026-10-28 |
 | P2.8 | Admin: bookings, offers monitor, live operations v1 | P0 | ❌ | — |
 | P2.9 | E2E ride test, race tests, MVP hardening | P0 | ❌ | — |
 | P3.1 | Double-entry ledger, wallets, commission rules, price breakdown | P1 | ❌ | — |
@@ -51,6 +51,35 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P2.7 — Driver app: complete ride flow · 🟡 2026-10-28 (gate NOT run)
+
+Committed directly on `main`. ADR-106..108. **By user instruction no test, `flutter test`, `flutter analyze`, `dart format` check, integration test or `scripts/check.sh` was written or run, so the milestone is not marked done.** Every test that should exist is in `MISSED_TESTS.md` (P2.7 section). Only compile checks ran: `flutter pub get --offline` (adds `url_launcher`), `flutter gen-l10n` and `dart analyze lib` (whole driver_app `lib`, no issues).
+
+### What was built (driver_app, `features/jobs`, against the real API)
+
+- **Shell (approved drivers):** Home, Requests (badge with the open count), My offers, History; active-job banner above every tab; tabs stay mounted so alerts work from any tab. Application/documents status moved behind a Home entry (`/application`). Earnings, payouts, incentives and the earnings snapshot are NOT shown (no server feature flag yet, P3.8); the rating on Home is not shown either (no field in the provider API).
+- **Home:** the existing availability card (online switch, eligibility reasons, vehicle picker, tracking line, connection indicator) plus sound/vibration preferences for new requests.
+- **Requests feed:** `GET /provider/requests/available`, refetched on every driver-channel event, on reconnect and by polling (6 s socket down, 25 s up); new-request sound and vibration per preference; card with category, masked pickup area, distance to pickup, destination area, trip size, customer fare, load summary chips, expiry countdown; actions accept customer fare, counter-offer, skip; offline / not eligible (typed reasons) / empty states.
+- **Counter-offer:** large in-app numeric keypad (no system keyboard), bounds from the API, inline below/above/same-as-fare check, earnings preview (gross, commission, net) shown only when the server returns `available: true`.
+- **Duplicate-tap and lost offers:** one in-flight call and one Idempotency-Key per intent (`JobActions`); 409/422 "lost" codes refresh the feed and offers and show a clear message.
+- **My offers:** pending first, then closed ones with the reason (rejected, lost, expired, request changed, unavailable, withdrawn), countdown, withdraw, open job for the selected one.
+- **Active job:** big buttons drawn from `allowed_actions` (acknowledge, arrived with GPS evidence read once per intent, PIN pad with attempts left and lock, start, complete with a cash confirmation); external maps navigation to pickup then destination; customer card (call only when the server exposes the number), instructions, route, free-wait countdown, support-flag notice; cancel (reasons from the policy, `preview=true` cost before confirming, re-dispatch notice), report. Restores from `GET /provider/bookings/active` at start, on resume and on every event; a booking the driver no longer holds ends the screen ("no longer yours").
+- **Completion summary:** amount, payment method, cash to collect, net preview when available, rate customer (stars, tags, comment), report, back home. **History:** list + detail (same job screen, read only).
+
+### Files
+
+`driver_app/lib/features/jobs/{domain,data,presentation}`, `app/router.dart` (`/job/:id`, `/job/:id/cancel`, `/job/:id/report`, `/application`), `provider_onboarding_screen.dart` (hands approved drivers to `DriverShell`), ARB ar/en (+ regenerated l10n), `pubspec.yaml` (`url_launcher`).
+
+### Known gaps / notes for later milestones
+
+- **No history endpoint:** job history is built from `GET /provider/offers` (state `selected`) plus `GET /provider/bookings/{id}` per row. A `GET /provider/bookings` list should replace it (P2.9 or P3.4).
+- Destination is shown as rounded coordinates ("area") because the masked card has no area name for the drop-off; add one server side.
+- No map on Home (flutter_map is not a driver dependency yet); the status line and the maps hand-off cover navigation.
+- Call relay does not exist: with `direct_phone_exposure` off the call button is hidden and a note explains.
+- Commission/net preview needs P3.1 (`earnings_preview.available`); the UI is ready.
+- Push notifications for new requests are P3.6; until then sound/vibration only fire while the app runs.
+- The `arrived` GPS evidence comes from a one-off fix (6 s timeout); never blocks.
 
 ## P2.6 — Customer app: complete ride flow · 🟡 2026-10-27 (gate NOT run)
 

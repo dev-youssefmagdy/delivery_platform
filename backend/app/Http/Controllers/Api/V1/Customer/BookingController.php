@@ -15,6 +15,7 @@ use App\Services\Booking\BookingActionResolver;
 use App\Services\Booking\BookingReadService;
 use App\Services\Booking\CreateBookingService;
 use App\Services\Booking\UpdateBookingRequestService;
+use App\Services\Offers\CustomerOfferService;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ final class BookingController extends Controller
         private readonly BookingReadService $reader,
         private readonly BookingActionResolver $actions,
         private readonly BookingOfferRepositoryInterface $offers,
+        private readonly CustomerOfferService $selected,
     ) {}
 
     public function index(ListBookingsRequest $request): JsonResponse
@@ -68,6 +70,6 @@ final class BookingController extends Controller
 
     private function resource(Booking $booking): BookingResource
     {
-        return new BookingResource($booking, $this->actions->forCustomer($booking), $this->offers->summary($booking));
+        return new BookingResource($booking, $this->actions->forCustomer($booking), $this->offers->summary($booking), $this->selected->selectedOffer($booking));
     }
 }

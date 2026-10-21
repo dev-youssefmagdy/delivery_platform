@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Common\HealthController;
 use App\Http\Controllers\Api\V1\Common\MediaController;
 use App\Http\Controllers\Api\V1\Common\PolicyController;
 use App\Http\Controllers\Api\V1\Customer\BookingController;
+use App\Http\Controllers\Api\V1\Customer\BookingOfferController;
 use App\Http\Controllers\Api\V1\Geo\CityController;
 use App\Http\Controllers\Api\V1\Geo\PlaceController;
 use App\Http\Controllers\Api\V1\Geo\RouteController;
@@ -26,6 +27,8 @@ use App\Http\Controllers\Api\V1\Provider\AvailabilityController;
 use App\Http\Controllers\Api\V1\Provider\DocumentController;
 use App\Http\Controllers\Api\V1\Provider\EligibilityController;
 use App\Http\Controllers\Api\V1\Provider\LocationController;
+use App\Http\Controllers\Api\V1\Provider\OfferController;
+use App\Http\Controllers\Api\V1\Provider\RequestController;
 use App\Http\Controllers\Api\V1\Provider\VehicleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -120,10 +123,15 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
 Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bookings')->name('bookings.')->group(function (): void {
     Route::get('/', [BookingController::class, 'index'])->name('index');
     Route::get('{booking}', [BookingController::class, 'show'])->whereUuid('booking')->name('show');
+    Route::get('{booking}/offers', [BookingOfferController::class, 'index'])->whereUuid('booking')->name('offers.index');
 
     Route::middleware('account.active:strict')->group(function (): void {
         Route::post('/', [BookingController::class, 'store'])->middleware('idempotent')->name('store');
         Route::patch('{booking}/request', [BookingController::class, 'updateRequest'])->whereUuid('booking')->middleware('idempotent')->name('request.update');
+
+        // Choosing a provider (P2.4): atomic, idempotent; a lost race answers 409 with the fresh booking.
+        Route::post('{booking}/offers/{offer}/accept', [BookingOfferController::class, 'accept'])->whereUuid(['booking', 'offer'])->middleware('idempotent')->name('offers.accept');
+        Route::post('{booking}/offers/{offer}/reject', [BookingOfferController::class, 'reject'])->whereUuid(['booking', 'offer'])->middleware('idempotent')->name('offers.reject');
     });
 });
 
@@ -139,6 +147,10 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     Route::get('documents/{document}/file', [DocumentController::class, 'file'])->whereUuid('document')->middleware('signed')->name('documents.file');
     Route::get('vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
     Route::get('vehicles/{vehicle:uuid}', [VehicleController::class, 'show'])->whereUuid('vehicle')->name('vehicles.show');
+    // Negotiation (P2.4): masked request cards, own offers, and the full booking only once selected (Plan I10).
+    Route::get('requests/available', [RequestController::class, 'available'])->name('requests.available');
+    Route::get('offers', [OfferController::class, 'index'])->name('offers.index');
+    Route::get('bookings/{booking}', [RequestController::class, 'show'])->whereUuid('booking')->name('bookings.show');
     Route::get('vehicle-photos/{photo}/file', [VehicleController::class, 'photoFile'])->whereUuid('photo')->middleware('signed')->name('vehicle-photos.file');
 
     Route::middleware('account.active')->group(function (): void {
@@ -146,6 +158,11 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::post('availability/online', [AvailabilityController::class, 'online'])->name('availability.online');
         Route::post('availability/offline', [AvailabilityController::class, 'offline'])->name('availability.offline');
         Route::post('location', [LocationController::class, 'store'])->middleware(RateLimiterName::Location->middleware())->name('location.store');
+
+        Route::post('bookings/{booking}/offers/accept-customer-fare', [OfferController::class, 'acceptCustomerFare'])->whereUuid('booking')->middleware([RateLimiterName::Offers->middleware(), 'idempotent'])->name('offers.accept-customer-fare');
+        Route::post('bookings/{booking}/offers', [OfferController::class, 'store'])->whereUuid('booking')->middleware([RateLimiterName::Offers->middleware(), 'idempotent'])->name('offers.store');
+        Route::post('offers/{offer}/withdraw', [OfferController::class, 'withdraw'])->whereUuid('offer')->name('offers.withdraw');
+        Route::post('bookings/{booking}/skip', [RequestController::class, 'skip'])->whereUuid('booking')->name('requests.skip');
 
         Route::post('applications', [ApplicationController::class, 'store'])->middleware('idempotent')->name('applications.store');
         Route::patch('application', [ApplicationController::class, 'update'])->name('application.update');

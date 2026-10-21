@@ -20,6 +20,7 @@ use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
 use App\Services\Dispatch\EventSequencer;
 use App\Services\Location\LocationIngestService;
 use App\Services\Location\ProviderIndexPublisher;
+use App\Services\Offers\ProviderOfferInvalidator;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -41,6 +42,7 @@ final class AvailabilityService
         private readonly ProviderEligibilityService $eligibility,
         private readonly LocationIngestService $ingest,
         private readonly ProviderIndexPublisher $index,
+        private readonly ProviderOfferInvalidator $offerInvalidator,
         private readonly SettingsService $settings,
         private readonly EventSequencer $sequencer,
         private readonly DatabaseManager $db,
@@ -160,6 +162,9 @@ final class AvailabilityService
         }
 
         $this->index->withdraw($profile);
+
+        // A provider that left the index can no longer be chosen: its open offers end now (SRS §10.2 step 7).
+        $this->offerInvalidator->invalidateFor($profile);
 
         if ($notify) {
             $this->announce($profile, false, $reason);

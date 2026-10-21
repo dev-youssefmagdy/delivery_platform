@@ -3,6 +3,7 @@
 namespace App\Services\Booking;
 
 use App\Enums\Booking\BookingAction;
+use App\Enums\Booking\BookingStatus;
 use App\Models\Booking;
 
 /**
@@ -21,6 +22,10 @@ final class BookingActionResolver
 
         if ($booking->status->isSearching()) {
             $actions[] = BookingAction::UpdateRequest;
+        }
+
+        if ($booking->status === BookingStatus::OffersReceived) {
+            $actions[] = BookingAction::SelectOffer;
         }
 
         return $actions;

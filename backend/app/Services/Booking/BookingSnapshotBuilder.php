@@ -86,6 +86,7 @@ final class BookingSnapshotBuilder
             'offers' => [
                 'max_per_provider' => $this->settings->int(SettingKey::MaxOffersPerProviderPerBooking),
                 'max_revisions' => $this->settings->int(SettingKey::MaxOfferRevisions),
+                'negotiation_enabled' => (bool) ($snapshot['pricing']['negotiation_enabled'] ?? true),
                 'counter_offer_min_pct' => $snapshot['pricing']['counter_offer_min_pct'] ?? null,
                 'counter_offer_max_pct' => $snapshot['pricing']['counter_offer_max_pct'] ?? null,
             ],

@@ -130,6 +130,14 @@ enum BookingStatus: string implements HasColor, HasLabel
     /**
      * @return list<string>
      */
+    public static function searchingValues(): array
+    {
+        return array_map(static fn (self $status): string => $status->value, self::searching());
+    }
+
+    /**
+     * @return list<string>
+     */
     public static function inFlightValues(): array
     {
         return array_map(static fn (self $status): string => $status->value, self::inFlight());

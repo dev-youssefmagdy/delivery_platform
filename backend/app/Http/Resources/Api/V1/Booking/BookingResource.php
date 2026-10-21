@@ -4,14 +4,18 @@ namespace App\Http\Resources\Api\V1\Booking;
 
 use App\DTOs\Booking\OffersSummary;
 use App\Enums\Booking\BookingAction;
+use App\Enums\Booking\BookingStatus;
 use App\Enums\Common\ActorType;
 use App\Enums\Pricing\PriceFactor;
 use App\Http\Resources\Api\V1\Catalog\TranslationMap;
+use App\Http\Resources\Api\V1\Offer\CustomerOfferResource;
 use App\Models\Booking;
+use App\Models\BookingOffer;
 use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Crypt;
 use stdClass;
 
 /**
@@ -26,7 +30,7 @@ class BookingResource extends JsonResource
     /**
      * @param list<BookingAction> $allowedActions
      */
-    public function __construct(Booking $booking, private readonly array $allowedActions = [], private readonly ?OffersSummary $offers = null)
+    public function __construct(Booking $booking, private readonly array $allowedActions = [], private readonly ?OffersSummary $offers = null, private readonly ?BookingOffer $selectedOffer = null)
     {
         parent::__construct($booking);
     }
@@ -54,10 +58,26 @@ class BookingResource extends JsonResource
             'search_expires_at' => $booking->search_expires_at?->toIso8601ZuluString(),
             'request_version' => $booking->request_version,
             'offers' => ($this->offers ?? new OffersSummary)->toArray(),
-            'provider' => null,
+            'provider' => $this->selectedOffer === null ? null : (new CustomerOfferResource($this->selectedOffer))->resolve()['provider'],
+            'vehicle' => $this->selectedOffer === null ? null : (new CustomerOfferResource($this->selectedOffer))->resolve()['vehicle'],
+            'agreed_fare' => $booking->agreed_fare_minor === null ? null : ['amount_minor' => $booking->agreed_fare_minor, 'currency' => $booking->currency],
+            'agreed_scope' => ($booking->agreed_scope ?? []) === [] ? new stdClass : $booking->agreed_scope,
+            'trip_pin' => $this->tripPin($booking),
             'allowed_actions' => array_map(static fn (BookingAction $action): string => $action->value, $this->allowedActions),
             'timeline' => $booking->statusEvents->map(static fn (BookingStatusEvent $event): array => self::timelineEntry($event))->values()->all(),
         ];
+    }
+
+    /**
+     * The PIN the customer tells the driver at pickup: visible only while the driver is on the way or waiting.
+     */
+    private function tripPin(Booking $booking): ?string
+    {
+        if ($booking->pin_encrypted === null || ! in_array($booking->status, [BookingStatus::ProviderSelected, BookingStatus::ProviderHeadingToPickup, BookingStatus::ProviderArrived], true)) {
+            return null;
+        }
+
+        return Crypt::decryptString($booking->pin_encrypted);
     }
 
     /**

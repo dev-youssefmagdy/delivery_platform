@@ -53,7 +53,7 @@ abstract class DomainException extends RuntimeException implements HttpException
      */
     public function meta(): array
     {
-        return array_intersect_key($this->context, array_flip(['retry_after', 'attempts_remaining']));
+        return array_intersect_key($this->context, array_flip(['retry_after', 'attempts_remaining', 'booking_status', 'offer_status', 'min', 'max']));
     }
 
     /**

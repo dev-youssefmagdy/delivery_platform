@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent\Booking;
 use App\DTOs\Booking\BookingListFilterData;
 use App\Enums\Booking\BookingStatus;
 use App\Enums\Catalog\BookingType;
+use App\Enums\Dispatch\DispatchResponse;
 use App\Models\Booking;
 use App\Models\User;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
@@ -103,6 +104,27 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
             ->limit($limit)
             ->pluck('id')
             ->all());
+    }
+
+    public function openRequestsForProvider(int $providerProfileId, CarbonInterface $now, int $limit): Collection
+    {
+        return $this->query()
+            ->join('booking_dispatch_recipients as recipient', 'recipient.booking_id', '=', 'bookings.id')
+            ->where('recipient.provider_profile_id', $providerProfileId)
+            ->whereIn('recipient.response', [DispatchResponse::Pending->value, DispatchResponse::Offered->value])
+            ->whereIn('bookings.status', BookingStatus::searchingValues())
+            ->where('bookings.search_expires_at', '>', $now)
+            ->select('bookings.*')
+            ->selectRaw('recipient.distance_m as recipient_distance_m, recipient.notified_at as recipient_notified_at')
+            ->orderByDesc('recipient.notified_at')
+            ->orderByDesc('bookings.id')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function findAssignedToProvider(string $uuid, int $providerProfileId): ?Booking
+    {
+        return $this->query()->where('uuid', $uuid)->where('provider_id', $providerProfileId)->first();
     }
 
     public function scheduledDueBefore(CarbonInterface $opensBefore, int $limit): array

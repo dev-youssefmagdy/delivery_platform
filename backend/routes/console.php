@@ -27,4 +27,6 @@ Schedule::job(new SweepStaleProviders)->name('providers:sweep-stale')->everyThir
 
 Schedule::command('bookings:expire-searches')->everyFiveSeconds()->withoutOverlapping();
 
+Schedule::command('offers:expire')->everyFiveSeconds()->withoutOverlapping();
+
 Schedule::command('locations:prune')->dailyAt('03:30')->withoutOverlapping();

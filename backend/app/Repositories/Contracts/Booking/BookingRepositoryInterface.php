@@ -69,6 +69,19 @@ interface BookingRepositoryInterface extends BaseRepositoryInterface
      */
     public function scheduledDueBefore(CarbonInterface $opensBefore, int $limit): array;
 
+    /**
+     * Requests a provider may still answer: dispatched to them, still searching, window open, and not declined or
+     * expired for them. Newest dispatch first.
+     *
+     * @return Collection<int, Booking>
+     */
+    public function openRequestsForProvider(int $providerProfileId, CarbonInterface $now, int $limit): Collection;
+
+    /**
+     * A booking the provider was selected for.
+     */
+    public function findAssignedToProvider(string $uuid, int $providerProfileId): ?Booking;
+
     public function inFlightCountForCategory(int $serviceCategoryId): int;
 
     public function inFlightCountForZone(int $serviceZoneId): int;

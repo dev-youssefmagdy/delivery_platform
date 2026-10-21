@@ -4,6 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:platform_core/platform_core.dart';
 
 import '../features/auth/presentation/providers/auth_providers.dart';
+import '../features/jobs/presentation/screens/application_status_screen.dart';
+import '../features/jobs/presentation/screens/cancel_job_screen.dart';
+import '../features/jobs/presentation/screens/job_screen.dart';
+import '../features/jobs/presentation/screens/report_job_screen.dart';
 import '../features/auth/presentation/screens/account_status_screen.dart';
 import '../features/auth/presentation/screens/auth_screen.dart';
 import '../features/auth/presentation/screens/otp_screen.dart';
@@ -28,6 +32,12 @@ abstract final class Routes {
   /// Vehicle editor (`/provider-onboarding/vehicle/:id`, or `.../new`).
   static const providerVehicle = '/provider-onboarding/vehicle';
   static const providerVehicleNew = '/provider-onboarding/vehicle/new';
+
+  /// Application and document status, reachable from the driver home (P2.7).
+  static const applicationStatus = '/application';
+
+  /// A job: `/job/:id`, with `/job/:id/cancel` and `/job/:id/report`.
+  static const job = '/job';
 }
 
 /// Where the splash screen sends the user.
@@ -53,10 +63,16 @@ String routeForStage(AuthStage stage) => switch (stage) {
   AuthStage.ready => Routes.providerOnboarding,
 };
 
+bool _isJobPage(String location) =>
+    location == Routes.applicationStatus ||
+    location == Routes.job ||
+    location.startsWith('${Routes.job}/');
+
 bool _isSignedInOnly(String location) =>
     location == Routes.accountStatus ||
     location == Routes.providerOnboarding ||
-    location.startsWith('${Routes.providerOnboarding}/');
+    location.startsWith('${Routes.providerOnboarding}/') ||
+    _isJobPage(location);
 
 const _signedOutOnly = {Routes.auth, Routes.otp, Routes.onboarding};
 
@@ -68,6 +84,11 @@ String? computeRedirect({required String location, required AuthStage stage}) {
   // Sub-pages of the application (vehicle editor ...) stay reachable while the
   // stage leads to the onboarding hub.
   if (location.startsWith('${Routes.providerOnboarding}/') &&
+      routeForStage(stage) == Routes.providerOnboarding) {
+    return null;
+  }
+  // Job pages are reachable once the driver is in the app.
+  if (_isJobPage(location) &&
       routeForStage(stage) == Routes.providerOnboarding) {
     return null;
   }
@@ -111,6 +132,27 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.providerOnboarding,
         builder: (_, _) => const ProviderOnboardingScreen(),
+      ),
+      GoRoute(
+        path: Routes.applicationStatus,
+        builder: (_, _) => const ApplicationStatusScreen(),
+      ),
+      GoRoute(
+        path: '${Routes.job}/:id',
+        builder: (_, state) =>
+            JobScreen(bookingId: state.pathParameters['id']!),
+        routes: [
+          GoRoute(
+            path: 'cancel',
+            builder: (_, state) =>
+                CancelJobScreen(bookingId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: 'report',
+            builder: (_, state) =>
+                ReportJobScreen(bookingId: state.pathParameters['id']!),
+          ),
+        ],
       ),
       GoRoute(
         path: Routes.providerVehicleNew,

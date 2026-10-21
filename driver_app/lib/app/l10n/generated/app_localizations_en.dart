@@ -1063,4 +1063,681 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get avNotificationText => 'Sharing your location to receive requests';
+
+  @override
+  String get actionDone => 'Done';
+
+  @override
+  String get jbTabHome => 'Home';
+
+  @override
+  String get jbTabRequests => 'Requests';
+
+  @override
+  String get jbTabOffers => 'My offers';
+
+  @override
+  String get jbTabHistory => 'History';
+
+  @override
+  String get jbApplicationEntry => 'Application and documents';
+
+  @override
+  String get jbApplicationEntryBody =>
+      'Check your review status, documents and vehicles.';
+
+  @override
+  String get jbAlertSound => 'Sound for new requests';
+
+  @override
+  String get jbAlertVibration => 'Vibrate for new requests';
+
+  @override
+  String get jbGoOnlineTitle => 'You are offline';
+
+  @override
+  String get jbGoOnlineBody =>
+      'Go online from Home to receive nearby requests.';
+
+  @override
+  String get jbGoOnlineAction => 'Go to Home';
+
+  @override
+  String get jbNotEligibleTitle => 'You cannot receive requests right now';
+
+  @override
+  String get jbNoRequestsTitle => 'No requests right now';
+
+  @override
+  String get jbNoRequestsBody =>
+      'We will alert you as soon as a nearby request arrives. Keep the app open.';
+
+  @override
+  String get jbRequestExpired => 'Expired';
+
+  @override
+  String jbExpiresIn(String time) {
+    return 'Expires in $time';
+  }
+
+  @override
+  String get jbCustomerFare => 'Customer fare';
+
+  @override
+  String jbPickupArea(String area) {
+    return 'Pickup area: $area';
+  }
+
+  @override
+  String jbDropoffArea(String area) {
+    return 'Destination area: $area';
+  }
+
+  @override
+  String get jbAreaUnknown => 'Not specified';
+
+  @override
+  String jbAwayKm(String distance) {
+    return '$distance away';
+  }
+
+  @override
+  String jbKm(String value) {
+    return '$value km';
+  }
+
+  @override
+  String jbMinutes(int count) {
+    return '$count min';
+  }
+
+  @override
+  String jbPassengers(int count) {
+    return '$count passengers';
+  }
+
+  @override
+  String jbStops(int count) {
+    return '$count stops';
+  }
+
+  @override
+  String jbLuggage(int count) {
+    return '$count bags';
+  }
+
+  @override
+  String jbWeightKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
+  String jbScheduledAt(String time) {
+    return 'Scheduled: $time';
+  }
+
+  @override
+  String get jbRestrictedPickup => 'Restricted pickup zone';
+
+  @override
+  String get jbAcceptFare => 'Accept customer fare';
+
+  @override
+  String get jbCounterOffer => 'Counter-offer';
+
+  @override
+  String get jbSkip => 'Skip';
+
+  @override
+  String get jbReviseOffer => 'Revise offer';
+
+  @override
+  String get jbWithdraw => 'Withdraw offer';
+
+  @override
+  String get jbWithdrawn => 'Offer withdrawn.';
+
+  @override
+  String get jbOfferSent => 'Your offer was sent. Waiting for the customer.';
+
+  @override
+  String jbMyOfferAmount(String amount) {
+    return 'Your offer: $amount';
+  }
+
+  @override
+  String get jbCounterTitle => 'Your counter-offer';
+
+  @override
+  String jbCustomerFareIs(String fare) {
+    return 'Customer fare: $fare';
+  }
+
+  @override
+  String jbAllowedRange(String min, String max) {
+    return 'Allowed from $min to $max';
+  }
+
+  @override
+  String jbAmountBelow(String min) {
+    return 'Below the minimum ($min)';
+  }
+
+  @override
+  String jbAmountAbove(String max) {
+    return 'Above the maximum ($max)';
+  }
+
+  @override
+  String get jbAmountSame =>
+      'This is the customer fare. Use the accept button instead.';
+
+  @override
+  String get jbSendOffer => 'Send offer';
+
+  @override
+  String get jbKeypadBackspace => 'Delete';
+
+  @override
+  String get jbKeypadDecimal => 'Decimal point';
+
+  @override
+  String get jbPreviewGross => 'Offered amount';
+
+  @override
+  String get jbPreviewCommission => 'Platform commission';
+
+  @override
+  String get jbPreviewNet => 'Your net earning';
+
+  @override
+  String get jbNoOffersTitle => 'No offers yet';
+
+  @override
+  String get jbNoOffersBody => 'Your offers on requests appear here.';
+
+  @override
+  String get jbOfferPending => 'Pending';
+
+  @override
+  String get jbOfferSelected => 'Selected';
+
+  @override
+  String get jbOfferRejected => 'Not chosen';
+
+  @override
+  String get jbOfferExpired => 'Expired';
+
+  @override
+  String get jbOfferInvalidated => 'No longer valid';
+
+  @override
+  String get jbOfferWithdrawn => 'Withdrawn';
+
+  @override
+  String get jbOfferUnknown => 'Unknown';
+
+  @override
+  String get jbReasonRejected => 'The customer declined this offer.';
+
+  @override
+  String get jbReasonLost => 'The customer chose another driver.';
+
+  @override
+  String get jbReasonExpired => 'The offer expired without an answer.';
+
+  @override
+  String get jbReasonRequestChanged =>
+      'The customer changed the request, so the offer was cancelled.';
+
+  @override
+  String get jbReasonUnavailable =>
+      'The offer was cancelled because you became unavailable.';
+
+  @override
+  String get jbReasonWithdrawn => 'You withdrew this offer.';
+
+  @override
+  String get jbKindFare => 'Accepted the customer fare';
+
+  @override
+  String get jbKindCounter => 'Your counter-offer';
+
+  @override
+  String get jbOpenJob => 'Open job';
+
+  @override
+  String get jbNoHistoryTitle => 'No jobs yet';
+
+  @override
+  String get jbNoHistoryBody => 'Your finished jobs appear here.';
+
+  @override
+  String get jbHistoryJob => 'Job';
+
+  @override
+  String get jbJobTitle => 'Job';
+
+  @override
+  String get jbActiveJob => 'You have an active job';
+
+  @override
+  String get jbJobLostTitle => 'You no longer hold this job';
+
+  @override
+  String get jbJobLostBody =>
+      'The request was re-dispatched, cancelled or given to another driver.';
+
+  @override
+  String get jbBackHome => 'Back to Home';
+
+  @override
+  String get jbStatusSelected => 'You were selected';
+
+  @override
+  String get jbStatusHeading => 'Heading to pickup';
+
+  @override
+  String get jbStatusArrived => 'Arrived at pickup';
+
+  @override
+  String get jbStatusInProgress => 'Trip in progress';
+
+  @override
+  String get jbStatusCompleted => 'Completed';
+
+  @override
+  String get jbStatusCancelledCustomer => 'Cancelled by customer';
+
+  @override
+  String get jbStatusCancelledMe => 'Cancelled by you';
+
+  @override
+  String get jbStatusCancelledOps => 'Cancelled by operations';
+
+  @override
+  String get jbStatusDisputed => 'Disputed';
+
+  @override
+  String get jbStatusFailed => 'Delivery attempt failed';
+
+  @override
+  String get jbStatusSearching => 'Searching for a driver';
+
+  @override
+  String get jbStatusOther => 'Other status';
+
+  @override
+  String get jbCollectCash => 'Collect this amount in cash';
+
+  @override
+  String get jbPayCash => 'Cash payment';
+
+  @override
+  String get jbPayOther => 'Online payment';
+
+  @override
+  String get jbSupportFlagged => 'Support is following this trip.';
+
+  @override
+  String jbFreeWaitLeft(String time) {
+    return 'Free waiting time left: $time';
+  }
+
+  @override
+  String get jbFreeWaitOver => 'Free waiting time is over.';
+
+  @override
+  String get jbPinNeeded => 'Ask the customer for the trip PIN and enter it.';
+
+  @override
+  String get jbPinVerified => 'PIN verified.';
+
+  @override
+  String get jbRouteTitle => 'Route';
+
+  @override
+  String get jbPickup => 'Pickup';
+
+  @override
+  String get jbDropoff => 'Destination';
+
+  @override
+  String get jbStopLabel => 'Stop';
+
+  @override
+  String get jbCustomerTitle => 'Customer';
+
+  @override
+  String get jbCustomerUnknown => 'Customer';
+
+  @override
+  String jbCustomerRating(String avg, int count) {
+    return 'Rating $avg ($count)';
+  }
+
+  @override
+  String get jbCallCustomer => 'Call customer';
+
+  @override
+  String get jbCallFailed => 'Could not start the call.';
+
+  @override
+  String get jbContactMasked =>
+      'The customer number is hidden. Contact support if needed.';
+
+  @override
+  String get jbInstructionsTitle => 'Customer details and instructions';
+
+  @override
+  String get jbActionAcknowledge => 'I am heading to the customer';
+
+  @override
+  String get jbActionArrived => 'I have arrived';
+
+  @override
+  String get jbActionPin => 'Enter trip PIN';
+
+  @override
+  String get jbPinLockedButton => 'PIN locked';
+
+  @override
+  String get jbActionStart => 'Start trip';
+
+  @override
+  String get jbComplete => 'Complete trip';
+
+  @override
+  String get jbCompleteConfirmTitle => 'Complete this trip?';
+
+  @override
+  String get jbCompleteConfirmBody =>
+      'Make sure you have reached the destination.';
+
+  @override
+  String jbCompleteConfirmCash(String amount) {
+    return 'Collect $amount in cash from the customer, then complete the trip.';
+  }
+
+  @override
+  String get jbNavigatePickup => 'Navigate to pickup';
+
+  @override
+  String get jbNavigateDropoff => 'Navigate to destination';
+
+  @override
+  String get jbNavFailed => 'Could not open a maps app.';
+
+  @override
+  String get jbCancelJob => 'Cancel job';
+
+  @override
+  String get jbReportIssue => 'Report an issue';
+
+  @override
+  String get jbPinTitle => 'Trip PIN';
+
+  @override
+  String get jbPinHint => 'Ask the customer for the code and enter it here.';
+
+  @override
+  String get jbPinConfirm => 'Confirm PIN';
+
+  @override
+  String jbPinAttemptsLeft(int count) {
+    return 'Attempts left: $count';
+  }
+
+  @override
+  String get jbSummaryDone => 'Trip completed';
+
+  @override
+  String get jbSummaryEnded => 'Trip ended';
+
+  @override
+  String get jbSummaryAmount => 'Trip amount';
+
+  @override
+  String jbSummaryCollectCash(String amount) {
+    return 'Collect $amount in cash from the customer.';
+  }
+
+  @override
+  String get jbRateTitle => 'Rate the customer';
+
+  @override
+  String jbStarsLabel(int count) {
+    return '$count stars';
+  }
+
+  @override
+  String get jbRateComment => 'Comment (optional)';
+
+  @override
+  String get jbRateSubmit => 'Send rating';
+
+  @override
+  String get jbRatingThanks => 'Thanks, your rating was sent.';
+
+  @override
+  String get jbTagRespectful => 'Respectful';
+
+  @override
+  String get jbTagClear => 'Clear instructions';
+
+  @override
+  String get jbTagReady => 'Ready at pickup';
+
+  @override
+  String get jbTagDisrespectful => 'Disrespectful';
+
+  @override
+  String get jbTagNotReady => 'Not ready at pickup';
+
+  @override
+  String get jbTagLate => 'Late';
+
+  @override
+  String get jbCancelTitle => 'Cancel job';
+
+  @override
+  String get jbCancelPrompt => 'Why do you want to cancel?';
+
+  @override
+  String get jbCancelNoShow => 'Customer did not show up';
+
+  @override
+  String get jbCancelUnreachable => 'Customer unreachable';
+
+  @override
+  String get jbCancelVehicle => 'Vehicle problem';
+
+  @override
+  String get jbCancelEmergency => 'Emergency';
+
+  @override
+  String get jbCancelWrongDetails => 'Wrong request details';
+
+  @override
+  String get jbCancelUnsafe => 'Unsafe pickup';
+
+  @override
+  String get jbCancelOther => 'Other reason';
+
+  @override
+  String get jbCancelNote => 'Write the reason';
+
+  @override
+  String get jbCancelShowCost => 'Show cancellation cost';
+
+  @override
+  String get jbCancelFree => 'Cancelling now is free.';
+
+  @override
+  String jbCancelFee(String fee) {
+    return 'Cancellation fee: $fee';
+  }
+
+  @override
+  String get jbCancelRedispatchNote =>
+      'The request will be sent to other drivers.';
+
+  @override
+  String get jbCancelConfirmAction => 'Confirm cancellation';
+
+  @override
+  String get jbCancelConfirmTitle => 'Cancel this job?';
+
+  @override
+  String get jbCancelConfirmBody => 'Cancelling cannot be undone.';
+
+  @override
+  String get jbCancelConfirmRedispatch =>
+      'The request goes back to other drivers and you will not get it back.';
+
+  @override
+  String get jbCancelledDone => 'The job was cancelled.';
+
+  @override
+  String get jbCancelledRedispatch =>
+      'Cancelled. The request was sent to other drivers.';
+
+  @override
+  String get jbReportTitle => 'Report an issue';
+
+  @override
+  String get jbReportPrompt => 'What kind of issue?';
+
+  @override
+  String get jbReportSafety => 'Safety';
+
+  @override
+  String get jbReportBehaviour => 'Customer behaviour';
+
+  @override
+  String get jbReportFare => 'Fare dispute';
+
+  @override
+  String get jbReportRoute => 'Route or delay';
+
+  @override
+  String get jbReportOther => 'Other';
+
+  @override
+  String get jbReportDescription => 'Describe the issue';
+
+  @override
+  String get jbReportDescriptionHelp => 'At least 10 characters';
+
+  @override
+  String get jbReportSubmit => 'Send report';
+
+  @override
+  String get jbReportSentTitle => 'Report sent';
+
+  @override
+  String get jbReportSentBody => 'The support team will review it.';
+
+  @override
+  String get jbErrLost =>
+      'This request is no longer available (it expired or went to another driver). The list was refreshed.';
+
+  @override
+  String get jbErrNotEligible =>
+      'You cannot send offers right now. Check the reasons on Home.';
+
+  @override
+  String get jbErrVehicle => 'Choose an approved vehicle on Home first.';
+
+  @override
+  String get jbErrCounterOff => 'This request does not accept counter-offers.';
+
+  @override
+  String get jbErrAmountInvalid => 'The amount is not valid.';
+
+  @override
+  String get jbErrAmountBounds => 'The amount is outside the allowed range.';
+
+  @override
+  String get jbErrCurrency => 'The currency does not match.';
+
+  @override
+  String get jbErrSameAsFare =>
+      'That is the customer fare. Use the accept button instead.';
+
+  @override
+  String get jbErrOfferLimit => 'You reached the limit of open offers.';
+
+  @override
+  String get jbErrRevisions => 'You used all revisions of this offer.';
+
+  @override
+  String get jbErrNotWithdrawable => 'This offer can no longer be withdrawn.';
+
+  @override
+  String get jbErrWithdrawFirst => 'Withdraw your offer before skipping.';
+
+  @override
+  String get jbErrNotYours => 'This offer is not yours.';
+
+  @override
+  String get jbErrTransition => 'The job state changed. It was refreshed.';
+
+  @override
+  String get jbErrPinRequired => 'Enter the trip PIN first.';
+
+  @override
+  String get jbErrProofRequired => 'A proof is required before continuing.';
+
+  @override
+  String get jbErrPinLocked =>
+      'The PIN is locked after wrong attempts. Contact support to start the trip.';
+
+  @override
+  String get jbErrPinInvalid => 'The PIN is wrong.';
+
+  @override
+  String get jbErrPinNotRequired => 'This trip does not need a PIN.';
+
+  @override
+  String get jbErrNotCancellable => 'This job cannot be cancelled now.';
+
+  @override
+  String get jbErrReasonNotAllowed =>
+      'This cancellation reason is not allowed.';
+
+  @override
+  String get jbErrNoteRequired => 'Write the reason for cancelling.';
+
+  @override
+  String get jbErrNoShowEarly =>
+      'No-show can be chosen only after the free waiting time.';
+
+  @override
+  String get jbErrReportLimit => 'You cannot send another report now.';
+
+  @override
+  String get jbErrRatingClosed => 'This job cannot be rated now.';
+
+  @override
+  String get jbErrRatingDone => 'You already rated this job.';
+
+  @override
+  String get jbErrRateLimited =>
+      'Too many attempts. Wait a moment and try again.';
+
+  @override
+  String get jbErrAccount => 'Your account cannot do this right now.';
+
+  @override
+  String get jbErrInProgress =>
+      'The request is still being processed. Wait a moment.';
+
+  @override
+  String get jbErrNotFound => 'We could not find this job.';
+
+  @override
+  String jbErrPinInvalidLeft(int count) {
+    return 'The PIN is wrong. Attempts left: $count';
+  }
 }

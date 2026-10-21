@@ -2011,6 +2011,1224 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'نشارك موقعك لاستقبال الطلبات'**
   String get avNotificationText;
+
+  /// No description provided for @actionDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم'**
+  String get actionDone;
+
+  /// No description provided for @jbTabHome.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرئيسية'**
+  String get jbTabHome;
+
+  /// No description provided for @jbTabRequests.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلبات'**
+  String get jbTabRequests;
+
+  /// No description provided for @jbTabOffers.
+  ///
+  /// In ar, this message translates to:
+  /// **'عروضي'**
+  String get jbTabOffers;
+
+  /// No description provided for @jbTabHistory.
+  ///
+  /// In ar, this message translates to:
+  /// **'السجل'**
+  String get jbTabHistory;
+
+  /// No description provided for @jbApplicationEntry.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب الانضمام والمستندات'**
+  String get jbApplicationEntry;
+
+  /// No description provided for @jbApplicationEntryBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تابع حالة المراجعة والمستندات والمركبات.'**
+  String get jbApplicationEntryBody;
+
+  /// No description provided for @jbAlertSound.
+  ///
+  /// In ar, this message translates to:
+  /// **'صوت عند وصول طلب جديد'**
+  String get jbAlertSound;
+
+  /// No description provided for @jbAlertVibration.
+  ///
+  /// In ar, this message translates to:
+  /// **'اهتزاز عند وصول طلب جديد'**
+  String get jbAlertVibration;
+
+  /// No description provided for @jbGoOnlineTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت غير متصل'**
+  String get jbGoOnlineTitle;
+
+  /// No description provided for @jbGoOnlineBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'فعّل الاتصال من الرئيسية لتستقبل الطلبات القريبة منك.'**
+  String get jbGoOnlineBody;
+
+  /// No description provided for @jbGoOnlineAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'الذهاب إلى الرئيسية'**
+  String get jbGoOnlineAction;
+
+  /// No description provided for @jbNotEligibleTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكنك استقبال الطلبات الآن'**
+  String get jbNotEligibleTitle;
+
+  /// No description provided for @jbNoRequestsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد طلبات حاليًا'**
+  String get jbNoRequestsTitle;
+
+  /// No description provided for @jbNoRequestsBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'سنخبرك فور وصول طلب قريب. اترك التطبيق مفتوحًا.'**
+  String get jbNoRequestsBody;
+
+  /// No description provided for @jbRequestExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت المهلة'**
+  String get jbRequestExpired;
+
+  /// No description provided for @jbExpiresIn.
+  ///
+  /// In ar, this message translates to:
+  /// **'ينتهي خلال {time}'**
+  String jbExpiresIn(String time);
+
+  /// No description provided for @jbCustomerFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'سعر العميل'**
+  String get jbCustomerFare;
+
+  /// No description provided for @jbPickupArea.
+  ///
+  /// In ar, this message translates to:
+  /// **'منطقة الالتقاء: {area}'**
+  String jbPickupArea(String area);
+
+  /// No description provided for @jbDropoffArea.
+  ///
+  /// In ar, this message translates to:
+  /// **'منطقة الوجهة: {area}'**
+  String jbDropoffArea(String area);
+
+  /// No description provided for @jbAreaUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير محددة'**
+  String get jbAreaUnknown;
+
+  /// No description provided for @jbAwayKm.
+  ///
+  /// In ar, this message translates to:
+  /// **'يبعد {distance}'**
+  String jbAwayKm(String distance);
+
+  /// No description provided for @jbKm.
+  ///
+  /// In ar, this message translates to:
+  /// **'{value} كم'**
+  String jbKm(String value);
+
+  /// No description provided for @jbMinutes.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} دقيقة'**
+  String jbMinutes(int count);
+
+  /// No description provided for @jbPassengers.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} ركاب'**
+  String jbPassengers(int count);
+
+  /// No description provided for @jbStops.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} محطات'**
+  String jbStops(int count);
+
+  /// No description provided for @jbLuggage.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} حقائب'**
+  String jbLuggage(int count);
+
+  /// No description provided for @jbWeightKg.
+  ///
+  /// In ar, this message translates to:
+  /// **'{kg} كجم'**
+  String jbWeightKg(String kg);
+
+  /// No description provided for @jbScheduledAt.
+  ///
+  /// In ar, this message translates to:
+  /// **'مجدول: {time}'**
+  String jbScheduledAt(String time);
+
+  /// No description provided for @jbRestrictedPickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'منطقة التقاء مقيّدة'**
+  String get jbRestrictedPickup;
+
+  /// No description provided for @jbAcceptFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'أقبل سعر العميل'**
+  String get jbAcceptFare;
+
+  /// No description provided for @jbCounterOffer.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقترح سعرًا'**
+  String get jbCounterOffer;
+
+  /// No description provided for @jbSkip.
+  ///
+  /// In ar, this message translates to:
+  /// **'تخطي'**
+  String get jbSkip;
+
+  /// No description provided for @jbReviseOffer.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدّل عرضي'**
+  String get jbReviseOffer;
+
+  /// No description provided for @jbWithdraw.
+  ///
+  /// In ar, this message translates to:
+  /// **'سحب العرض'**
+  String get jbWithdraw;
+
+  /// No description provided for @jbWithdrawn.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم سحب العرض.'**
+  String get jbWithdrawn;
+
+  /// No description provided for @jbOfferSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال عرضك. بانتظار قرار العميل.'**
+  String get jbOfferSent;
+
+  /// No description provided for @jbMyOfferAmount.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرضك: {amount}'**
+  String jbMyOfferAmount(String amount);
+
+  /// No description provided for @jbCounterTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقترح سعرك'**
+  String get jbCounterTitle;
+
+  /// No description provided for @jbCustomerFareIs.
+  ///
+  /// In ar, this message translates to:
+  /// **'سعر العميل: {fare}'**
+  String jbCustomerFareIs(String fare);
+
+  /// No description provided for @jbAllowedRange.
+  ///
+  /// In ar, this message translates to:
+  /// **'المسموح من {min} إلى {max}'**
+  String jbAllowedRange(String min, String max);
+
+  /// No description provided for @jbAmountBelow.
+  ///
+  /// In ar, this message translates to:
+  /// **'أقل من الحد الأدنى ({min})'**
+  String jbAmountBelow(String min);
+
+  /// No description provided for @jbAmountAbove.
+  ///
+  /// In ar, this message translates to:
+  /// **'أعلى من الحد الأقصى ({max})'**
+  String jbAmountAbove(String max);
+
+  /// No description provided for @jbAmountSame.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا هو سعر العميل نفسه. استخدم زر قبول السعر.'**
+  String get jbAmountSame;
+
+  /// No description provided for @jbSendOffer.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال العرض'**
+  String get jbSendOffer;
+
+  /// No description provided for @jbKeypadBackspace.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف'**
+  String get jbKeypadBackspace;
+
+  /// No description provided for @jbKeypadDecimal.
+  ///
+  /// In ar, this message translates to:
+  /// **'فاصلة عشرية'**
+  String get jbKeypadDecimal;
+
+  /// No description provided for @jbPreviewGross.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ المقترح'**
+  String get jbPreviewGross;
+
+  /// No description provided for @jbPreviewCommission.
+  ///
+  /// In ar, this message translates to:
+  /// **'عمولة المنصة'**
+  String get jbPreviewCommission;
+
+  /// No description provided for @jbPreviewNet.
+  ///
+  /// In ar, this message translates to:
+  /// **'صافي ربحك'**
+  String get jbPreviewNet;
+
+  /// No description provided for @jbNoOffersTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد عروض'**
+  String get jbNoOffersTitle;
+
+  /// No description provided for @jbNoOffersBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'عروضك على الطلبات ستظهر هنا.'**
+  String get jbNoOffersBody;
+
+  /// No description provided for @jbOfferPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'بانتظار العميل'**
+  String get jbOfferPending;
+
+  /// No description provided for @jbOfferSelected.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم اختيارك'**
+  String get jbOfferSelected;
+
+  /// No description provided for @jbOfferRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يُختر'**
+  String get jbOfferRejected;
+
+  /// No description provided for @jbOfferExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت المهلة'**
+  String get jbOfferExpired;
+
+  /// No description provided for @jbOfferInvalidated.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يعد صالحًا'**
+  String get jbOfferInvalidated;
+
+  /// No description provided for @jbOfferWithdrawn.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم سحبه'**
+  String get jbOfferWithdrawn;
+
+  /// No description provided for @jbOfferUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير معروف'**
+  String get jbOfferUnknown;
+
+  /// No description provided for @jbReasonRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض العميل هذا العرض.'**
+  String get jbReasonRejected;
+
+  /// No description provided for @jbReasonLost.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختار العميل سائقًا آخر.'**
+  String get jbReasonLost;
+
+  /// No description provided for @jbReasonExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت مهلة العرض دون رد.'**
+  String get jbReasonExpired;
+
+  /// No description provided for @jbReasonRequestChanged.
+  ///
+  /// In ar, this message translates to:
+  /// **'غيّر العميل تفاصيل الطلب فأُلغي العرض.'**
+  String get jbReasonRequestChanged;
+
+  /// No description provided for @jbReasonUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُلغي العرض لأنك لم تعد متاحًا.'**
+  String get jbReasonUnavailable;
+
+  /// No description provided for @jbReasonWithdrawn.
+  ///
+  /// In ar, this message translates to:
+  /// **'سحبت هذا العرض.'**
+  String get jbReasonWithdrawn;
+
+  /// No description provided for @jbKindFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'قبول سعر العميل'**
+  String get jbKindFare;
+
+  /// No description provided for @jbKindCounter.
+  ///
+  /// In ar, this message translates to:
+  /// **'سعر مقترح منك'**
+  String get jbKindCounter;
+
+  /// No description provided for @jbOpenJob.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح الرحلة'**
+  String get jbOpenJob;
+
+  /// No description provided for @jbNoHistoryTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد رحلات بعد'**
+  String get jbNoHistoryTitle;
+
+  /// No description provided for @jbNoHistoryBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'رحلاتك المنتهية ستظهر هنا.'**
+  String get jbNoHistoryBody;
+
+  /// No description provided for @jbHistoryJob.
+  ///
+  /// In ar, this message translates to:
+  /// **'رحلة'**
+  String get jbHistoryJob;
+
+  /// No description provided for @jbJobTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرحلة'**
+  String get jbJobTitle;
+
+  /// No description provided for @jbActiveJob.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك رحلة جارية'**
+  String get jbActiveJob;
+
+  /// No description provided for @jbJobLostTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تعد هذه الرحلة معك'**
+  String get jbJobLostTitle;
+
+  /// No description provided for @jbJobLostBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُعيد توزيع الطلب أو أُلغي أو أُسند لسائق آخر.'**
+  String get jbJobLostBody;
+
+  /// No description provided for @jbBackHome.
+  ///
+  /// In ar, this message translates to:
+  /// **'العودة للرئيسية'**
+  String get jbBackHome;
+
+  /// No description provided for @jbStatusSelected.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم اختيارك'**
+  String get jbStatusSelected;
+
+  /// No description provided for @jbStatusHeading.
+  ///
+  /// In ar, this message translates to:
+  /// **'في الطريق إلى العميل'**
+  String get jbStatusHeading;
+
+  /// No description provided for @jbStatusArrived.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلت إلى العميل'**
+  String get jbStatusArrived;
+
+  /// No description provided for @jbStatusInProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرحلة جارية'**
+  String get jbStatusInProgress;
+
+  /// No description provided for @jbStatusCompleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتملت الرحلة'**
+  String get jbStatusCompleted;
+
+  /// No description provided for @jbStatusCancelledCustomer.
+  ///
+  /// In ar, this message translates to:
+  /// **'ألغاها العميل'**
+  String get jbStatusCancelledCustomer;
+
+  /// No description provided for @jbStatusCancelledMe.
+  ///
+  /// In ar, this message translates to:
+  /// **'ألغيتها أنت'**
+  String get jbStatusCancelledMe;
+
+  /// No description provided for @jbStatusCancelledOps.
+  ///
+  /// In ar, this message translates to:
+  /// **'ألغتها الإدارة'**
+  String get jbStatusCancelledOps;
+
+  /// No description provided for @jbStatusDisputed.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد النزاع'**
+  String get jbStatusDisputed;
+
+  /// No description provided for @jbStatusFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'فشلت محاولة التسليم'**
+  String get jbStatusFailed;
+
+  /// No description provided for @jbStatusSearching.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد البحث عن سائق'**
+  String get jbStatusSearching;
+
+  /// No description provided for @jbStatusOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'حالة أخرى'**
+  String get jbStatusOther;
+
+  /// No description provided for @jbCollectCash.
+  ///
+  /// In ar, this message translates to:
+  /// **'حصّل المبلغ نقدًا من العميل'**
+  String get jbCollectCash;
+
+  /// No description provided for @jbPayCash.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدفع نقدًا'**
+  String get jbPayCash;
+
+  /// No description provided for @jbPayOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدفع إلكترونيًا'**
+  String get jbPayOther;
+
+  /// No description provided for @jbSupportFlagged.
+  ///
+  /// In ar, this message translates to:
+  /// **'فريق الدعم يتابع هذه الرحلة.'**
+  String get jbSupportFlagged;
+
+  /// No description provided for @jbFreeWaitLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقت الانتظار المجاني المتبقي: {time}'**
+  String jbFreeWaitLeft(String time);
+
+  /// No description provided for @jbFreeWaitOver.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهى وقت الانتظار المجاني.'**
+  String get jbFreeWaitOver;
+
+  /// No description provided for @jbPinNeeded.
+  ///
+  /// In ar, this message translates to:
+  /// **'اطلب من العميل رمز بدء الرحلة وأدخله.'**
+  String get jbPinNeeded;
+
+  /// No description provided for @jbPinVerified.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم التحقق من الرمز.'**
+  String get jbPinVerified;
+
+  /// No description provided for @jbRouteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المسار'**
+  String get jbRouteTitle;
+
+  /// No description provided for @jbPickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقطة الالتقاء'**
+  String get jbPickup;
+
+  /// No description provided for @jbDropoff.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوجهة'**
+  String get jbDropoff;
+
+  /// No description provided for @jbStopLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'محطة'**
+  String get jbStopLabel;
+
+  /// No description provided for @jbCustomerTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'العميل'**
+  String get jbCustomerTitle;
+
+  /// No description provided for @jbCustomerUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'عميل'**
+  String get jbCustomerUnknown;
+
+  /// No description provided for @jbCustomerRating.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقييم {avg} ({count})'**
+  String jbCustomerRating(String avg, int count);
+
+  /// No description provided for @jbCallCustomer.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتصل بالعميل'**
+  String get jbCallCustomer;
+
+  /// No description provided for @jbCallFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر بدء الاتصال.'**
+  String get jbCallFailed;
+
+  /// No description provided for @jbContactMasked.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم العميل مخفي. تواصل عبر الدعم عند الحاجة.'**
+  String get jbContactMasked;
+
+  /// No description provided for @jbInstructionsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفاصيل وتعليمات العميل'**
+  String get jbInstructionsTitle;
+
+  /// No description provided for @jbActionAcknowledge.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنا في الطريق إلى العميل'**
+  String get jbActionAcknowledge;
+
+  /// No description provided for @jbActionArrived.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلت'**
+  String get jbActionArrived;
+
+  /// No description provided for @jbActionPin.
+  ///
+  /// In ar, this message translates to:
+  /// **'إدخال رمز الرحلة'**
+  String get jbActionPin;
+
+  /// No description provided for @jbPinLockedButton.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرمز مقفل'**
+  String get jbPinLockedButton;
+
+  /// No description provided for @jbActionStart.
+  ///
+  /// In ar, this message translates to:
+  /// **'بدء الرحلة'**
+  String get jbActionStart;
+
+  /// No description provided for @jbComplete.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنهاء الرحلة'**
+  String get jbComplete;
+
+  /// No description provided for @jbCompleteConfirmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد إنهاء الرحلة'**
+  String get jbCompleteConfirmTitle;
+
+  /// No description provided for @jbCompleteConfirmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكد أنك وصلت إلى الوجهة.'**
+  String get jbCompleteConfirmBody;
+
+  /// No description provided for @jbCompleteConfirmCash.
+  ///
+  /// In ar, this message translates to:
+  /// **'حصّل {amount} نقدًا من العميل ثم أنهِ الرحلة.'**
+  String jbCompleteConfirmCash(String amount);
+
+  /// No description provided for @jbNavigatePickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'التنقل إلى العميل'**
+  String get jbNavigatePickup;
+
+  /// No description provided for @jbNavigateDropoff.
+  ///
+  /// In ar, this message translates to:
+  /// **'التنقل إلى الوجهة'**
+  String get jbNavigateDropoff;
+
+  /// No description provided for @jbNavFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر فتح تطبيق الخرائط.'**
+  String get jbNavFailed;
+
+  /// No description provided for @jbCancelJob.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء الرحلة'**
+  String get jbCancelJob;
+
+  /// No description provided for @jbReportIssue.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإبلاغ عن مشكلة'**
+  String get jbReportIssue;
+
+  /// No description provided for @jbPinTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز بدء الرحلة'**
+  String get jbPinTitle;
+
+  /// No description provided for @jbPinHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اطلب الرمز من العميل وأدخله هنا.'**
+  String get jbPinHint;
+
+  /// No description provided for @jbPinConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد الرمز'**
+  String get jbPinConfirm;
+
+  /// No description provided for @jbPinAttemptsLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاولات المتبقية: {count}'**
+  String jbPinAttemptsLeft(int count);
+
+  /// No description provided for @jbSummaryDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتملت الرحلة'**
+  String get jbSummaryDone;
+
+  /// No description provided for @jbSummaryEnded.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت الرحلة'**
+  String get jbSummaryEnded;
+
+  /// No description provided for @jbSummaryAmount.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيمة الرحلة'**
+  String get jbSummaryAmount;
+
+  /// No description provided for @jbSummaryCollectCash.
+  ///
+  /// In ar, this message translates to:
+  /// **'حصّل {amount} نقدًا من العميل.'**
+  String jbSummaryCollectCash(String amount);
+
+  /// No description provided for @jbRateTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيّم العميل'**
+  String get jbRateTitle;
+
+  /// No description provided for @jbStarsLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} نجوم'**
+  String jbStarsLabel(int count);
+
+  /// No description provided for @jbRateComment.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعليق (اختياري)'**
+  String get jbRateComment;
+
+  /// No description provided for @jbRateSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال التقييم'**
+  String get jbRateSubmit;
+
+  /// No description provided for @jbRatingThanks.
+  ///
+  /// In ar, this message translates to:
+  /// **'شكرًا، تم إرسال تقييمك.'**
+  String get jbRatingThanks;
+
+  /// No description provided for @jbTagRespectful.
+  ///
+  /// In ar, this message translates to:
+  /// **'محترم'**
+  String get jbTagRespectful;
+
+  /// No description provided for @jbTagClear.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعليمات واضحة'**
+  String get jbTagClear;
+
+  /// No description provided for @jbTagReady.
+  ///
+  /// In ar, this message translates to:
+  /// **'جاهز عند الالتقاء'**
+  String get jbTagReady;
+
+  /// No description provided for @jbTagDisrespectful.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير محترم'**
+  String get jbTagDisrespectful;
+
+  /// No description provided for @jbTagNotReady.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يكن جاهزًا'**
+  String get jbTagNotReady;
+
+  /// No description provided for @jbTagLate.
+  ///
+  /// In ar, this message translates to:
+  /// **'متأخر'**
+  String get jbTagLate;
+
+  /// No description provided for @jbCancelTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء الرحلة'**
+  String get jbCancelTitle;
+
+  /// No description provided for @jbCancelPrompt.
+  ///
+  /// In ar, this message translates to:
+  /// **'لماذا تريد الإلغاء؟'**
+  String get jbCancelPrompt;
+
+  /// No description provided for @jbCancelNoShow.
+  ///
+  /// In ar, this message translates to:
+  /// **'العميل لم يحضر'**
+  String get jbCancelNoShow;
+
+  /// No description provided for @jbCancelUnreachable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن الوصول للعميل'**
+  String get jbCancelUnreachable;
+
+  /// No description provided for @jbCancelVehicle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشكلة في المركبة'**
+  String get jbCancelVehicle;
+
+  /// No description provided for @jbCancelEmergency.
+  ///
+  /// In ar, this message translates to:
+  /// **'حالة طارئة'**
+  String get jbCancelEmergency;
+
+  /// No description provided for @jbCancelWrongDetails.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفاصيل الطلب غير صحيحة'**
+  String get jbCancelWrongDetails;
+
+  /// No description provided for @jbCancelUnsafe.
+  ///
+  /// In ar, this message translates to:
+  /// **'مكان الالتقاء غير آمن'**
+  String get jbCancelUnsafe;
+
+  /// No description provided for @jbCancelOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب آخر'**
+  String get jbCancelOther;
+
+  /// No description provided for @jbCancelNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب السبب'**
+  String get jbCancelNote;
+
+  /// No description provided for @jbCancelShowCost.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض تكلفة الإلغاء'**
+  String get jbCancelShowCost;
+
+  /// No description provided for @jbCancelFree.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإلغاء الآن بدون رسوم.'**
+  String get jbCancelFree;
+
+  /// No description provided for @jbCancelFee.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسوم الإلغاء: {fee}'**
+  String jbCancelFee(String fee);
+
+  /// No description provided for @jbCancelRedispatchNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيُعاد الطلب إلى سائقين آخرين.'**
+  String get jbCancelRedispatchNote;
+
+  /// No description provided for @jbCancelConfirmAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد الإلغاء'**
+  String get jbCancelConfirmAction;
+
+  /// No description provided for @jbCancelConfirmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'هل تريد إلغاء الرحلة؟'**
+  String get jbCancelConfirmTitle;
+
+  /// No description provided for @jbCancelConfirmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن التراجع عن الإلغاء.'**
+  String get jbCancelConfirmBody;
+
+  /// No description provided for @jbCancelConfirmRedispatch.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيُعاد الطلب إلى سائقين آخرين ولن تعود إليه.'**
+  String get jbCancelConfirmRedispatch;
+
+  /// No description provided for @jbCancelledDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إلغاء الرحلة.'**
+  String get jbCancelledDone;
+
+  /// No description provided for @jbCancelledRedispatch.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الإلغاء وأُعيد الطلب إلى سائقين آخرين.'**
+  String get jbCancelledRedispatch;
+
+  /// No description provided for @jbReportTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإبلاغ عن مشكلة'**
+  String get jbReportTitle;
+
+  /// No description provided for @jbReportPrompt.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما نوع المشكلة؟'**
+  String get jbReportPrompt;
+
+  /// No description provided for @jbReportSafety.
+  ///
+  /// In ar, this message translates to:
+  /// **'سلامة'**
+  String get jbReportSafety;
+
+  /// No description provided for @jbReportBehaviour.
+  ///
+  /// In ar, this message translates to:
+  /// **'سلوك العميل'**
+  String get jbReportBehaviour;
+
+  /// No description provided for @jbReportFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'خلاف على السعر'**
+  String get jbReportFare;
+
+  /// No description provided for @jbReportRoute.
+  ///
+  /// In ar, this message translates to:
+  /// **'المسار أو التأخير'**
+  String get jbReportRoute;
+
+  /// No description provided for @jbReportOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخرى'**
+  String get jbReportOther;
+
+  /// No description provided for @jbReportDescription.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصف المشكلة'**
+  String get jbReportDescription;
+
+  /// No description provided for @jbReportDescriptionHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'10 أحرف على الأقل'**
+  String get jbReportDescriptionHelp;
+
+  /// No description provided for @jbReportSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال البلاغ'**
+  String get jbReportSubmit;
+
+  /// No description provided for @jbReportSentTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال البلاغ'**
+  String get jbReportSentTitle;
+
+  /// No description provided for @jbReportSentBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيراجعه فريق الدعم.'**
+  String get jbReportSentBody;
+
+  /// No description provided for @jbErrLost.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يعد هذا الطلب متاحًا (انتهت مهلته أو أُسند لسائق آخر). حدّثنا القائمة.'**
+  String get jbErrLost;
+
+  /// No description provided for @jbErrNotEligible.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكنك إرسال عروض الآن. راجع أسباب عدم الأهلية في الرئيسية.'**
+  String get jbErrNotEligible;
+
+  /// No description provided for @jbErrVehicle.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر مركبة معتمدة من الرئيسية أولًا.'**
+  String get jbErrVehicle;
+
+  /// No description provided for @jbErrCounterOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الطلب لا يقبل عروضًا مضادة.'**
+  String get jbErrCounterOff;
+
+  /// No description provided for @jbErrAmountInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ غير صالح.'**
+  String get jbErrAmountInvalid;
+
+  /// No description provided for @jbErrAmountBounds.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ خارج الحدود المسموحة.'**
+  String get jbErrAmountBounds;
+
+  /// No description provided for @jbErrCurrency.
+  ///
+  /// In ar, this message translates to:
+  /// **'عملة المبلغ غير مطابقة.'**
+  String get jbErrCurrency;
+
+  /// No description provided for @jbErrSameAsFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا هو سعر العميل نفسه. استخدم زر قبول السعر.'**
+  String get jbErrSameAsFare;
+
+  /// No description provided for @jbErrOfferLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلت إلى الحد الأقصى للعروض المفتوحة.'**
+  String get jbErrOfferLimit;
+
+  /// No description provided for @jbErrRevisions.
+  ///
+  /// In ar, this message translates to:
+  /// **'استنفدت عدد مرات تعديل هذا العرض.'**
+  String get jbErrRevisions;
+
+  /// No description provided for @jbErrNotWithdrawable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يعد بالإمكان سحب هذا العرض.'**
+  String get jbErrNotWithdrawable;
+
+  /// No description provided for @jbErrWithdrawFirst.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسحب عرضك أولًا قبل التخطي.'**
+  String get jbErrWithdrawFirst;
+
+  /// No description provided for @jbErrNotYours.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا العرض ليس لك.'**
+  String get jbErrNotYours;
+
+  /// No description provided for @jbErrTransition.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيّرت حالة الرحلة. تم تحديثها.'**
+  String get jbErrTransition;
+
+  /// No description provided for @jbErrPinRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رمز الرحلة أولًا.'**
+  String get jbErrPinRequired;
+
+  /// No description provided for @jbErrProofRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'مطلوب إثبات قبل المتابعة.'**
+  String get jbErrProofRequired;
+
+  /// No description provided for @jbErrPinLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرمز مقفل بعد محاولات خاطئة. تواصل مع الدعم لبدء الرحلة.'**
+  String get jbErrPinLocked;
+
+  /// No description provided for @jbErrPinInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرمز غير صحيح.'**
+  String get jbErrPinInvalid;
+
+  /// No description provided for @jbErrPinNotRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه الرحلة لا تحتاج إلى رمز.'**
+  String get jbErrPinNotRequired;
+
+  /// No description provided for @jbErrNotCancellable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن إلغاء هذه الرحلة الآن.'**
+  String get jbErrNotCancellable;
+
+  /// No description provided for @jbErrReasonNotAllowed.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب الإلغاء غير مسموح به.'**
+  String get jbErrReasonNotAllowed;
+
+  /// No description provided for @jbErrNoteRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب سبب الإلغاء.'**
+  String get jbErrNoteRequired;
+
+  /// No description provided for @jbErrNoShowEarly.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن اختيار عدم الحضور قبل انتهاء وقت الانتظار المجاني.'**
+  String get jbErrNoShowEarly;
+
+  /// No description provided for @jbErrReportLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن إرسال بلاغ آخر الآن.'**
+  String get jbErrReportLimit;
+
+  /// No description provided for @jbErrRatingClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن تقييم هذه الرحلة الآن.'**
+  String get jbErrRatingClosed;
+
+  /// No description provided for @jbErrRatingDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيّمت هذه الرحلة من قبل.'**
+  String get jbErrRatingDone;
+
+  /// No description provided for @jbErrRateLimited.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاولات كثيرة. انتظر قليلًا ثم أعد المحاولة.'**
+  String get jbErrRateLimited;
+
+  /// No description provided for @jbErrAccount.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسابك لا يسمح بهذا الإجراء حاليًا.'**
+  String get jbErrAccount;
+
+  /// No description provided for @jbErrInProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلب قيد التنفيذ. انتظر لحظة.'**
+  String get jbErrInProgress;
+
+  /// No description provided for @jbErrNotFound.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم نجد هذه الرحلة.'**
+  String get jbErrNotFound;
+
+  /// No description provided for @jbErrPinInvalidLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرمز غير صحيح. المحاولات المتبقية: {count}'**
+  String jbErrPinInvalidLeft(int count);
 }
 
 class _AppLocalizationsDelegate

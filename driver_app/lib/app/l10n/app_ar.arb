@@ -470,5 +470,382 @@
   "avStayOnline": "البقاء متصلاً",
   "avActiveJobBanner": "مهمة جارية",
   "avNotificationTitle": "أنت متصل",
-  "avNotificationText": "نشارك موقعك لاستقبال الطلبات"
+  "avNotificationText": "نشارك موقعك لاستقبال الطلبات",
+  "actionDone": "تم",
+  "jbTabHome": "الرئيسية",
+  "jbTabRequests": "الطلبات",
+  "jbTabOffers": "عروضي",
+  "jbTabHistory": "السجل",
+  "jbApplicationEntry": "طلب الانضمام والمستندات",
+  "jbApplicationEntryBody": "تابع حالة المراجعة والمستندات والمركبات.",
+  "jbAlertSound": "صوت عند وصول طلب جديد",
+  "jbAlertVibration": "اهتزاز عند وصول طلب جديد",
+  "jbGoOnlineTitle": "أنت غير متصل",
+  "jbGoOnlineBody": "فعّل الاتصال من الرئيسية لتستقبل الطلبات القريبة منك.",
+  "jbGoOnlineAction": "الذهاب إلى الرئيسية",
+  "jbNotEligibleTitle": "لا يمكنك استقبال الطلبات الآن",
+  "jbNoRequestsTitle": "لا توجد طلبات حاليًا",
+  "jbNoRequestsBody": "سنخبرك فور وصول طلب قريب. اترك التطبيق مفتوحًا.",
+  "jbRequestExpired": "انتهت المهلة",
+  "jbExpiresIn": "ينتهي خلال {time}",
+  "@jbExpiresIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "jbCustomerFare": "سعر العميل",
+  "jbPickupArea": "منطقة الالتقاء: {area}",
+  "@jbPickupArea": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
+  "jbDropoffArea": "منطقة الوجهة: {area}",
+  "@jbDropoffArea": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
+  "jbAreaUnknown": "غير محددة",
+  "jbAwayKm": "يبعد {distance}",
+  "@jbAwayKm": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "jbKm": "{value} كم",
+  "@jbKm": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "jbMinutes": "{count} دقيقة",
+  "@jbMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jbPassengers": "{count} ركاب",
+  "@jbPassengers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jbStops": "{count} محطات",
+  "@jbStops": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jbLuggage": "{count} حقائب",
+  "@jbLuggage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jbWeightKg": "{kg} كجم",
+  "@jbWeightKg": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "jbScheduledAt": "مجدول: {time}",
+  "@jbScheduledAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "jbRestrictedPickup": "منطقة التقاء مقيّدة",
+  "jbAcceptFare": "أقبل سعر العميل",
+  "jbCounterOffer": "اقترح سعرًا",
+  "jbSkip": "تخطي",
+  "jbReviseOffer": "عدّل عرضي",
+  "jbWithdraw": "سحب العرض",
+  "jbWithdrawn": "تم سحب العرض.",
+  "jbOfferSent": "تم إرسال عرضك. بانتظار قرار العميل.",
+  "jbMyOfferAmount": "عرضك: {amount}",
+  "@jbMyOfferAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "jbCounterTitle": "اقترح سعرك",
+  "jbCustomerFareIs": "سعر العميل: {fare}",
+  "@jbCustomerFareIs": {
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      }
+    }
+  },
+  "jbAllowedRange": "المسموح من {min} إلى {max}",
+  "@jbAllowedRange": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "jbAmountBelow": "أقل من الحد الأدنى ({min})",
+  "@jbAmountBelow": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "jbAmountAbove": "أعلى من الحد الأقصى ({max})",
+  "@jbAmountAbove": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "jbAmountSame": "هذا هو سعر العميل نفسه. استخدم زر قبول السعر.",
+  "jbSendOffer": "إرسال العرض",
+  "jbKeypadBackspace": "حذف",
+  "jbKeypadDecimal": "فاصلة عشرية",
+  "jbPreviewGross": "المبلغ المقترح",
+  "jbPreviewCommission": "عمولة المنصة",
+  "jbPreviewNet": "صافي ربحك",
+  "jbNoOffersTitle": "لا توجد عروض",
+  "jbNoOffersBody": "عروضك على الطلبات ستظهر هنا.",
+  "jbOfferPending": "بانتظار العميل",
+  "jbOfferSelected": "تم اختيارك",
+  "jbOfferRejected": "لم يُختر",
+  "jbOfferExpired": "انتهت المهلة",
+  "jbOfferInvalidated": "لم يعد صالحًا",
+  "jbOfferWithdrawn": "تم سحبه",
+  "jbOfferUnknown": "غير معروف",
+  "jbReasonRejected": "رفض العميل هذا العرض.",
+  "jbReasonLost": "اختار العميل سائقًا آخر.",
+  "jbReasonExpired": "انتهت مهلة العرض دون رد.",
+  "jbReasonRequestChanged": "غيّر العميل تفاصيل الطلب فأُلغي العرض.",
+  "jbReasonUnavailable": "أُلغي العرض لأنك لم تعد متاحًا.",
+  "jbReasonWithdrawn": "سحبت هذا العرض.",
+  "jbKindFare": "قبول سعر العميل",
+  "jbKindCounter": "سعر مقترح منك",
+  "jbOpenJob": "فتح الرحلة",
+  "jbNoHistoryTitle": "لا توجد رحلات بعد",
+  "jbNoHistoryBody": "رحلاتك المنتهية ستظهر هنا.",
+  "jbHistoryJob": "رحلة",
+  "jbJobTitle": "الرحلة",
+  "jbActiveJob": "لديك رحلة جارية",
+  "jbJobLostTitle": "لم تعد هذه الرحلة معك",
+  "jbJobLostBody": "أُعيد توزيع الطلب أو أُلغي أو أُسند لسائق آخر.",
+  "jbBackHome": "العودة للرئيسية",
+  "jbStatusSelected": "تم اختيارك",
+  "jbStatusHeading": "في الطريق إلى العميل",
+  "jbStatusArrived": "وصلت إلى العميل",
+  "jbStatusInProgress": "الرحلة جارية",
+  "jbStatusCompleted": "اكتملت الرحلة",
+  "jbStatusCancelledCustomer": "ألغاها العميل",
+  "jbStatusCancelledMe": "ألغيتها أنت",
+  "jbStatusCancelledOps": "ألغتها الإدارة",
+  "jbStatusDisputed": "قيد النزاع",
+  "jbStatusFailed": "فشلت محاولة التسليم",
+  "jbStatusSearching": "قيد البحث عن سائق",
+  "jbStatusOther": "حالة أخرى",
+  "jbCollectCash": "حصّل المبلغ نقدًا من العميل",
+  "jbPayCash": "الدفع نقدًا",
+  "jbPayOther": "الدفع إلكترونيًا",
+  "jbSupportFlagged": "فريق الدعم يتابع هذه الرحلة.",
+  "jbFreeWaitLeft": "وقت الانتظار المجاني المتبقي: {time}",
+  "@jbFreeWaitLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "jbFreeWaitOver": "انتهى وقت الانتظار المجاني.",
+  "jbPinNeeded": "اطلب من العميل رمز بدء الرحلة وأدخله.",
+  "jbPinVerified": "تم التحقق من الرمز.",
+  "jbRouteTitle": "المسار",
+  "jbPickup": "نقطة الالتقاء",
+  "jbDropoff": "الوجهة",
+  "jbStopLabel": "محطة",
+  "jbCustomerTitle": "العميل",
+  "jbCustomerUnknown": "عميل",
+  "jbCustomerRating": "التقييم {avg} ({count})",
+  "@jbCustomerRating": {
+    "placeholders": {
+      "avg": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jbCallCustomer": "اتصل بالعميل",
+  "jbCallFailed": "تعذّر بدء الاتصال.",
+  "jbContactMasked": "رقم العميل مخفي. تواصل عبر الدعم عند الحاجة.",
+  "jbInstructionsTitle": "تفاصيل وتعليمات العميل",
+  "jbActionAcknowledge": "أنا في الطريق إلى العميل",
+  "jbActionArrived": "وصلت",
+  "jbActionPin": "إدخال رمز الرحلة",
+  "jbPinLockedButton": "الرمز مقفل",
+  "jbActionStart": "بدء الرحلة",
+  "jbComplete": "إنهاء الرحلة",
+  "jbCompleteConfirmTitle": "تأكيد إنهاء الرحلة",
+  "jbCompleteConfirmBody": "تأكد أنك وصلت إلى الوجهة.",
+  "jbCompleteConfirmCash": "حصّل {amount} نقدًا من العميل ثم أنهِ الرحلة.",
+  "@jbCompleteConfirmCash": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "jbNavigatePickup": "التنقل إلى العميل",
+  "jbNavigateDropoff": "التنقل إلى الوجهة",
+  "jbNavFailed": "تعذّر فتح تطبيق الخرائط.",
+  "jbCancelJob": "إلغاء الرحلة",
+  "jbReportIssue": "الإبلاغ عن مشكلة",
+  "jbPinTitle": "رمز بدء الرحلة",
+  "jbPinHint": "اطلب الرمز من العميل وأدخله هنا.",
+  "jbPinConfirm": "تأكيد الرمز",
+  "jbPinAttemptsLeft": "المحاولات المتبقية: {count}",
+  "@jbPinAttemptsLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jbSummaryDone": "اكتملت الرحلة",
+  "jbSummaryEnded": "انتهت الرحلة",
+  "jbSummaryAmount": "قيمة الرحلة",
+  "jbSummaryCollectCash": "حصّل {amount} نقدًا من العميل.",
+  "@jbSummaryCollectCash": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "jbRateTitle": "قيّم العميل",
+  "jbStarsLabel": "{count} نجوم",
+  "@jbStarsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jbRateComment": "تعليق (اختياري)",
+  "jbRateSubmit": "إرسال التقييم",
+  "jbRatingThanks": "شكرًا، تم إرسال تقييمك.",
+  "jbTagRespectful": "محترم",
+  "jbTagClear": "تعليمات واضحة",
+  "jbTagReady": "جاهز عند الالتقاء",
+  "jbTagDisrespectful": "غير محترم",
+  "jbTagNotReady": "لم يكن جاهزًا",
+  "jbTagLate": "متأخر",
+  "jbCancelTitle": "إلغاء الرحلة",
+  "jbCancelPrompt": "لماذا تريد الإلغاء؟",
+  "jbCancelNoShow": "العميل لم يحضر",
+  "jbCancelUnreachable": "لا يمكن الوصول للعميل",
+  "jbCancelVehicle": "مشكلة في المركبة",
+  "jbCancelEmergency": "حالة طارئة",
+  "jbCancelWrongDetails": "تفاصيل الطلب غير صحيحة",
+  "jbCancelUnsafe": "مكان الالتقاء غير آمن",
+  "jbCancelOther": "سبب آخر",
+  "jbCancelNote": "اكتب السبب",
+  "jbCancelShowCost": "عرض تكلفة الإلغاء",
+  "jbCancelFree": "الإلغاء الآن بدون رسوم.",
+  "jbCancelFee": "رسوم الإلغاء: {fee}",
+  "@jbCancelFee": {
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "jbCancelRedispatchNote": "سيُعاد الطلب إلى سائقين آخرين.",
+  "jbCancelConfirmAction": "تأكيد الإلغاء",
+  "jbCancelConfirmTitle": "هل تريد إلغاء الرحلة؟",
+  "jbCancelConfirmBody": "لا يمكن التراجع عن الإلغاء.",
+  "jbCancelConfirmRedispatch": "سيُعاد الطلب إلى سائقين آخرين ولن تعود إليه.",
+  "jbCancelledDone": "تم إلغاء الرحلة.",
+  "jbCancelledRedispatch": "تم الإلغاء وأُعيد الطلب إلى سائقين آخرين.",
+  "jbReportTitle": "الإبلاغ عن مشكلة",
+  "jbReportPrompt": "ما نوع المشكلة؟",
+  "jbReportSafety": "سلامة",
+  "jbReportBehaviour": "سلوك العميل",
+  "jbReportFare": "خلاف على السعر",
+  "jbReportRoute": "المسار أو التأخير",
+  "jbReportOther": "أخرى",
+  "jbReportDescription": "وصف المشكلة",
+  "jbReportDescriptionHelp": "10 أحرف على الأقل",
+  "jbReportSubmit": "إرسال البلاغ",
+  "jbReportSentTitle": "تم إرسال البلاغ",
+  "jbReportSentBody": "سيراجعه فريق الدعم.",
+  "jbErrLost": "لم يعد هذا الطلب متاحًا (انتهت مهلته أو أُسند لسائق آخر). حدّثنا القائمة.",
+  "jbErrNotEligible": "لا يمكنك إرسال عروض الآن. راجع أسباب عدم الأهلية في الرئيسية.",
+  "jbErrVehicle": "اختر مركبة معتمدة من الرئيسية أولًا.",
+  "jbErrCounterOff": "هذا الطلب لا يقبل عروضًا مضادة.",
+  "jbErrAmountInvalid": "المبلغ غير صالح.",
+  "jbErrAmountBounds": "المبلغ خارج الحدود المسموحة.",
+  "jbErrCurrency": "عملة المبلغ غير مطابقة.",
+  "jbErrSameAsFare": "هذا هو سعر العميل نفسه. استخدم زر قبول السعر.",
+  "jbErrOfferLimit": "وصلت إلى الحد الأقصى للعروض المفتوحة.",
+  "jbErrRevisions": "استنفدت عدد مرات تعديل هذا العرض.",
+  "jbErrNotWithdrawable": "لم يعد بالإمكان سحب هذا العرض.",
+  "jbErrWithdrawFirst": "اسحب عرضك أولًا قبل التخطي.",
+  "jbErrNotYours": "هذا العرض ليس لك.",
+  "jbErrTransition": "تغيّرت حالة الرحلة. تم تحديثها.",
+  "jbErrPinRequired": "أدخل رمز الرحلة أولًا.",
+  "jbErrProofRequired": "مطلوب إثبات قبل المتابعة.",
+  "jbErrPinLocked": "الرمز مقفل بعد محاولات خاطئة. تواصل مع الدعم لبدء الرحلة.",
+  "jbErrPinInvalid": "الرمز غير صحيح.",
+  "jbErrPinNotRequired": "هذه الرحلة لا تحتاج إلى رمز.",
+  "jbErrNotCancellable": "لا يمكن إلغاء هذه الرحلة الآن.",
+  "jbErrReasonNotAllowed": "سبب الإلغاء غير مسموح به.",
+  "jbErrNoteRequired": "اكتب سبب الإلغاء.",
+  "jbErrNoShowEarly": "لا يمكن اختيار عدم الحضور قبل انتهاء وقت الانتظار المجاني.",
+  "jbErrReportLimit": "لا يمكن إرسال بلاغ آخر الآن.",
+  "jbErrRatingClosed": "لا يمكن تقييم هذه الرحلة الآن.",
+  "jbErrRatingDone": "قيّمت هذه الرحلة من قبل.",
+  "jbErrRateLimited": "محاولات كثيرة. انتظر قليلًا ثم أعد المحاولة.",
+  "jbErrAccount": "حسابك لا يسمح بهذا الإجراء حاليًا.",
+  "jbErrInProgress": "الطلب قيد التنفيذ. انتظر لحظة.",
+  "jbErrNotFound": "لم نجد هذه الرحلة.",
+  "jbErrPinInvalidLeft": "الرمز غير صحيح. المحاولات المتبقية: {count}",
+  "@jbErrPinInvalidLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

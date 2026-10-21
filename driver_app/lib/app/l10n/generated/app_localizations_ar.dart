@@ -1028,4 +1028,670 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get avNotificationText => 'نشارك موقعك لاستقبال الطلبات';
+
+  @override
+  String get actionDone => 'تم';
+
+  @override
+  String get jbTabHome => 'الرئيسية';
+
+  @override
+  String get jbTabRequests => 'الطلبات';
+
+  @override
+  String get jbTabOffers => 'عروضي';
+
+  @override
+  String get jbTabHistory => 'السجل';
+
+  @override
+  String get jbApplicationEntry => 'طلب الانضمام والمستندات';
+
+  @override
+  String get jbApplicationEntryBody =>
+      'تابع حالة المراجعة والمستندات والمركبات.';
+
+  @override
+  String get jbAlertSound => 'صوت عند وصول طلب جديد';
+
+  @override
+  String get jbAlertVibration => 'اهتزاز عند وصول طلب جديد';
+
+  @override
+  String get jbGoOnlineTitle => 'أنت غير متصل';
+
+  @override
+  String get jbGoOnlineBody =>
+      'فعّل الاتصال من الرئيسية لتستقبل الطلبات القريبة منك.';
+
+  @override
+  String get jbGoOnlineAction => 'الذهاب إلى الرئيسية';
+
+  @override
+  String get jbNotEligibleTitle => 'لا يمكنك استقبال الطلبات الآن';
+
+  @override
+  String get jbNoRequestsTitle => 'لا توجد طلبات حاليًا';
+
+  @override
+  String get jbNoRequestsBody =>
+      'سنخبرك فور وصول طلب قريب. اترك التطبيق مفتوحًا.';
+
+  @override
+  String get jbRequestExpired => 'انتهت المهلة';
+
+  @override
+  String jbExpiresIn(String time) {
+    return 'ينتهي خلال $time';
+  }
+
+  @override
+  String get jbCustomerFare => 'سعر العميل';
+
+  @override
+  String jbPickupArea(String area) {
+    return 'منطقة الالتقاء: $area';
+  }
+
+  @override
+  String jbDropoffArea(String area) {
+    return 'منطقة الوجهة: $area';
+  }
+
+  @override
+  String get jbAreaUnknown => 'غير محددة';
+
+  @override
+  String jbAwayKm(String distance) {
+    return 'يبعد $distance';
+  }
+
+  @override
+  String jbKm(String value) {
+    return '$value كم';
+  }
+
+  @override
+  String jbMinutes(int count) {
+    return '$count دقيقة';
+  }
+
+  @override
+  String jbPassengers(int count) {
+    return '$count ركاب';
+  }
+
+  @override
+  String jbStops(int count) {
+    return '$count محطات';
+  }
+
+  @override
+  String jbLuggage(int count) {
+    return '$count حقائب';
+  }
+
+  @override
+  String jbWeightKg(String kg) {
+    return '$kg كجم';
+  }
+
+  @override
+  String jbScheduledAt(String time) {
+    return 'مجدول: $time';
+  }
+
+  @override
+  String get jbRestrictedPickup => 'منطقة التقاء مقيّدة';
+
+  @override
+  String get jbAcceptFare => 'أقبل سعر العميل';
+
+  @override
+  String get jbCounterOffer => 'اقترح سعرًا';
+
+  @override
+  String get jbSkip => 'تخطي';
+
+  @override
+  String get jbReviseOffer => 'عدّل عرضي';
+
+  @override
+  String get jbWithdraw => 'سحب العرض';
+
+  @override
+  String get jbWithdrawn => 'تم سحب العرض.';
+
+  @override
+  String get jbOfferSent => 'تم إرسال عرضك. بانتظار قرار العميل.';
+
+  @override
+  String jbMyOfferAmount(String amount) {
+    return 'عرضك: $amount';
+  }
+
+  @override
+  String get jbCounterTitle => 'اقترح سعرك';
+
+  @override
+  String jbCustomerFareIs(String fare) {
+    return 'سعر العميل: $fare';
+  }
+
+  @override
+  String jbAllowedRange(String min, String max) {
+    return 'المسموح من $min إلى $max';
+  }
+
+  @override
+  String jbAmountBelow(String min) {
+    return 'أقل من الحد الأدنى ($min)';
+  }
+
+  @override
+  String jbAmountAbove(String max) {
+    return 'أعلى من الحد الأقصى ($max)';
+  }
+
+  @override
+  String get jbAmountSame => 'هذا هو سعر العميل نفسه. استخدم زر قبول السعر.';
+
+  @override
+  String get jbSendOffer => 'إرسال العرض';
+
+  @override
+  String get jbKeypadBackspace => 'حذف';
+
+  @override
+  String get jbKeypadDecimal => 'فاصلة عشرية';
+
+  @override
+  String get jbPreviewGross => 'المبلغ المقترح';
+
+  @override
+  String get jbPreviewCommission => 'عمولة المنصة';
+
+  @override
+  String get jbPreviewNet => 'صافي ربحك';
+
+  @override
+  String get jbNoOffersTitle => 'لا توجد عروض';
+
+  @override
+  String get jbNoOffersBody => 'عروضك على الطلبات ستظهر هنا.';
+
+  @override
+  String get jbOfferPending => 'بانتظار العميل';
+
+  @override
+  String get jbOfferSelected => 'تم اختيارك';
+
+  @override
+  String get jbOfferRejected => 'لم يُختر';
+
+  @override
+  String get jbOfferExpired => 'انتهت المهلة';
+
+  @override
+  String get jbOfferInvalidated => 'لم يعد صالحًا';
+
+  @override
+  String get jbOfferWithdrawn => 'تم سحبه';
+
+  @override
+  String get jbOfferUnknown => 'غير معروف';
+
+  @override
+  String get jbReasonRejected => 'رفض العميل هذا العرض.';
+
+  @override
+  String get jbReasonLost => 'اختار العميل سائقًا آخر.';
+
+  @override
+  String get jbReasonExpired => 'انتهت مهلة العرض دون رد.';
+
+  @override
+  String get jbReasonRequestChanged => 'غيّر العميل تفاصيل الطلب فأُلغي العرض.';
+
+  @override
+  String get jbReasonUnavailable => 'أُلغي العرض لأنك لم تعد متاحًا.';
+
+  @override
+  String get jbReasonWithdrawn => 'سحبت هذا العرض.';
+
+  @override
+  String get jbKindFare => 'قبول سعر العميل';
+
+  @override
+  String get jbKindCounter => 'سعر مقترح منك';
+
+  @override
+  String get jbOpenJob => 'فتح الرحلة';
+
+  @override
+  String get jbNoHistoryTitle => 'لا توجد رحلات بعد';
+
+  @override
+  String get jbNoHistoryBody => 'رحلاتك المنتهية ستظهر هنا.';
+
+  @override
+  String get jbHistoryJob => 'رحلة';
+
+  @override
+  String get jbJobTitle => 'الرحلة';
+
+  @override
+  String get jbActiveJob => 'لديك رحلة جارية';
+
+  @override
+  String get jbJobLostTitle => 'لم تعد هذه الرحلة معك';
+
+  @override
+  String get jbJobLostBody => 'أُعيد توزيع الطلب أو أُلغي أو أُسند لسائق آخر.';
+
+  @override
+  String get jbBackHome => 'العودة للرئيسية';
+
+  @override
+  String get jbStatusSelected => 'تم اختيارك';
+
+  @override
+  String get jbStatusHeading => 'في الطريق إلى العميل';
+
+  @override
+  String get jbStatusArrived => 'وصلت إلى العميل';
+
+  @override
+  String get jbStatusInProgress => 'الرحلة جارية';
+
+  @override
+  String get jbStatusCompleted => 'اكتملت الرحلة';
+
+  @override
+  String get jbStatusCancelledCustomer => 'ألغاها العميل';
+
+  @override
+  String get jbStatusCancelledMe => 'ألغيتها أنت';
+
+  @override
+  String get jbStatusCancelledOps => 'ألغتها الإدارة';
+
+  @override
+  String get jbStatusDisputed => 'قيد النزاع';
+
+  @override
+  String get jbStatusFailed => 'فشلت محاولة التسليم';
+
+  @override
+  String get jbStatusSearching => 'قيد البحث عن سائق';
+
+  @override
+  String get jbStatusOther => 'حالة أخرى';
+
+  @override
+  String get jbCollectCash => 'حصّل المبلغ نقدًا من العميل';
+
+  @override
+  String get jbPayCash => 'الدفع نقدًا';
+
+  @override
+  String get jbPayOther => 'الدفع إلكترونيًا';
+
+  @override
+  String get jbSupportFlagged => 'فريق الدعم يتابع هذه الرحلة.';
+
+  @override
+  String jbFreeWaitLeft(String time) {
+    return 'وقت الانتظار المجاني المتبقي: $time';
+  }
+
+  @override
+  String get jbFreeWaitOver => 'انتهى وقت الانتظار المجاني.';
+
+  @override
+  String get jbPinNeeded => 'اطلب من العميل رمز بدء الرحلة وأدخله.';
+
+  @override
+  String get jbPinVerified => 'تم التحقق من الرمز.';
+
+  @override
+  String get jbRouteTitle => 'المسار';
+
+  @override
+  String get jbPickup => 'نقطة الالتقاء';
+
+  @override
+  String get jbDropoff => 'الوجهة';
+
+  @override
+  String get jbStopLabel => 'محطة';
+
+  @override
+  String get jbCustomerTitle => 'العميل';
+
+  @override
+  String get jbCustomerUnknown => 'عميل';
+
+  @override
+  String jbCustomerRating(String avg, int count) {
+    return 'التقييم $avg ($count)';
+  }
+
+  @override
+  String get jbCallCustomer => 'اتصل بالعميل';
+
+  @override
+  String get jbCallFailed => 'تعذّر بدء الاتصال.';
+
+  @override
+  String get jbContactMasked => 'رقم العميل مخفي. تواصل عبر الدعم عند الحاجة.';
+
+  @override
+  String get jbInstructionsTitle => 'تفاصيل وتعليمات العميل';
+
+  @override
+  String get jbActionAcknowledge => 'أنا في الطريق إلى العميل';
+
+  @override
+  String get jbActionArrived => 'وصلت';
+
+  @override
+  String get jbActionPin => 'إدخال رمز الرحلة';
+
+  @override
+  String get jbPinLockedButton => 'الرمز مقفل';
+
+  @override
+  String get jbActionStart => 'بدء الرحلة';
+
+  @override
+  String get jbComplete => 'إنهاء الرحلة';
+
+  @override
+  String get jbCompleteConfirmTitle => 'تأكيد إنهاء الرحلة';
+
+  @override
+  String get jbCompleteConfirmBody => 'تأكد أنك وصلت إلى الوجهة.';
+
+  @override
+  String jbCompleteConfirmCash(String amount) {
+    return 'حصّل $amount نقدًا من العميل ثم أنهِ الرحلة.';
+  }
+
+  @override
+  String get jbNavigatePickup => 'التنقل إلى العميل';
+
+  @override
+  String get jbNavigateDropoff => 'التنقل إلى الوجهة';
+
+  @override
+  String get jbNavFailed => 'تعذّر فتح تطبيق الخرائط.';
+
+  @override
+  String get jbCancelJob => 'إلغاء الرحلة';
+
+  @override
+  String get jbReportIssue => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get jbPinTitle => 'رمز بدء الرحلة';
+
+  @override
+  String get jbPinHint => 'اطلب الرمز من العميل وأدخله هنا.';
+
+  @override
+  String get jbPinConfirm => 'تأكيد الرمز';
+
+  @override
+  String jbPinAttemptsLeft(int count) {
+    return 'المحاولات المتبقية: $count';
+  }
+
+  @override
+  String get jbSummaryDone => 'اكتملت الرحلة';
+
+  @override
+  String get jbSummaryEnded => 'انتهت الرحلة';
+
+  @override
+  String get jbSummaryAmount => 'قيمة الرحلة';
+
+  @override
+  String jbSummaryCollectCash(String amount) {
+    return 'حصّل $amount نقدًا من العميل.';
+  }
+
+  @override
+  String get jbRateTitle => 'قيّم العميل';
+
+  @override
+  String jbStarsLabel(int count) {
+    return '$count نجوم';
+  }
+
+  @override
+  String get jbRateComment => 'تعليق (اختياري)';
+
+  @override
+  String get jbRateSubmit => 'إرسال التقييم';
+
+  @override
+  String get jbRatingThanks => 'شكرًا، تم إرسال تقييمك.';
+
+  @override
+  String get jbTagRespectful => 'محترم';
+
+  @override
+  String get jbTagClear => 'تعليمات واضحة';
+
+  @override
+  String get jbTagReady => 'جاهز عند الالتقاء';
+
+  @override
+  String get jbTagDisrespectful => 'غير محترم';
+
+  @override
+  String get jbTagNotReady => 'لم يكن جاهزًا';
+
+  @override
+  String get jbTagLate => 'متأخر';
+
+  @override
+  String get jbCancelTitle => 'إلغاء الرحلة';
+
+  @override
+  String get jbCancelPrompt => 'لماذا تريد الإلغاء؟';
+
+  @override
+  String get jbCancelNoShow => 'العميل لم يحضر';
+
+  @override
+  String get jbCancelUnreachable => 'لا يمكن الوصول للعميل';
+
+  @override
+  String get jbCancelVehicle => 'مشكلة في المركبة';
+
+  @override
+  String get jbCancelEmergency => 'حالة طارئة';
+
+  @override
+  String get jbCancelWrongDetails => 'تفاصيل الطلب غير صحيحة';
+
+  @override
+  String get jbCancelUnsafe => 'مكان الالتقاء غير آمن';
+
+  @override
+  String get jbCancelOther => 'سبب آخر';
+
+  @override
+  String get jbCancelNote => 'اكتب السبب';
+
+  @override
+  String get jbCancelShowCost => 'عرض تكلفة الإلغاء';
+
+  @override
+  String get jbCancelFree => 'الإلغاء الآن بدون رسوم.';
+
+  @override
+  String jbCancelFee(String fee) {
+    return 'رسوم الإلغاء: $fee';
+  }
+
+  @override
+  String get jbCancelRedispatchNote => 'سيُعاد الطلب إلى سائقين آخرين.';
+
+  @override
+  String get jbCancelConfirmAction => 'تأكيد الإلغاء';
+
+  @override
+  String get jbCancelConfirmTitle => 'هل تريد إلغاء الرحلة؟';
+
+  @override
+  String get jbCancelConfirmBody => 'لا يمكن التراجع عن الإلغاء.';
+
+  @override
+  String get jbCancelConfirmRedispatch =>
+      'سيُعاد الطلب إلى سائقين آخرين ولن تعود إليه.';
+
+  @override
+  String get jbCancelledDone => 'تم إلغاء الرحلة.';
+
+  @override
+  String get jbCancelledRedispatch =>
+      'تم الإلغاء وأُعيد الطلب إلى سائقين آخرين.';
+
+  @override
+  String get jbReportTitle => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get jbReportPrompt => 'ما نوع المشكلة؟';
+
+  @override
+  String get jbReportSafety => 'سلامة';
+
+  @override
+  String get jbReportBehaviour => 'سلوك العميل';
+
+  @override
+  String get jbReportFare => 'خلاف على السعر';
+
+  @override
+  String get jbReportRoute => 'المسار أو التأخير';
+
+  @override
+  String get jbReportOther => 'أخرى';
+
+  @override
+  String get jbReportDescription => 'وصف المشكلة';
+
+  @override
+  String get jbReportDescriptionHelp => '10 أحرف على الأقل';
+
+  @override
+  String get jbReportSubmit => 'إرسال البلاغ';
+
+  @override
+  String get jbReportSentTitle => 'تم إرسال البلاغ';
+
+  @override
+  String get jbReportSentBody => 'سيراجعه فريق الدعم.';
+
+  @override
+  String get jbErrLost =>
+      'لم يعد هذا الطلب متاحًا (انتهت مهلته أو أُسند لسائق آخر). حدّثنا القائمة.';
+
+  @override
+  String get jbErrNotEligible =>
+      'لا يمكنك إرسال عروض الآن. راجع أسباب عدم الأهلية في الرئيسية.';
+
+  @override
+  String get jbErrVehicle => 'اختر مركبة معتمدة من الرئيسية أولًا.';
+
+  @override
+  String get jbErrCounterOff => 'هذا الطلب لا يقبل عروضًا مضادة.';
+
+  @override
+  String get jbErrAmountInvalid => 'المبلغ غير صالح.';
+
+  @override
+  String get jbErrAmountBounds => 'المبلغ خارج الحدود المسموحة.';
+
+  @override
+  String get jbErrCurrency => 'عملة المبلغ غير مطابقة.';
+
+  @override
+  String get jbErrSameAsFare => 'هذا هو سعر العميل نفسه. استخدم زر قبول السعر.';
+
+  @override
+  String get jbErrOfferLimit => 'وصلت إلى الحد الأقصى للعروض المفتوحة.';
+
+  @override
+  String get jbErrRevisions => 'استنفدت عدد مرات تعديل هذا العرض.';
+
+  @override
+  String get jbErrNotWithdrawable => 'لم يعد بالإمكان سحب هذا العرض.';
+
+  @override
+  String get jbErrWithdrawFirst => 'اسحب عرضك أولًا قبل التخطي.';
+
+  @override
+  String get jbErrNotYours => 'هذا العرض ليس لك.';
+
+  @override
+  String get jbErrTransition => 'تغيّرت حالة الرحلة. تم تحديثها.';
+
+  @override
+  String get jbErrPinRequired => 'أدخل رمز الرحلة أولًا.';
+
+  @override
+  String get jbErrProofRequired => 'مطلوب إثبات قبل المتابعة.';
+
+  @override
+  String get jbErrPinLocked =>
+      'الرمز مقفل بعد محاولات خاطئة. تواصل مع الدعم لبدء الرحلة.';
+
+  @override
+  String get jbErrPinInvalid => 'الرمز غير صحيح.';
+
+  @override
+  String get jbErrPinNotRequired => 'هذه الرحلة لا تحتاج إلى رمز.';
+
+  @override
+  String get jbErrNotCancellable => 'لا يمكن إلغاء هذه الرحلة الآن.';
+
+  @override
+  String get jbErrReasonNotAllowed => 'سبب الإلغاء غير مسموح به.';
+
+  @override
+  String get jbErrNoteRequired => 'اكتب سبب الإلغاء.';
+
+  @override
+  String get jbErrNoShowEarly =>
+      'لا يمكن اختيار عدم الحضور قبل انتهاء وقت الانتظار المجاني.';
+
+  @override
+  String get jbErrReportLimit => 'لا يمكن إرسال بلاغ آخر الآن.';
+
+  @override
+  String get jbErrRatingClosed => 'لا يمكن تقييم هذه الرحلة الآن.';
+
+  @override
+  String get jbErrRatingDone => 'قيّمت هذه الرحلة من قبل.';
+
+  @override
+  String get jbErrRateLimited => 'محاولات كثيرة. انتظر قليلًا ثم أعد المحاولة.';
+
+  @override
+  String get jbErrAccount => 'حسابك لا يسمح بهذا الإجراء حاليًا.';
+
+  @override
+  String get jbErrInProgress => 'الطلب قيد التنفيذ. انتظر لحظة.';
+
+  @override
+  String get jbErrNotFound => 'لم نجد هذه الرحلة.';
+
+  @override
+  String jbErrPinInvalidLeft(int count) {
+    return 'الرمز غير صحيح. المحاولات المتبقية: $count';
+  }
 }

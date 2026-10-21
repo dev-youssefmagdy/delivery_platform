@@ -6,7 +6,7 @@ import 'package:platform_core/platform_core.dart';
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
-import '../../../availability/presentation/widgets/availability_card.dart';
+import '../../../jobs/presentation/screens/driver_shell.dart';
 import '../providers/provider_onboarding_providers.dart';
 import '../widgets/onboarding_labels.dart';
 import '../widgets/onboarding_wizard.dart';
@@ -43,6 +43,19 @@ class ProviderOnboardingScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final application = ref.watch(applicationProvider);
     final wizardOpen = ref.watch(wizardOpenProvider);
+
+    // An approved driver lives in the shell: home, requests, offers, history.
+    final approved = application.value;
+    if (approved != null &&
+        approved.status == ProviderStatus.approved &&
+        !wizardOpen) {
+      return DriverShell(
+        vehicles: [
+          for (final v in approved.vehicles)
+            if (v.status == VehicleStatus.approved) v,
+        ],
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -102,14 +115,6 @@ class ProviderOnboardingScreen extends ConsumerWidget {
                       ref.read(applicationProvider.notifier).reload(),
                   child: VerificationStatusView(
                     application: app,
-                    header: app.status == ProviderStatus.approved
-                        ? AvailabilityCard(
-                            vehicles: [
-                              for (final v in app.vehicles)
-                                if (v.status == VehicleStatus.approved) v,
-                            ],
-                          )
-                        : null,
                     onContinue: () =>
                         ref.read(wizardOpenProvider.notifier).open(),
                   ),

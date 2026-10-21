@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\Customers\CustomerController;
 use App\Http\Controllers\Admin\Customers\CustomerTabController;
+use App\Models\LedgerAccount;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,7 @@ Route::prefix('customers')->name('customers.')->group(function (): void {
 
     Route::controller(CustomerTabController::class)->prefix('{customer:uuid}/tabs')->name('tabs.')->whereUuid('customer')->group(function (): void {
         Route::get('bookings', 'bookings')->withTrashed()->name('bookings')->can('view', 'customer');
+        Route::get('wallet', 'wallet')->withTrashed()->name('wallet')->can('view', 'customer')->can('viewWallets', LedgerAccount::class);
         Route::get('ratings', 'ratings')->withTrashed()->name('ratings')->can('view', 'customer');
         Route::get('devices', 'devices')->withTrashed()->name('devices')->can('view', 'customer');
         Route::get('consents', 'consents')->withTrashed()->name('consents')->can('view', 'customer');

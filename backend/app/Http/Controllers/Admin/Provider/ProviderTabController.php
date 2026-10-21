@@ -9,9 +9,11 @@ use App\DataTables\Admin\Provider\ProviderHistoryDataTable;
 use App\DataTables\Admin\Provider\ProviderJobsDataTable;
 use App\DataTables\Admin\Provider\ProviderServicesDataTable;
 use App\DataTables\Admin\Provider\ProviderVehiclesDataTable;
+use App\DataTables\Admin\Finance\ProviderWalletDataTable;
 use App\Http\Controllers\Admin\AdminController;
 use App\Models\ProviderProfile;
 use App\Services\Booking\ProviderJobHistoryService;
+use App\Services\Finance\WalletOverviewService;
 use Illuminate\Contracts\View\View;
 
 /**
@@ -48,11 +50,19 @@ final class ProviderTabController extends AdminController
     }
 
     /**
-     * Gross figures from completed jobs only: commission, wallet and payouts arrive with finance (P3.4), so no net is shown.
+     * Gross figures from completed jobs only; the wallet tab has the ledger balance and the commission owed. Payouts and net earnings arrive with P3.4.
      */
     public function earnings(ProviderProfile $provider): View
     {
         return view('admin.providers.tabs.earnings', ['totals' => $this->jobs->completedTotals($provider)]);
+    }
+
+    /**
+     * Wallet of the provider (finance.view or wallets.view): balance, cash debt against the limit and the statement.
+     */
+    public function wallet(ProviderWalletDataTable $table, ProviderProfile $provider, WalletOverviewService $wallets): mixed
+    {
+        return $table->render('admin.finance.wallet-tab', ['intro' => __('admin.ledger.wallet.provider_intro'), 'overview' => $wallets->forProvider($provider)]);
     }
 
     public function deletionRequests(ProviderDeletionRequestsDataTable $table, ProviderProfile $provider): mixed

@@ -57,6 +57,8 @@ return [
         'message_sent' => 'Message sent',
         'phone_revealed' => 'Phone number revealed',
         'anonymised' => 'Anonymised',
+        'reversed' => 'Reversed',
+        'reconciled' => 'Reconciled',
         'downloaded' => 'Downloaded',
         'more_info_requested' => 'More information requested',
     ],
@@ -246,6 +248,7 @@ return [
         'safety' => 'Safety & privacy',
         'apps' => 'Mobile apps',
         'security' => 'Admin security',
+        'finance' => 'Finance',
         'rate_limits' => 'Rate limits',
     ],
 
@@ -611,6 +614,59 @@ return [
         'scheduled' => 'Scheduled',
         'expired' => 'Expired',
         'inactive' => 'Inactive',
+    ],
+
+    'entry_side' => [
+        'debit' => 'Debit',
+        'credit' => 'Credit',
+    ],
+    'ledger_account_type' => [
+        'customer_wallet' => 'Customer wallet',
+        'provider_wallet' => 'Provider wallet',
+        'platform_revenue' => 'Platform revenue',
+        'promo_expense' => 'Promotions expense',
+        'partner_receivable' => 'Partner receivable',
+        'gateway_clearing' => 'Payment gateway clearing',
+        'payout_clearing' => 'Payout clearing',
+        'taxes_payable' => 'Taxes payable',
+        'adjustments' => 'Adjustments',
+    ],
+    'journal_entry_type' => [
+        'booking_settlement_cash' => 'Cash trip settlement',
+        'booking_settlement_gateway' => 'Paid trip settlement',
+        'tip' => 'Tip',
+        'refund' => 'Refund',
+        'payout_reserve' => 'Payout reserve',
+        'payout_paid' => 'Payout paid',
+        'adjustment' => 'Adjustment',
+        'cancellation_fee' => 'Cancellation fee',
+        'reversal' => 'Reversal',
+    ],
+    'commission_type' => [
+        'percentage' => 'Percentage',
+        'fixed' => 'Fixed amount',
+        'hybrid' => 'Percentage plus fixed',
+    ],
+    'commission_rule_state' => [
+        'current' => 'Current',
+        'scheduled' => 'Scheduled',
+        'expired' => 'Expired',
+        'inactive' => 'Inactive',
+    ],
+    'discount_funding' => [
+        'platform' => 'Platform',
+        'provider' => 'Provider',
+        'partner' => 'Partner',
+    ],
+    'reconciliation_status' => [
+        'ok' => 'Consistent',
+        'mismatch' => 'Mismatch',
+    ],
+    'commission_scope' => [
+        'service_category' => 'Service',
+        'zone' => 'Zone',
+        'provider_tier' => 'Provider tier',
+        'campaign' => 'Campaign',
     ],
 
     // @admin-module:enums

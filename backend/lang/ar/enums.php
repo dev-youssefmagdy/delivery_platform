@@ -57,6 +57,8 @@ return [
         'message_sent' => 'إرسال رسالة',
         'phone_revealed' => 'كشف رقم الهاتف',
         'anonymised' => 'إخفاء الهوية',
+        'reversed' => 'عكس قيد',
+        'reconciled' => 'تسوية الدفتر',
         'downloaded' => 'تم التنزيل',
         'more_info_requested' => 'طُلبت معلومات إضافية',
     ],
@@ -246,6 +248,7 @@ return [
         'safety' => 'الأمان والخصوصية',
         'apps' => 'تطبيقات الجوال',
         'security' => 'أمان المشرفين',
+        'finance' => 'المالية',
         'rate_limits' => 'حدود الطلبات',
     ],
 
@@ -611,6 +614,59 @@ return [
         'scheduled' => 'مجدول',
         'expired' => 'منتهٍ',
         'inactive' => 'معطّل',
+    ],
+
+    'entry_side' => [
+        'debit' => 'مدين',
+        'credit' => 'دائن',
+    ],
+    'ledger_account_type' => [
+        'customer_wallet' => 'محفظة عميل',
+        'provider_wallet' => 'محفظة مقدم خدمة',
+        'platform_revenue' => 'إيراد المنصة',
+        'promo_expense' => 'مصروف العروض',
+        'partner_receivable' => 'مستحقات الشركاء',
+        'gateway_clearing' => 'تسوية بوابة الدفع',
+        'payout_clearing' => 'تسوية السحوبات',
+        'taxes_payable' => 'ضرائب مستحقة',
+        'adjustments' => 'التعديلات',
+    ],
+    'journal_entry_type' => [
+        'booking_settlement_cash' => 'تسوية رحلة نقدية',
+        'booking_settlement_gateway' => 'تسوية رحلة مدفوعة',
+        'tip' => 'إكرامية',
+        'refund' => 'استرداد',
+        'payout_reserve' => 'حجز سحب',
+        'payout_paid' => 'سحب مدفوع',
+        'adjustment' => 'تعديل',
+        'cancellation_fee' => 'رسوم إلغاء',
+        'reversal' => 'عكس قيد',
+    ],
+    'commission_type' => [
+        'percentage' => 'نسبة',
+        'fixed' => 'مبلغ ثابت',
+        'hybrid' => 'نسبة مع مبلغ ثابت',
+    ],
+    'commission_rule_state' => [
+        'current' => 'سارية',
+        'scheduled' => 'مجدولة',
+        'expired' => 'منتهية',
+        'inactive' => 'معطّلة',
+    ],
+    'discount_funding' => [
+        'platform' => 'المنصة',
+        'provider' => 'مقدم الخدمة',
+        'partner' => 'شريك',
+    ],
+    'reconciliation_status' => [
+        'ok' => 'متسق',
+        'mismatch' => 'فروق',
+    ],
+    'commission_scope' => [
+        'service_category' => 'الخدمة',
+        'zone' => 'المنطقة',
+        'provider_tier' => 'مستوى مقدم الخدمة',
+        'campaign' => 'الحملة',
     ],
 
     // @admin-module:enums

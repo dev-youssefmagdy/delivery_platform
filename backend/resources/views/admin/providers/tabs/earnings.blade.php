@@ -1,4 +1,4 @@
-{{-- Earnings tab: gross figures of completed jobs only. Commission, wallet and payouts arrive with finance (P3.4). --}}
+{{-- Earnings tab: gross figures of completed jobs only. The wallet tab has the ledger balance; net earnings and payouts arrive with P3.4. --}}
 <p class="mb-4 text-sm text-slate-500">{{ __('admin.providers.earnings.intro') }}</p>
 @if ($totals === [])
     <x-admin.empty-state icon="banknotes" :title="__('admin.providers.earnings.none')" compact />

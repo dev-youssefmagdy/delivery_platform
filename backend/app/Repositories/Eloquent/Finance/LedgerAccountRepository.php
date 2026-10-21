@@ -5,9 +5,11 @@ namespace App\Repositories\Eloquent\Finance;
 use App\DTOs\Finance\LedgerAccountFilterData;
 use App\Enums\Finance\LedgerAccountType;
 use App\Models\LedgerAccount;
+use App\Models\User;
 use App\Repositories\Contracts\Finance\LedgerAccountRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -84,6 +86,9 @@ final class LedgerAccountRepository implements LedgerAccountRepositoryInterface
     public function datatableQuery(LedgerAccountFilterData $filters): Builder
     {
         return LedgerAccount::query()
+            ->with(['owner' => static fn (MorphTo $morph) => $morph->constrain([
+                User::class => static fn ($query) => $query->withTrashed(),
+            ])])
             ->when($filters->types !== [], static fn (Builder $query) => $query->whereIn('type', array_map(static fn (LedgerAccountType $type): string => $type->value, $filters->types)))
             ->when($filters->currency !== null, static fn (Builder $query) => $query->where('currency', $filters->currency))
             ->when($filters->negativeOnly === true, static fn (Builder $query) => $query->where('balance_minor', '<', 0))

@@ -64,9 +64,11 @@
     @endif
 
     @php
+        $showWallet = \Illuminate\Support\Facades\Gate::allows('viewWallets', \App\Models\LedgerAccount::class);
         $tabs = [
             'profile' => ['label' => __('admin.customers.tabs.profile'), 'icon' => 'user'],
             'bookings' => ['label' => __('admin.customers.tabs.bookings'), 'icon' => 'clipboard'],
+            ...($showWallet ? ['wallet' => ['label' => __('admin.customers.tabs.wallet'), 'icon' => 'banknotes']] : []),
             'payments' => ['label' => __('admin.customers.tabs.payments'), 'icon' => 'banknotes'],
             'coupons' => ['label' => __('admin.customers.tabs.coupons'), 'icon' => 'tag'],
             'tickets' => ['label' => __('admin.customers.tabs.tickets'), 'icon' => 'lifebuoy'],
@@ -97,6 +99,9 @@
             </x-admin.tabs.panel>
 
             <x-admin.tabs.panel id="bookings" :url="route('admin.customers.tabs.bookings', $customer)" />
+            @if ($showWallet)
+                <x-admin.tabs.panel id="wallet" :url="route('admin.customers.tabs.wallet', $customer)" />
+            @endif
             <x-admin.tabs.panel id="payments"><x-admin.available-after :title="__('admin.customers.tabs.payments')" milestone="P3.2" :module="__('admin.customers.modules.payments')" /></x-admin.tabs.panel>
             <x-admin.tabs.panel id="coupons"><x-admin.available-after :title="__('admin.customers.tabs.coupons')" milestone="P3.3" :module="__('admin.customers.modules.coupons')" /></x-admin.tabs.panel>
             <x-admin.tabs.panel id="tickets"><x-admin.available-after :title="__('admin.customers.tabs.tickets')" milestone="P3.7" :module="__('admin.customers.modules.tickets')" /></x-admin.tabs.panel>

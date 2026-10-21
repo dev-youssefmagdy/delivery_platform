@@ -650,6 +650,14 @@ return [
                 'label' => 'Providers can rate customers',
                 'description' => 'When off, only customers rate providers.',
             ],
+            'rating_window_hours' => [
+                'label' => 'Rating window',
+                'description' => 'How long after completion a rating can still be submitted.',
+            ],
+            'rating_min_sample' => [
+                'label' => 'Minimum ratings for a public score',
+                'description' => 'Below this number of ratings the average is shown as provisional.',
+            ],
             'dispatch_radius_steps_km' => [
                 'label' => 'Dispatch radius steps',
                 'description' => 'Search radius per wave, ascending and separated by commas (for example 2, 4, 7).',
@@ -701,6 +709,10 @@ return [
             'share_link_ttl_minutes' => [
                 'label' => 'Trip share link validity',
                 'description' => 'How long a shared live-trip link stays active.',
+            ],
+            'ride_pin_max_attempts' => [
+                'label' => 'Ride PIN attempts',
+                'description' => 'Wrong PIN entries allowed before the trip start is locked and flagged for support.',
             ],
             'direct_phone_exposure' => [
                 'label' => 'Allow direct phone numbers',

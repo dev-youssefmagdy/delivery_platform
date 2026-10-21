@@ -49,6 +49,8 @@ enum SettingKey: string implements HasLabel
     case ScheduledBookingMaxDays = 'scheduled_booking_max_days';
     case ScheduledSearchLeadMinutes = 'scheduled_search_lead_minutes';
     case RatingCustomerByProviderEnabled = 'rating_customer_by_provider_enabled';
+    case RatingWindowHours = 'rating_window_hours';
+    case RatingMinSample = 'rating_min_sample';
 
     // Dispatch
     case DispatchRadiusStepsKm = 'dispatch_radius_steps_km';
@@ -68,6 +70,7 @@ enum SettingKey: string implements HasLabel
     // Safety & privacy
     case RidePinRequired = 'ride_pin_required';
     case ShareLinkTtlMinutes = 'share_link_ttl_minutes';
+    case RidePinMaxAttempts = 'ride_pin_max_attempts';
     case DirectPhoneExposure = 'direct_phone_exposure';
 
     // Mobile apps
@@ -146,13 +149,13 @@ enum SettingKey: string implements HasLabel
             self::OtpLength, self::OtpTtlSeconds, self::OtpResendCooldownSeconds, self::OtpMaxAttempts => SettingGroup::Otp,
             self::BookingSearchTtlSeconds, self::OfferTtlSeconds, self::MaxOffersPerProviderPerBooking, self::MaxOfferRevisions,
             self::MaxActiveOnDemandBookings, self::ScheduledBookingMinLeadMinutes, self::ScheduledBookingMaxDays, self::ScheduledSearchLeadMinutes,
-            self::RatingCustomerByProviderEnabled => SettingGroup::Booking,
+            self::RatingCustomerByProviderEnabled, self::RatingWindowHours, self::RatingMinSample => SettingGroup::Booking,
             self::DispatchRadiusStepsKm, self::DispatchBatchSize, self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds,
             self::LocationMaxSpeedKmh, self::LocationHistoryIntervalSeconds,
             self::AutoRedispatchOnProviderCancel => SettingGroup::Dispatch,
             self::ProviderSingleActiveJob, self::ProviderCashDebtLimitMinor, self::ProviderVerificationSlaHours,
             self::ProviderDocumentExpiryWarningDays => SettingGroup::Providers,
-            self::RidePinRequired, self::ShareLinkTtlMinutes, self::DirectPhoneExposure => SettingGroup::Safety,
+            self::RidePinRequired, self::ShareLinkTtlMinutes, self::RidePinMaxAttempts, self::DirectPhoneExposure => SettingGroup::Safety,
             self::MinAppVersionCustomer, self::MinAppVersionDriver, self::ForceUpdateCustomer, self::ForceUpdateDriver,
             self::MaintenanceModeApps => SettingGroup::Apps,
             self::AdminMfaRequiredRoles, self::AdminLoginLockoutSeconds => SettingGroup::Security,
@@ -192,7 +195,7 @@ enum SettingKey: string implements HasLabel
             self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds, self::LocationHistoryIntervalSeconds, self::AdminLoginLockoutSeconds => 'seconds',
             self::ShareLinkTtlMinutes, self::ScheduledBookingMinLeadMinutes, self::ScheduledSearchLeadMinutes => 'minutes',
             self::ScheduledBookingMaxDays => 'days',
-            self::ProviderVerificationSlaHours => 'hours',
+            self::ProviderVerificationSlaHours, self::RatingWindowHours => 'hours',
             self::ProviderDocumentExpiryWarningDays => 'days',
             self::DispatchRadiusStepsKm => 'km',
             self::LocationMaxSpeedKmh => 'kmh',
@@ -231,6 +234,9 @@ enum SettingKey: string implements HasLabel
             self::LocationHistoryIntervalSeconds => [1, 600],
             self::ProviderCashDebtLimitMinor => [0, 100_000_000],
             self::ShareLinkTtlMinutes => [5, 1440],
+            self::RidePinMaxAttempts => [1, 10],
+            self::RatingWindowHours => [1, 720],
+            self::RatingMinSample => [1, 100],
             self::ProviderVerificationSlaHours => [1, 720],
             self::ProviderDocumentExpiryWarningDays => [1, 365],
             self::AdminLoginLockoutSeconds => [60, 86_400],
@@ -281,6 +287,9 @@ enum SettingKey: string implements HasLabel
             self::ProviderDocumentExpiryWarningDays => 30,
             self::RidePinRequired => true,
             self::ShareLinkTtlMinutes => 120,
+            self::RidePinMaxAttempts => 5,
+            self::RatingWindowHours => 72,
+            self::RatingMinSample => 5,
             self::DirectPhoneExposure => false,
             self::MinAppVersionCustomer, self::MinAppVersionDriver => '1.0.0',
             self::ForceUpdateCustomer, self::ForceUpdateDriver, self::MaintenanceModeApps => false,

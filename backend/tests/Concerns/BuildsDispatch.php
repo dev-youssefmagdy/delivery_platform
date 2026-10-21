@@ -55,7 +55,7 @@ trait BuildsDispatch
      */
     protected function samplePayload(float $lat = 30.05, float $lng = 31.25, ?CarbonImmutable $at = null): array
     {
-        return ['lat' => $lat, 'lng' => $lng, 'recorded_at' => ($at ?? CarbonImmutable::now())->toIso8601String(), 'accuracy_m' => 8, 'source' => 'gps'];
+        return ['lat' => $lat, 'lng' => $lng, 'recorded_at' => ($at ?? CarbonImmutable::now()->addMillisecond())->format('Y-m-d\TH:i:s.vP'), 'accuracy_m' => 8, 'source' => 'gps'];
     }
 
     /**

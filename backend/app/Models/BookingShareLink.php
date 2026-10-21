@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 
 /**
@@ -31,7 +32,7 @@ class BookingShareLink extends Model
         return $this->belongsTo(Booking::class);
     }
 
-    public function isActiveAt(Carbon $at): bool
+    public function isActiveAt(CarbonInterface $at): bool
     {
         return $this->revoked_at === null && $this->expires_at->greaterThan($at);
     }

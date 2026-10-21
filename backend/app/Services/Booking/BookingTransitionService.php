@@ -267,7 +267,7 @@ final class BookingTransitionService
         if ($from === BookingStatus::InProgress) {
             $this->requireAssignedProvider($booking, $context);
 
-            if ($booking->selected_offer_id === null) {
+            if ($booking->selected_offer_id === null || $booking->agreed_fare_minor === null) {
                 throw BusinessRuleViolation::make('booking_fare_not_agreed');
             }
 

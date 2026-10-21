@@ -21,7 +21,7 @@ final class BookingProofRepository implements BookingProofRepositoryInterface
 
     public function typesFor(int $bookingId): array
     {
-        return array_values(array_map('strval', BookingProof::query()->where('booking_id', $bookingId)->distinct()->pluck('proof_type')->all()));
+        return array_values(array_map('strval', BookingProof::query()->toBase()->where('booking_id', $bookingId)->distinct()->pluck('proof_type')->all()));
     }
 
     public function forBooking(int $bookingId): Collection

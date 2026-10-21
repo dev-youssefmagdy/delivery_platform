@@ -24,7 +24,7 @@
 | P2.5 | Trip lifecycle: heading, arrived, PIN, start, complete, cancellation v1, ratings, share link | P0 | 🟡 | 2026-10-26 |
 | P2.6 | Customer app: complete ride flow | P0 | 🟡 | 2026-10-27 |
 | P2.7 | Driver app: complete ride flow | P0 | 🟡 | 2026-10-28 |
-| P2.8 | Admin: bookings, offers monitor, live operations v1 | P0 | ❌ | — |
+| P2.8 | Admin: bookings, offers monitor, live operations v1 | P0 | 🟡 | 2026-10-29 |
 | P2.9 | E2E ride test, race tests, MVP hardening | P0 | ❌ | — |
 | P3.1 | Double-entry ledger, wallets, commission rules, price breakdown | P1 | ❌ | — |
 | P3.2 | Payments: gateway adapter, cash flow, webhooks, tips | P1 | ❌ | — |
@@ -49,6 +49,39 @@
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+
+---
+
+## P2.8 — Admin: bookings, offers monitor, live operations v1 · 🟡 2026-10-29 (gate NOT run)
+
+Committed directly on `main`. ADR-109..114. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done.** Every test that should exist is in `MISSED_TESTS.md` (P2.8 section). Sanity checks that did run: `php -l` on every new file, `route:list`, `php artisan view:cache` (all Blade compiles), `event:list` (the feed listener is discovered for its three events), container resolution of the new services, a read-only tinker run of every new repository query and DataTable JSON (including the offers `stats` payload and the anomaly SQL), a rolled-back tinker scenario (create bookings with the factory, run extend / re-dispatch / cancel / forbidden force / PIN lift / forced start, check audit rows and timeline events, render the show summary and tab views) and one `npm run build` (Vite compiled, 0 vulnerabilities from `npm install`).
+
+### What was built (backend, admin panel)
+
+- **Bookings** (`bookings.view`): Yajra listing with the Appendix C filters in a collapsed card (code, statuses, service, type, city, zone, payment status and method, created range, customer phone, provider phone, has incident; "has ticket" waits for P3.7), masked contacts, status/payment badges, a "needs support" flag, and a Live refresh switch (timer + operations feed). Show page: summary, parties, money, route map, status banners, tabs (timeline from `booking_status_events`, offers with ALL versions, dispatch recipients by wave, snapshots in the JSON viewer, PIN status without the PIN + proofs + reports, ratings, payment placeholder P3.2, audit).
+- **Overrides** (`BookingOverrideService`, ADR-109): cancel by operations with an explicit fee decision, extend search, re-dispatch now, force status inside the transition graph, lift PIN lock (`bookings.pin_override`, mandatory reason, audit, parties notified through the log stub, apps get a status event). Forms are `<x-admin.form>` modal fragments with Precognition; none edits an offer version or a price; `BookingTransitionService` stays the only status writer.
+- **No-offer queue:** searching bookings without active offers for 120 s and `expired_no_provider` of the last 24 h; retry / extend / cancel (searching) and contact customer (in-app message).
+- **Live operations map:** Leaflet + markercluster, providers and bookings layers, tooltip with id/category/status only, updates from `private-admin.operations` through Echo/Reverb, realtime health indicator with last-event time, gap detection, snapshot polling fallback (ADR-112). New npm packages `laravel-echo`, `pusher-js`, `leaflet.markercluster`.
+- **Offers monitor** (`offers.view`): filters per Appendix C, conversion and response tiles that refresh with each draw, anomaly flag (ADR-113).
+- **Carry-over:** PIN-lock lift; booking ratings tab; customer Ratings tab and provider Jobs tab are real DataTables; provider Earnings tab shows gross completed-job totals (no commission or payouts until P3.4) with the honest placeholder underneath; the customer Bookings tab now links to the booking page; `GET /api/v1/provider/bookings` (paginated history, API.md 8.14).
+
+### Files
+
+Backend: `app/Services/Booking/{BookingOverrideService,BookingAdminService,BookingDetailTabsService,NoOfferQueueService,ProviderJobHistoryService}.php`, `app/Services/Operations/*`, `app/Services/Offers/OfferMonitorService.php`, `app/Listeners/Operations/PublishOperationsFeed.php`, `app/Events/Realtime/{OperationsFeedEvent,ProviderPositionRecorded}.php`, `app/DataTables/Admin/Booking/*`, `ProviderJobsDataTable`, `CustomerRatingsDataTable`, `app/Http/Controllers/Admin/Booking/*`, `Api/V1/Provider/JobHistoryController`, requests under `Http/Requests/Admin/Booking`, DTOs (`BookingAdminFilterData`, `OfferFilterData`, `BookingOverride*`, `BookingAdminDetails`, `OperationsSnapshot`, `OfferStats`), enums (`BookingOverrideAction`, `OperationsCancellationFee`, `OfferAnomaly`, colours on `OfferStatus` and `DispatchResponse`), repositories (booking, offer, rating, report, dispatch recipient additions and `OperationsMapRepository`), `BookingPolicy` (admin abilities), `BookingOfferPolicy`, `routes/admin/bookings.php`, `config/booking.php` (`operations`), `config/admin.php` (`realtime`), menu (Operations group), views under `admin/bookings`, `admin/offers`, `admin/operations`, components `realtime-status`, `live-refresh`, `stat-tile` (`stat` prop), JS `core/{realtime,live-refresh,operations-map}.js`, lang ar/en. No migration.
+
+### Known gaps / notes for later milestones
+
+- **Driver app follow-up (not done here):** replace the history built from selected offers with `GET /api/v1/provider/bookings` (paginated, API.md 8.14), keep the detail screen on `/provider/bookings/{booking}`.
+- No export of the bookings or offers listings yet (needs `reports.export` and the audited export job); fare distribution charts by service/zone/time, the reference-formula and offer-limit settings screens of SRS §16.7, reassign-to-another-provider, and the audited corrective workflow for accepted offers are later work.
+- `expired_no_provider` is final in the transition graph, so the queue can only contact those customers; reviving it would need a graph change decided in a later milestone.
+- Cancellation fees decided by operations are stored on the booking only; posting them is P3.5. Notifications to the parties are log lines until P3.6. Payment tab is a placeholder until P3.2.
+- Dispatch re-run notifies providers that already saw an older wave again by design (recipients are cleared); a provider that cancelled the job is not special-cased on an operator re-dispatch.
+- The map tooltips are mouse/focus-less (Leaflet circle markers); a keyboard-accessible list of the same items is a P6.3 accessibility item.
+- Realtime needs Reverb running (`php artisan reverb:start`) and `REVERB_*` in `.env`; without a key the indicator reads "not configured" and the map and live switch fall back to polling.
+
+### Next steps
+
+P2.9 — end-to-end ride test, race tests and MVP hardening. Useful facts for it: operator overrides are in `BookingOverrideService` (race against customer selection and provider actions happens under the booking row lock); the operations feed is dispatched after commit; `MISSED_TESTS.md` lists the P2.8 tests.
 
 ---
 
@@ -133,7 +166,7 @@ Not run (by instruction): pint, phpstan, `php artisan test`, `npm run build`, `s
 
 - **P2.6 customer app:** subscribe to `private-customer.{uuid}` (status, location, support-flag and offer events) and refetch `GET /bookings/{b}` on a sequence gap; render buttons from `allowed_actions`; show `trip_pin` while it is not null; cancel flow = preview call (no key), show `meta.cancellation.message`, then commit with `accepted_fee_minor`; share returns a URL; rating / report forms; `provider_location_visible` tells when the map marker is allowed.
 - **P2.7 driver app:** subscribe to `private-provider.{uuid}`, load `GET /provider/bookings/active` on start and on any status event; buttons from `allowed_actions`; send the GPS fix with `arrived`; PIN entry shows `attempts_remaining` and the lock state; a status event for a booking you no longer hold (re-dispatch) means drop the job; all writes need `Idempotency-Key`.
-- Lifting a PIN lock, operations cancellation / override, the customer Ratings and provider Jobs admin tabs (placeholders now say P2.8) and the live operations screens are P2.8. Fee posting is P3.5; online-payment completion (`completed_pending_payment`) P3.2; photo / signature / OTP proof upload endpoints P4 (`POST /proofs` is not built yet; the table and guards are). `completed_at` + payment window for tips is P3.2.
+- Lifting a PIN lock, operations cancellation / override, the customer Ratings and provider Jobs admin tabs and the live operations screens were built in P2.8. Fee posting is P3.5; online-payment completion (`completed_pending_payment`) P3.2; photo / signature / OTP proof upload endpoints P4 (`POST /proofs` is not built yet; the table and guards are). `completed_at` + payment window for tips is P3.2.
 - Customer-side call relay does not exist: with `direct_phone_exposure` off the provider only sees a masked number until chat (P3.7).
 - No default cancellation policy is seeded: without one the built-in defaults (120 s free, no fees) apply.
 

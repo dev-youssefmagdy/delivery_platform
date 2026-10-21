@@ -323,3 +323,102 @@ Common setup: `ProviderScope` overrides for `jobRepositoryProvider` (mocktail `M
 ### Manual
 - With Reverb running: a new request makes the sound/vibration per preference; the connection indicator follows a network cut and the lists refetch after reconnect; Android foreground notification and tracking interval change to_pickup/active/idle across the transitions; the maps hand-off opens Google Maps with the pickup then the destination.
 
+
+---
+
+## P2.8 — Admin bookings, offers monitor, live operations v1
+
+Status: **no P2.8 test was written or run** (user instruction). A rolled-back tinker scenario exercised extend / re-dispatch / cancel (waive) / re-cancel (409) / out-of-graph force (422) / PIN lift / forced start with PIN bypass / audit rows / timeline events / view rendering, and read-only runs covered every new query and DataTable JSON; none of that replaces the tests below. No browser smoke and no vitest run was done either.
+
+Likely to break in existing tests and why:
+- Tests that build `BookingPolicy` abilities with a `User` only: `view` now takes `Authorizable` (admin permission or owner); `viewAny`, `viewPii`, `cancelByOperations`, `manage`, `forceTransition`, `liftPinLock` are new. The admin authorization-guard test (every admin route has `can:` or `admin.access:self`) now also scans `routes/admin/bookings.php`; the route-list snapshot test, if any, changes.
+- `tests/Feature/Location/LocationIngestTest.php`: ingest now dispatches `ProviderPositionRecorded` (a listener publishes the operations feed); with `Event::fake()` unfiltered, assertions on dispatched events may need `assertDispatched` instead of `assertNothingDispatched`.
+- Enum translation completeness tests: new enums `BookingOverrideAction`, `OperationsCancellationFee`, `OfferAnomaly` (keys in `lang/{ar,en}/enums.php`), `OfferStatus` and `DispatchResponse` now implement `HasColor`. Lang-parity test: new keys in `admin.php` (`bookings`, `offers`, `operations`, `realtime`, `ratings`, `customers.ratings`, `providers.jobs|earnings`, `js.realtime|operations`) and `api.php` errors (`override_*`).
+- Admin menu tests: four new items in the `operations` group; `AdminMenu` now splits `active` on `|`.
+- Tests that construct `OfferRepositoryInterface`, `BookingRepositoryInterface`, `RatingRepositoryInterface`, `BookingReportRepositoryInterface` or `DispatchRecipientRepositoryInterface` fakes (new methods), the physical-utility grep test over admin views (new views use logical utilities only), `tests/Feature/Admin/Customers/*` for the Ratings tab (placeholder replaced by a DataTable) and the Providers show test for the Jobs/Earnings tabs.
+- `tests/Feature/Provider/*` or API route tests that assume `GET /provider/bookings` does not exist (it is now the paginated history; `bookings/active` and `bookings/{booking}` keep working because the static segment is registered first).
+
+Helpers to add: `Tests\Concerns\ActsAsAdmin` with `adminWith(AdminPermission ...$permissions)` (Spatie role with exactly those permissions, `actingAs($admin, 'admin')`), `Tests\Concerns\BuildsOperations` with `searchingBooking(array $attrs = [])`, `assignedBooking(BookingStatus $status, array $policy = [])` (approved provider + vehicle + accepted offer, PIN `1234` encrypted), `lockedPinBooking()`, `offerWithAmount(Booking $booking, int $minor)` (offer + version, `reference_estimate` with `low_minor`/`high_minor`), `BookingOffer::factory()`.
+
+### tests/Feature/Admin/Booking/BookingListingTest.php
+
+- `test_guest_is_redirected_and_admin_without_permission_gets_403`: `/admin/bookings`, `/admin/bookings/{uuid}`, every tab URL, `no-offer-queue`, `operations/map`, `operations/map/snapshot`, `/admin/offers` -> guest 302 to login; admin without `bookings.view` (or `offers.view`) 403 for the page, the JSON/DataTables call and each tab; support role (with `bookings.view`) 200.
+- `test_datatable_respects_every_filter`: one test per filter (code partial, multi statuses, service category ids, booking types, city ids, zone ids, payment statuses, payment methods, created range inclusive of the end day, customer phone full number and last-4 suffix, provider phone, `has_incident` true/false via support flag and via a report, a 3-digit phone matches nothing); the filters card is collapsed by default (HTML contains `x-data="filtersCard"` and the table id) and the first draw honours `?filters[...]`.
+- `test_listing_never_leaks_contact_data`: JSON has masked phones only (`PhoneNumber::mask`), no addresses, no `service_details`, no `pin_*` keys; the response keys equal the `only()` allowlist; ordering by a non-allowlisted column is ignored; `order[0][column]=fare` sorts by `proposed_fare_minor`.
+- `test_row_renders_status_flag_and_agreed_fare`: support-flagged booking shows the "needs support" badge; fare column shows the agreed fare once a provider was chosen, the proposed one before.
+- `test_customer_bookings_tab_links_to_booking_page` and `test_provider_jobs_tab_lists_only_that_providers_bookings` (masked customer, view link; other providers' bookings absent; 403 for admin without `drivers.view`), `test_customer_ratings_tab_lists_received_ratings_only` (ratings the customer gave are absent; `ratee_type = customer`), `test_provider_earnings_tab_sums_completed_jobs_per_currency` (only `completed` and `completed_pending_payment`, `final_fare_minor`, no commission figure, placeholder text for P3.4 present).
+
+### tests/Feature/Admin/Booking/BookingShowTest.php
+
+- `test_show_page_renders_summary_and_tabs`: booking in several statuses renders; tab URLs return fragments (timeline, snapshots, safety, ratings) and DataTables (offers, dispatch, audit) with the right JSON.
+- `test_phones_masked_and_addresses_need_view_pii`: without `bookings.view_pii` no address text in the page, the map data-point is rounded to 2 decimals and the masked-route notice shows; with it the exact address and 6-decimal point show and exactly one `viewed` audit row (`meta.pii = true`) is written per open; arrival evidence appears in the snapshots tab only with the permission.
+- `test_pin_is_never_exposed`: no response of the show page or tabs contains the PIN, `pin_hash` or the encrypted value (page, safety tab, snapshots JSON viewer); safety tab shows required / verified / locked / attempts and the max from the setting.
+- `test_offers_tab_lists_every_version`: offer with 3 versions shows v1..v3 with amounts and notes, status badges, anomaly badge, close reason; versions cannot be changed (no route accepts a write).
+- `test_dispatch_tab_lists_recipients_by_wave`; `test_timeline_labels_annotations_and_status_changes` (request_changed, pin_locked, pin_lock_lifted, search_extended_by_operations, redispatch_requested_by_operations show their translated title; status changes show badge, "from" status and actor; reasons shown);
+- `test_ratings_tab_shows_both_sides_and_moderation_status`; `test_audit_tab_lists_override_with_reason_and_actor`.
+- `test_available_override_buttons_follow_status_and_permission`: searching booking with `bookings.manage` only shows extend and re-dispatch, not cancel/force/PIN; an arrived booking with a lock and `bookings.pin_override` shows "Lift PIN lock"; terminal statuses show none; admin with view-only sees none.
+
+### tests/Feature/Admin/Booking/BookingOverrideTest.php
+
+Common for each action (data provider over the five actions): no permission -> 403 (route and FormRequest); missing or too short `reason` -> 422 on the precognitive request (header `Precognition: true`) and on the real one, and nothing changes; valid precognitive request -> 204 without persisting; success writes exactly one `admin_audit_logs` row (`action = overridden`, `auditable_type = booking`, `reason`, `meta.override`, before/after snapshots without phone, address or PIN); `BookingNotifier::operationsOverride` is called once with the action (spy) and logs one line per party; an `OperationsFeedEvent` booking_changed is dispatched; response is the AdminFormResponse (`close_modal`, `reload` or `reload_table` per `context`).
+- `test_cancel_by_operations_waive_fee_ends_booking_and_closes_offers`: searching and assigned bookings -> `cancelled_by_operations`, active offers `invalidated`/closed with reason `booking_cancelled`, accepted offer and every offer version untouched, `cancelled_by_type = admin`, `cancellation_reason = reason`, `cancellation_reason_code = operations_override`, `cancellation_decision.basis = waived_by_operations`, `cancellation_fee_minor = 0`, one status event with actor `admin`.
+- `test_cancel_apply_policy_uses_the_booking_snapshot`: arrived booking with a percent rule -> fee equals `CancellationFeeCalculator` for the customer actor, decision actor `admin`, basis `operations_applied_policy`; in-progress booking with `apply_policy` -> 422 `override_fee_policy_unavailable`, with `waive` -> cancelled with null fee.
+- `test_cancel_not_possible_from_final_or_completed_statuses`: `completed`, `cancelled_*`, `expired_no_provider`, `disputed` -> 409 `override_not_available`, status unchanged, no audit row.
+- `test_extend_search_moves_window_and_queues_jobs`: `search_expires_at` = max(old, now) + seconds, `lock_version` +1, status event `search_extended_by_operations` (no status change), `ExpireBookingSearch` delayed to the new time and `DispatchBookingWave` for `lastWave + 1` queued (Queue::fake); 29 and 1801 seconds -> 422 on the field; non-searching booking -> 409.
+- `test_redispatch_now_restarts_dispatch_and_keeps_offers`: `BookingEnteredSearch` dispatched with `restart = true`, recipients cleared, active offers and versions untouched; window extended by the default when it would end within 30 s, untouched otherwise; event `redispatch_requested_by_operations`.
+- `test_force_transition_cannot_leave_the_graph`: for every status x every `BookingStatus` target that is not an edge, and every edge outside the allow-list (`provider_selected`, the three cancellations), the request is 422 `override_target_invalid` (FormRequest `Rule::in`) and the service call throws the same; no row changes (data-driven from `BookingStatus::allowedTransitions()`).
+- `test_force_transition_goes_through_the_transition_service`: arrived -> in progress sets `started_at`, increments `lock_version`, appends a status event with `metadata.forced = true` and actor `admin`; to `expired_no_provider` closes active offers; to `completed` sets `final_fare_minor` and the payment status; guard failures keep their codes (`booking_proof_required`, `booking_fare_not_agreed`); a test asserts no code path other than `BookingTransitionService` writes `bookings.status` (the model gate throws otherwise).
+- `test_force_start_without_pin_needs_pin_override_permission`: arrived + `pin_required` + unverified: with `bookings.assign_override` only -> 403 `override_forbidden`; with both permissions -> `in_progress`, `metadata.pin_bypassed = true`, audit summary `pin_bypassed`.
+- `test_lift_pin_lock`: locked booking -> `pin_locked_at` null, `pin_attempts` 0, support flag cleared only when its reason is `pin_attempts_exceeded` (another reason stays), event `pin_lock_lifted`, `TripStatusChanged` same-status event to customer and provider channels with `pin_lock_lifted = true`; the provider can verify the PIN again afterwards (end-to-end through `TripPinService`); not locked or wrong status -> 409; needs `bookings.pin_override` (a `bookings.manage` admin gets 403); the PIN is never in the response, audit row or logs.
+- `test_contact_customer_sends_inbox_message`: creates a `customer_messages` row visible at `GET /me/messages`, audit `message_sent` on the customer with the reason, anonymised customer -> 422 `customer_anonymised`, needs `bookings.manage`.
+- `test_override_forms_are_served_per_ability`: `override-forms/{form}` returns the fragment (reason textarea required, `x-admin.form` with `data-ajax-form`) for each form, 403 without the ability, 404 for an unknown form; `context=queue` makes the action URL carry it.
+- `test_overrides_race_with_customer_and_provider_actions` (belongs in the P2.9 concurrency suite): override and customer cancel / provider arrival at the same moment -> exactly one wins under the booking lock, the loser gets 409, never two status events for the same edge.
+
+### tests/Feature/Admin/Booking/NoOfferQueueTest.php
+
+- `test_queue_lists_searching_bookings_without_active_offers_past_the_threshold`: booking older than `no_offer_after_seconds` without active offers listed; younger one absent; older with an active (`submitted`/`counter_offered`) offer absent; with only expired/withdrawn offers listed; provider-assigned booking absent (`Carbon::setTestNow`).
+- `test_queue_lists_recent_expired_no_provider_only`: `expired_no_provider` updated within the window listed, older absent; other final statuses absent.
+- `test_row_actions_follow_status_and_permission`: searching rows have view, re-dispatch, extend, contact, cancel (modal URLs with `context=queue`); expired rows have view and contact only; `bookings.view` only admin sees view only; response contains waiting time and "N notified, M offers" counts.
+- `test_queue_actions_reload_the_queue_table`: POST with `?context=queue` answers `reload_table = [no-offer-queue-table]` and no `reload`.
+
+### tests/Feature/Admin/Operations/OperationsMapTest.php
+
+- `test_snapshot_contains_online_fresh_providers_and_active_bookings_only`: online providers with a position newer than `map_position_fresh_seconds` included (busy flag true for assigned ones, category = vehicle category code), offline/stale excluded; bookings in searching + assigned statuses included, final ones excluded; `truncated = true` past `map_limit`.
+- `test_snapshot_has_no_pii`: JSON contains only the documented keys; no name, phone, address, customer id or provider profile id (uuid only); coordinates rounded to 5 decimals; the page HTML embeds the same data only.
+- `test_snapshot_requires_bookings_view` and the page 403 without it; guest 302.
+- `test_operations_channel_authorization` (in `tests/Feature/Realtime/AdminOperationsChannelTest.php`): `POST /broadcasting/auth` with the admin session for `private-admin.operations` -> 200 for an admin with `bookings.view`, 403 for one without, 403 for a Sanctum mobile token (guard bound to `admin`), guest 403/401.
+- `test_feed_publishes_hints_without_pii`: `BookingStatusChanged` -> `OperationsFeedEvent booking_changed {uuid, status, previous_status}` on `private-admin.operations`; `ProviderAvailabilityChanged` -> `provider_changed {uuid, online}`; location ingest of an online provider -> `provider_moved {uuid, lat, lng, busy}` at most once per `map_move_throttle_seconds` per provider (cache key), none for an offline provider; the sequence is strictly increasing across the three; `broadcastQueue` is critical and the events are after-commit.
+- `test_realtime_config_only_when_configured`: layout JSON has `realtime` null without `REVERB_APP_KEY` or when `BROADCAST_CONNECTION` is not `reverb`, and no secret in any case.
+
+### tests/Feature/Admin/Booking/OffersMonitorTest.php
+
+- `test_guest_and_permission`: `offers.view` required for page and JSON; `offers.moderate` alone is not enough.
+- `test_filters`: booking code, provider ids, statuses, kinds, amount range (major units to minor, inclusive), anomaly flag, created range, each narrowing the rows and the `stats` payload together.
+- `test_anomaly_flag`: reference `low 4000 / high 8000`, offer 1999 -> `very_low`, 2000 -> none (boundary at ratio 0.5), 16000 -> none, 16001 -> `very_high`; booking without reference estimate -> never flagged; the current version amount is used (not an older version); flags are not stored (no column) and an anomalous offer can still be selected by the customer.
+- `test_stats`: submitted / selected / conversion percent / flagged / response rate for a seeded set (including bookings without offers in range), `0.0%` on empty data, stats follow the filters, and the JSON of every draw carries `stats` (the page tiles show the same numbers on first load).
+- `test_monitor_is_read_only`: no write route exists under `/admin/offers`; offer versions stay append-only (model refuses update/delete).
+
+### tests/Feature/Api/Provider/JobHistoryTest.php
+
+- `test_returns_own_jobs_newest_first_paginated`: `GET /api/v1/provider/bookings` -> only bookings with `provider_id = me`, order `created_at desc, id desc`, `per_page` 1..50 clamped (0 -> default 20, 100 -> 50), pagination meta; items match `ProviderJobSummaryResource` (no `phone`, no address keys, `customer` has only `name`).
+- `test_other_providers_and_customers_cannot_see_it`: a second provider sees only theirs; a customer token -> 403; guest -> 401; suspended provider can still read (status-safe route).
+- `test_route_order`: `GET /provider/bookings/active` and `/provider/bookings/{uuid}` still resolve to their controllers.
+- `test_booking_returned_to_searching_leaves_the_history` (documented behaviour of ADR-114).
+
+### tests/Unit
+
+- `OfferStatus` / `DispatchResponse` colours cover every case; `BookingOverrideAction::permission()` mapping (cancel -> `bookings.cancel`, extend and re-dispatch -> `bookings.manage`, force -> `bookings.assign_override`, lift -> `bookings.pin_override`); `OfferStats::conversionPercent()` / `responsePercent()` rounding and zero division; `BookingAdminFilterData` / `OfferFilterData` round trips through `toArray()` and `fromRequest()` (unknown enum values dropped, `forProvider` / `forBooking` not part of the URL form); `BookingOverrideService::forceTargets()` equals `allowedTransitions()` intersected with the allow-list for every status; `OperationsFeedPublisher::providerMoved` throttle (cache fake).
+
+### JS (vitest, `resources/js/admin/core/*.test.js`)
+
+- `realtime.test.js` (stub `laravel-echo` and `pusher-js`): disabled without a key (status `disabled`, no import); state map (connected / connecting / unavailable / failed); `subscription_error` -> `failed`; events call listeners with `gap = false`, a sequence jump of 2 or more -> `gap = true`; `lastEventAt` updates; `initRealtimeStatus` fills label, dot class and time and starts the connection once.
+- `live-refresh.test.js`: remembered choice from `localStorage` (and works when storage throws), timer reload only while `document.hidden` is false, `booking_changed` and gap debounce one reload after 1.5 s, switching off clears timer and listener.
+- `operations-map.test.js` (stub Leaflet and markercluster): snapshot creates markers and counters, a second snapshot removes vanished items, `provider_moved` moves a known provider and ignores an unknown one, `provider_changed offline` removes, `booking_changed` with a final status removes and with an unknown active one schedules a refetch, gap schedules a refetch, tooltips contain id/category/status and never anything else, layer toggles add/remove the cluster groups.
+- `datatables.test.js` addition: `stats` in the draw JSON fills `[data-stats-for="id"] [data-stat]` elements.
+
+### Manual / browser
+
+- Arabic RTL walk-through of bookings list, show page (tabs, modals, banners), no-offer queue, offers monitor, live map (controls, tiles, filters card collapsed, layer toggles, tooltips) at 1280 px and phone width; no horizontal page scroll.
+- With Reverb running: open the map and the bookings list with Live refresh on; create a booking from the customer app, select an offer, move the driver app through the trip: markers and rows update within ~2 s, the indicator shows "Live" and the time of the last event; stop Reverb: indicator turns to "Reconnecting…", the map keeps refreshing by polling every 30 s and the list by the timer; restart Reverb: it recovers and refetches after a gap.
+- Run every override on a real booking with both apps open: the customer and driver apps react (cancelled, window extended, PIN pad unlocks, forced status) and the log shows one "notification stub" line per party.
+- Clustering with a few hundred seeded providers (`demo` seeder or a script) stays responsive; hovering shows only the id/category.

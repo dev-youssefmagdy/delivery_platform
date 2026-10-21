@@ -487,7 +487,7 @@ Money is integer minor units. Every write needs an `Idempotency-Key` (UUID); `ca
 
 | Method | Path | Notes |
 |---|---|---|
-| GET | `/api/v1/provider/bookings/active` | The current job or `data: null`. Same shape as the show endpoint |
+| GET | `/api/v1/provider/bookings/active` | The current job or `data: null`. Same shape as the show endpoint. The paginated history is `GET /api/v1/provider/bookings` (8.14) |
 | GET | `/api/v1/provider/bookings/{booking}` | Now also `trip {heading_at, arrived_at, arrival_verified, free_wait_ends_at, started_at, completed_at, pin {required, verified, locked, attempts_remaining}, support_flagged}`, `cancellation_terms {free_wait_seconds, reasons[], provider_fees[], redispatch}`, `final_fare`, `allowed_actions[]` (`acknowledge`, `arrived`, `verify_start_pin`, `start`, `complete`, `cancel`, `rate_customer`, `report`) and `customer {name, phone (null unless direct exposure), phone_masked, contact_mode, rating}` |
 | POST | `/api/v1/provider/bookings/{booking}/acknowledge` | `provider_selected` to `provider_heading_to_pickup` |
 | POST | `/api/v1/provider/bookings/{booking}/arrived` | Body (all optional): `{ lat, lng, accuracy_m, recorded_at }`. Stores GPS evidence, starts the free-wait timer; never blocked by missing GPS |
@@ -512,3 +512,32 @@ Money is integer minor units. Every write needs an `Idempotency-Key` (UUID); `ca
 **Public page.** `GET /t/{token}` (HTML, noindex) and `GET /t/{token}/data` (JSON poll): status, provider first name, vehicle, last position while fresh, planned duration, expiry. Invalid / expired / revoked / finished: the same 404.
 
 **Realtime (payload `{booking_uuid, sequence, occurred_at, payload}`).** `booking.status_changed` (`{status, previous_status, request_version, actor}`) on `private-customer.{uuid}`, `private-provider.{uuid}` (assigned and previous provider) and `private-booking.{uuid}`; `booking.location_updated` on `private-customer.{uuid}` only (selection to completion); `booking.support_flagged` (`{reason}`) on both party channels. After a provider cancel with re-dispatch the customer sees `provider_selected` -> `searching_offers` and the old provider's app gets the same status event.
+
+### 8.14 Provider job history and admin operations (P2.8)
+
+**Provider (`provider` token, read-only, status-safe)**
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/provider/bookings` | Paginated job history, newest first (bookings the provider holds or held to their end). Query `page`, `per_page` (1-50, default 20). Item: `{id, code, status, status_label, booking_type, service {id, code, name}, customer {name}, agreed_fare, final_fare, payment {method, status}, selected_at, completed_at, cancelled_at, created_at}`; no phone numbers, no addresses (use the detail endpoint). Standard pagination envelope (`meta.pagination`) |
+
+**Admin panel (session guard, not part of the mobile API).** Pages and AJAX endpoints under `/admin`, all behind `can:` middleware and, for writes, FormRequests with a mandatory `reason` (min/max from `config('admin.reason')`):
+
+| Method | Path | Permission | Notes |
+|---|---|---|---|
+| GET | `/admin/bookings`, `/admin/bookings/{uuid}` | `bookings.view` | Listing (Yajra, Appendix C filters) and show page; lazy tabs under `/admin/bookings/{uuid}/tabs/{timeline,offers,dispatch,snapshots,safety,ratings,audit}`. Exact addresses/coordinates need `bookings.view_pii` (the view is audited); phones are always masked |
+| GET | `/admin/bookings/no-offer-queue` | `bookings.view` | Searching bookings without an active offer for `booking.operations.no_offer_after_seconds`, plus `expired_no_provider` within `expired_window_hours` |
+| GET | `/admin/bookings/{uuid}/override-forms/{form}` | `bookings.view` (+ the action's ability) | Modal fragment of an operator action (`cancel_by_operations`, `extend_search`, `redispatch_now`, `force_transition`, `lift_pin_lock`, `contact`); `?context=queue` reloads the queue table after success |
+| POST | `/admin/bookings/{uuid}/cancel` | `bookings.cancel` | `{reason, fee: waive\|apply_policy}`; ends as `cancelled_by_operations`, closes active offers, fee decision stored on the booking |
+| POST | `/admin/bookings/{uuid}/extend-search` | `bookings.manage` | `{reason, extend_seconds 30..1800}` while searching |
+| POST | `/admin/bookings/{uuid}/redispatch` | `bookings.manage` | `{reason}` restarts dispatch from wave 1 while searching; offers untouched |
+| POST | `/admin/bookings/{uuid}/force-transition` | `bookings.assign_override` | `{reason, target_status}`; only targets the transition graph allows (heading, arrived, in progress, delivery failed, completed(-pending-payment), disputed, expired). Starting the trip without the verified PIN also needs `bookings.pin_override` |
+| POST | `/admin/bookings/{uuid}/lift-pin-lock` | `bookings.pin_override` | `{reason}`; clears attempts, lock and the PIN support flag; the PIN is never shown |
+| POST | `/admin/bookings/{uuid}/contact` | `bookings.manage` | `{reason, subject, body}`; in-app message to the customer |
+| GET | `/admin/operations/map`, `/admin/operations/map/snapshot` | `bookings.view` | Live map page and JSON snapshot (`providers[] {id, lat, lng, category, busy, age_s}`, `bookings[] {id, code, lat, lng, category, status, status_label}`, `generated_at`, `truncated`) |
+| GET | `/admin/offers` | `offers.view` | Offers monitor; the DataTables JSON also carries `stats {submitted, selected, conversion, flagged, response}` |
+
+Errors (envelope): `403 override_forbidden`, `409 override_not_available` (status does not allow it), `422 override_extension_invalid`, `422 override_target_invalid`, `422 override_fee_policy_unavailable`, `422 override_reason_required`, plus the guard errors of the transition service.
+
+**Realtime (admin).** Private channel `admin.operations` (authorized for admins with `bookings.view` through `/broadcasting/auth` on the admin session). Events (payload envelope `{booking_uuid: null, sequence, occurred_at, payload}`, one stream-wide sequence): `operations.booking_changed` `{uuid, status, previous_status}`, `operations.provider_changed` `{uuid, online}`, `operations.provider_moved` `{uuid, lat, lng, busy}` (throttled per provider). Hints only: the map refetches its snapshot on a gap.
+

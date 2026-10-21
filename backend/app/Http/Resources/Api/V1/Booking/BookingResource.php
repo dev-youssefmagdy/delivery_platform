@@ -1,0 +1,140 @@
+<?php
+
+namespace App\Http\Resources\Api\V1\Booking;
+
+use App\DTOs\Booking\OffersSummary;
+use App\Enums\Booking\BookingAction;
+use App\Enums\Common\ActorType;
+use App\Enums\Pricing\PriceFactor;
+use App\Http\Resources\Api\V1\Catalog\TranslationMap;
+use App\Models\Booking;
+use App\Models\BookingStatusEvent;
+use App\Models\BookingStop;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use stdClass;
+
+/**
+ * Customer view of a booking (GET /bookings/{booking}, POST /bookings). Everything comes from the stored booking and
+ * its snapshots; the customer's own addresses are shown, provider data is added by the offer / trip stages (P2.4+) and
+ * never appears here before then. `allowed_actions` and `offers` are computed by the server and passed in.
+ *
+ * @property Booking $resource
+ */
+class BookingResource extends JsonResource
+{
+    /**
+     * @param list<BookingAction> $allowedActions
+     */
+    public function __construct(Booking $booking, private readonly array $allowedActions = [], private readonly ?OffersSummary $offers = null)
+    {
+        parent::__construct($booking);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        $booking = $this->resource;
+
+        return BookingSummaryResource::summary($booking) + [
+            'pickup' => self::place($booking->pickup_point->lat, $booking->pickup_point->lng, $booking->pickup_address),
+            'dropoff' => $booking->dropoff_point === null ? null : self::place($booking->dropoff_point->lat, $booking->dropoff_point->lng, $booking->dropoff_address),
+            'stops' => $booking->stops->map(static fn (BookingStop $stop): array => ['position' => $stop->position] + self::place($stop->point->lat, $stop->point->lng, $stop->address))->values()->all(),
+            'scheduled_at' => $booking->scheduled_at?->toIso8601ZuluString(),
+            'passengers' => $booking->passengers,
+            'service_details' => $booking->service_details === [] ? new stdClass : $booking->service_details,
+            'reference_estimate' => self::estimate($booking->reference_estimate),
+            'route' => $booking->route_snapshot === null ? null : [
+                'distance_m' => $booking->route_snapshot['distance_m'] ?? null,
+                'duration_s' => $booking->route_snapshot['duration_s'] ?? null,
+                'polyline' => $booking->route_snapshot['polyline'] ?? null,
+            ],
+            'search_expires_at' => $booking->search_expires_at?->toIso8601ZuluString(),
+            'request_version' => $booking->request_version,
+            'offers' => ($this->offers ?? new OffersSummary)->toArray(),
+            'provider' => null,
+            'allowed_actions' => array_map(static fn (BookingAction $action): string => $action->value, $this->allowedActions),
+            'timeline' => $booking->statusEvents->map(static fn (BookingStatusEvent $event): array => self::timelineEntry($event))->values()->all(),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed>|null $address
+     * @return array{lat: float, lng: float, address: array<string, mixed>|null}
+     */
+    private static function place(float $lat, float $lng, ?array $address): array
+    {
+        return ['lat' => round($lat, 6), 'lng' => round($lng, 6), 'address' => $address];
+    }
+
+    /**
+     * Stored estimate (locale independent) to the API shape with localised factor labels.
+     *
+     * @param array<string, mixed>|null $estimate
+     * @return array<string, mixed>|null
+     */
+    private static function estimate(?array $estimate): ?array
+    {
+        if ($estimate === null) {
+            return null;
+        }
+
+        if (! ($estimate['available'] ?? false)) {
+            return ['available' => false, 'reason' => $estimate['reason'] ?? null];
+        }
+
+        $locale = app()->getLocale();
+
+        return [
+            'available' => true,
+            'currency' => $estimate['currency'],
+            'low_minor' => $estimate['low_minor'],
+            'recommended_minor' => $estimate['recommended_minor'],
+            'high_minor' => $estimate['high_minor'],
+            'formula_version' => $estimate['formula_version'],
+            'factors' => array_map(static function (array $factor) use ($locale): array {
+                $custom = is_array($factor['label'] ?? null) ? ($factor['label'][$locale] ?? $factor['label']['ar'] ?? null) : null;
+
+                return [
+                    'code' => $factor['code'],
+                    'label' => $custom ?? (PriceFactor::tryFrom((string) $factor['code'])?->label() ?? (string) $factor['code']),
+                    'amount_minor' => $factor['amount_minor'],
+                    'quantity' => $factor['quantity'] ?? null,
+                ];
+            }, (array) ($estimate['factors'] ?? [])),
+            'notice' => (string) __('api.pricing.guidance_notice'),
+        ];
+    }
+
+    /**
+     * A status change or note as the customer may see it: no actor ids, and a reason only for codes the customer or
+     * the system wrote (an operations or provider reason can be internal).
+     *
+     * @return array<string, mixed>
+     */
+    private static function timelineEntry(BookingStatusEvent $event): array
+    {
+        $visibleReason = in_array($event->actor_type, [ActorType::Customer->value, ActorType::System->value], true) ? $event->reason : null;
+
+        return [
+            'type' => $event->from_status === $event->to_status ? 'note' : 'status',
+            'status' => $event->to_status->value,
+            'previous_status' => $event->from_status?->value,
+            'reason' => $visibleReason,
+            'actor' => $event->actor_type,
+            'at' => $event->created_at->toIso8601ZuluString(),
+            'sequence' => $event->sequence,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $names
+     * @return array<string, mixed>|stdClass
+     */
+    public static function names(array $names): array|stdClass
+    {
+        return TranslationMap::of($names);
+    }
+}

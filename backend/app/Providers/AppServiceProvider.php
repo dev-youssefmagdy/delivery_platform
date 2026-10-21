@@ -8,6 +8,9 @@ use App\Models\AccountDeletionRequest;
 use App\Models\Admin;
 use App\Models\AdminAuditLog;
 use App\Models\AdminExport;
+use App\Models\Booking;
+use App\Models\BookingStatusEvent;
+use App\Models\BookingStop;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
@@ -17,6 +20,7 @@ use App\Models\DemoItem;
 use App\Models\DispatchRecipient;
 use App\Models\DocumentRequirement;
 use App\Models\DocumentType;
+use App\Models\FarePolicy;
 use App\Models\IdempotencyKey;
 use App\Models\OtpChallenge;
 use App\Models\OwnedDocument;
@@ -44,10 +48,10 @@ use App\Models\VehicleDocument;
 use App\Models\VehiclePhoto;
 use App\Models\ZoneServiceCategory;
 use App\Policies\DocumentPolicy;
-use App\Services\Dispatch\CacheEventSequencer;
+use App\Services\Booking\DispatchableBookingSource;
+use App\Services\Dispatch\BookingEventSequencer;
 use App\Services\Dispatch\DispatchableRequestSource;
 use App\Services\Dispatch\EventSequencer;
-use App\Services\Dispatch\UnavailableDispatchableRequestSource;
 use App\Services\Location\Index\DatabaseGeoIndex;
 use App\Services\Location\Index\ProviderGeoIndex;
 use App\Services\Location\Index\RedisGeoIndex;
@@ -76,9 +80,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(CurrencyRegistry::class, DatabaseCurrencyRegistry::class);
         $this->app->singleton(MoneyFormatter::class);
 
-        // Realtime / dispatch seams (P2.2). P2.3 rebinds the request source (and may rebind the sequencer).
-        $this->app->bind(DispatchableRequestSource::class, UnavailableDispatchableRequestSource::class);
-        $this->app->bind(EventSequencer::class, CacheEventSequencer::class);
+        // Realtime / dispatch seams (P2.2), wired to bookings in P2.3 (ADR-89): dispatch reads the booking through
+        // DispatchableBookingSource and every booking stream shares the `bookings.sequence` counter.
+        $this->app->bind(DispatchableRequestSource::class, DispatchableBookingSource::class);
+        $this->app->bind(EventSequencer::class, BookingEventSequencer::class);
         $this->app->bind(ProviderGeoIndex::class, static fn (Application $app): ProviderGeoIndex => config('location.index') === 'redis'
             ? $app->make(RedisGeoIndex::class)
             : $app->make(DatabaseGeoIndex::class));
@@ -134,6 +139,10 @@ class AppServiceProvider extends ServiceProvider
             'provider_location' => ProviderLocation::class,
             'provider_last_location' => ProviderLastLocation::class,
             'dispatch_recipient' => DispatchRecipient::class,
+            'booking' => Booking::class,
+            'booking_stop' => BookingStop::class,
+            'booking_status_event' => BookingStatusEvent::class,
+            'fare_policy' => FarePolicy::class,
             // @admin-module:morph-map
         ]);
 

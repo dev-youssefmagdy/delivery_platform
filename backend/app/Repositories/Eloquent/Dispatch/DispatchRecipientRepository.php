@@ -66,4 +66,9 @@ final class DispatchRecipientRepository extends BaseRepository implements Dispat
     {
         return $this->query()->where('booking_id', $bookingId)->where('wave', $wave)->count();
     }
+
+    public function clearForBooking(int $bookingId): void
+    {
+        $this->query()->where('booking_id', $bookingId)->delete();
+    }
 }

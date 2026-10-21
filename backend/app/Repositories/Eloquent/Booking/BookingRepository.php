@@ -35,6 +35,13 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
         return $booking;
     }
 
+    public function forceUpdate(Booking $booking, array $attributes): Booking
+    {
+        $booking->forceFill($attributes)->save();
+
+        return $booking;
+    }
+
     public function codeExists(string $code): bool
     {
         return $this->query()->where('code', $code)->exists();

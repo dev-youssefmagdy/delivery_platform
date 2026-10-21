@@ -5,8 +5,8 @@ namespace App\Services\Dispatch;
 use App\DTOs\Dispatch\DispatchableRequest;
 
 /**
- * Where dispatch gets the request it is working on. P2.3 binds an implementation that reads the booking; the default
- * binding (`UnavailableDispatchableRequestSource`) finds nothing, so a wave job that runs before then stops quietly.
+ * Where dispatch gets the request it is working on. Bound to `DispatchableBookingSource`, which builds it from the
+ * booking row; an unknown booking finds nothing, so a wave job for a vanished booking stops quietly.
  */
 interface DispatchableRequestSource
 {

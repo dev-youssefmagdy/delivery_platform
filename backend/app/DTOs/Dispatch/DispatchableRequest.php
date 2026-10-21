@@ -14,6 +14,7 @@ final readonly class DispatchableRequest
 {
     /**
      * @param list<int> $vehicleCategoryIds acceptable vehicle categories (empty = every category linked to the service)
+     * @param int $generation `bookings.request_version`: wave jobs of an older version of the request stop
      * @param array<string, mixed> $summary
      */
     public function __construct(
@@ -27,6 +28,7 @@ final readonly class DispatchableRequest
         public array $vehicleCategoryIds = [],
         public ?int $passengerCount = null,
         public array $summary = [],
+        public int $generation = 1,
     ) {}
 
     public function isOpenAt(CarbonImmutable $now): bool

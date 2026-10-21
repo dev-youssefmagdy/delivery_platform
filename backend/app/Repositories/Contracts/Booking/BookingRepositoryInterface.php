@@ -24,6 +24,14 @@ interface BookingRepositoryInterface extends BaseRepositoryInterface
      */
     public function insertDraft(array $attributes): Booking;
 
+    /**
+     * Writes any column, `status` included (the model refuses a changed status outside BookingStatusGate::run(),
+     * which only BookingTransitionService opens).
+     *
+     * @param array<string, mixed> $attributes
+     */
+    public function forceUpdate(Booking $booking, array $attributes): Booking;
+
     public function codeExists(string $code): bool;
 
     public function findOfCustomer(string $uuid, int $customerId): ?Booking;

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Common\ConfigController;
 use App\Http\Controllers\Api\V1\Common\HealthController;
 use App\Http\Controllers\Api\V1\Common\MediaController;
 use App\Http\Controllers\Api\V1\Common\PolicyController;
+use App\Http\Controllers\Api\V1\Customer\BookingController;
 use App\Http\Controllers\Api\V1\Geo\CityController;
 use App\Http\Controllers\Api\V1\Geo\PlaceController;
 use App\Http\Controllers\Api\V1\Geo\RouteController;
@@ -111,6 +112,18 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
         });
         Route::post('account-deletion-requests', [AccountDeletionController::class, 'store'])
             ->middleware('idempotent')->name('account-deletion-requests.store');
+    });
+});
+
+// Customer bookings (P2.3, SRS §20.3). `customer` tokens only. Reads are status-safe and always scoped to the owner
+// (another customer's booking is a 404). Creating and editing need an active, unrestricted account and an Idempotency-Key.
+Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bookings')->name('bookings.')->group(function (): void {
+    Route::get('/', [BookingController::class, 'index'])->name('index');
+    Route::get('{booking}', [BookingController::class, 'show'])->whereUuid('booking')->name('show');
+
+    Route::middleware('account.active:strict')->group(function (): void {
+        Route::post('/', [BookingController::class, 'store'])->middleware('idempotent')->name('store');
+        Route::patch('{booking}/request', [BookingController::class, 'updateRequest'])->whereUuid('booking')->middleware('idempotent')->name('request.update');
     });
 });
 

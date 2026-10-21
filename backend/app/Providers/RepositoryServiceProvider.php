@@ -8,6 +8,7 @@ use App\Repositories\Contracts\Admin\AdminRepositoryInterface;
 use App\Repositories\Contracts\Admin\AdminSessionRepositoryInterface;
 use App\Repositories\Contracts\Admin\RoleRepositoryInterface;
 use App\Repositories\Contracts\Audit\AuditLogRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingOfferRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStopRepositoryInterface;
@@ -63,6 +64,7 @@ use App\Repositories\Eloquent\Audit\AuditLogRepository;
 use App\Repositories\Eloquent\Booking\BookingRepository;
 use App\Repositories\Eloquent\Booking\BookingStatusEventRepository;
 use App\Repositories\Eloquent\Booking\BookingStopRepository;
+use App\Repositories\Eloquent\Booking\PreOfferBookingOfferRepository;
 use App\Repositories\Eloquent\Catalog\CatalogUsageRepository;
 use App\Repositories\Eloquent\Catalog\ServiceCategoryRepository;
 use App\Repositories\Eloquent\Catalog\ServiceCategoryVersionRepository;
@@ -168,6 +170,8 @@ class RepositoryServiceProvider extends ServiceProvider
         BookingRepositoryInterface::class => BookingRepository::class,
         BookingStopRepositoryInterface::class => BookingStopRepository::class,
         BookingStatusEventRepositoryInterface::class => BookingStatusEventRepository::class,
+        // Honest "no offers yet" until P2.4 rebinds it to the offer repository (it throws once booking_offers exists).
+        BookingOfferRepositoryInterface::class => PreOfferBookingOfferRepository::class,
         FarePolicyRepositoryInterface::class => FarePolicyRepository::class,
         // Neutral until the ledger exists: P3.1 rebinds this to the ledger-backed repository (ADR-92).
         FinancialPositionRepositoryInterface::class => PreLedgerFinancialPositionRepository::class,

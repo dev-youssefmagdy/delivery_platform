@@ -10,7 +10,7 @@ use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 /**
- * GET /routes/estimate: route only (distance, duration, polyline). Pricing is added by the booking milestones.
+ * GET /routes/estimate: distance, duration, polyline and, when a service category is given, the price guidance.
  */
 final class RouteController extends Controller
 {
@@ -18,7 +18,7 @@ final class RouteController extends Controller
 
     public function estimate(EstimateRouteRequest $request): JsonResponse
     {
-        $estimate = $this->routes->estimate($request->origin(), $request->destination(), $request->stops(), $request->serviceCategoryId());
+        $estimate = $this->routes->estimate($request->origin(), $request->destination(), $request->stops(), $request->serviceCategoryId(), $request->serviceDetails());
 
         return ApiResponse::success(data: new RouteEstimateResource($estimate));
     }

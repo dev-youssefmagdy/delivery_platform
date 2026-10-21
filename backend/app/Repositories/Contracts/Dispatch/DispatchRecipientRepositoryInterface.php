@@ -35,4 +35,9 @@ interface DispatchRecipientRepositoryInterface
     public function forBooking(int $bookingId): Collection;
 
     public function countForWave(int $bookingId, int $wave): int;
+
+    /**
+     * Forgets who was notified (the request changed and dispatch starts over).
+     */
+    public function clearForBooking(int $bookingId): void;
 }

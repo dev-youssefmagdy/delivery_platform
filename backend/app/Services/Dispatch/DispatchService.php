@@ -36,11 +36,21 @@ final class DispatchService
     ) {}
 
     /**
-     * Starts dispatching: wave 1 runs on the critical queue.
+     * Starts dispatching: wave 1 runs on the critical queue. Called when a booking enters `searching_offers`.
      */
     public function start(DispatchableRequest $request): void
     {
-        DispatchBookingWave::dispatch($request->bookingId, 1);
+        DispatchBookingWave::dispatch($request->bookingId, 1, $request->generation);
+    }
+
+    /**
+     * Starts over for a changed request: every provider is eligible to be notified again (they saw an older version of
+     * the request), and wave jobs of the previous generation stop on their own.
+     */
+    public function restart(DispatchableRequest $request): void
+    {
+        $this->recipients->clearForBooking($request->bookingId);
+        $this->start($request);
     }
 
     public function runWave(DispatchableRequest $request, int $wave): DispatchWaveResult
@@ -88,7 +98,7 @@ final class DispatchService
         $scheduled = $request->searchExpiresAt->greaterThan($now->addSeconds($interval));
 
         if ($scheduled) {
-            DispatchBookingWave::dispatch($request->bookingId, $wave + 1)->delay($interval);
+            DispatchBookingWave::dispatch($request->bookingId, $wave + 1, $request->generation)->delay($interval);
         }
 
         return new DispatchWaveResult($wave, $radiusKm, count($notified), $scheduled);

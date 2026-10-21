@@ -32,6 +32,8 @@ class EstimateRouteRequest extends FormRequest
             'stops' => ['nullable', 'array', 'max:'.(int) config('maps.route.max_stops', 5)],
             'stops.*' => ['string', 'max:40'],
             'service_category_id' => ['nullable', 'integer', 'min:1'],
+            'service_details' => ['nullable', 'array', 'max:40'],
+            'service_details.*' => ['nullable'],
         ];
     }
 
@@ -81,6 +83,26 @@ class EstimateRouteRequest extends FormRequest
         }
 
         return $stops;
+    }
+
+    /**
+     * Answers that may carry surcharges. Only scalars and lists of scalars are kept; they only feed the guidance.
+     *
+     * @return array<string, mixed>
+     */
+    public function serviceDetails(): array
+    {
+        $details = [];
+
+        foreach ((array) $this->validated('service_details', []) as $key => $value) {
+            if (is_scalar($value) || $value === null) {
+                $details[(string) $key] = $value;
+            } elseif (is_array($value)) {
+                $details[(string) $key] = array_values(array_filter($value, 'is_scalar'));
+            }
+        }
+
+        return $details;
     }
 
     public function serviceCategoryId(): ?int

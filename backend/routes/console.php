@@ -25,4 +25,6 @@ Schedule::command('model:prune', ['--model' => [IdempotencyKey::class, AdminExpo
 
 Schedule::job(new SweepStaleProviders)->name('providers:sweep-stale')->everyThirtySeconds()->withoutOverlapping();
 
+Schedule::command('bookings:expire-searches')->everyFiveSeconds()->withoutOverlapping();
+
 Schedule::command('locations:prune')->dailyAt('03:30')->withoutOverlapping();

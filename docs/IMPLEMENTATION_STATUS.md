@@ -22,7 +22,7 @@
 | P2.3 | Reference pricing & booking creation | P0 | ✅ | 2026-10-24 |
 | P2.4 | Offers, counter-offers & atomic selection | P0 | 🟡 | 2026-10-25 |
 | P2.5 | Trip lifecycle: heading, arrived, PIN, start, complete, cancellation v1, ratings, share link | P0 | 🟡 | 2026-10-26 |
-| P2.6 | Customer app: complete ride flow | P0 | ❌ | — |
+| P2.6 | Customer app: complete ride flow | P0 | 🟡 | 2026-10-27 |
 | P2.7 | Driver app: complete ride flow | P0 | ❌ | — |
 | P2.8 | Admin: bookings, offers monitor, live operations v1 | P0 | ❌ | — |
 | P2.9 | E2E ride test, race tests, MVP hardening | P0 | ❌ | — |
@@ -51,6 +51,31 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P2.6 — Customer app: complete ride flow · 🟡 2026-10-27 (gate NOT run)
+
+Committed directly on `main`. ADR-103..105. **By user instruction no test, `flutter test`, `flutter analyze`, `dart format` check, integration test or `scripts/check.sh` was written or run, so the milestone is not marked done.** Every test that should exist is in `MISSED_TESTS.md` (P2.6 section). Only compile checks ran: `flutter gen-l10n` and `dart analyze lib` (whole customer_app `lib`, no issues).
+
+### What was built (customer_app, against the real API)
+
+- **Shell:** bottom navigation Home, My Trips, Account (`ShellTabSpec` registry; Wallet and Offers join only when their server feature flag is on, none exists yet, so no placeholder tabs). `AppConfig.features` is now parsed.
+- **Home:** map, pickup/destination, catalog, request button, persistent active-booking banner (`GET /bookings?in_flight=1`).
+- **Booking form:** route confirmation (map + polyline), `DynamicFormRenderer` of the category schema, reference estimate as guidance (factors, notice, "unavailable" text), fare input with Arabic-digit parsing, suggestions and bounds, passengers, cash payment, summary, submit with a per-intent Idempotency-Key; input is kept on errors.
+- **Finding offers:** snapshot + `private-customer.{uuid}` realtime hints + 5 s/20 s polling fallback + reconnect refetch; search countdown; offer cards (both kinds, per-offer expiry countdown), sort by price/ETA/rating, accept with confirmation (409/422 lost codes refresh with a specific message), reject, edit fare (warns offers are invalidated, no promise of more offers), no-offers state.
+- **Live trip:** provider/vehicle card, agreed fare, PIN (from `trip_pin`), status steps, free-wait countdown, map with smoothed provider marker, last-updated and stale banner, share (system share sheet, stop sharing), safety sheet (support contacts and own emergency contact, clearly labelled, SOS is P5.1), report, cancel. Buttons follow `allowed_actions`.
+- **Cancel:** reason, `preview=true`, fee card, commit with `accepted_fee_minor` + key, `cancellation_fee_changed` re-confirm.
+- **Completion/ended:** receipt, rating (tags, comment), report, rebook, no-provider state (try again / edit price, no guarantee wording), cancellation fee summary, timeline.
+- **My Trips:** paginated history with service/status/date filters; details reuse the booking screen.
+- Deep link route `/booking/:id` (push wiring is P3.6).
+
+### Known gaps / notes for later milestones
+
+- **Call and chat are hidden:** the customer API exposes no provider phone or relay; chat is P3.7.
+- **Emergency numbers:** `GET /config/app` has no emergency numbers; the safety sheet shows only configured support contacts and the customer's own emergency contact. P5.1 should add them and SOS.
+- A deep link opened while signed out loses its target (redirects to splash).
+- Retry-after-reject "retry search" for `expired_no_provider` is a new booking (no API restarts an ended search).
+- Existing tests (`router_test`, `launch_flow_test`, `catalog_flow_test`, `map_flow_test`, `auth_flow_test`) assume the old single-screen Home and will need updating (see MISSED_TESTS).
+- The integration test (create, offers, accept against a local backend) is not written; steps in MISSED_TESTS.
 
 ## P2.5 — Trip lifecycle, cancellation v1, ratings, share link · 🟡 2026-10-26 (gate NOT run)
 

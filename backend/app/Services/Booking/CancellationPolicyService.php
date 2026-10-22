@@ -135,13 +135,17 @@ final class CancellationPolicyService
             throw BusinessRuleViolation::make('cancellation_policy_window_invalid', 'free_grace_seconds');
         }
 
+        if ($data->waitingRateMinor < 0 || $data->waitingRateMinor > self::MAX_FEE_MINOR) {
+            throw BusinessRuleViolation::make('cancellation_policy_rule_invalid', 'waiting_rate');
+        }
+
         $this->assertReasons($data->customerReasons, ActorType::Customer, 'customer_reasons');
         $this->assertReasons($data->providerReasons, ActorType::Provider, 'provider_reasons');
 
         $seen = [];
 
         foreach ($data->rules as $index => $rule) {
-            $key = $rule['actor'].'|'.$rule['stage'];
+            $key = $rule['actor'].'|'.$rule['stage'].'|'.$rule['after_seconds'];
             $stage = CancellationStage::tryFrom($rule['stage']);
             $type = CancellationFeeType::tryFrom($rule['fee_type']);
             $valid = in_array($rule['actor'], [ActorType::Customer->value, ActorType::Provider->value], true)
@@ -150,6 +154,8 @@ final class CancellationPolicyService
                 && CancellationFeeRecipient::tryFrom($rule['recipient']) !== null
                 && ! isset($seen[$key])
                 && $rule['value'] >= 0
+                && $rule['after_seconds'] >= 0 && $rule['after_seconds'] <= self::MAX_SECONDS
+                && ($rule['provider_share_bp'] === null || ($rule['provider_share_bp'] >= 0 && $rule['provider_share_bp'] <= 10_000))
                 && ($type !== CancellationFeeType::Fixed || ($rule['value'] > 0 && $rule['value'] <= self::MAX_FEE_MINOR))
                 && ($type !== CancellationFeeType::Percent || ($rule['value'] > 0 && $rule['value'] <= 10_000))
                 && ($rule['cap_minor'] === null || ($rule['cap_minor'] > 0 && $rule['cap_minor'] <= self::MAX_FEE_MINOR));

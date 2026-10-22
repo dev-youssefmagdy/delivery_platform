@@ -2343,6 +2343,7 @@ return [
         'fields' => [
             'name' => 'Name', 'service' => 'Service', 'zone' => 'Zone', 'free_grace' => 'Free cancellation period',
             'free_wait' => 'Free waiting time', 'effective_from' => 'Effective from', 'effective_to' => 'Effective until',
+            'waiting_rate' => 'Waiting charge per minute', 'provider_no_show_after' => 'Driver no-show can be reported after (seconds)', 'require_evidence' => 'A no-show fee needs GPS and time evidence',
             'notes' => 'Internal notes', 'state' => 'State', 'enabled' => 'Enabled', 'bookings' => 'Bookings created under it',
             'customer_reasons' => 'Reasons customers may use', 'provider_reasons' => 'Reasons providers may use',
         ],
@@ -2352,6 +2353,23 @@ return [
             'effective_to' => 'Leave empty for no end date.',
             'free_grace' => 'Seconds after the provider was chosen during which the customer cancels for free.',
             'free_wait' => 'Seconds the provider waits after arriving before a no-show can be reported.',
+            'waiting_rate' => 'Charged for each started minute after the free waiting time, through a waiting adjustment the customer approves. 0 means waiting is negotiated.',
+            'provider_no_show_after' => 'How long after the driver was chosen a customer may report a driver who has not arrived.',
+            'require_evidence' => 'When on, the customer is charged for a no-show only if the driver arrival and the report carry a fresh GPS fix near the pickup.',
+        ],
+        'preview' => [
+            'tab' => 'Calculator', 'intro' => 'Try a scenario to see what this policy would charge. Nothing is saved; it uses the same code as real cancellations.',
+            'actor' => 'Who cancels', 'stage' => 'Stage', 'reason' => 'Reason (optional)', 'reason_hint' => 'Choose "Customer did not show up" or "The driver did not arrive" to test the no-show rules.',
+            'fare' => 'Agreed fare', 'since_selection' => 'Minutes since the driver was chosen', 'since_arrival' => 'Minutes since the driver arrived',
+            'arrival_verified' => 'The arrival was verified by GPS', 'report_verified' => 'The no-show report carries a GPS fix at the pickup',
+            'calculate' => 'Calculate', 'result_fee' => 'Fee', 'payer' => 'Charged to', 'basis' => 'Why', 'penalty' => 'Driver penalty', 'waiting' => 'Billable waiting (minutes · charge)', 'to_provider' => 'to the driver',
+            'bases' => [
+                'no_provider' => 'No driver chosen yet', 'free_grace' => 'Inside the free grace period', 'free_wait' => 'The free waiting time has not ended',
+                'provider_fault' => 'The driver asked for the cancellation', 'justified_reason' => 'Justified reason', 'no_rule' => 'No rule matches',
+                'rule' => 'Fee rule applied', 'arrival_unverified' => 'Arrival not verified: treated as on the way', 'waived_by_operations' => 'Waived by operations',
+                'operations_applied_policy' => 'Applied by operations', 'no_show' => 'No-show fee rule', 'no_show_no_evidence' => 'No-show without evidence: no fee',
+                'provider_no_show' => 'Driver did not arrive: free for the customer',
+            ],
         ],
         'sections' => [
             'scope' => 'Scope', 'scope_hint' => 'Which bookings the policy governs. The scope cannot change later.',
@@ -2364,6 +2382,7 @@ return [
         'rules' => [
             'add' => 'Add a fee rule', 'actor' => 'Who cancels', 'stage' => 'Stage', 'fee_type' => 'Fee type',
             'amount' => 'Fixed amount', 'percent' => 'Percent of the fare', 'cap' => 'Cap', 'recipient' => 'Goes to',
+            'provider_share' => 'Driver share % (when it goes to the driver)', 'after_seconds' => 'Applies after (seconds)',
             'none' => 'No fee rules: cancelling never costs anything under this policy.',
         ],
         'filters' => ['effective_on' => 'In effect during'],

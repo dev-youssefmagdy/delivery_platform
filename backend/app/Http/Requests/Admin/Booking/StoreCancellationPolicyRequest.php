@@ -38,6 +38,9 @@ class StoreCancellationPolicyRequest extends FormRequest
             'service_zone_id' => ['nullable', 'integer', Rule::exists('service_zones', 'id')],
             'free_grace_seconds' => ['required', 'integer', 'min:0', 'max:86400'],
             'free_wait_seconds' => ['required', 'integer', 'min:0', 'max:86400'],
+            'waiting_rate' => ['nullable', 'string', 'regex:/^\d{1,12}(\.\d{1,4})?$/'],
+            'require_no_show_evidence' => ['nullable', 'boolean'],
+            'provider_no_show_after_seconds' => ['required', 'integer', 'min:0', 'max:86400'],
             'effective_from' => ['required', 'date_format:Y-m-d H:i'],
             'effective_to' => ['nullable', 'date_format:Y-m-d H:i', 'after:effective_from'],
             'notes' => ['nullable', 'string', 'max:2000'],
@@ -53,6 +56,8 @@ class StoreCancellationPolicyRequest extends FormRequest
             'rules.*.percent' => ['nullable', 'string', 'regex:/^\d{1,3}(\.\d{1,2})?$/'],
             'rules.*.cap' => ['nullable', 'string', 'regex:/^\d{1,12}(\.\d{1,4})?$/'],
             'rules.*.recipient' => ['nullable', Rule::enum(CancellationFeeRecipient::class)],
+            'rules.*.after_seconds' => ['nullable', 'integer', 'min:0', 'max:86400'],
+            'rules.*.provider_share' => ['nullable', 'string', 'regex:/^\d{1,3}(\.\d{1,2})?$/'],
         ];
     }
 
@@ -67,6 +72,8 @@ class StoreCancellationPolicyRequest extends FormRequest
             'service_zone_id' => __('admin.cancellation_policies.fields.zone'),
             'free_grace_seconds' => __('admin.cancellation_policies.fields.free_grace'),
             'free_wait_seconds' => __('admin.cancellation_policies.fields.free_wait'),
+            'waiting_rate' => __('admin.cancellation_policies.fields.waiting_rate'),
+            'provider_no_show_after_seconds' => __('admin.cancellation_policies.fields.provider_no_show_after'),
             'effective_from' => __('admin.cancellation_policies.fields.effective_from'),
             'effective_to' => __('admin.cancellation_policies.fields.effective_to'),
             'notes' => __('admin.cancellation_policies.fields.notes'),

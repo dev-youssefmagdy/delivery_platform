@@ -16,6 +16,7 @@ Route::prefix('cancellation-policies')->name('cancellation-policies.')->controll
     Route::get('{cancellationPolicy}/activity', 'activity')->whereNumber('cancellationPolicy')->name('activity')->can('view', 'cancellationPolicy');
     Route::get('{cancellationPolicy}/edit', 'edit')->whereNumber('cancellationPolicy')->name('edit')->can('update', 'cancellationPolicy');
     Route::put('{cancellationPolicy}', 'update')->whereNumber('cancellationPolicy')->name('update')->can('update', 'cancellationPolicy');
+    Route::post('{cancellationPolicy}/preview', 'preview')->whereNumber('cancellationPolicy')->name('preview')->can('view', 'cancellationPolicy');
     Route::post('{cancellationPolicy}/activate', 'activate')->whereNumber('cancellationPolicy')->name('activate')->can('activate', 'cancellationPolicy');
     Route::post('{cancellationPolicy}/deactivate', 'deactivate')->whereNumber('cancellationPolicy')->name('deactivate')->can('deactivate', 'cancellationPolicy');
     Route::delete('{cancellationPolicy}', 'destroy')->whereNumber('cancellationPolicy')->name('destroy')->can('delete', 'cancellationPolicy');

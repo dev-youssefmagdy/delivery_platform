@@ -16,7 +16,7 @@ use Carbon\CarbonImmutable;
 final readonly class CancellationPolicyData
 {
     /**
-     * @param list<array{actor: string, stage: string, fee_type: string, value: int, cap_minor: int|null, recipient: string}> $rules
+     * @param list<array{actor: string, stage: string, fee_type: string, value: int, cap_minor: int|null, recipient: string, after_seconds: int, provider_share_bp: int|null}> $rules
      * @param list<string> $customerReasons
      * @param list<string> $providerReasons
      */
@@ -26,6 +26,9 @@ final readonly class CancellationPolicyData
         public ?int $serviceZoneId,
         public int $freeGraceSeconds,
         public int $freeWaitSeconds,
+        public int $waitingRateMinor,
+        public bool $requireNoShowEvidence,
+        public int $providerNoShowAfterSeconds,
         public array $rules,
         public array $customerReasons,
         public array $providerReasons,
@@ -65,6 +68,8 @@ final readonly class CancellationPolicyData
                 'value' => $value,
                 'cap_minor' => $cap === '' || $type !== CancellationFeeType::Percent->value ? null : self::toMinor($cap, $exponent),
                 'recipient' => (string) ($row['recipient'] ?? 'platform'),
+                'after_seconds' => (int) ($row['after_seconds'] ?? 0),
+                'provider_share_bp' => trim((string) ($row['provider_share'] ?? '')) === '' ? null : self::toBasisPoints(trim((string) $row['provider_share'])),
             ];
         }
 
@@ -78,6 +83,9 @@ final readonly class CancellationPolicyData
                 : (isset($data['service_zone_id']) && $data['service_zone_id'] !== '' ? (int) $data['service_zone_id'] : null),
             freeGraceSeconds: (int) $data['free_grace_seconds'],
             freeWaitSeconds: (int) $data['free_wait_seconds'],
+            waitingRateMinor: isset($data['waiting_rate']) && trim((string) $data['waiting_rate']) !== '' ? self::toMinor(trim((string) $data['waiting_rate']), $exponent) : 0,
+            requireNoShowEvidence: (bool) ($data['require_no_show_evidence'] ?? true),
+            providerNoShowAfterSeconds: (int) ($data['provider_no_show_after_seconds'] ?? 600),
             rules: $rules,
             customerReasons: array_values(array_map('strval', (array) ($data['customer_reasons'] ?? []))),
             providerReasons: array_values(array_map('strval', (array) ($data['provider_reasons'] ?? []))),
@@ -97,6 +105,9 @@ final readonly class CancellationPolicyData
             'name' => $this->name,
             'free_grace_seconds' => $this->freeGraceSeconds,
             'free_wait_seconds' => $this->freeWaitSeconds,
+            'waiting_rate_minor' => $this->waitingRateMinor,
+            'require_no_show_evidence' => $this->requireNoShowEvidence,
+            'provider_no_show_after_seconds' => $this->providerNoShowAfterSeconds,
             'rules' => $this->rules,
             'customer_reasons' => $this->customerReasons,
             'provider_reasons' => $this->providerReasons,

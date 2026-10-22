@@ -19,6 +19,8 @@
         'percent' => ($rule['fee_type'] ?? '') === 'percent' ? $percent((int) $rule['value']) : '',
         'cap' => isset($rule['cap_minor']) ? $decimal((int) $rule['cap_minor']) : '',
         'recipient' => $rule['recipient'] ?? 'platform',
+        'after_seconds' => (int) ($rule['after_seconds'] ?? 0),
+        'provider_share' => isset($rule['provider_share_bp']) ? $percent((int) $rule['provider_share_bp']) : '',
     ], $model?->rules ?? []);
     $rows = old('rules', $ruleRows);
     $reasonOptions = static fn (\App\Enums\Common\ActorType $actor): array => collect(\App\Enums\Booking\CancellationReason::forActor($actor))->mapWithKeys(static fn ($reason): array => [$reason->value => $reason->label()])->all();
@@ -49,6 +51,9 @@
     <x-admin.grid>
         <x-admin.form.input name="free_grace_seconds" type="number" min="0" max="86400" step="1" suffix="s" :label="__('admin.cancellation_policies.fields.free_grace')" :hint="__('admin.cancellation_policies.hints.free_grace')" :value="$model?->free_grace_seconds ?? 120" dir="ltr" required />
         <x-admin.form.input name="free_wait_seconds" type="number" min="0" max="86400" step="1" suffix="s" :label="__('admin.cancellation_policies.fields.free_wait')" :hint="__('admin.cancellation_policies.hints.free_wait')" :value="$model?->free_wait_seconds ?? 300" dir="ltr" required />
+        <x-admin.form.input name="waiting_rate" :label="__('admin.cancellation_policies.fields.waiting_rate').' ('.$currencyCode.')'" :hint="__('admin.cancellation_policies.hints.waiting_rate')" :value="$decimal((int) ($model?->waiting_rate_minor ?? 0))" inputmode="decimal" dir="ltr" maxlength="18" />
+        <x-admin.form.input name="provider_no_show_after_seconds" type="number" min="0" max="86400" step="1" suffix="s" :label="__('admin.cancellation_policies.fields.provider_no_show_after')" :hint="__('admin.cancellation_policies.hints.provider_no_show_after')" :value="$model?->provider_no_show_after_seconds ?? 600" dir="ltr" required />
+        <x-admin.form.checkbox name="require_no_show_evidence" :label="__('admin.cancellation_policies.fields.require_evidence')" :hint="__('admin.cancellation_policies.hints.require_evidence')" :checked="$model?->require_no_show_evidence ?? true" />
     </x-admin.grid>
 </x-admin.form.section>
 
@@ -67,6 +72,8 @@
             ['name' => 'percent', 'label' => __('admin.cancellation_policies.rules.percent'), 'type' => 'text', 'attributes' => ['inputmode' => 'decimal', 'dir' => 'ltr', 'maxlength' => 6]],
             ['name' => 'cap', 'label' => __('admin.cancellation_policies.rules.cap').' ('.$currencyCode.')', 'type' => 'text', 'attributes' => ['inputmode' => 'decimal', 'dir' => 'ltr', 'maxlength' => 18]],
             ['name' => 'recipient', 'label' => __('admin.cancellation_policies.rules.recipient'), 'type' => 'select', 'options' => \App\Enums\Booking\CancellationFeeRecipient::options(), 'required' => true],
+            ['name' => 'provider_share', 'label' => __('admin.cancellation_policies.rules.provider_share'), 'type' => 'text', 'attributes' => ['inputmode' => 'decimal', 'dir' => 'ltr', 'maxlength' => 6]],
+            ['name' => 'after_seconds', 'label' => __('admin.cancellation_policies.rules.after_seconds'), 'type' => 'text', 'attributes' => ['inputmode' => 'numeric', 'dir' => 'ltr', 'maxlength' => 5]],
         ]"
     />
 </x-admin.form.section>

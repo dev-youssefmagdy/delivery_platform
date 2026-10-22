@@ -7,11 +7,13 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Requests\Admin\Booking\ActivateCancellationPolicyRequest;
 use App\Http\Requests\Admin\Booking\DeactivateCancellationPolicyRequest;
 use App\Http\Requests\Admin\Booking\DestroyCancellationPolicyRequest;
+use App\Http\Requests\Admin\Booking\PreviewCancellationPolicyRequest;
 use App\Http\Requests\Admin\Booking\StoreCancellationPolicyRequest;
 use App\Http\Requests\Admin\Booking\UpdateCancellationPolicyRequest;
 use App\Models\CancellationPolicy;
 use App\Repositories\Contracts\Booking\CancellationPolicyRepositoryInterface;
 use App\Services\Audit\AuditTrailService;
+use App\Services\Booking\CancellationPolicyPreviewService;
 use App\Services\Booking\CancellationPolicyService;
 use App\Support\Http\AdminFormResponse;
 use Illuminate\Contracts\View\View;
@@ -64,6 +66,13 @@ final class CancellationPolicyController extends AdminController
         $this->service->update($cancellationPolicy, $request->toDto(), $this->actor());
 
         return $this->formResponse(__('admin.cancellation_policies.updated'))->redirect(route('admin.cancellation-policies.show', $cancellationPolicy));
+    }
+
+    public function preview(PreviewCancellationPolicyRequest $request, CancellationPolicy $cancellationPolicy, CancellationPolicyPreviewService $previews): AdminFormResponse
+    {
+        $result = $previews->preview($cancellationPolicy, $request->toDto());
+
+        return $this->formResponse()->replaceHtml('#cancellation-preview-result', view('admin.cancellation-policies._preview-result', $result + ['policy' => $cancellationPolicy])->render());
     }
 
     public function activate(ActivateCancellationPolicyRequest $request, CancellationPolicy $cancellationPolicy): AdminFormResponse

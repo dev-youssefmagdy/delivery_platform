@@ -5,6 +5,7 @@ namespace App\Services\Dispatch;
 use App\DTOs\Dispatch\DispatchableRequest;
 use App\DTOs\Dispatch\DispatchWaveResult;
 use App\DTOs\Dispatch\EligibleProvider;
+use App\Enums\Notification\NotificationEvent;
 use App\Enums\Settings\SettingKey;
 use App\Events\Realtime\BookingRequested;
 use App\Events\Realtime\BookingSearchExpanding;
@@ -13,6 +14,7 @@ use App\Models\ServiceCategory;
 use App\Repositories\Contracts\Catalog\ServiceCategoryRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
 use App\Services\Catalog\CategoryPolicyResolver;
+use App\Services\Notification\PartyNotifier;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -33,6 +35,7 @@ final class DispatchService
         private readonly SettingsService $settings,
         private readonly EventSequencer $sequencer,
         private readonly DatabaseManager $db,
+        private readonly PartyNotifier $parties,
     ) {}
 
     /**
@@ -87,6 +90,8 @@ final class DispatchService
                 'search_expires_at' => $request->searchExpiresAt->toIso8601String(),
                 'request' => $request->summary,
             ]);
+            // A provider whose app is closed or in the background still learns about a nearby request (push, no details).
+            $this->parties->providerRequest($provider->profile, NotificationEvent::RequestNew, $request->bookingUuid, (string) $request->generation);
         }
 
         if ($wave > 1) {

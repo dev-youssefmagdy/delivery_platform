@@ -10,13 +10,16 @@ use App\Models\Admin;
 use App\Models\CustomerMessage;
 use App\Models\User;
 use App\Repositories\Contracts\Customers\CustomerMessageRepositoryInterface;
+use App\Enums\Identity\ClientApp;
+use App\Enums\Notification\NotificationEvent;
 use App\Services\Audit\AuditLogger;
+use App\Services\Notification\PartyNotifier;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\DatabaseManager;
 
 /**
  * "Send help message" (SRS §16.2): an in-app message from support. It appears in the customer's inbox
- * (`GET /me/messages`); push delivery is added by the notifications platform (P3.6).
+ * (`GET /me/messages`) and, through the notification platform, as an inbox entry plus a push that opens the message.
  */
 final class CustomerMessageService
 {
@@ -24,6 +27,7 @@ final class CustomerMessageService
         private readonly CustomerMessageRepositoryInterface $messages,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
+        private readonly PartyNotifier $notifier,
     ) {}
 
     public function send(User $customer, HelpMessageData $data, ?Authenticatable $actor): CustomerMessage
@@ -42,6 +46,8 @@ final class CustomerMessageService
             ]);
 
             $this->audit->record(AuditAction::MessageSent, $customer, $actor, after: ['message' => $message->uuid, 'subject' => $data->subject], reason: $data->reason);
+
+            $this->notifier->user($customer, ClientApp::Customer, NotificationEvent::SupportHelpMessage, $message->uuid, linkId: $message->uuid);
 
             return $message;
         });

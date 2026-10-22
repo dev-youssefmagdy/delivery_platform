@@ -11,6 +11,8 @@ use App\Enums\Common\AuditAction;
 use App\Enums\Finance\AdjustmentDirection;
 use App\Enums\Finance\ApprovalStatus;
 use App\Enums\Finance\JournalEntryType;
+use App\Enums\Identity\ClientApp;
+use App\Enums\Notification\NotificationEvent;
 use App\Enums\Finance\LedgerAccountType;
 use App\Exceptions\BusinessRuleViolation;
 use App\Exceptions\ConflictException;
@@ -18,9 +20,12 @@ use App\Exceptions\ForbiddenActionException;
 use App\Models\Admin;
 use App\Models\FinancialAdjustmentRequest;
 use App\Models\LedgerAccount;
+use App\Models\ProviderProfile;
+use App\Models\User;
 use App\Repositories\Contracts\Finance\FinancialAdjustmentRepositoryInterface;
 use App\Repositories\Contracts\Finance\LedgerAccountRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Services\Notification\PartyNotifier;
 use App\Support\Money\CurrencyRegistry;
 use App\Support\Money\Money;
 use Carbon\CarbonImmutable;
@@ -44,6 +49,7 @@ final class AdjustmentService
         private readonly CurrencyRegistry $currencies,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
+        private readonly PartyNotifier $notifier,
     ) {}
 
     public function request(Admin $actor, AdjustmentRequestData $data): FinancialAdjustmentRequest
@@ -120,6 +126,7 @@ final class AdjustmentService
                 'journal_entry_id' => $entry,
             ]);
             $this->audit->record(AuditAction::Approved, $locked, $actor, after: ['status' => ApprovalStatus::Approved->value, 'journal_entry_id' => $entry], reason: $note);
+            $this->notifyOwner($locked);
 
             return $locked;
         });
@@ -188,6 +195,20 @@ final class AdjustmentService
             actorType: ActorType::Admin,
             actorId: $actor->id,
         ))->entry->id;
+    }
+
+    /**
+     * The wallet owner learns that the balance changed (no amount in the text: details are in the wallet screen).
+     */
+    private function notifyOwner(FinancialAdjustmentRequest $request): void
+    {
+        $owner = $request->account->owner;
+
+        if ($owner instanceof User) {
+            $this->notifier->user($owner, ClientApp::Customer, NotificationEvent::WalletAdjusted, $request->uuid, linkId: $request->uuid);
+        } elseif ($owner instanceof ProviderProfile) {
+            $this->notifier->providerAccount($owner, NotificationEvent::WalletAdjusted, $request->uuid, linkId: $request->uuid);
+        }
     }
 
     private function lock(FinancialAdjustmentRequest $request): FinancialAdjustmentRequest

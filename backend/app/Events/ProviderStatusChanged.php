@@ -9,7 +9,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 
 /**
  * A provider moved to another status (dispatched after the transaction commits). Listeners notify the provider
- * (a log-channel stub until the notification platform of P3.6) and, from P2.2, take the provider offline.
+ * through the notification platform (P3.6) and take the provider offline.
  */
 final class ProviderStatusChanged implements ShouldDispatchAfterCommit
 {

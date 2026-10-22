@@ -6,8 +6,8 @@ use App\Services\Provider\DocumentExpiryService;
 use Illuminate\Console\Command;
 
 /**
- * `documents:check-expiry` (daily): marks expired provider and vehicle documents, sends expiry reminders (log-channel
- * stub until P3.6) and takes providers who are no longer eligible offline. Idempotent.
+ * `documents:check-expiry` (daily): marks expired provider and vehicle documents, sends expiry reminders (push, inbox,
+ * SMS and email through the notification platform) and takes providers who are no longer eligible offline. Idempotent.
  */
 class CheckDocumentExpiry extends Command
 {

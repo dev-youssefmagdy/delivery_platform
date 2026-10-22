@@ -6,6 +6,7 @@ use App\DTOs\Payments\PaymentActor;
 use App\Enums\Payments\PaymentEventType;
 use App\Enums\Payments\PaymentKind;
 use App\Enums\Payments\PaymentStatus;
+use App\Enums\Notification\NotificationEvent;
 use App\Events\Realtime\PaymentStatusChanged;
 use App\Exceptions\ConflictException;
 use App\Models\Booking;
@@ -16,6 +17,7 @@ use App\Repositories\Contracts\Payments\PaymentEventRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Services\Dispatch\EventSequencer;
+use App\Services\Notification\PartyNotifier;
 use Carbon\CarbonImmutable;
 
 /**
@@ -35,6 +37,7 @@ final class PaymentTransitionService
         private readonly BookingRepositoryInterface $bookings,
         private readonly ProviderProfileRepositoryInterface $providers,
         private readonly EventSequencer $sequencer,
+        private readonly PartyNotifier $notifier,
     ) {}
 
     /**
@@ -122,6 +125,29 @@ final class PaymentTransitionService
     }
 
     /**
+     * Tells the customer about the payment outcomes that matter (SRS §14.1): processing, received, failed, refunded. Cash
+     * statuses and a tip are not announced; the text never includes the amount.
+     */
+    private function notifyCustomer(Payment $payment, Booking $booking, PaymentStatus $status): void
+    {
+        if ($payment->kind !== PaymentKind::Trip) {
+            return;
+        }
+
+        $event = match ($status) {
+            PaymentStatus::Pending, PaymentStatus::RequiresAction => NotificationEvent::PaymentPending,
+            PaymentStatus::Paid => NotificationEvent::PaymentSucceeded,
+            PaymentStatus::Failed => NotificationEvent::PaymentFailed,
+            PaymentStatus::Refunded, PaymentStatus::PartiallyRefunded => NotificationEvent::PaymentRefunded,
+            default => null,
+        };
+
+        if ($event !== null) {
+            $this->notifier->customer($booking, $event, $payment->uuid.':'.($status === PaymentStatus::RequiresAction ? PaymentStatus::Pending->value : $status->value));
+        }
+    }
+
+    /**
      * The booking shows the status of its latest trip payment; a tip never changes it (it is still announced).
      */
     private function mirrorToBooking(Payment $payment, PaymentStatus $status): void
@@ -140,6 +166,7 @@ final class PaymentTransitionService
         $payload = ['payment_uuid' => $payment->uuid, 'kind' => $payment->kind->value, 'payment_status' => $status->value];
 
         $booking->loadMissing('customer');
+        $this->notifyCustomer($payment, $booking, $status);
         PaymentStatusChanged::toCustomer($booking->customer->uuid, $booking->uuid, $sequence, $payload);
 
         if ($booking->provider_id !== null) {

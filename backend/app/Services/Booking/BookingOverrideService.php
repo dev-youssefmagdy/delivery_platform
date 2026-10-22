@@ -43,7 +43,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  *
  * Rules shared by every action: the admin needs the action's own permission, a reason is mandatory, the booking row is
  * locked, an audit entry (before/after, reason, action) is written in the same transaction, and the parties are told
- * through `BookingNotifier` (a log stub until P3.6). Status changes go only through `BookingTransitionService`, so the
+ * through `BookingNotifier` (inbox + push via the notification platform). Status changes go only through `BookingTransitionService`, so the
  * graph (`BookingStatus::allowedTransitions()`) and the guards of §8.3 still apply. Nothing here edits an offer version
  * or a price: offers are only closed (cancel, expire) or left alone.
  */

@@ -35,7 +35,6 @@ enum NotificationEvent: string implements HasLabel
     case BookingCancellationFee = 'booking.cancellation_fee_applied';
     case BookingProviderCancelled = 'booking.provider_cancelled_redispatch';
     case BookingOperationsUpdate = 'booking.operations_update';
-    case BookingOperationsContact = 'booking.operations_contact';
     case BookingAdjustmentRequested = 'booking.adjustment_requested';
     case BookingAdjustmentAnswered = 'booking.adjustment_answered';
 
@@ -84,7 +83,7 @@ enum NotificationEvent: string implements HasLabel
             self::WalletAdjusted, self::CashDebtNotice => NotificationCategory::Payments,
             self::CouponApplied, self::CouponRejected, self::CouponExpiring => NotificationCategory::Promotions,
             self::PayoutRequested, self::PayoutApproved, self::PayoutRejected, self::PayoutPaid, self::PayoutFailed => NotificationCategory::Payouts,
-            self::BookingOperationsContact, self::SupportHelpMessage, self::SupportReply, self::SupportDisputeUpdate => NotificationCategory::Support,
+            self::SupportHelpMessage, self::SupportReply, self::SupportDisputeUpdate => NotificationCategory::Support,
             self::SafetyCaseUpdate => NotificationCategory::Safety,
             self::MarketingCampaign => NotificationCategory::Marketing,
             self::AdminExportReady, self::AdminExportFailed => NotificationCategory::System,
@@ -99,8 +98,8 @@ enum NotificationEvent: string implements HasLabel
             self::OfferAccepted, self::OfferRejected, self::OfferExpired, self::CashDebtNotice,
             self::PayoutRequested, self::PayoutApproved, self::PayoutRejected, self::PayoutPaid, self::PayoutFailed => NotificationAudience::Provider,
             self::BookingSearchExpired, self::BookingOfferReceived, self::BookingOfferUpdated, self::BookingProviderSelected, self::BookingProviderHeading,
-            self::BookingProviderArrived, self::BookingTripStarted, self::BookingCompleted, self::BookingCancellationFee, self::BookingProviderCancelled,
-            self::BookingOperationsContact, self::PaymentPending, self::PaymentSucceeded, self::PaymentFailed, self::PaymentRefunded,
+            self::BookingProviderArrived, self::BookingTripStarted, self::BookingCompleted, self::BookingProviderCancelled,
+            self::PaymentPending, self::PaymentSucceeded, self::PaymentFailed, self::PaymentRefunded,
             self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::SupportHelpMessage => NotificationAudience::Customer,
             self::AdminExportReady, self::AdminExportFailed => NotificationAudience::Admin,
             default => NotificationAudience::Both,
@@ -147,13 +146,13 @@ enum NotificationEvent: string implements HasLabel
             self::DocumentExpired => ['document'],
             self::BookingAdjustmentAnswered => ['code', 'outcome'],
             self::PayoutRequested, self::PayoutApproved, self::PayoutRejected, self::PayoutPaid, self::PayoutFailed,
-            self::PaymentRefunded, self::WalletAdjusted, self::CashDebtNotice => ['reference'],
+            self::WalletAdjusted, self::CashDebtNotice => ['reference'],
             self::CouponApplied, self::CouponRejected, self::CouponExpiring => ['coupon'],
             self::MarketingCampaign => ['title', 'body'],
             self::AdminExportReady, self::AdminExportFailed => ['file'],
             self::ProviderApplicationSubmitted, self::ProviderApplicationMoreInfo, self::ProviderApplicationApproved, self::ProviderApplicationRejected,
             self::ProviderSuspended, self::ProviderReactivated, self::SupportHelpMessage, self::SupportReply, self::SupportDisputeUpdate,
-            self::SafetyCaseUpdate, self::BookingOperationsContact => [],
+            self::SafetyCaseUpdate, self::RequestNew => [],
             default => ['code'],
         };
     }
@@ -168,7 +167,7 @@ enum NotificationEvent: string implements HasLabel
             self::WalletAdjusted, self::CashDebtNotice, self::PaymentRefunded => NotificationLinkType::Wallet,
             self::SupportHelpMessage => NotificationLinkType::Message,
             self::SupportReply, self::SupportDisputeUpdate, self::SafetyCaseUpdate => NotificationLinkType::Support,
-            self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::MarketingCampaign, self::BookingOperationsContact => NotificationLinkType::Inbox,
+            self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::MarketingCampaign => NotificationLinkType::Inbox,
             self::AdminExportReady, self::AdminExportFailed => NotificationLinkType::Export,
             default => NotificationLinkType::Booking,
         };

@@ -23,7 +23,9 @@ use App\Repositories\Contracts\Finance\CashReconciliationRepositoryInterface;
 use App\Repositories\Contracts\Finance\LedgerAccountRepositoryInterface;
 use App\Repositories\Contracts\Finance\ProviderEarningsRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
+use App\Enums\Notification\NotificationEvent;
 use App\Services\Audit\AuditLogger;
+use App\Services\Notification\PartyNotifier;
 use App\Services\Settings\SettingsService;
 use App\Enums\Settings\SettingKey;
 use App\Support\Money\CurrencyRegistry;
@@ -57,6 +59,7 @@ final class CashReconciliationService
         private readonly CurrencyRegistry $currencies,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
+        private readonly PartyNotifier $notifier,
     ) {}
 
     /**
@@ -120,6 +123,11 @@ final class CashReconciliationService
                     'cash_collected_minor' => $figures->cashCollectedMinor,
                     'commission_due_minor' => $figures->commissionDueMinor,
                 ], reason: $data->notes);
+
+                // The provider is told that cash commission is due; the amount is shown in the app, not on the lock screen.
+                if ($figures->commissionDueMinor > 0) {
+                    $this->notifier->providerAccount($provider, NotificationEvent::CashDebtNotice, $reconciliation->uuid, linkId: $reconciliation->uuid);
+                }
 
                 return $reconciliation;
             });

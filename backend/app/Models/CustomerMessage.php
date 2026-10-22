@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * An in-app help message sent to a customer by support (push delivery arrives with the notifications platform,
- * P3.6). The customer reads it through `GET /me/messages`.
+ * An in-app help message sent to a customer by support. The customer reads it through `GET /me/messages`; the
+ * notification platform adds an inbox entry and a push that opens it.
  *
  * @property int $id
  * @property string $uuid

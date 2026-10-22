@@ -52,7 +52,6 @@ return [
     ],
     'booking.provider_cancelled_redispatch' => ['title' => 'نبحث عن سائق آخر', 'body' => 'ألغى السائق الحجز. نبحث لك عن سائق آخر للحجز {code}.'],
     'booking.operations_update' => ['title' => 'تحديث على حجزك', 'body' => 'قام الدعم بتحديث الحجز {code}. افتح التطبيق للتفاصيل.'],
-    'booking.operations_contact' => ['title' => 'رسالة من الدعم', 'body' => 'يود فريق الدعم مساعدتك في حجزك. افتح التطبيق.'],
     'booking.adjustment_requested' => ['title' => 'طلب تعديل الأجرة', 'body' => 'تم طلب تعديل أجرة الحجز {code}. يرجى الرد.'],
     'booking.adjustment_answered' => ['title' => 'تم الرد على تعديل الأجرة', 'body' => 'تعديل أجرة الحجز {code}: {outcome}.'],
 
@@ -110,6 +109,6 @@ return [
 
     // Words substituted for coded template variables, in this language.
     '_values' => [
-            'outcome' => ['approved' => 'تمت الموافقة', 'declined' => 'تم الرفض', 'expired' => 'انتهت المهلة'],
+        'outcome' => ['approved' => 'تمت الموافقة', 'declined' => 'تم الرفض', 'expired' => 'انتهت المهلة', 'voided' => 'ألغاها الدعم', 'withdrawn' => 'تم سحب الطلب'],
     ],
 ];

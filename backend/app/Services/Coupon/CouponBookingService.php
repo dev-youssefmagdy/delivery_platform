@@ -9,11 +9,14 @@ use App\Enums\Coupon\CouponAttemptResult;
 use App\Enums\Coupon\CouponReason;
 use App\Exceptions\CouponRejectedException;
 use App\Models\Booking;
+use App\Enums\Identity\ClientApp;
+use App\Enums\Notification\NotificationEvent;
 use App\Models\Coupon;
 use App\Models\User;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Coupon\CouponRepositoryInterface;
 use App\Repositories\Contracts\Coupon\CouponReservationRepositoryInterface;
+use App\Services\Notification\PartyNotifier;
 use App\Support\Money\Money;
 use Carbon\CarbonImmutable;
 
@@ -39,6 +42,7 @@ final class CouponBookingService
         private readonly CouponContextBuilder $contexts,
         private readonly CouponAttemptRecorder $attempts,
         private readonly BookingRepositoryInterface $bookings,
+        private readonly PartyNotifier $notifier,
     ) {}
 
     /**
@@ -82,7 +86,10 @@ final class CouponBookingService
     {
         $reservation = $this->reservationService->reserve($plan, $booking, $this->contexts->forBooking($booking->customer_id, $request));
 
-        return $this->bookings->forceUpdate($booking, ['coupon_reservation_id' => $reservation->id]);
+        $updated = $this->bookings->forceUpdate($booking, ['coupon_reservation_id' => $reservation->id]);
+        $this->notifier->customer($updated, NotificationEvent::CouponApplied, (string) $plan->couponId, ['coupon' => $this->couponLabel($plan)]);
+
+        return $updated;
     }
 
     /**
@@ -99,6 +106,21 @@ final class CouponBookingService
             $customer->id,
             $serviceCategoryId,
         );
+        $this->notifier->user($customer, ClientApp::Customer, NotificationEvent::CouponRejected, $plan->couponId.':'.now()->getTimestamp(), ['coupon' => $this->couponLabel($plan)]);
+    }
+
+    /**
+     * What the customer knows the coupon by: the typed code, else the code or name of the campaign.
+     */
+    private function couponLabel(CouponPlan $plan): string
+    {
+        if ($plan->codeEntered !== null && $plan->codeEntered !== '') {
+            return $plan->codeEntered;
+        }
+
+        $coupon = $this->coupons->find($plan->couponId);
+
+        return $coupon instanceof Coupon ? (string) ($coupon->code ?? $coupon->name) : '';
     }
 
     /**

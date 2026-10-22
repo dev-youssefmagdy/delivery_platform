@@ -217,6 +217,7 @@ final class NotificationService
         $variables = [];
 
         foreach ($message->variables as $name => $value) {
+            $value = $value instanceof \Closure ? $value($locale) : $value;
             $variables[$name] = $name === 'outcome' && is_string($value) ? $this->templates->variableValue($name, $value, $locale) : $value;
         }
 

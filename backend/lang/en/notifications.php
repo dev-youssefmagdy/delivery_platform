@@ -52,7 +52,6 @@ return [
     ],
     'booking.provider_cancelled_redispatch' => ['title' => 'Looking for another driver', 'body' => 'Your driver cancelled. We are looking for another one for booking {code}.'],
     'booking.operations_update' => ['title' => 'Update on your booking', 'body' => 'Support updated booking {code}. Open the app for details.'],
-    'booking.operations_contact' => ['title' => 'Message from support', 'body' => 'Support would like to help with your booking. Open the app.'],
     'booking.adjustment_requested' => ['title' => 'Fare change request', 'body' => 'A fare change was requested for booking {code}. Please respond.'],
     'booking.adjustment_answered' => ['title' => 'Fare change answered', 'body' => 'Fare change for booking {code}: {outcome}.'],
 
@@ -110,6 +109,6 @@ return [
 
     // Words substituted for coded template variables, in this language.
     '_values' => [
-            'outcome' => ['approved' => 'approved', 'declined' => 'declined', 'expired' => 'expired'],
+        'outcome' => ['approved' => 'approved', 'declined' => 'declined', 'expired' => 'expired', 'voided' => 'cancelled by support', 'withdrawn' => 'withdrawn'],
     ],
 ];

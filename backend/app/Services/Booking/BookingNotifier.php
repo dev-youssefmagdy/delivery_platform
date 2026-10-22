@@ -2,75 +2,128 @@
 
 namespace App\Services\Booking;
 
+use App\Enums\Booking\BookingAdjustmentStatus;
 use App\Enums\Booking\BookingOverrideAction;
+use App\Enums\Common\ActorType;
+use App\Enums\Notification\NotificationEvent;
 use App\Models\Booking;
-use Illuminate\Support\Facades\Log;
+use App\Models\BookingAdjustmentRequest;
+use App\Services\Notification\PartyNotifier;
 
 /**
- * Notification hook of the booking module. Until the notification platform (P3.6) it writes to the log channel only:
- * nothing is sent to the customer, and the log lines say so. The customer still learns the outcome from the app
- * (status endpoint, realtime event); P3.6 replaces the bodies with push / in-app notifications.
+ * Notification hook of the booking module (SRS §14.1): translates what happened to a booking into notification events
+ * for the customer and the provider. Pushes carry no names, addresses or amounts (lock-screen safe) and open the
+ * booking. Each call is deduplicated by the booking sequence of the occurrence, so a retried flow notifies once. The apps
+ * also learn the same facts from the status endpoint and realtime events; a notification is never the source of truth.
  */
 class BookingNotifier
 {
+    public function __construct(private readonly PartyNotifier $parties) {}
+
     public function searchExpired(Booking $booking): void
     {
-        Log::info('booking.search_expired (notification stub, nothing sent)', [
-            'booking' => $booking->uuid,
-            'customer' => $booking->customer_id,
-        ]);
+        $this->parties->customer($booking, NotificationEvent::BookingSearchExpired, (string) $booking->sequence);
     }
 
+    /**
+     * @param int|null $feeMinor the cancellation fee decided for this cancellation (the payer is read from the stored decision)
+     */
     public function cancelled(Booking $booking, string $by, ?int $feeMinor): void
     {
-        Log::info('booking.cancelled (notification stub, nothing sent)', ['booking' => $booking->uuid, 'by' => $by, 'fee_minor' => $feeMinor]);
+        $discriminator = (string) $booking->sequence;
+
+        if ($by === ActorType::Customer->value) {
+            $this->parties->provider($booking, NotificationEvent::BookingCancelled, $discriminator);
+        } else {
+            $this->parties->customer($booking, NotificationEvent::BookingCancelled, $discriminator);
+        }
+
+        if ($feeMinor !== null && $feeMinor > 0) {
+            $payer = (string) (($booking->cancellation_decision['payer'] ?? null) ?: $by);
+
+            if ($payer === ActorType::Provider->value) {
+                $this->parties->provider($booking, NotificationEvent::BookingCancellationFee, $discriminator);
+            } else {
+                $this->parties->customer($booking, NotificationEvent::BookingCancellationFee, $discriminator);
+            }
+        }
     }
 
     public function providerCancelledRedispatch(Booking $booking): void
     {
-        Log::info('booking.provider_cancelled_redispatch (notification stub, nothing sent)', ['booking' => $booking->uuid]);
+        $this->parties->customer($booking, NotificationEvent::BookingProviderCancelled, (string) $booking->sequence);
     }
 
     public function completed(Booking $booking): void
     {
-        Log::info('booking.completed (notification stub, nothing sent)', ['booking' => $booking->uuid]);
+        $this->parties->customer($booking, NotificationEvent::BookingCompleted, 'completed');
     }
 
     /**
-     * An operator intervened (SRS §8.3): the customer and, when there is one, the provider are told what happened. Until
-     * the notification platform (P3.6) this is a log line per party that says nothing was sent; the apps still learn the
-     * outcome from the booking status / realtime events.
+     * An operator intervened (SRS §8.3): the customer and, when there is one, the provider are told that support
+     * updated the booking; the details are in the app.
      *
-     * @param array<string, mixed> $summary non-PII facts of the action (status, extension, fee)
+     * @param array<string, mixed> $summary non-PII facts of the action (not part of the notification text)
      */
     public function operationsOverride(Booking $booking, BookingOverrideAction $action, array $summary = []): void
     {
-        $parties = ['customer' => $booking->customer_id] + ($booking->provider_id === null ? [] : ['provider' => $booking->provider_id]);
+        $discriminator = $action->value.':'.$booking->sequence;
 
-        foreach ($parties as $party => $id) {
-            Log::info('booking.operations_override (notification stub, nothing sent)', [
-                'booking' => $booking->uuid,
-                'action' => $action->value,
-                'party' => $party,
-                'party_id' => $id,
-            ] + $summary);
+        $this->parties->customer($booking, NotificationEvent::BookingOperationsUpdate, $discriminator);
+        $this->parties->provider($booking, NotificationEvent::BookingOperationsUpdate, $discriminator);
+    }
+
+    /**
+     * A fare adjustment was requested or answered (P3.5): the other party is asked to respond, the requester learns the
+     * answer. The realtime event updates an open screen; the push reaches a closed app.
+     */
+    public function adjustmentChanged(Booking $booking, BookingAdjustmentRequest $adjustment, string $event): void
+    {
+        if ($event === 'adjustment_requested') {
+            $this->toParty($booking, $adjustment->requester_type === ActorType::Customer->value ? ActorType::Provider : ActorType::Customer, NotificationEvent::BookingAdjustmentRequested, $adjustment->uuid.':requested');
+
+            return;
+        }
+
+        $outcome = match ($adjustment->status) {
+            BookingAdjustmentStatus::Approved => 'approved',
+            BookingAdjustmentStatus::Rejected => 'declined',
+            BookingAdjustmentStatus::Expired => 'expired',
+            BookingAdjustmentStatus::Voided => 'voided',
+            BookingAdjustmentStatus::Withdrawn => 'withdrawn',
+            BookingAdjustmentStatus::Pending => null,
+        };
+
+        if ($outcome === null) {
+            return;
+        }
+
+        $requester = $adjustment->requester_type === ActorType::Customer->value ? ActorType::Customer : ActorType::Provider;
+        $key = $adjustment->uuid.':'.$outcome;
+
+        if ($adjustment->status === BookingAdjustmentStatus::Withdrawn) {
+            // The requester withdrew it: the party who was asked no longer needs to answer.
+            $this->toParty($booking, $adjustment->counterpartType(), NotificationEvent::BookingAdjustmentAnswered, $key, ['outcome' => $outcome]);
+
+            return;
+        }
+
+        $this->toParty($booking, $requester, NotificationEvent::BookingAdjustmentAnswered, $key, ['outcome' => $outcome]);
+
+        if ($adjustment->status === BookingAdjustmentStatus::Voided) {
+            $this->toParty($booking, $adjustment->counterpartType(), NotificationEvent::BookingAdjustmentAnswered, $key, ['outcome' => $outcome]);
         }
     }
 
     /**
-     * Operations contacts the customer of a booking that found no provider (no-offer queue). Logged only until P3.6.
+     * @param array<string, scalar|null> $variables
      */
-    public function contactCustomer(Booking $booking, string $channelHint): void
+    private function toParty(Booking $booking, ActorType $party, NotificationEvent $event, string $discriminator, array $variables = []): void
     {
-        Log::info('booking.operations_contact_customer (notification stub, nothing sent)', ['booking' => $booking->uuid, 'customer' => $booking->customer_id, 'channel' => $channelHint]);
-    }
-
-    /**
-     * A fare adjustment was requested or answered (P3.5). The other party is asked in the app through the realtime event;
-     * push arrives with the notification platform (P3.6), so until then this is a log line that says nothing was sent.
-     */
-    public function adjustmentChanged(Booking $booking, \App\Models\BookingAdjustmentRequest $adjustment, string $event): void
-    {
-        Log::info('booking.adjustment (notification stub, nothing sent)', ['booking' => $booking->uuid, 'adjustment' => $adjustment->uuid, 'event' => $event, 'status' => $adjustment->status->value]);
+        if ($party === ActorType::Customer) {
+            $this->parties->customer($booking, $event, $discriminator, $variables);
+        } else {
+            $this->parties->provider($booking, $event, $discriminator, $variables);
+        }
     }
 }

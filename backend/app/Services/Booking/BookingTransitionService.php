@@ -9,6 +9,7 @@ use App\Enums\Payments\PaymentMethodType;
 use App\Enums\Payments\PaymentStatus;
 use App\Enums\Provider\EligibilityScope;
 use App\Events\Booking\BookingEnteredSearch;
+use App\Events\Booking\BookingStatusTransitioned;
 use App\Events\Realtime\BookingStatusChanged;
 use App\Events\Realtime\TripStatusChanged;
 use App\Exceptions\BusinessRuleViolation;
@@ -152,6 +153,7 @@ final class BookingTransitionService
 
             $payload = ['status' => $to->value, 'previous_status' => $from->value, 'request_version' => $locked->request_version];
             BookingStatusChanged::dispatch($locked->uuid, $sequence, $payload);
+            BookingStatusTransitioned::dispatch($locked->id, $from, $to, $sequence);
             $this->announceToParties($locked, $sequence, $payload + ['actor' => $context->actorType->value], $previousProviderId);
 
             // Back from `offers_received` the dispatch chain is still running and the window is unchanged.

@@ -410,7 +410,7 @@ final class BookingAdjustmentService
     }
 
     /**
-     * Timeline entry, notification stub and the realtime event to both parties.
+     * Timeline entry, notification (inbox + push) and the realtime event to both parties.
      */
     private function publish(Booking $booking, BookingAdjustmentRequest $adjustment, string $event, TransitionContext $context): void
     {

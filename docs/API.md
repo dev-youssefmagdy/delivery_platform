@@ -684,3 +684,22 @@ Booking resources add `adjustments_total` and `current_total`; `allowed_actions`
 
 Admin: `GET /admin/booking-adjustments`, `/{uuid}` (`bookings.view`), `POST /admin/booking-adjustments/{uuid}/void` (`bookings.manage`, reason), booking tabs `adjustments` and `receipt`, `POST /admin/cancellation-policies/{id}/preview` (calculator).
 
+
+## P3.6 — Notifications (inbox, settings, devices)
+
+Both tokens (`customer`, `provider`); status-safe (a suspended account can still read why). Everything is scoped to the caller and to the app of the token: a foreign id answers `404`.
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/me/notifications` | The inbox of the calling app, newest first. Query `page`, `per_page` (1-50, default 20), `unread=1`. Item `{id, event, category, title, body, read, link {type, id}\|null, created_at, read_at}`; `link.type` is `booking`, `payout`, `documents`, `application`, `wallet`, `support`, `message`, `inbox`; the app must cope with a target that no longer exists. `meta.pagination` and `meta.unread_count` |
+| POST | `/api/v1/me/notifications/{id}/read` | Idempotent. `data` = the entry, `meta.unread_count` |
+| POST | `/api/v1/me/notifications/read-all` | `meta.unread_count = 0` |
+| GET | `/api/v1/me/notification-preferences` | `data.categories[] {category, label, description, essential, opt_in_required, channels[] {channel (push\|sms\|email), enabled, locked}}`. Essential categories (booking, account, payments, safety) have push `locked: true`; marketing is off until switched on |
+| PUT | `/api/v1/me/notification-preferences` | `{preferences: [{category, channel, enabled}]}` (max 64). `422 notification_essential_locked` when a locked channel is switched off. Response = the new matrix |
+| POST | `/api/v1/me/devices` | (P1.3) now the way push tokens are registered: `device_id`, `platform`, `app_version?`, `push_token?`, `locale?` |
+
+**Push payload (FCM data).** `notification_id`, `event`, `category`, `link_type`, `link_id` (strings, no personal data); title/body are the lock-screen text of the recipient's language. Android channel id `platform_default`.
+
+**Relation to `GET /me/messages`.** Help messages from support stay readable there (customer only); each one also creates an inbox entry (`link.type = message`, `link.id` = the message id). See ADR-132.
+
+Admin (session guard): `/admin/notification-templates` (CRUD without delete, activate / deactivate, `POST /preview`), `/admin/notification-deliveries` (read-only, `POST /{uuid}/retry` with a reason), `/admin/push-campaigns` (CRUD, `schedule`, `send`, `cancel`), `POST /admin/notifications/{uuid}/read` and `/read-all` (the bell). Permissions: `notifications.manage`, `push_campaigns.manage`.

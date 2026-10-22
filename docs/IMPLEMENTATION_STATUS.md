@@ -31,7 +31,7 @@
 | P3.3 | Coupon engine and coupon manager | P1 | 🟡 | 2026-11-01 |
 | P3.4 | Provider earnings, payouts, adjustments, cash reconciliation | P1 | 🟡 | 2026-11-02 |
 | P3.5 | Cancellation/no-show policies with fees, fare adjustments, receipts | P1 | 🟡 | 2026-11-03 |
-| P3.6 | Notifications platform (push, SMS, email, in-app inbox) | P1 | ❌ | — |
+| P3.6 | Notifications platform (push, SMS, email, in-app inbox) | P1 | 🟡 | 2026-11-04 |
 | P3.7 | Booking chat and support tickets/disputes | P1 | ❌ | — |
 | P3.8 | Flutter: wallet, payments, coupons, earnings, payouts | P1 | ❌ | — |
 | P4.1 | Courier/parcel backend | P1 | ❌ | — |
@@ -910,3 +910,14 @@ Backend: `.env.example`, `AGENTS.md`, `CLAUDE.md`, `composer.json`, `composer.lo
 ### Next steps
 
 P0.2 — Backend core architecture (and P0.4 may run in parallel after P0.1).
+
+
+## P3.6 — Notifications platform · 🟡 (gate not run)
+
+**Built.** Backend: `NotificationEvent` catalog (46 events, SRS §14.1) with categories and link types; tables `notification_templates`, `notification_preferences`, `app_notifications` (inbox, users and admins), `notification_deliveries`, `push_campaigns`; `NotificationService` -> templates (language, fallback ar, built-in text) -> preference/essential rules -> deliveries with dedupe key, retry/back-off and statuses; channel senders push (`PushNotifier`: FCM HTTP v1 + boot-guarded `log`), SMS (shared `SmsGateway`), email; every log-stub notifier replaced (`BookingNotifier`, `ProviderNotifier`, offers, status transitions, payments, payouts via `PayoutHistory`, wallet adjustments, cash reconciliation, coupons, help messages, new-request push, document expiry). API: `GET /me/notifications`, read, read-all, `GET/PUT /me/notification-preferences`. Admin: Notification templates (ar/en preview with sample variables), Delivery log (collapsed filters, retry with reason), Push campaigns (consent + preferences, scheduled, audited), enabled top-bar bell, export ready/failed notifications. Flutter (both apps): firebase_core/firebase_messaging/flutter_local_notifications in `platform_core` (`FirebasePushGateway`, `PushCoordinator`, `DeepLinkHandler`), token registration through `/me/devices`, foreground local notifications, tap deep links with unavailable-target handling, inbox and settings screens (AR/EN), native config without committed Firebase files. Driver history now uses `GET /provider/bookings`.
+
+**Checks run (no suites, no linters).** `php -l` on changed files; `migrate` / `rollback` / `migrate`; `route:list`; `view:cache`; container resolution of new classes; rolled-back scripts through the HTTP kernel (all new admin pages and DataTable JSON 200, filters, bell) and through the services (dedupe, preference enforcement, essential lock, ar fallback, delivery processing with the log drivers, campaign run); `flutter pub get`, `flutter gen-l10n`, `dart analyze` of changed directories (platform_core notifications: only 3 deprecation infos; both apps: no issues). Not run: pint, phpstan, php artisan test, flutter test, vitest, `scripts/check.sh`, a real device push.
+
+**Known gaps.** FCM and the Flutter push path are untested against a live Firebase project; coupon "expiring" has no emitter; wallet/payout/support screens do not exist yet so those links open the inbox; consent-screen marketing flag is not yet mapped to the marketing preference (ADR-133); `firebase_messaging` token API deprecation infos.
+
+**Next (P3.7).** Emit `SupportReply`, `SupportDisputeUpdate`, `SafetyCaseUpdate` (events, templates and link type `support` exist) via `PartyNotifier`; chat messages should use a new event with a collapse key per booking; add routes for `support` links in `customerRouteFor` / `driverRouteFor`.

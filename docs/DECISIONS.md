@@ -759,3 +759,24 @@ Discovered while wiring this: the framework's default middleware priority list n
 **Decision.** `booking_receipts` is written once at completion from the booking, its approved adjustments and stored price breakdown (the table refuses updates and deletes). Customer and provider views are projections of the same snapshot. Bookings completed earlier get a `backfilled` receipt on first read. HTML receipt behind a 15-minute signed link, Arabic RTL by default, print-ready (print to PDF; no PDF library added). Tips are separate payments and not on the receipt.
 **Why.** Plan I4.
 
+
+## ADR-132 — One notification platform; inbox unified with help messages by link · 2026-11-04 · Accepted
+
+**Decision.** Domain code never sends: it emits a `NotificationEvent` (enum with category, audience, default channels, template variables, link type) through `PartyNotifier` -> `NotificationService`. The service resolves the template (recipient language, then Arabic, then the built-in text in `lang/*/notifications.php`), narrows the channels by the person's preferences, writes the inbox row (`app_notifications`) and one `notification_deliveries` row per channel in the caller's transaction, and queues the sends after commit. Failures inside the service are reported and swallowed: a business action never fails because a notification failed. `GET /me/messages` (P1.6) stays for the help-message detail; every help message also creates an inbox entry linking to it (`link.type=message`), so the inbox is the single list and `/me/messages` its detail source.
+**Why.** One path for SRS §14.1, no second notifier; the older endpoint keeps working for existing clients.
+
+## ADR-133 — Preferences, essential categories, marketing consent · 2026-11-04 · Accepted
+
+**Decision.** Users choose push / SMS / email per category; the inbox is always kept. Essential categories (booking, account, payments, safety) lock push on (`422 notification_essential_locked`); SMS/email default on only for essential categories and payouts. Marketing is opt-in per channel and default off; a campaign reaches only users who enabled marketing push (the explicit opt-in, stored per user) with an active account and a device token. The older `customer_profiles.marketing_opt_in` flag from consent screens is not read by campaigns; wiring the consent screen to this preference is a follow-up. OTP is not an event: it goes straight to `SmsGateway` and is never stored in notification tables.
+
+## ADR-134 — Delivery: dedupe, retry, at-least-once · 2026-11-04 · Accepted
+
+**Decision.** Dedupe: unique `(recipient, dedupe_key)` on the inbox row and `(notification, channel)` on deliveries; callers build keys from the occurrence (booking sequence, offer/payout/adjustment uuid). Retry: `DeliveryProcessor` claims the row under a lock, records attempts, error code and next attempt; back-off 30 s, 2 min, 10 min, 30 min, max 5 attempts (`config/notifications.php`); permanent failures (invalid token, bad argument) are not retried and an invalid token is forgotten. `notifications:retry-overdue` (every minute) re-queues lost jobs. Missing destination or unconfigured channel = `skipped` with a reason, never a fake success. Delivery is at-least-once; the push collapse key hides a rare repeat.
+
+## ADR-135 — Push driver and Flutter wiring · 2026-11-04 · Accepted
+
+**Decision.** `PushNotifier` contract with `fcm` (HTTP v1, service-account JWT, APNs through FCM; untested without credentials) and `log` (local/testing only, boot-guarded). `email` mirrors `MAIL_MAILER` in the same guard. Flutter: the Firebase packages and the gateway live in `platform_core` (`FirebasePushGateway`, `PushCoordinator`, `DeepLinkHandler`, `NotificationRepository`); the apps own providers, screens and the route map. Firebase config files stay out of git; without them the apps report "push not available" and keep working. Taps validate the target (404/403 -> inbox plus notice), cold-start taps are replayed once after sign-in. `firebase_messaging` token methods are deprecated in the installed version; migrate to `register()` when the new API is stable.
+
+## ADR-136 — Admin notifications and exports · 2026-11-04 · Accepted
+
+**Decision.** Admins receive inbox rows (`recipient_type=admin`) shown in the top-bar bell; an export now notifies its owner when ready or failed, and the bell opens a freshly signed download link. The listing's polling toast is kept for admins still on the page. Admin templates are per event, channel and language (no delete; deactivate falls back to Arabic or the built-in text); push campaigns are audited, need a reason to send or cancel, and run idempotently on the `notifications` queue. Coupon "expiring" has no emitter yet: coupons are not owned per customer until referral/wallet coupons; the event and templates exist.

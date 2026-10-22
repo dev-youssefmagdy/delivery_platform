@@ -645,3 +645,31 @@ Not written or run by user instruction. Everything below should exist before P3.
 ### Manual / live
 - Driver and customer apps (P3.8): request an extra stop / waiting / toll, approve in the other app and watch the total and receipt change; report a no-show with GPS; retry cancel with the same key; print the HTML receipt to PDF in Arabic and English.
 
+
+## P3.6 — Notifications platform (not written; gate not run)
+
+### tests/Unit (backend)
+- `Notification/TemplateResolverTest`: recipient language template wins; missing/inactive `en` falls back to the active `ar` template; no DB row falls back to `lang/{locale}/notifications.php`; `in_app` reuses the push template; SMS/email defaults only where defined.
+- `Notification/TemplateRendererTest`: placeholders replaced, unknown value renders empty, `unknown()` lists placeholders the event does not provide; `outcome` is translated per language.
+- `Notification/NotificationCategoryTest`: essential set locks push and inbox; marketing default off for every channel; SMS/email default only for essential and payouts.
+- `Push/FcmPushNotifierTest` (Http::fake): token request signed with RS256 JWT and cached; 404/UNREGISTERED -> invalid token (permanent); 400 -> permanent; 401 clears the cached token; 5xx -> retryable.
+
+### tests/Feature (backend)
+- `NotificationServiceTest`: sends inbox row + deliveries per allowed channel; same dedupe key twice -> one notification, one push; user language `en` vs `ar`; anonymised user skipped; audience mismatch skipped; a thrown exception inside never breaks the caller.
+- `NotificationPreferenceTest`: disabling a non-essential channel removes its delivery; disabling push on an essential category -> 422 `notification_essential_locked`; essential override still delivers push; marketing needs opt-in; `PUT` validates category/channel.
+- `DeliveryProcessorTest`: success -> `sent` with provider id; temporary failure -> `queued` with `next_attempt_at` per back-off and attempts+1; after max attempts -> `failed` `retries_exhausted`; invalid token -> `skipped` and token forgotten; no device / no phone / no email / driver not configured -> `skipped` with reason; two workers on one row send once; `notifications:retry-overdue` re-queues only overdue rows.
+- `NotificationApiTest`: inbox scoped to owner and app (customer token never sees provider rows); foreign id 404; read idempotent; `unread_count`; `read-all`; preferences matrix shape with `locked`; suspended account can read.
+- `NotificationWiringTest`: booking transitions (selected, heading, arrived, started), cancellation (by customer notifies provider; fee notifies the payer only), completion, search expiry, override, adjustment requested/answered, offer received/accepted/declined/expired, payment pending/paid/failed/refunded, payout requested/approved/rejected/paid/failed, wallet adjustment, cash reconciliation, provider status changes, document expiring/expired, coupon applied, help message each create exactly one notification with a deep link; no OTP text in any table or log.
+- `PushCampaignTest`: only opted-in users with a device in the audience's app are reached; draft -> schedule needs a future time; send needs a reason; cancel; `push-campaigns:dispatch-due` starts due campaigns once; rerun is idempotent (counts stable); every step writes an audit row.
+- `ExportNotificationTest`: completed export notifies the owner admin; bell shows it; opening it marks it read and redirects to a signed download; another admin gets 404.
+
+### tests/Feature (Admin)
+- Templates, delivery log and push campaigns each: guest redirected; no `notifications.manage` / `push_campaigns.manage` -> 403 (page, JSON, datatable); filters respected (event, category, channel, locale, active; channel, status, event, date range; name, status, audience); Precognition 422 for unknown placeholders / missing Arabic text / duplicate event+channel+locale and 204 for valid input without persisting; store/update/activate/deactivate/retry/send/cancel write audit rows; dangerous actions without reason rejected; preview renders ar and en with sample variables; filters card collapsed by default.
+- Translations: every new key exists in `ar` and `en` (admin, api, enums, notifications); no physical RTL utilities in the new views.
+
+### Flutter
+- `platform_core`: `DeepLinkHandler` (valid -> open; 404/403 -> inbox + notice; offline -> open anyway; no link -> inbox; marks read first), `NotificationLink.fromPushData`, model parsing with unknown enums, `PushRegistrar` dedupes the same token, `PushCoordinator` with a fake gateway (not configured -> no crash; foreground -> local notification; initial message handled once).
+- Both apps: widget tests (AR + LTR) for inbox (loading, empty, error/retry, offline, list, mark read, tap unavailable), settings (locked essential switches disabled with explanation, marketing off, save error), push status card states, `customerRouteFor` / `driverRouteFor` mapping, driver history from `/provider/bookings` (pagination, empty, error).
+
+### Manual / live
+- Real device push per app (foreground, background, terminated) with deep link taps; Android 13 permission flow; iOS APNs via FCM; SMS provider accepts non-OTP texts; email deliverability.

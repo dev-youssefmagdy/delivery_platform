@@ -4,6 +4,7 @@ use App\Jobs\Customers\ReactivateExpiredSuspensions;
 use App\Jobs\Provider\ReactivateExpiredProviderSuspensions;
 use App\Jobs\Provider\SweepStaleProviders;
 use App\Models\AdminExport;
+use App\Models\AppNotification;
 use App\Models\IdempotencyKey;
 use App\Models\OtpChallenge;
 use Illuminate\Support\Facades\Schedule;
@@ -40,3 +41,9 @@ Schedule::command('payments:reconcile')->hourlyAt(30)->withoutOverlapping();
 Schedule::command('coupons:sync-status')->everyMinute()->withoutOverlapping();
 
 Schedule::command('bookings:expire-adjustments')->everyMinute()->withoutOverlapping();
+
+Schedule::command('notifications:retry-overdue')->everyMinute()->withoutOverlapping();
+
+Schedule::command('push-campaigns:dispatch-due')->everyMinute()->withoutOverlapping();
+
+Schedule::command('model:prune', ['--model' => [AppNotification::class]])->dailyAt('05:00')->withoutOverlapping();

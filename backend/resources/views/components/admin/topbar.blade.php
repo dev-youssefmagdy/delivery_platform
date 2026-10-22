@@ -1,8 +1,7 @@
-{{-- Topbar: mobile menu, locale switcher (persisted on the admin), notifications, account menu. --}}
+{{-- Topbar: mobile menu, locale switcher (persisted on the admin), notification bell, account menu. --}}
 @php
     $user = auth()->user();
     $currentLocale = app()->getLocale();
-    $hasNotifications = $user !== null && method_exists($user, 'unreadNotifications');
 @endphp
 <header class="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur sm:px-6 lg:px-8">
     <button type="button" class="icon-btn lg:hidden" x-on:click="mobileOpen = true" aria-label="{{ __('admin.layout.open_menu') }}">
@@ -32,18 +31,8 @@
         @endforeach
     </x-admin.dropdown>
 
-    @if ($hasNotifications)
-        <x-admin.dropdown align="end" :label="__('admin.layout.notifications')" width="w-80">
-            <x-slot:trigger>
-                <span class="icon-btn relative">
-                    <x-admin.icon name="bell" class="size-5" />
-                    @if ($user->unreadNotifications()->exists())
-                        <span class="absolute end-1.5 top-1.5 size-2 rounded-full bg-danger-600"></span>
-                    @endif
-                </span>
-            </x-slot:trigger>
-            <x-admin.empty-state icon="bell" :title="__('admin.layout.no_notifications')" compact />
-        </x-admin.dropdown>
+    @if ($user instanceof \App\Models\Admin)
+        <x-admin.notification-bell />
     @endif
 
     <div class="flex items-center gap-2 border-s border-slate-200 ps-3">

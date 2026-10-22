@@ -61,6 +61,11 @@ class NotificationDelivery extends Model
         return ['uuid'];
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     /**
      * @return BelongsTo<AppNotification, $this>
      */

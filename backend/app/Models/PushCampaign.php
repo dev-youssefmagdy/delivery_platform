@@ -59,6 +59,11 @@ class PushCampaign extends Model
         return ['uuid'];
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     /**
      * @return BelongsTo<Admin, $this>
      */

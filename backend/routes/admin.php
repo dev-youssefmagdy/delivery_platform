@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\LookupController;
@@ -28,6 +29,10 @@ Route::middleware(['auth:admin', 'admin.session', 'admin.mfa'])->group(function 
     Route::get('lookups/{lookup}', LookupController::class)->where('lookup', '[a-z0-9_-]+')->name('lookups')->middleware('admin.access:self');
     Route::get('exports/{export}', [ExportController::class, 'show'])->name('exports.show')->middleware('admin.access:self');
     Route::get('exports/{export}/download', [ExportController::class, 'download'])->middleware(['signed', 'admin.access:self'])->name('exports.download');
+
+    // The admin's own notifications (top-bar bell): scoped to the signed-in admin in the service.
+    Route::post('notifications/read-all', [AdminNotificationController::class, 'readAll'])->name('notifications.read-all')->middleware('admin.access:self');
+    Route::post('notifications/{notification}/read', [AdminNotificationController::class, 'read'])->whereUuid('notification')->name('notifications.read')->middleware('admin.access:self');
 
     foreach (glob(__DIR__.'/admin/*.php') ?: [] as $moduleRoutes) {
         if (basename($moduleRoutes) !== 'auth.php') {

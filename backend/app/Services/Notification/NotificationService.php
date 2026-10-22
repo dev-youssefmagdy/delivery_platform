@@ -173,7 +173,7 @@ final class NotificationService
     }
 
     /**
-     * @return list<NotificationChannel> the event's channels narrowed by the person's choices; the inbox always stays
+     * @return list<NotificationChannel> the event's channels narrowed by the person's choices (the inbox is always kept)
      */
     private function channelsFor(NotificationMessage $message, User|Admin $recipient): array
     {
@@ -188,15 +188,7 @@ final class NotificationService
             return $candidates;
         }
 
-        $allowed = $this->preferences->allowedChannels($recipient, $event->category(), $candidates);
-
-        // The inbox is the record of what happened: it is written for every event except a marketing message the
-        // person did not opt in to (campaigns only select opted-in people, so this is a safety net).
-        if (! in_array(NotificationChannel::InApp, $allowed, true) && ! $event->category()->requiresOptIn()) {
-            array_unshift($allowed, NotificationChannel::InApp);
-        }
-
-        return $allowed;
+        return $this->preferences->allowedChannels($recipient, $event->category(), $candidates);
     }
 
     /**

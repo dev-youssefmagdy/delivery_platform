@@ -5,7 +5,9 @@ namespace App\Models;
 use App\Enums\Identity\ClientApp;
 use App\Enums\Notification\NotificationCategory;
 use App\Enums\Notification\NotificationEvent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -37,6 +39,7 @@ use Illuminate\Support\Carbon;
 class AppNotification extends Model
 {
     use HasUuids;
+    use MassPrunable;
 
     public const UPDATED_AT = null;
 
@@ -51,6 +54,16 @@ class AppNotification extends Model
     public function uniqueIds(): array
     {
         return ['uuid'];
+    }
+
+    /**
+     * Inbox entries (and, by cascade, their deliveries) are kept for `notifications.retention_days`.
+     *
+     * @return Builder<static>
+     */
+    public function prunable(): Builder
+    {
+        return static::query()->where('created_at', '<', now()->subDays(max(30, (int) config('notifications.retention_days', 180))));
     }
 
     public function event(): ?NotificationEvent

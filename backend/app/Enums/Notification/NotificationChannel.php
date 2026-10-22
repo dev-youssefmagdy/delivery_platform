@@ -18,13 +18,14 @@ enum NotificationChannel: string implements HasLabel
     case InApp = 'in_app';
 
     /**
-     * Channels a person can switch off per category (all of them; essential categories lock push and in_app).
+     * Channels a person can choose per category. The inbox is not one of them: it is the record of what happened and
+     * is always kept.
      *
      * @return list<self>
      */
     public static function preferenceChannels(): array
     {
-        return self::cases();
+        return [self::Push, self::Sms, self::Email];
     }
 
     /**

@@ -405,6 +405,33 @@ return [
             'icon' => 'tag',
             'permission' => App\Enums\Admin\AdminPermission::CouponsView,
         ],
+        [
+            'key' => 'push_campaigns',
+            'group' => 'marketing',
+            'label' => 'admin.push_campaigns.menu',
+            'route' => 'admin.push-campaigns.index',
+            'active' => 'admin.push-campaigns.*',
+            'icon' => 'megaphone',
+            'permission' => App\Enums\Admin\AdminPermission::PushCampaignsManage,
+        ],
+        [
+            'key' => 'notification_templates',
+            'group' => 'system',
+            'label' => 'admin.notification_templates.menu',
+            'route' => 'admin.notification-templates.index',
+            'active' => 'admin.notification-templates.*',
+            'icon' => 'bell',
+            'permission' => App\Enums\Admin\AdminPermission::NotificationsManage,
+        ],
+        [
+            'key' => 'notification_deliveries',
+            'group' => 'system',
+            'label' => 'admin.notification_deliveries.menu',
+            'route' => 'admin.notification-deliveries.index',
+            'active' => 'admin.notification-deliveries.*',
+            'icon' => 'inbox',
+            'permission' => App\Enums\Admin\AdminPermission::NotificationsManage,
+        ],
         // @admin-module:menu
     ],
 ];

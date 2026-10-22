@@ -6,14 +6,19 @@ use App\DataTables\Admin\AdminDataTable;
 use App\Enums\Admin\AdminExportStatus;
 use App\Enums\Admin\ExportFormat;
 use App\Enums\Common\AuditAction;
+use App\Enums\Notification\NotificationEvent;
 use App\Exceptions\ForbiddenActionException;
 use App\Jobs\Admin\GenerateAdminExport;
 use App\Models\AdminExport;
 use App\Models\User;
+use App\DTOs\Notification\NotificationMessage;
+use App\Models\Admin;
 use App\Repositories\Contracts\Admin\AdminExportRepositoryInterface;
+use App\Repositories\Contracts\Admin\AdminRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Services\Audit\AuditLogger;
 use App\Services\Customers\PersonalDataExporter;
+use App\Services\Notification\NotificationService;
 use App\Support\Auth\ActorReference;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\DatabaseManager;
@@ -38,6 +43,8 @@ final class AdminExportService
         private readonly DatabaseManager $db,
         private readonly PersonalDataExporter $personalData,
         private readonly CustomerRepositoryInterface $customers,
+        private readonly NotificationService $notifications,
+        private readonly AdminRepositoryInterface $admins,
     ) {}
 
     /**
@@ -127,10 +134,29 @@ final class AdminExportService
                 'rows' => $rows,
                 'completed_at' => now(),
             ]);
+            $this->notifyOwner($export, NotificationEvent::AdminExportReady);
         } catch (Throwable $e) {
             Log::error('Admin export failed', ['export' => $export->uuid, 'exception' => $e::class, 'message' => $e->getMessage()]);
 
             $this->exports->update($export, ['status' => AdminExportStatus::Failed, 'error_code' => 'export_failed', 'completed_at' => now()]);
+            $this->notifyOwner($export, NotificationEvent::AdminExportFailed);
+        }
+    }
+
+    /**
+     * The admin who asked for the export finds the result in the notification bell (the download link is signed and
+     * built when they open it). The listing's polling toast keeps working for an admin who is still on the page.
+     */
+    private function notifyOwner(AdminExport $export, NotificationEvent $event): void
+    {
+        if ($export->actor_type !== 'admin' || $export->actor_id === null) {
+            return;
+        }
+
+        $admin = $this->admins->find($export->actor_id);
+
+        if ($admin instanceof Admin) {
+            $this->notifications->send(NotificationMessage::toAdmin($event, $admin, ['file' => $export->filename], $export->uuid, $event->value.':'.$export->uuid));
         }
     }
 

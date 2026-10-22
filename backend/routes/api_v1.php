@@ -29,6 +29,8 @@ use App\Http\Controllers\Api\V1\Me\ConsentController;
 use App\Http\Controllers\Api\V1\Me\DeviceController;
 use App\Http\Controllers\Api\V1\Me\MeController;
 use App\Http\Controllers\Api\V1\Me\MessageController;
+use App\Http\Controllers\Api\V1\Me\NotificationController;
+use App\Http\Controllers\Api\V1\Me\NotificationPreferenceController;
 use App\Http\Controllers\Api\V1\Me\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Me\WalletController;
 use App\Http\Controllers\Api\V1\Me\PhotoController;
@@ -112,6 +114,12 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
     // Status-safe: suspended / deletion-pending users must still be able to read their state and leave.
     Route::get('/', [MeController::class, 'show'])->name('show');
     Route::get('consents', [ConsentController::class, 'index'])->name('consents.index');
+    // The in-app inbox and notification settings (P3.6): status-safe, for the customer and the driver app alike.
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::post('notifications/{notification}/read', [NotificationController::class, 'read'])->whereUuid('notification')->name('notifications.read');
+    Route::get('notification-preferences', [NotificationPreferenceController::class, 'show'])->name('notification-preferences.show');
+    Route::put('notification-preferences', [NotificationPreferenceController::class, 'update'])->name('notification-preferences.update');
     Route::middleware('ability:customer')->group(function (): void {
         Route::get('messages', [MessageController::class, 'index'])->name('messages.index');
         Route::post('messages/{message}/read', [MessageController::class, 'read'])->whereUuid('message')->name('messages.read');

@@ -32,6 +32,8 @@ interface AppNotificationRepositoryInterface extends BaseRepositoryInterface
 
     public function markAllRead(string $recipientType, int $recipientId, ?ClientApp $app): int;
 
+    public function countForCampaign(int $campaignId): int;
+
     /**
      * @return Collection<int, AppNotification> the newest entries (admin bell)
      */

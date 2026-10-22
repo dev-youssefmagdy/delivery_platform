@@ -103,7 +103,6 @@ return [
 
     'admin.export_ready' => [
         'title' => 'Export ready', 'body' => 'Your export {file} is ready to download.',
-        'email_subject' => 'Your export is ready', 'email_body' => "Your export {file} is ready.\nSign in to the admin panel and open the notifications to download it.",
     ],
     'admin.export_failed' => ['title' => 'Export failed', 'body' => 'Your export {file} could not be generated.'],
 

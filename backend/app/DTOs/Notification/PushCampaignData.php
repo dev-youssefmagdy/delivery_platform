@@ -34,7 +34,7 @@ final readonly class PushCampaignData
             bodyAr: trim((string) $request->input('body.ar')),
             titleEn: self::nullable($request->input('title.en')),
             bodyEn: self::nullable($request->input('body.en')),
-            scheduledAt: $scheduled === '' ? null : CarbonImmutable::createFromFormat('Y-m-d H:i', $scheduled, $timezone)->utc(),
+            scheduledAt: $scheduled === '' ? null : CarbonImmutable::createFromFormat('!Y-m-d H:i', $scheduled, $timezone)->utc(),
             lockVersion: $request->filled('lock_version') ? $request->integer('lock_version') : null,
         );
     }

@@ -48,6 +48,11 @@ final class AppNotificationRepository extends BaseRepository implements AppNotif
         return $this->scoped($recipientType, $recipientId, $app)->whereNull('read_at')->update(['read_at' => now()]);
     }
 
+    public function countForCampaign(int $campaignId): int
+    {
+        return $this->query()->where('campaign_id', $campaignId)->count();
+    }
+
     public function latest(string $recipientType, int $recipientId, int $limit): Collection
     {
         return $this->scoped($recipientType, $recipientId, null)->orderByDesc('id')->limit($limit)->get();

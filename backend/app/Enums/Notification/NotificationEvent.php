@@ -128,7 +128,7 @@ enum NotificationEvent: string implements HasLabel
 
         if (in_array($this, [
             self::ProviderApplicationApproved, self::ProviderApplicationRejected, self::ProviderApplicationMoreInfo, self::DocumentExpiring,
-            self::DocumentExpired, self::PaymentRefunded, self::PayoutPaid, self::PayoutFailed, self::BookingCompleted, self::AdminExportReady,
+            self::DocumentExpired, self::PaymentRefunded, self::PayoutPaid, self::PayoutFailed, self::BookingCompleted,
         ], true)) {
             $channels[] = NotificationChannel::Email;
         }
@@ -184,7 +184,7 @@ enum NotificationEvent: string implements HasLabel
             'code' => 'BK-4F7A2C',
             'document' => __('admin.notification_templates.sample.document'),
             'days' => '7',
-            'outcome' => __('admin.notification_templates.sample.outcome'),
+            'outcome' => 'approved',
             'reference' => 'REF-1042',
             'coupon' => 'WELCOME20',
             'title' => __('admin.notification_templates.sample.title'),
@@ -197,7 +197,10 @@ enum NotificationEvent: string implements HasLabel
 
     public function label(): string
     {
-        return __("enums.notification_event.{$this->value}");
+        // Keys contain dots (`booking.completed`), so the whole map is read and indexed instead of using dot notation.
+        $labels = __('enums.notification_event');
+
+        return is_array($labels) ? (string) ($labels[$this->value] ?? $this->value) : $this->value;
     }
 
     /**

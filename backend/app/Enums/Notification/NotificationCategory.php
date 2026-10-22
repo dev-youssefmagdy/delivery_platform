@@ -8,6 +8,7 @@ use App\Enums\Contracts\HasLabel;
 /**
  * Groups of notifications a person can control (SRS §14.1). Essential categories (booking, account, payments, safety)
  * can never be fully disabled: push and the inbox stay on so a person cannot miss a trip, a fee or a safety update.
+ * The inbox itself is never switchable.
  * Marketing is the only category that needs an explicit opt-in.
  */
 enum NotificationCategory: string implements HasLabel
@@ -46,11 +47,12 @@ enum NotificationCategory: string implements HasLabel
     }
 
     /**
-     * Whether a channel stays on for the category whatever the person chose.
+     * Whether a channel stays on for the category whatever the person chose: the inbox always, and push for essential
+     * categories.
      */
     public function locksChannel(NotificationChannel $channel): bool
     {
-        return $this->isEssential() && in_array($channel, [NotificationChannel::Push, NotificationChannel::InApp], true);
+        return $channel === NotificationChannel::InApp || ($this->isEssential() && $channel === NotificationChannel::Push);
     }
 
     /**

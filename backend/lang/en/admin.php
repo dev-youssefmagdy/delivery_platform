@@ -719,6 +719,22 @@ return [
                 'label' => 'Customer service fee',
                 'description' => 'Fixed fee added to every completed booking and recorded as platform revenue. 0 means no fee.',
             ],
+            'payment_intent_timeout_minutes' => [
+                'label' => 'Online payment timeout',
+                'description' => 'Minutes a card or wallet payment may stay unconfirmed before the reconciliation job queries the gateway and flags it for review.',
+            ],
+            'tips_enabled' => [
+                'label' => 'Tips enabled',
+                'description' => 'Customers can tip after a completed trip (only for services that allow tipping). Tips are never preselected.',
+            ],
+            'tip_max_basis_points' => [
+                'label' => 'Largest tip',
+                'description' => 'Highest tip as a share of the agreed fare. 10000 basis points = 100%.',
+            ],
+            'refund_dual_approval_threshold_minor' => [
+                'label' => 'Refund dual-approval threshold',
+                'description' => 'Refunds at or above this amount wait for a second admin to approve; smaller refunds run on the requester\'s authority. 0 means every refund needs a second approval.',
+            ],
             'provider_cash_debt_limit_minor' => [
                 'label' => 'Provider cash debt limit',
                 'description' => 'Commission owed on cash jobs above which a provider cannot go online.',
@@ -806,6 +822,10 @@ return [
             'rate_limit_provider_uploads_per_minute' => [
                 'label' => 'Provider document and photo uploads',
                 'description' => 'Per provider (documents and vehicle photos).',
+            ],
+            'rate_limit_payment_webhooks_per_minute' => [
+                'label' => 'Payment gateway webhooks',
+                'description' => 'Per IP (gateway callbacks, signature-checked).',
             ],
             'rate_limit_admin_login_per_minute' => [
                 'label' => 'Failed admin sign-ins before lock-out',

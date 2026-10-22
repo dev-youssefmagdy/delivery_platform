@@ -71,6 +71,10 @@ enum SettingKey: string implements HasLabel
     case DefaultCommissionBasisPoints = 'default_commission_basis_points';
     case TaxRateBasisPoints = 'tax_rate_basis_points';
     case CustomerServiceFeeMinor = 'customer_service_fee_minor';
+    case PaymentIntentTimeoutMinutes = 'payment_intent_timeout_minutes';
+    case TipsEnabled = 'tips_enabled';
+    case TipMaxBasisPoints = 'tip_max_basis_points';
+    case RefundDualApprovalThresholdMinor = 'refund_dual_approval_threshold_minor';
 
     // Safety & privacy
     case RidePinRequired = 'ride_pin_required';
@@ -99,6 +103,7 @@ enum SettingKey: string implements HasLabel
     case RateLimitPublicFormsPerMinute = 'rate_limit_public_forms_per_minute';
     case RateLimitAdminLoginPerMinute = 'rate_limit_admin_login_per_minute';
     case RateLimitProviderUploadsPerMinute = 'rate_limit_provider_uploads_per_minute';
+    case RateLimitPaymentWebhooksPerMinute = 'rate_limit_payment_webhooks_per_minute';
 
     public const VERSION_PATTERN = '/^\d{1,4}\.\d{1,4}\.\d{1,4}$/';
 
@@ -139,7 +144,7 @@ enum SettingKey: string implements HasLabel
             self::DispatchRadiusStepsKm => SettingType::NumberList,
 
             self::RatingCustomerByProviderEnabled, self::AutoRedispatchOnProviderCancel, self::ProviderSingleActiveJob,
-            self::RidePinRequired, self::DirectPhoneExposure, self::ForceUpdateCustomer, self::ForceUpdateDriver,
+            self::RidePinRequired, self::TipsEnabled, self::DirectPhoneExposure, self::ForceUpdateCustomer, self::ForceUpdateDriver,
             self::MaintenanceModeApps => SettingType::Boolean,
 
             default => SettingType::Integer,
@@ -160,7 +165,8 @@ enum SettingKey: string implements HasLabel
             self::AutoRedispatchOnProviderCancel => SettingGroup::Dispatch,
             self::ProviderSingleActiveJob, self::ProviderCashDebtLimitMinor, self::ProviderVerificationSlaHours,
             self::ProviderDocumentExpiryWarningDays => SettingGroup::Providers,
-            self::DefaultCommissionBasisPoints, self::TaxRateBasisPoints, self::CustomerServiceFeeMinor => SettingGroup::Finance,
+            self::DefaultCommissionBasisPoints, self::TaxRateBasisPoints, self::CustomerServiceFeeMinor, self::PaymentIntentTimeoutMinutes,
+            self::TipsEnabled, self::TipMaxBasisPoints, self::RefundDualApprovalThresholdMinor => SettingGroup::Finance,
             self::RidePinRequired, self::ShareLinkTtlMinutes, self::RidePinMaxAttempts, self::DirectPhoneExposure => SettingGroup::Safety,
             self::MinAppVersionCustomer, self::MinAppVersionDriver, self::ForceUpdateCustomer, self::ForceUpdateDriver,
             self::MaintenanceModeApps => SettingGroup::Apps,
@@ -177,7 +183,7 @@ enum SettingKey: string implements HasLabel
             self::SupportPhone, self::SupportWhatsapp => SettingInput::Phone,
             self::SupportEmail => SettingInput::Email,
             self::DispatchRadiusStepsKm => SettingInput::NumberList,
-            self::ProviderCashDebtLimitMinor, self::CustomerServiceFeeMinor => SettingInput::Money,
+            self::ProviderCashDebtLimitMinor, self::CustomerServiceFeeMinor, self::RefundDualApprovalThresholdMinor => SettingInput::Money,
             self::MinAppVersionCustomer, self::MinAppVersionDriver => SettingInput::Text,
             default => $this->type() === SettingType::Boolean ? SettingInput::Toggle : SettingInput::Number,
         };
@@ -199,16 +205,16 @@ enum SettingKey: string implements HasLabel
         return match ($this) {
             self::OtpTtlSeconds, self::OtpResendCooldownSeconds, self::BookingSearchTtlSeconds, self::OfferTtlSeconds,
             self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds, self::LocationHistoryIntervalSeconds, self::AdminLoginLockoutSeconds => 'seconds',
-            self::ShareLinkTtlMinutes, self::ScheduledBookingMinLeadMinutes, self::ScheduledSearchLeadMinutes => 'minutes',
+            self::ShareLinkTtlMinutes, self::ScheduledBookingMinLeadMinutes, self::ScheduledSearchLeadMinutes, self::PaymentIntentTimeoutMinutes => 'minutes',
             self::ScheduledBookingMaxDays => 'days',
             self::ProviderVerificationSlaHours, self::RatingWindowHours => 'hours',
             self::ProviderDocumentExpiryWarningDays => 'days',
-            self::DefaultCommissionBasisPoints, self::TaxRateBasisPoints => 'basis_points',
+            self::DefaultCommissionBasisPoints, self::TaxRateBasisPoints, self::TipMaxBasisPoints => 'basis_points',
             self::DispatchRadiusStepsKm => 'km',
             self::LocationMaxSpeedKmh => 'kmh',
             self::RateLimitApiPerMinute, self::RateLimitOtpRequestPerMinute, self::RateLimitOtpVerifyPerMinute,
             self::RateLimitLocationPerMinute, self::RateLimitOffersPerMinute, self::RateLimitPublicFormsPerMinute,
-            self::RateLimitAdminLoginPerMinute, self::RateLimitProviderUploadsPerMinute => 'per_minute',
+            self::RateLimitAdminLoginPerMinute, self::RateLimitProviderUploadsPerMinute, self::RateLimitPaymentWebhooksPerMinute => 'per_minute',
             self::RateLimitOtpRequestPerHour => 'per_hour',
             default => null,
         };
@@ -239,7 +245,10 @@ enum SettingKey: string implements HasLabel
             self::LocationStaleAfterSeconds => [10, 3600],
             self::LocationMaxSpeedKmh => [30, 1000],
             self::LocationHistoryIntervalSeconds => [1, 600],
-            self::ProviderCashDebtLimitMinor, self::CustomerServiceFeeMinor => [0, 100_000_000],
+            self::ProviderCashDebtLimitMinor, self::CustomerServiceFeeMinor, self::RefundDualApprovalThresholdMinor => [0, 100_000_000],
+            self::PaymentIntentTimeoutMinutes => [5, 1440],
+            self::TipMaxBasisPoints => [100, 100_000],
+            self::RateLimitPaymentWebhooksPerMinute => [10, 100_000],
             self::DefaultCommissionBasisPoints, self::TaxRateBasisPoints => [0, 10_000],
             self::ShareLinkTtlMinutes => [5, 1440],
             self::RidePinMaxAttempts => [1, 10],
@@ -293,6 +302,10 @@ enum SettingKey: string implements HasLabel
             self::ProviderCashDebtLimitMinor => 50_000,
             self::DefaultCommissionBasisPoints => 1000,
             self::TaxRateBasisPoints, self::CustomerServiceFeeMinor => 0,
+            self::PaymentIntentTimeoutMinutes => 30,
+            self::TipsEnabled => true,
+            self::TipMaxBasisPoints => 10_000,
+            self::RefundDualApprovalThresholdMinor => 100_000,
             self::ProviderVerificationSlaHours => 24,
             self::ProviderDocumentExpiryWarningDays => 30,
             self::RidePinRequired => true,
@@ -317,6 +330,7 @@ enum SettingKey: string implements HasLabel
             self::RateLimitPublicFormsPerMinute => (int) config('rate_limits.public-forms.per_minute', 5),
             self::RateLimitAdminLoginPerMinute => (int) config('rate_limits.admin-login.per_minute', 5),
             self::RateLimitProviderUploadsPerMinute => (int) config('rate_limits.provider-uploads.per_minute', 20),
+            self::RateLimitPaymentWebhooksPerMinute => (int) config('rate_limits.payment-webhooks.per_minute', 600),
         };
     }
 

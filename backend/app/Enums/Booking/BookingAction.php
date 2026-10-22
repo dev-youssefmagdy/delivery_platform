@@ -7,7 +7,7 @@ use App\Enums\Contracts\HasLabel;
 
 /**
  * What the customer may do with a booking right now. The server computes the list (`allowed_actions`), apps never
- * derive it from the status. Adjustments and payment actions arrive with their milestones.
+ * derive it from the status. Adjustments arrive with their milestone; paying and tipping online came with P3.2.
  */
 enum BookingAction: string implements HasLabel
 {
@@ -19,6 +19,8 @@ enum BookingAction: string implements HasLabel
     case Share = 'share';
     case Rate = 'rate';
     case Report = 'report';
+    case Pay = 'pay';
+    case Tip = 'tip';
 
     public function label(): string
     {

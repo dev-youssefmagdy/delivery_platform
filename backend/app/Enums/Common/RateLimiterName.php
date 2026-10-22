@@ -20,6 +20,7 @@ enum RateLimiterName: string
     case PublicForms = 'public-forms';
     case AdminLogin = 'admin-login';
     case ProviderUploads = 'provider-uploads';
+    case PaymentWebhooks = 'payment-webhooks';
 
     public function middleware(): string
     {

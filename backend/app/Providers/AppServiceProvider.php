@@ -29,7 +29,12 @@ use App\Models\JournalEntry;
 use App\Models\JournalLine;
 use App\Models\LedgerAccount;
 use App\Models\LedgerReconciliationRun;
+use App\Models\GatewayWebhookEvent;
 use App\Models\OtpChallenge;
+use App\Models\Payment;
+use App\Models\PaymentMethod;
+use App\Models\PaymentReconciliationRun;
+use App\Models\PaymentRefund;
 use App\Models\OwnedDocument;
 use App\Models\PlatformSetting;
 use App\Models\PolicyVersion;
@@ -157,6 +162,11 @@ class AppServiceProvider extends ServiceProvider
             'ledger_reconciliation_run' => LedgerReconciliationRun::class,
             'commission_rule' => CommissionRule::class,
             'commission_rule_version' => CommissionRuleVersion::class,
+            'payment' => Payment::class,
+            'payment_method' => PaymentMethod::class,
+            'payment_refund' => PaymentRefund::class,
+            'gateway_webhook_event' => GatewayWebhookEvent::class,
+            'payment_reconciliation_run' => PaymentReconciliationRun::class,
             // @admin-module:morph-map
         ]);
 
@@ -195,6 +205,7 @@ class AppServiceProvider extends ServiceProvider
             RateLimiterName::PublicForms => SettingKey::RateLimitPublicFormsPerMinute,
             RateLimiterName::AdminLogin => SettingKey::RateLimitAdminLoginPerMinute,
             RateLimiterName::ProviderUploads => SettingKey::RateLimitProviderUploadsPerMinute,
+            RateLimiterName::PaymentWebhooks => SettingKey::RateLimitPaymentWebhooksPerMinute,
         });
         $actor = static fn (Request $request): string => (string) ($request->user()?->getAuthIdentifier() ?? 'ip:'.$request->ip());
 
@@ -231,6 +242,9 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for(RateLimiterName::Offers->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::Offers))->by($actor($request)));
 
         RateLimiter::for(RateLimiterName::ProviderUploads->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::ProviderUploads))->by($actor($request)));
+
+        // Gateway callbacks have no user: bucket by IP (the signature is what authenticates them).
+        RateLimiter::for(RateLimiterName::PaymentWebhooks->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::PaymentWebhooks))->by('ip:'.$request->ip()));
 
         RateLimiter::for(RateLimiterName::PublicForms->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::PublicForms))->by('ip:'.$request->ip()));
 

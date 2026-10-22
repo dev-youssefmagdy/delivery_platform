@@ -38,6 +38,11 @@ return [
         'per_minute' => (int) env('RATE_LIMIT_PROVIDER_UPLOADS_PER_MINUTE', 20),
     ],
 
+    'payment-webhooks' => [
+        // Gateway callbacks per IP: signature-checked, so this only bounds abuse; gateways retry from a few addresses.
+        'per_minute' => (int) env('RATE_LIMIT_PAYMENT_WEBHOOKS_PER_MINUTE', 600),
+    ],
+
     'admin-login' => [
         // Per login identifier + IP.
         'per_minute' => (int) env('RATE_LIMIT_ADMIN_LOGIN_PER_MINUTE', 5),

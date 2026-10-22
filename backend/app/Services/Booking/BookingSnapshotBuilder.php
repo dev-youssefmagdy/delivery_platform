@@ -4,6 +4,7 @@ namespace App\Services\Booking;
 
 use App\DTOs\Booking\ValidatedBookingRequest;
 use App\Enums\Settings\SettingKey;
+use App\Services\Scope\OfferScopeService;
 use App\Services\Settings\SettingsService;
 
 /**
@@ -16,6 +17,7 @@ final class BookingSnapshotBuilder
     public function __construct(
         private readonly SettingsService $settings,
         private readonly CancellationPolicyResolver $cancellation,
+        private readonly OfferScopeService $scopes,
     ) {}
 
     /**
@@ -51,6 +53,8 @@ final class BookingSnapshotBuilder
             'service_snapshot' => $this->serviceSnapshot($request),
             'policy_snapshot' => $this->policySnapshot($request) + ['cancellation' => $cancellation['snapshot']],
             'payment_method' => $request->paymentMethod,
+            // Moving / freight: what the customer asked for, used verbatim by accept-the-customer-fare offers (P4.2).
+            'requested_scope' => $this->scopes->requestedFrom((array) $request->version->snapshot, $request->serviceDetails, count($request->stops), $cancellation['snapshot']),
         ] + $request->columns;
     }
 

@@ -51,5 +51,9 @@ final readonly class ValidatedBookingRequest
         /** @var array<string, mixed> category-specific searchable columns (see ParcelColumns) */
         public array $columns = [],
         public ?int $restrictedGoodsPolicyVersionId = null,
+        /** @var list<array<string, mixed>> structured load lines of a moving / freight request (BookingItem attributes) */
+        public array $items = [],
+        /** @var array<string, list<string>> uploaded attachment uuids by service form field */
+        public array $attachmentRefs = [],
     ) {}
 }

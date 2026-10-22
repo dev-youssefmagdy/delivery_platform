@@ -2,6 +2,7 @@
 
 namespace App\DTOs\Booking;
 
+use App\Support\Auth\PhoneNumber;
 use App\Support\Geo\GeoPoint;
 
 /**
@@ -12,8 +13,9 @@ final readonly class BookingLocationData
 {
     /**
      * @param array<string, string|null> $address {title, line}
+     * @param array{name: string, phone: string, note?: string}|null $contact the person to call at an intermediate stop (P4.2)
      */
-    public function __construct(public GeoPoint $point, public array $address = []) {}
+    public function __construct(public GeoPoint $point, public array $address = [], public ?array $contact = null) {}
 
     /**
      * @param array<string, mixed> $input {lat, lng, address?: {title, line}}
@@ -36,7 +38,26 @@ final readonly class BookingLocationData
             }
         }
 
-        return new self($point, $address);
+        $contact = null;
+        $name = trim((string) ($input['contact']['name'] ?? ''));
+        $phone = PhoneNumber::normalize(is_string($input['contact']['phone'] ?? null) ? $input['contact']['phone'] : null);
+
+        if ($name !== '' && $phone !== null) {
+            $note = trim((string) ($input['contact']['note'] ?? ''));
+            $contact = ['name' => mb_substr($name, 0, 100), 'phone' => $phone] + ($note === '' ? [] : ['note' => mb_substr($note, 0, 255)]);
+        }
+
+        return new self($point, $address, $contact);
+    }
+
+    /**
+     * The row written for an intermediate stop.
+     *
+     * @return array{point: GeoPoint, address: array<string, string|null>|null, contact: array{name: string, phone: string, note?: string}|null}
+     */
+    public function stopRecord(): array
+    {
+        return ['point' => $this->point, 'address' => $this->addressOrNull(), 'contact' => $this->contact];
     }
 
     /**

@@ -19,6 +19,7 @@ use App\Services\Catalog\Forms\ServiceFormValidator;
 use App\Services\Courier\BookingContactService;
 use App\Services\Courier\RestrictedGoodsService;
 use App\Support\Courier\ParcelColumns;
+use App\Support\Load\LoadDetails;
 use App\Services\Geography\GeoService;
 use App\Services\Geography\MapsService;
 use App\Services\Pricing\PriceGuidanceService;
@@ -95,7 +96,12 @@ final class BookingRequestValidator
         [$details, $contacts] = $this->contacts->split($validatedDetails);
         $luggage = isset($details['luggage']) && is_numeric($details['luggage']) ? (int) $details['luggage'] : null;
         $weight = $this->weightKg($snapshot, $details);
-        $this->assertCapacity($passengers, $luggage, $weight, $snapshot);
+        $volume = LoadDetails::volumeM3($details);
+        $this->assertCapacity($passengers, $luggage, $weight, $snapshot, $volume);
+        [$windowStart, $windowEnd] = LoadDetails::pickupWindow($details, $area->city?->timezone ?? (string) config('app.timezone'));
+        $this->assertPickupWindow($windowStart, $windowEnd, $now);
+        /** @var list<array<string, mixed>> $schemaFields */
+        $schemaFields = (array) ($snapshot['form_schema']['fields'] ?? []);
 
         $currency = $this->currency($data);
         // A new parcel request must acknowledge the current restricted-goods policy; an edit keeps the original acknowledgement.
@@ -134,8 +140,14 @@ final class BookingRequestValidator
             fareBounds: $bounds,
             validatedAt: $now,
             contacts: $contacts,
-            columns: ParcelColumns::from($details, $currency),
+            columns: ParcelColumns::from($details, $currency) + [
+                'cargo_volume_m3' => $volume === null ? null : number_format($volume, 3, '.', ''),
+                'pickup_window_start' => $windowStart,
+                'pickup_window_end' => $windowEnd,
+            ],
             restrictedGoodsPolicyVersionId: $restricted?->id,
+            items: LoadDetails::items($details, $schemaFields),
+            attachmentRefs: LoadDetails::attachmentRefs($details, $schemaFields),
         );
     }
 
@@ -269,7 +281,7 @@ final class BookingRequestValidator
     /**
      * @param array<string, mixed> $snapshot
      */
-    private function assertCapacity(?int $passengers, ?int $luggage, ?string $weight, array $snapshot): void
+    private function assertCapacity(?int $passengers, ?int $luggage, ?string $weight, array $snapshot, ?float $volume = null): void
     {
         $limits = (array) ($snapshot['limits'] ?? []);
         $vehicles = (array) ($snapshot['vehicle_categories'] ?? []);
@@ -294,6 +306,44 @@ final class BookingRequestValidator
             if ($caps !== [] && (float) $weight > min($caps)) {
                 throw BusinessRuleViolation::make('weight_exceeded', 'service_details', ['max' => min($caps)]);
             }
+        }
+
+        // The load must fit the largest approved vehicle category of the service (dispatch and offers filter per vehicle later).
+        if ($volume !== null) {
+            $volumes = array_filter(array_map(static fn (array $v): float => (float) ($v['max_volume_m3'] ?? 0), $vehicles));
+            $caps = array_filter([isset($limits['max_volume_m3']) ? (float) $limits['max_volume_m3'] : null, $volumes === [] ? null : max($volumes)]);
+
+            if ($caps !== [] && $volume > min($caps)) {
+                throw BusinessRuleViolation::make('volume_exceeded', 'service_details', ['max' => min($caps)]);
+            }
+        }
+    }
+
+    /**
+     * A freight pickup window: both ends or none, in the future, ordered and not longer than the configured maximum.
+     */
+    private function assertPickupWindow(?CarbonImmutable $start, ?CarbonImmutable $end, CarbonImmutable $now): void
+    {
+        if ($start === null && $end === null) {
+            return;
+        }
+
+        if ($start === null || $end === null) {
+            throw BusinessRuleViolation::make('pickup_window_incomplete', 'service_details.pickup_window_end');
+        }
+
+        if ($start->lessThan($now->subMinutes(5))) {
+            throw BusinessRuleViolation::make('pickup_window_in_past', 'service_details.pickup_window_start');
+        }
+
+        if ($end->lessThanOrEqualTo($start)) {
+            throw BusinessRuleViolation::make('pickup_window_invalid', 'service_details.pickup_window_end');
+        }
+
+        $maxHours = (int) config('booking.pickup_window_max_hours', 72);
+
+        if ($start->diffInHours($end) > $maxHours) {
+            throw BusinessRuleViolation::make('pickup_window_too_long', 'service_details.pickup_window_end', ['max' => $maxHours]);
         }
     }
 

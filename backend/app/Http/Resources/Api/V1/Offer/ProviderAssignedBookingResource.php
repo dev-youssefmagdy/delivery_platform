@@ -10,6 +10,7 @@ use App\Models\Booking;
 use App\Models\BookingStop;
 use App\Services\Booking\CancellationPolicyResolver;
 use App\Services\Courier\BookingContactService;
+use App\Services\Scope\BookingLoadPresenter;
 use App\Services\Courier\DeliveryStateService;
 use App\Services\Settings\SettingsService;
 use Illuminate\Http\Request;
@@ -59,7 +60,7 @@ class ProviderAssignedBookingResource extends JsonResource
             'delivery' => app(DeliveryStateService::class)->build($booking),
             'pickup' => $this->place($booking->pickup_point->lat, $booking->pickup_point->lng, $booking->pickup_address),
             'dropoff' => $booking->dropoff_point === null ? null : $this->place($booking->dropoff_point->lat, $booking->dropoff_point->lng, $booking->dropoff_address),
-            'stops' => $booking->stops->map(fn (BookingStop $stop): array => ['position' => $stop->position] + $this->place($stop->point->lat, $stop->point->lng, $stop->address))->values()->all(),
+            'stops' => $this->stops($booking),
             'scheduled_at' => $booking->scheduled_at?->toIso8601ZuluString(),
             'passengers' => $booking->passengers,
             'service_details' => $booking->service_details === [] ? new stdClass : $booking->service_details,
@@ -70,6 +71,7 @@ class ProviderAssignedBookingResource extends JsonResource
             ],
             'agreed_fare' => $booking->agreed_fare_minor === null ? null : ['amount_minor' => $booking->agreed_fare_minor, 'currency' => $booking->currency],
             'agreed_scope' => ($booking->agreed_scope ?? []) === [] ? new stdClass : $booking->agreed_scope,
+        ] + app(BookingLoadPresenter::class)->blocks($booking) + [
             'payment' => ['method' => $booking->payment_method->value, 'status' => $booking->payment_status->value],
             'pin_required' => (bool) ($booking->policy_snapshot['safety']['pin_required'] ?? false),
             'selected_at' => $booking->provider_selected_at?->toIso8601ZuluString(),
@@ -153,6 +155,16 @@ class ProviderAssignedBookingResource extends JsonResource
             ], $rules),
             'redispatch' => (bool) ($booking->policy_snapshot['dispatch']['auto_redispatch'] ?? false),
         ];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function stops(Booking $booking): array
+    {
+        $contacts = app(BookingContactService::class)->forStops($booking, asProvider: true);
+
+        return $booking->stops->map(fn (BookingStop $stop): array => ['position' => $stop->position] + $this->place($stop->point->lat, $stop->point->lng, $stop->address) + ['contact' => $contacts[$stop->position] ?? null])->values()->all();
     }
 
     /**

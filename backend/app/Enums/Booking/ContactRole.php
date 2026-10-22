@@ -14,6 +14,9 @@ enum ContactRole: string implements HasLabel
 
     case Sender = 'sender';
     case Recipient = 'recipient';
+    // Freight (P4.2): the people to call at the loading place and at the unloading place.
+    case PickupContact = 'pickup_contact';
+    case DropoffContact = 'dropoff_contact';
 
     /**
      * The service form field that carries this contact (`service_details.<key>`).

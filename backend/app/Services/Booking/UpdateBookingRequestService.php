@@ -19,6 +19,7 @@ use App\Repositories\Contracts\Booking\BookingOfferRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStopRepositoryInterface;
 use App\Services\Courier\BookingContactService;
+use App\Services\Scope\BookingLoadService;
 use App\Services\Dispatch\EventSequencer;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -42,6 +43,7 @@ final class UpdateBookingRequestService
         private readonly BookingTransitionService $transitions,
         private readonly EventSequencer $sequencer,
         private readonly BookingContactService $contacts,
+        private readonly BookingLoadService $loads,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -92,7 +94,8 @@ final class UpdateBookingRequestService
                 'search_expires_at' => $now->addSeconds($ttl),
             ]);
             $this->contacts->store($locked, $validated->contacts);
-            $this->stops->replaceFor($locked, array_map(static fn (BookingLocationData $stop): array => ['point' => $stop->point, 'address' => $stop->addressOrNull()], $validated->stops));
+            $this->loads->store($locked, $locked->customer_id, $validated);
+            $this->stops->replaceFor($locked, array_map(static fn (BookingLocationData $stop): array => $stop->stopRecord(), $validated->stops));
 
             $context = TransitionContext::customer($customer, 'request_changed');
 
@@ -115,7 +118,7 @@ final class UpdateBookingRequestService
     {
         $stops = $data->hasStops
             ? $data->stops
-            : $booking->stops->map(static fn (BookingStop $stop): BookingLocationData => new BookingLocationData($stop->point, (array) ($stop->address ?? [])))->all();
+            : $booking->stops->map(static fn (BookingStop $stop): BookingLocationData => new BookingLocationData($stop->point, (array) ($stop->address ?? []), $stop->contact()))->all();
 
         return new CreateBookingData(
             serviceCategoryId: $booking->service_category_id,

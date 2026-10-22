@@ -3,6 +3,7 @@
 namespace App\Services\Booking;
 
 use App\DTOs\Booking\BookingCreationResult;
+use App\DTOs\Booking\BookingLocationData;
 use App\DTOs\Coupon\CouponPlan;
 use App\DTOs\Booking\CreateBookingData;
 use App\DTOs\Booking\TransitionContext;
@@ -21,6 +22,7 @@ use App\Repositories\Contracts\Booking\BookingStopRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Services\Coupon\CouponBookingService;
 use App\Services\Courier\BookingContactService;
+use App\Services\Scope\BookingLoadService;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -48,6 +50,7 @@ final class CreateBookingService
         private readonly CouponBookingService $coupons,
         private readonly CancellationAbuseService $abuse,
         private readonly BookingContactService $contacts,
+        private readonly BookingLoadService $loads,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -106,9 +109,10 @@ final class CreateBookingService
 
             $booking = $this->insert($locked, $data, $validated);
             $context = TransitionContext::customer($locked);
-            $this->stops->replaceFor($booking, array_map(static fn ($stop): array => ['point' => $stop->point, 'address' => $stop->addressOrNull()], $validated->stops));
+            $this->stops->replaceFor($booking, array_map(static fn (BookingLocationData $stop): array => $stop->stopRecord(), $validated->stops));
             $this->transitions->recordCreation($booking, $context);
             $this->contacts->store($booking, $validated->contacts);
+            $this->loads->store($booking, $locked->id, $validated);
 
             if ($coupon instanceof CouponPlan) {
                 $booking = $this->coupons->reserve($coupon, $booking, $validated);

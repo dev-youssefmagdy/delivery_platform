@@ -112,6 +112,38 @@ final class BookingContactService
     }
 
     /**
+     * The contacts of the intermediate stops by position (P4.2). Same disclosure as the other contacts: the selected provider
+     * sees the name, and the phone only while the job is in flight (real or masked per the exposure setting); the customer sees
+     * what they typed with the phone masked. Nothing is returned for a stop without a contact.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function forStops(Booking $booking, bool $asProvider): array
+    {
+        $exposePhone = $asProvider && $booking->status->isAssigned();
+        $direct = $exposePhone && $this->settings->bool(SettingKey::DirectPhoneExposure);
+        $views = [];
+
+        foreach ($booking->stops as $stop) {
+            $contact = $stop->contact();
+
+            if ($contact === null) {
+                continue;
+            }
+
+            $views[$stop->position] = [
+                'name' => $contact['name'],
+                'phone' => $direct ? $contact['phone'] : null,
+                'phone_masked' => PhoneNumber::mask($contact['phone']),
+                'note' => $contact['note'] ?? null,
+                'contact_mode' => $direct ? 'direct' : 'masked',
+            ];
+        }
+
+        return $views;
+    }
+
+    /**
      * @return list<array<string, mixed>>
      */
     private function view(Booking $booking, bool $exposePhone, bool $direct): array

@@ -68,6 +68,9 @@ return [
         'require_no_show_evidence' => true,
     ],
 
+    // A freight pickup window may not be longer than this many hours (P4.2).
+    'pickup_window_max_hours' => (int) env('BOOKING_PICKUP_WINDOW_MAX_HOURS', 72),
+
     // Fare adjustments after selection (P3.5, SRS §9.4).
     'adjustments' => [
         // A pending request that the other party does not answer in this time expires (seconds).

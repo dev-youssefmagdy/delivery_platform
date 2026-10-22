@@ -11,7 +11,9 @@ use App\Http\Controllers\Api\V1\Common\MediaController;
 use App\Http\Controllers\Api\V1\Common\PolicyController;
 use App\Http\Controllers\Api\V1\Customer\BookingAdjustmentController;
 use App\Http\Controllers\Api\V1\Customer\BookingController;
+use App\Http\Controllers\Api\V1\Customer\BookingAttachmentController;
 use App\Http\Controllers\Api\V1\Customer\BookingDeliveryController;
+use App\Http\Controllers\Api\V1\Provider\BookingAttachmentController as ProviderBookingAttachmentController;
 use App\Http\Controllers\Api\V1\Provider\DeliveryController;
 use App\Http\Controllers\Api\V1\Customer\BookingReceiptController;
 use App\Http\Controllers\Api\V1\Provider\TripAdjustmentController;
@@ -194,11 +196,16 @@ Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bo
     Route::get('{booking}/proofs', [BookingDeliveryController::class, 'proofs'])->whereUuid('booking')->name('proofs.index');
     Route::get('{booking}/proofs/{proof}/file', [BookingDeliveryController::class, 'proofFile'])->whereUuid(['booking', 'proof'])->middleware('signed')->name('proofs.file');
     Route::post('{booking}/delivery-attempts/{attempt}/resolve', [BookingDeliveryController::class, 'resolveAttempt'])->whereUuid(['booking', 'attempt'])->middleware('idempotent')->name('delivery-attempts.resolve');
+    // Moving / freight load files (P4.2): photos, videos and documents; the file only via the signed route.
+    Route::get('{booking}/attachments', [BookingAttachmentController::class, 'index'])->whereUuid('booking')->name('attachments.index');
+    Route::get('{booking}/attachments/{attachment}/file', [BookingAttachmentController::class, 'file'])->whereUuid(['booking', 'attachment'])->middleware('signed')->name('attachments.file');
     // A disputed cancellation fee opens a support ticket carrying the fee decision snapshot.
     Route::post('{booking}/cancellation-appeal', [SupportTicketController::class, 'appeal'])->whereUuid('booking')->middleware('idempotent')->name('cancellation-appeal');
 
     Route::middleware('account.active:strict')->group(function (): void {
         Route::post('/', [BookingController::class, 'store'])->middleware('idempotent')->name('store');
+        Route::post('attachments', [BookingAttachmentController::class, 'store'])->middleware(['throttle:'.(int) config('offer_scope.attachments.per_minute', 20).',1', 'idempotent'])->name('attachments.store');
+        Route::delete('attachments/{attachment}', [BookingAttachmentController::class, 'destroy'])->whereUuid('attachment')->name('attachments.destroy');
         Route::patch('{booking}/request', [BookingController::class, 'updateRequest'])->whereUuid('booking')->middleware('idempotent')->name('request.update');
 
         // Choosing a provider (P2.4): atomic, idempotent; a lost race answers 409 with the fresh booking.
@@ -250,6 +257,9 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     // Proofs of the provider's own job (P4.1); pictures only via the signed route.
     Route::get('bookings/{booking}/proofs', [DeliveryController::class, 'proofs'])->whereUuid('booking')->name('bookings.proofs.index');
     Route::get('bookings/{booking}/proofs/{proof}/file', [DeliveryController::class, 'proofFile'])->whereUuid(['booking', 'proof'])->middleware('signed')->name('bookings.proofs.file');
+    // Load files of the provider's own job (P4.2); signed route for the file.
+    Route::get('bookings/{booking}/attachments', [ProviderBookingAttachmentController::class, 'index'])->whereUuid('booking')->name('bookings.attachments.index');
+    Route::get('bookings/{booking}/attachments/{attachment}/file', [ProviderBookingAttachmentController::class, 'file'])->whereUuid(['booking', 'attachment'])->middleware('signed')->name('bookings.attachments.file');
     // Booking chat with the customer (P3.7): same rules as the customer side, decided by the service.
     Route::get('bookings/{booking}/messages', [BookingChatController::class, 'index'])->whereUuid('booking')->name('bookings.messages.index');
     Route::post('bookings/{booking}/messages/read', [BookingChatController::class, 'read'])->whereUuid('booking')->name('bookings.messages.read');

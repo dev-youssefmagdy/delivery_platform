@@ -40,6 +40,10 @@ class UpdateBookingRequestRequest extends FormRequest
             'stops.*.address' => ['nullable', 'array'],
             'stops.*.address.title' => ['nullable', 'string', 'max:191'],
             'stops.*.address.line' => ['nullable', 'string', 'max:'.(int) config('booking.address_line_max', 255)],
+            'stops.*.contact' => ['nullable', 'array'],
+            'stops.*.contact.name' => ['required_with:stops.*.contact', 'string', 'max:100'],
+            'stops.*.contact.phone' => ['required_with:stops.*.contact', 'string', 'max:32'],
+            'stops.*.contact.note' => ['nullable', 'string', 'max:255'],
         ]
             + $this->locationRules('pickup', false)
             + $this->locationRules('dropoff', false);

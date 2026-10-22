@@ -15,6 +15,7 @@ use App\Models\BookingOffer;
 use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
 use App\Services\Courier\BookingContactService;
+use App\Services\Scope\BookingLoadPresenter;
 use App\Services\Courier\DeliveryStateService;
 use App\Services\Settings\SettingsService;
 use Illuminate\Http\Request;
@@ -49,7 +50,7 @@ class BookingResource extends JsonResource
         return BookingSummaryResource::summary($booking) + [
             'pickup' => self::place($booking->pickup_point->lat, $booking->pickup_point->lng, $booking->pickup_address),
             'dropoff' => $booking->dropoff_point === null ? null : self::place($booking->dropoff_point->lat, $booking->dropoff_point->lng, $booking->dropoff_address),
-            'stops' => $booking->stops->map(static fn (BookingStop $stop): array => ['position' => $stop->position] + self::place($stop->point->lat, $stop->point->lng, $stop->address))->values()->all(),
+            'stops' => self::stops($booking),
             'scheduled_at' => $booking->scheduled_at?->toIso8601ZuluString(),
             'passengers' => $booking->passengers,
             'service_details' => $booking->service_details === [] ? new stdClass : $booking->service_details,
@@ -66,6 +67,8 @@ class BookingResource extends JsonResource
             'vehicle' => $this->selectedOffer === null ? null : (new CustomerOfferResource($this->selectedOffer))->resolve()['vehicle'],
             'agreed_fare' => $booking->agreed_fare_minor === null ? null : ['amount_minor' => $booking->agreed_fare_minor, 'currency' => $booking->currency],
             'agreed_scope' => ($booking->agreed_scope ?? []) === [] ? new stdClass : $booking->agreed_scope,
+            // Moving / freight (P4.2): load, requested and accepted scope with the same summary lines the provider sees.
+        ] + app(BookingLoadPresenter::class)->blocks($booking) + [
             'trip_pin' => $this->tripPin($booking),
             'trip' => $this->trip($booking),
             // Parcel contacts the customer typed (phone masked) and the custody / proof / attempt state (P4.1); null for rides.
@@ -80,6 +83,16 @@ class BookingResource extends JsonResource
             'allowed_actions' => array_map(static fn (BookingAction $action): string => $action->value, $this->allowedActions),
             'timeline' => $booking->statusEvents->map(static fn (BookingStatusEvent $event): array => self::timelineEntry($event))->values()->all(),
         ];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private static function stops(Booking $booking): array
+    {
+        $contacts = app(BookingContactService::class)->forStops($booking, asProvider: false);
+
+        return $booking->stops->map(static fn (BookingStop $stop): array => ['position' => $stop->position] + self::place($stop->point->lat, $stop->point->lng, $stop->address) + ['contact' => $contacts[$stop->position] ?? null])->values()->all();
     }
 
     /**

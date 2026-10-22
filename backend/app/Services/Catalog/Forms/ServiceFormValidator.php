@@ -169,12 +169,20 @@ final class ServiceFormValidator
             ],
             FormFieldType::Photo => [
                 $key => [...$base, 'array', 'min:'.(int) ($min ?? 0), 'max:'.(int) ($max ?? self::DEFAULT_PHOTO_MAX)],
-                $key.'.*' => ['string', 'max:255'],
+                // Each reference is the uuid of an uploaded booking attachment (P4.2).
+                $key.'.*' => ['uuid', 'distinct'],
             ],
             FormFieldType::ItemChecklist => [
                 $key => [...$base, 'array', 'min:'.(int) ($min ?? 0), 'max:'.(int) ($max ?? count($field->options))],
                 $key.'.*.item' => ['required', 'string', 'distinct', Rule::in($field->optionValues())],
                 $key.'.*.quantity' => ['required', 'integer', 'min:1', 'max:999'],
+                // Optional per-item facts (P4.2): note, weight and dimensions in cm.
+                $key.'.*.note' => ['nullable', 'string', 'max:255'],
+                $key.'.*.weight_kg' => ['nullable', 'numeric', 'min:0.01', 'max:100000'],
+                $key.'.*.dimensions' => ['nullable', 'array', 'required_array_keys:length,width,height'],
+                $key.'.*.dimensions.length' => ['numeric', 'min:0.01', 'max:2000'],
+                $key.'.*.dimensions.width' => ['numeric', 'min:0.01', 'max:2000'],
+                $key.'.*.dimensions.height' => ['numeric', 'min:0.01', 'max:2000'],
             ],
             FormFieldType::Dimensions => [
                 $key => [...$base, 'array', 'required_array_keys:length,width,height'],

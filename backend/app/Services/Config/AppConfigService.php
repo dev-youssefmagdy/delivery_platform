@@ -96,7 +96,10 @@ final class AppConfigService
                 ],
             ],
             policies: $policies,
-            features: [],
+            features: [
+                'wallet' => $this->settings->bool(SettingKey::FeatureWalletEnabled),
+                'offers' => $this->settings->bool(SettingKey::FeatureOffersEnabled),
+            ],
         );
     }
 }

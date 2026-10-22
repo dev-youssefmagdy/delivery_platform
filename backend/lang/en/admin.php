@@ -822,6 +822,14 @@ return [
                 'label' => 'Maintenance mode (mobile apps)',
                 'description' => 'Both apps show a maintenance screen instead of the service.',
             ],
+            'feature_wallet_enabled' => [
+                'label' => 'Wallet tab (customer app)',
+                'description' => 'Shows the Wallet tab in the customer app.',
+            ],
+            'feature_offers_enabled' => [
+                'label' => 'Offers tab (customer app)',
+                'description' => 'Shows the Offers tab (my coupons) in the customer app.',
+            ],
             'admin_mfa_required_roles' => [
                 'label' => 'Roles that must use two-step verification',
                 'description' => 'Admins holding any of these roles must enrol before using the panel.',

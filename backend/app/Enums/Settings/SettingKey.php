@@ -97,6 +97,8 @@ enum SettingKey: string implements HasLabel
     case ForceUpdateCustomer = 'force_update_customer';
     case ForceUpdateDriver = 'force_update_driver';
     case MaintenanceModeApps = 'maintenance_mode_apps';
+    case FeatureWalletEnabled = 'feature_wallet_enabled';
+    case FeatureOffersEnabled = 'feature_offers_enabled';
 
     // Admin security (moved from config in P1.2)
     case AdminMfaRequiredRoles = 'admin_mfa_required_roles';
@@ -154,7 +156,7 @@ enum SettingKey: string implements HasLabel
 
             self::RatingCustomerByProviderEnabled, self::AutoRedispatchOnProviderCancel, self::ProviderSingleActiveJob,
             self::RidePinRequired, self::TipsEnabled, self::DirectPhoneExposure, self::ForceUpdateCustomer, self::ForceUpdateDriver,
-            self::MaintenanceModeApps => SettingType::Boolean,
+            self::MaintenanceModeApps, self::FeatureWalletEnabled, self::FeatureOffersEnabled => SettingType::Boolean,
 
             default => SettingType::Integer,
         };
@@ -181,7 +183,7 @@ enum SettingKey: string implements HasLabel
             self::CustomerFeeDebtLimitMinor => SettingGroup::Finance,
             self::RidePinRequired, self::ShareLinkTtlMinutes, self::RidePinMaxAttempts, self::DirectPhoneExposure => SettingGroup::Safety,
             self::MinAppVersionCustomer, self::MinAppVersionDriver, self::ForceUpdateCustomer, self::ForceUpdateDriver,
-            self::MaintenanceModeApps => SettingGroup::Apps,
+            self::MaintenanceModeApps, self::FeatureWalletEnabled, self::FeatureOffersEnabled => SettingGroup::Apps,
             self::AdminMfaRequiredRoles, self::AdminLoginLockoutSeconds => SettingGroup::Security,
             default => SettingGroup::RateLimits,
         };
@@ -322,7 +324,7 @@ enum SettingKey: string implements HasLabel
             self::DefaultCommissionBasisPoints => 1000,
             self::TaxRateBasisPoints, self::CustomerServiceFeeMinor => 0,
             self::PaymentIntentTimeoutMinutes => 30,
-            self::TipsEnabled => true,
+            self::TipsEnabled, self::FeatureWalletEnabled, self::FeatureOffersEnabled => true,
             self::TipMaxBasisPoints => 10_000,
             self::RefundDualApprovalThresholdMinor => 100_000,
             self::PayoutMinAmountMinor => 10_000,

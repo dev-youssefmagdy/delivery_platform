@@ -45,6 +45,8 @@ class CreateBookingRequest extends FormRequest
             'stops' => ['nullable', 'array', 'max:10'],
             // Only a code: the discount is computed by the server (Plan I12); any amount sent here is never read.
             'coupon_code' => ['nullable', 'string', 'max:40', 'regex:/^[A-Za-z0-9_-]+$/'],
+            // Parcel bookings: the uuid of the restricted-goods policy version shown to the customer (SRS §5.1-C).
+            'restricted_goods_policy_version' => ['nullable', 'uuid'],
         ]
             + $this->locationRules('pickup', true)
             + $this->locationRules('dropoff', false)
@@ -82,6 +84,7 @@ class CreateBookingRequest extends FormRequest
             paymentMethod: $this->filled('payment_method') ? PaymentMethodType::from((string) $this->input('payment_method')) : PaymentMethodType::Cash,
             idempotencyKey: (string) $this->headers->get(Idempotency::HEADER) ?: null,
             couponCode: $this->filled('coupon_code') ? (string) $this->input('coupon_code') : null,
+            restrictedGoodsPolicyVersion: $this->filled('restricted_goods_policy_version') ? (string) $this->input('restricted_goods_policy_version') : null,
         );
     }
 

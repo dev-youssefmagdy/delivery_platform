@@ -67,6 +67,17 @@ final class PrivateFileStorage
         return $path;
     }
 
+    /**
+     * One picture of a delivery proof: `proofs/{bookingUuid}/{stage}/{random}.jpg`.
+     */
+    public function putProof(string $bookingUuid, string $stage, InspectedUpload $upload): string
+    {
+        $path = 'proofs/'.$bookingUuid.'/'.$stage.'/'.Str::uuid().'.'.$upload->extension;
+        $this->disk()->put($path, $upload->bytes);
+
+        return $path;
+    }
+
     public function delete(?string $path): void
     {
         if ($path !== null && $path !== '') {

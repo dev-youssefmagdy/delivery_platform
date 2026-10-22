@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\GeoPointCast;
 use App\Enums\Booking\BookingStatus;
+use App\Enums\Booking\CustodyStatus;
 use App\Enums\Catalog\BookingType;
 use App\Enums\Payments\PaymentMethodType;
 use App\Enums\Payments\PaymentStatus;
@@ -85,6 +86,14 @@ use LogicException;
  * @property Carbon|null $pin_locked_at
  * @property Carbon|null $support_flagged_at
  * @property string|null $support_flag_reason
+ * @property int|null $restricted_goods_policy_version_id
+ * @property Carbon|null $restricted_goods_acknowledged_at
+ * @property CustodyStatus|null $custody_status
+ * @property int $delivery_attempts_count
+ * @property string|null $parcel_size
+ * @property string|null $parcel_category
+ * @property bool|null $is_fragile
+ * @property int|null $declared_value_minor
  * @property int|null $provider_id
  * @property Carbon|null $search_expires_at
  * @property string|null $pin_hash
@@ -127,12 +136,14 @@ class Booking extends Model
         'heading_at', 'arrived_at', 'arrival_evidence', 'free_wait_ends_at', 'started_at', 'final_fare_minor', 'cancellation_policy_id',
         'cancellation_reason_code', 'cancellation_fee_minor', 'cancellation_decision', 'pin_attempts', 'pin_verified_at', 'pin_locked_at',
         'support_flagged_at', 'support_flag_reason', 'adjustments_total_minor', 'cancellation_fee_entry_id', 'cancellation_fee_posted_at',
+        'restricted_goods_policy_version_id', 'restricted_goods_acknowledged_at', 'custody_status', 'delivery_attempts_count',
+        'parcel_size', 'parcel_category', 'is_fragile', 'declared_value_minor',
     ];
 
     /**
      * @var array<string, mixed>
      */
-    protected $attributes = ['sequence' => 0, 'request_version' => 1, 'lock_version' => 0, 'service_details' => '[]', 'pin_attempts' => 0, 'adjustments_total_minor' => 0];
+    protected $attributes = ['sequence' => 0, 'request_version' => 1, 'lock_version' => 0, 'service_details' => '[]', 'pin_attempts' => 0, 'adjustments_total_minor' => 0, 'delivery_attempts_count' => 0];
 
     /**
      * @var list<string>
@@ -217,6 +228,14 @@ class Booking extends Model
     }
 
     /**
+     * @return HasMany<BookingContact, $this>
+     */
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(BookingContact::class);
+    }
+
+    /**
      * @return HasMany<BookingStatusEvent, $this>
      */
     public function statusEvents(): HasMany
@@ -237,6 +256,9 @@ class Booking extends Model
         return [
             'booking_type' => BookingType::class,
             'status' => BookingStatus::class,
+            'custody_status' => CustodyStatus::class,
+            'is_fragile' => 'boolean',
+            'restricted_goods_acknowledged_at' => 'datetime',
             'sequence' => 'integer',
             'request_version' => 'integer',
             'pickup_point' => GeoPointCast::class,

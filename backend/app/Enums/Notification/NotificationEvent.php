@@ -39,6 +39,14 @@ enum NotificationEvent: string implements HasLabel
     case BookingAdjustmentAnswered = 'booking.adjustment_answered';
     case BookingMessageReceived = 'booking.message_received';
 
+    case DeliveryPickedUp = 'delivery.picked_up';
+    case DeliveryArrivedDropoff = 'delivery.arrived_dropoff';
+    case DeliveryDelivered = 'delivery.delivered';
+    case DeliveryAttemptFailed = 'delivery.attempt_failed';
+    case DeliveryAttemptResolved = 'delivery.attempt_resolved';
+    case DeliveryReturned = 'delivery.returned';
+    case DeliveryRecipientOtpLocked = 'delivery.recipient_otp_locked';
+
     case RequestNew = 'request.new';
     case OfferAccepted = 'offer.accepted';
     case OfferRejected = 'offer.rejected';
@@ -78,7 +86,9 @@ enum NotificationEvent: string implements HasLabel
             self::ProviderSuspended, self::ProviderReactivated, self::DocumentExpiring, self::DocumentExpired => NotificationCategory::Account,
             self::BookingSearchExpired, self::BookingProviderSelected, self::BookingProviderHeading, self::BookingProviderArrived, self::BookingTripStarted,
             self::BookingCompleted, self::BookingCancelled, self::BookingProviderCancelled, self::BookingOperationsUpdate,
-            self::BookingAdjustmentRequested, self::BookingAdjustmentAnswered, self::BookingMessageReceived, self::OfferAccepted => NotificationCategory::Booking,
+            self::BookingAdjustmentRequested, self::BookingAdjustmentAnswered, self::BookingMessageReceived, self::OfferAccepted,
+            self::DeliveryPickedUp, self::DeliveryArrivedDropoff, self::DeliveryDelivered, self::DeliveryAttemptFailed, self::DeliveryAttemptResolved,
+            self::DeliveryReturned, self::DeliveryRecipientOtpLocked => NotificationCategory::Booking,
             self::BookingOfferReceived, self::BookingOfferUpdated, self::RequestNew, self::OfferRejected, self::OfferExpired => NotificationCategory::Offers,
             self::BookingCancellationFee, self::PaymentPending, self::PaymentSucceeded, self::PaymentFailed, self::PaymentRefunded,
             self::WalletAdjusted, self::CashDebtNotice => NotificationCategory::Payments,
@@ -100,6 +110,7 @@ enum NotificationEvent: string implements HasLabel
             self::PayoutRequested, self::PayoutApproved, self::PayoutRejected, self::PayoutPaid, self::PayoutFailed => NotificationAudience::Provider,
             self::BookingSearchExpired, self::BookingOfferReceived, self::BookingOfferUpdated, self::BookingProviderSelected, self::BookingProviderHeading,
             self::BookingProviderArrived, self::BookingTripStarted, self::BookingCompleted, self::BookingProviderCancelled,
+            self::DeliveryPickedUp, self::DeliveryArrivedDropoff, self::DeliveryDelivered, self::DeliveryAttemptFailed, self::DeliveryReturned,
             self::PaymentPending, self::PaymentSucceeded, self::PaymentFailed, self::PaymentRefunded,
             self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::SupportHelpMessage => NotificationAudience::Customer,
             self::AdminExportReady, self::AdminExportFailed => NotificationAudience::Admin,

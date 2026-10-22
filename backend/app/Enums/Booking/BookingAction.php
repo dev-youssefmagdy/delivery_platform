@@ -25,6 +25,8 @@ enum BookingAction: string implements HasLabel
     case ViewReceipt = 'view_receipt';
     case Chat = 'chat';
     case Appeal = 'appeal';
+    case ViewProofs = 'view_proofs';
+    case ResolveDeliveryAttempt = 'resolve_delivery_attempt';
 
     public function label(): string
     {

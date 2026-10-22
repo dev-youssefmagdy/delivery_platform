@@ -4,6 +4,7 @@ namespace App\Services\Booking;
 
 use App\Enums\Booking\BookingAdjustmentStatus;
 use App\Enums\Booking\BookingOverrideAction;
+use App\Enums\Booking\CustodyStatus;
 use App\Enums\Common\ActorType;
 use App\Enums\Notification\NotificationEvent;
 use App\Models\Booking;
@@ -57,6 +58,50 @@ class BookingNotifier
     public function completed(Booking $booking): void
     {
         $this->parties->customer($booking, NotificationEvent::BookingCompleted, 'completed');
+    }
+
+    /**
+     * A custody event of a parcel (P4.1). The customer is told about the steps that matter to them; `in_transit` is a
+     * silent timeline entry. Deduplicated by the booking sequence of the event.
+     */
+    public function custody(Booking $booking, CustodyStatus $status): void
+    {
+        $event = match ($status) {
+            CustodyStatus::PickedUp => NotificationEvent::DeliveryPickedUp,
+            CustodyStatus::ArrivedDropoff => NotificationEvent::DeliveryArrivedDropoff,
+            CustodyStatus::Delivered => NotificationEvent::DeliveryDelivered,
+            CustodyStatus::Returned => NotificationEvent::DeliveryReturned,
+            default => null,
+        };
+
+        if ($event !== null) {
+            $this->parties->customer($booking, $event, $status->value);
+        }
+    }
+
+    /**
+     * A delivery attempt failed: the customer must choose what happens next.
+     */
+    public function deliveryAttemptFailed(Booking $booking, string $attemptUuid): void
+    {
+        $this->parties->customer($booking, NotificationEvent::DeliveryAttemptFailed, $attemptUuid);
+    }
+
+    /**
+     * The failed attempt was resolved by `$by`: the other party learns what was decided.
+     */
+    public function deliveryAttemptResolved(Booking $booking, string $attemptUuid, ActorType $by): void
+    {
+        $this->toParty($booking, $by === ActorType::Customer ? ActorType::Provider : ActorType::Customer, NotificationEvent::DeliveryAttemptResolved, $attemptUuid);
+    }
+
+    /**
+     * Too many wrong recipient codes: both sides are told that support has to step in.
+     */
+    public function recipientOtpLocked(Booking $booking): void
+    {
+        $this->parties->customer($booking, NotificationEvent::DeliveryRecipientOtpLocked, 'otp_locked');
+        $this->parties->provider($booking, NotificationEvent::DeliveryRecipientOtpLocked, 'otp_locked');
     }
 
     /**

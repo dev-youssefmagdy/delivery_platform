@@ -51,7 +51,7 @@ final class BookingSnapshotBuilder
             'service_snapshot' => $this->serviceSnapshot($request),
             'policy_snapshot' => $this->policySnapshot($request) + ['cancellation' => $cancellation['snapshot']],
             'payment_method' => $request->paymentMethod,
-        ];
+        ] + $request->columns;
     }
 
     /**

@@ -864,6 +864,13 @@ return [
 
     'notification_event' => [
         'booking.message_received' => 'رسالة محادثة جديدة',
+        'delivery.picked_up' => 'تم استلام الطرد',
+        'delivery.arrived_dropoff' => 'الوصول إلى وجهة التسليم',
+        'delivery.delivered' => 'تم تسليم الطرد',
+        'delivery.attempt_failed' => 'فشل محاولة التسليم',
+        'delivery.attempt_resolved' => 'تمت معالجة محاولة التسليم',
+        'delivery.returned' => 'تمت إعادة الطرد',
+        'delivery.recipient_otp_locked' => 'تم قفل رمز المستلم',
         'provider.application_submitted' => 'تم إرسال طلب السائق',
         'provider.application_more_info' => 'طلب السائق يحتاج تعديلات',
         'provider.application_approved' => 'تمت الموافقة على طلب السائق',

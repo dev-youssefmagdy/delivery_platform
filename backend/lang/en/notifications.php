@@ -56,6 +56,14 @@ return [
     'booking.adjustment_requested' => ['title' => 'Fare change request', 'body' => 'A fare change was requested for booking {code}. Please respond.'],
     'booking.adjustment_answered' => ['title' => 'Fare change answered', 'body' => 'Fare change for booking {code}: {outcome}.'],
 
+    'delivery.picked_up' => ['title' => 'Parcel picked up', 'body' => 'Your parcel for booking {code} was picked up.'],
+    'delivery.arrived_dropoff' => ['title' => 'Parcel arriving', 'body' => 'The driver arrived at the drop-off for booking {code}.'],
+    'delivery.delivered' => ['title' => 'Parcel delivered', 'body' => 'Your parcel for booking {code} was delivered.'],
+    'delivery.attempt_failed' => ['title' => 'Delivery not completed', 'body' => 'The delivery for booking {code} could not be completed. Open the app to choose what happens next.'],
+    'delivery.attempt_resolved' => ['title' => 'Delivery update', 'body' => 'A decision was made about the failed delivery of booking {code}. Open the app for details.'],
+    'delivery.returned' => ['title' => 'Parcel returned', 'body' => 'Your parcel for booking {code} was returned to the sender.'],
+    'delivery.recipient_otp_locked' => ['title' => 'Delivery code locked', 'body' => 'Too many wrong codes for booking {code}. Support was notified.'],
+
     'request.new' => ['title' => 'New request nearby', 'body' => 'A new request is available near you.'],
     'offer.accepted' => ['title' => 'Offer accepted', 'body' => 'The customer chose you for booking {code}.'],
     'offer.rejected' => ['title' => 'Offer declined', 'body' => 'The customer declined your offer for booking {code}.'],

@@ -12,6 +12,9 @@ use App\Repositories\Contracts\Booking\BookingOfferRepositoryInterface;
 use App\Repositories\Contracts\Booking\OfferRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingContactRepositoryInterface;
+use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
+use App\Repositories\Contracts\Booking\RecipientOtpRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingReportRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Booking\CancellationPolicyRepositoryInterface;
@@ -105,6 +108,9 @@ use App\Repositories\Eloquent\Admin\RoleRepository;
 use App\Repositories\Eloquent\Audit\AuditLogRepository;
 use App\Repositories\Eloquent\Booking\BookingRepository;
 use App\Repositories\Eloquent\Booking\BookingProofRepository;
+use App\Repositories\Eloquent\Booking\BookingContactRepository;
+use App\Repositories\Eloquent\Booking\DeliveryAttemptRepository;
+use App\Repositories\Eloquent\Booking\RecipientOtpRepository;
 use App\Repositories\Eloquent\Booking\BookingReportRepository;
 use App\Repositories\Eloquent\Booking\BookingStatusEventRepository;
 use App\Repositories\Eloquent\Booking\CancellationPolicyRepository;
@@ -261,6 +267,9 @@ class RepositoryServiceProvider extends ServiceProvider
         BookingStopRepositoryInterface::class => BookingStopRepository::class,
         BookingStatusEventRepositoryInterface::class => BookingStatusEventRepository::class,
         BookingProofRepositoryInterface::class => BookingProofRepository::class,
+        BookingContactRepositoryInterface::class => BookingContactRepository::class,
+        RecipientOtpRepositoryInterface::class => RecipientOtpRepository::class,
+        DeliveryAttemptRepositoryInterface::class => DeliveryAttemptRepository::class,
         BookingReportRepositoryInterface::class => BookingReportRepository::class,
         CancellationPolicyRepositoryInterface::class => CancellationPolicyRepository::class,
         RatingRepositoryInterface::class => RatingRepository::class,

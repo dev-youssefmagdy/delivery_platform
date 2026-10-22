@@ -56,6 +56,14 @@ return [
     'booking.adjustment_requested' => ['title' => 'طلب تعديل الأجرة', 'body' => 'تم طلب تعديل أجرة الحجز {code}. يرجى الرد.'],
     'booking.adjustment_answered' => ['title' => 'تم الرد على تعديل الأجرة', 'body' => 'تعديل أجرة الحجز {code}: {outcome}.'],
 
+    'delivery.picked_up' => ['title' => 'تم استلام الطرد', 'body' => 'تم استلام طردك للحجز {code}.'],
+    'delivery.arrived_dropoff' => ['title' => 'الطرد على وشك الوصول', 'body' => 'وصل السائق إلى وجهة التسليم للحجز {code}.'],
+    'delivery.delivered' => ['title' => 'تم تسليم الطرد', 'body' => 'تم تسليم طردك للحجز {code}.'],
+    'delivery.attempt_failed' => ['title' => 'لم يكتمل التسليم', 'body' => 'تعذّر إتمام تسليم الحجز {code}. افتح التطبيق لاختيار الخطوة التالية.'],
+    'delivery.attempt_resolved' => ['title' => 'تحديث التسليم', 'body' => 'تم اتخاذ قرار بشأن محاولة التسليم الفاشلة للحجز {code}. افتح التطبيق للتفاصيل.'],
+    'delivery.returned' => ['title' => 'تمت إعادة الطرد', 'body' => 'تمت إعادة طردك للحجز {code} إلى المرسل.'],
+    'delivery.recipient_otp_locked' => ['title' => 'تم قفل رمز التسليم', 'body' => 'محاولات خاطئة كثيرة للرمز في الحجز {code}. تم إبلاغ الدعم.'],
+
     'request.new' => ['title' => 'طلب جديد بالقرب منك', 'body' => 'يوجد طلب جديد بالقرب منك.'],
     'offer.accepted' => ['title' => 'تم قبول عرضك', 'body' => 'اختارك العميل للحجز {code}.'],
     'offer.rejected' => ['title' => 'تم رفض العرض', 'body' => 'رفض العميل عرضك للحجز {code}.'],

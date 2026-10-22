@@ -31,6 +31,10 @@ final readonly class TransitionContext
         public ?CancellationDecision $feeDecision = null,
         /** @var array<string, mixed> GPS evidence of an arrival (point, accuracy, distance to pickup) */
         public array $evidence = [],
+        /** the category demands a recipient code and it was verified on this booking */
+        public bool $recipientOtpVerified = false,
+        /** the trip is the way back to the sender: no recipient code is possible */
+        public bool $returnLeg = false,
     ) {}
 
     /**

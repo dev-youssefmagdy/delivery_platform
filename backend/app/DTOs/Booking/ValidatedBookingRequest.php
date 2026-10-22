@@ -46,5 +46,10 @@ final readonly class ValidatedBookingRequest
         public ?FarePolicy $farePolicy,
         public array $fareBounds,
         public CarbonImmutable $validatedAt,
+        /** @var array<string, array{name: string, phone: string}> parcel contacts pulled out of the service details (role => contact) */
+        public array $contacts = [],
+        /** @var array<string, mixed> category-specific searchable columns (see ParcelColumns) */
+        public array $columns = [],
+        public ?int $restrictedGoodsPolicyVersionId = null,
     ) {}
 }

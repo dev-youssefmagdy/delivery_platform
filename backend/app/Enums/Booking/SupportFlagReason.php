@@ -13,6 +13,8 @@ enum SupportFlagReason: string implements HasLabel
     use EnumHelpers;
 
     case PinAttemptsExceeded = 'pin_attempts_exceeded';
+    case RecipientOtpAttemptsExceeded = 'recipient_otp_attempts_exceeded';
+    case DeliveryAttemptEscalated = 'delivery_attempt_escalated';
 
     public function label(): string
     {

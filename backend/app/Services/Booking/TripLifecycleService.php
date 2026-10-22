@@ -6,6 +6,8 @@ use App\DTOs\Booking\ArrivalData;
 use App\DTOs\Booking\TransitionContext;
 use App\DTOs\Booking\TripActionResult;
 use App\Enums\Booking\BookingStatus;
+use App\Enums\Booking\CustodyStatus;
+use App\Enums\Catalog\ProofStage;
 use App\Enums\Catalog\ProofType;
 use App\Enums\Common\ActorType;
 use App\Enums\Payments\PaymentMethodType;
@@ -14,6 +16,8 @@ use App\Models\ProviderProfile;
 use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
+use App\Services\Courier\CustodyService;
+use App\Services\Courier\RecipientOtpService;
 use App\Services\Finance\BookingSettlementService;
 use App\Services\Payments\FreeBookingCompletionService;
 use Carbon\CarbonImmutable;
@@ -44,6 +48,8 @@ final class TripLifecycleService
         private readonly ArrivalEvidenceBuilder $evidence,
         private readonly BookingReceiptService $receipts,
         private readonly BookingAdjustmentService $adjustments,
+        private readonly CustodyService $custody,
+        private readonly RecipientOtpService $recipientOtps,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -73,7 +79,13 @@ final class TripLifecycleService
             'trip_started',
             pinVerified: $booking->pin_verified_at !== null,
             proofsSatisfied: $this->pickupProofPresent($booking),
-        ));
+        ), function (Booking $started) use ($provider): void {
+            // The parcel is now in the provider's custody (first start only; a retry after a failed attempt does not repeat it).
+            if (CustodyService::applies($started) && $started->custody_status === null) {
+                $this->custody->move($started, CustodyStatus::PickedUp, TransitionContext::provider($provider, 'custody'));
+                $this->recipientOtps->issue($started->refresh());
+            }
+        });
     }
 
     public function complete(ProviderProfile $provider, string $bookingUuid): TripActionResult
@@ -83,7 +95,14 @@ final class TripLifecycleService
             $provider->id,
             'trip_completed',
             proofsSatisfied: $this->deliveryProofsPresent($booking),
-        ), function (Booking $completed) use ($provider): void {
+            recipientOtpVerified: $this->recipientOtpVerified($booking),
+            returnLeg: $booking->custody_status === CustodyStatus::Returning,
+        ), function (Booking $completed, Booking $before) use ($provider): void {
+            // The custody chain ends with the hand-over, or with the parcel back at the sender (custody is only tracked for parcels).
+            if (CustodyService::applies($completed) && $before->custody_status !== null) {
+                $this->custody->move($completed, $before->custody_status === CustodyStatus::Returning ? CustodyStatus::Returned : CustodyStatus::Delivered, TransitionContext::provider($provider, 'custody'));
+            }
+
             // Same transaction as the status change: the price breakdown is stored and a cash trip is settled in the
             // ledger, or the completion does not happen (a retry is safe: both steps are idempotent).
             $completed = $this->settlement->onCompleted($completed);
@@ -108,7 +127,7 @@ final class TripLifecycleService
 
     /**
      * @param callable(Booking): TransitionContext $context
-     * @param (callable(Booking): void)|null $afterTransition runs in the same transaction after the status changed
+     * @param (callable(Booking, Booking): void)|null $afterTransition runs in the same transaction after the status changed (the moved booking, then the locked booking as it was before)
      */
     private function run(ProviderProfile $provider, string $bookingUuid, BookingStatus $target, callable $context, ?callable $afterTransition = null): TripActionResult
     {
@@ -128,7 +147,7 @@ final class TripLifecycleService
             $moved = $this->transitions->transition($locked, $target, $context($locked));
 
             if ($afterTransition !== null) {
-                $afterTransition($moved);
+                $afterTransition($moved, $locked);
                 $moved = $moved->refresh();
             }
 
@@ -146,7 +165,7 @@ final class TripLifecycleService
      */
     private function pickupProofPresent(Booking $booking): bool
     {
-        $present = $this->proofs->typesFor($booking->id);
+        $present = $this->proofs->typesFor($booking->id, ProofStage::Pickup);
 
         foreach ([ProofType::PickupPin, ProofType::Photo, ProofType::Checklist, ProofType::Weight, ProofType::Signature] as $type) {
             if (in_array($type->value, $present, true)) {
@@ -158,12 +177,25 @@ final class TripLifecycleService
     }
 
     /**
-     * Every proof type the category demands at delivery is on the booking (rides demand none).
+     * Every proof type the category demands at delivery is on the booking, taken at the delivery stage (rides demand none).
+     * On the way back to the sender the category's list does not apply: the configured return proofs do (a photo).
      */
     private function deliveryProofsPresent(Booking $booking): bool
     {
+        if ($booking->custody_status === CustodyStatus::Returning) {
+            return array_diff(array_map('strval', (array) config('courier.proofs.return_proof_types', ['photo'])), $this->proofs->typesFor($booking->id, ProofStage::Return)) === [];
+        }
+
         $required = array_map('strval', (array) ($booking->policy_snapshot['safety']['delivery_proof_types'] ?? []));
 
-        return array_diff($required, $this->proofs->typesFor($booking->id)) === [];
+        return array_diff($required, $this->proofs->typesFor($booking->id, ProofStage::Delivery)) === [];
+    }
+
+    /**
+     * The recipient code was verified on this booking (a `recipient_otp` proof exists), or the category asks for none.
+     */
+    private function recipientOtpVerified(Booking $booking): bool
+    {
+        return ! RecipientOtpService::requiredFor($booking) || $this->proofs->exists($booking->id, ProofType::RecipientOtp);
     }
 }

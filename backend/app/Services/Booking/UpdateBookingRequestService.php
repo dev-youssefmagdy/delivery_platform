@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Repositories\Contracts\Booking\BookingOfferRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStopRepositoryInterface;
+use App\Services\Courier\BookingContactService;
 use App\Services\Dispatch\EventSequencer;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -40,6 +41,7 @@ final class UpdateBookingRequestService
         private readonly BookingOfferRepositoryInterface $offers,
         private readonly BookingTransitionService $transitions,
         private readonly EventSequencer $sequencer,
+        private readonly BookingContactService $contacts,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -89,6 +91,7 @@ final class UpdateBookingRequestService
                 'lock_version' => $locked->lock_version + 1,
                 'search_expires_at' => $now->addSeconds($ttl),
             ]);
+            $this->contacts->store($locked, $validated->contacts);
             $this->stops->replaceFor($locked, array_map(static fn (BookingLocationData $stop): array => ['point' => $stop->point, 'address' => $stop->addressOrNull()], $validated->stops));
 
             $context = TransitionContext::customer($customer, 'request_changed');
@@ -122,7 +125,8 @@ final class UpdateBookingRequestService
             stops: array_values($stops),
             scheduledAt: $data->scheduledAt ?? ($booking->scheduled_at === null ? null : CarbonImmutable::instance($booking->scheduled_at)),
             passengers: $data->passengers ?? $booking->passengers,
-            serviceDetails: $data->hasServiceDetails ? $data->serviceDetails : $booking->service_details,
+            // The stored contacts are part of the request: they are validated again with it and kept unless the customer sends new ones.
+            serviceDetails: $data->hasServiceDetails ? $data->serviceDetails : $booking->service_details + $this->contacts->asFormAnswers($booking),
             proposedFareMinor: $data->proposedFareMinor ?? $booking->proposed_fare_minor,
             currency: $data->currency,
             paymentMethod: $booking->payment_method,

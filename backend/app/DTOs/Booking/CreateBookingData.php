@@ -30,5 +30,7 @@ final readonly class CreateBookingData
         public PaymentMethodType $paymentMethod,
         public ?string $idempotencyKey = null,
         public ?string $couponCode = null,
+        /** uuid of the restricted-goods policy version the customer acknowledged (parcel bookings) */
+        public ?string $restrictedGoodsPolicyVersion = null,
     ) {}
 }

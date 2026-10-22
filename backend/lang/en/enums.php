@@ -864,6 +864,13 @@ return [
 
     'notification_event' => [
         'booking.message_received' => 'New chat message',
+        'delivery.picked_up' => 'Parcel picked up',
+        'delivery.arrived_dropoff' => 'Arrived at drop-off',
+        'delivery.delivered' => 'Parcel delivered',
+        'delivery.attempt_failed' => 'Delivery attempt failed',
+        'delivery.attempt_resolved' => 'Delivery attempt resolved',
+        'delivery.returned' => 'Parcel returned',
+        'delivery.recipient_otp_locked' => 'Recipient code locked',
         'provider.application_submitted' => 'Driver application submitted',
         'provider.application_more_info' => 'Driver application needs changes',
         'provider.application_approved' => 'Driver application approved',

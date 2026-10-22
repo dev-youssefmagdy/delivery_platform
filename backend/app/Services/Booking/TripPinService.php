@@ -5,6 +5,7 @@ namespace App\Services\Booking;
 use App\DTOs\Booking\TransitionContext;
 use App\Enums\Booking\BookingStatus;
 use App\Enums\Booking\SupportFlagReason;
+use App\Enums\Catalog\ProofStage;
 use App\Enums\Catalog\ProofType;
 use App\Enums\Common\ActorType;
 use App\Enums\Settings\SettingKey;
@@ -80,6 +81,7 @@ final class TripPinService
                 $this->proofs->record([
                     'booking_id' => $locked->id,
                     'proof_type' => ProofType::PickupPin,
+                    'stage' => ProofStage::Pickup,
                     'actor_type' => ActorType::Provider->value,
                     'actor_id' => $provider->id,
                     'metadata' => ['attempts_before' => $locked->pin_attempts],

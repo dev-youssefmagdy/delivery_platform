@@ -16,6 +16,9 @@ use App\Models\ServiceCategory;
 use App\Models\ServiceCategoryVersion;
 use App\Repositories\Contracts\Catalog\ServiceCategoryRepositoryInterface;
 use App\Services\Catalog\Forms\ServiceFormValidator;
+use App\Services\Courier\BookingContactService;
+use App\Services\Courier\RestrictedGoodsService;
+use App\Support\Courier\ParcelColumns;
 use App\Services\Geography\GeoService;
 use App\Services\Geography\MapsService;
 use App\Services\Pricing\PriceGuidanceService;
@@ -44,6 +47,8 @@ final class BookingRequestValidator
         private readonly ServiceCategoryRepositoryInterface $categories,
         private readonly CurrencyRegistry $currencies,
         private readonly PaymentMethodAvailability $paymentMethods,
+        private readonly BookingContactService $contacts,
+        private readonly RestrictedGoodsService $restrictedGoods,
     ) {}
 
     /**
@@ -85,12 +90,18 @@ final class BookingRequestValidator
         $this->assertSchedule($data, $now);
         $this->assertPlaces($data, $snapshot);
 
-        [$details, $passengers] = $this->validateDetails($data, $snapshot);
+        [$validatedDetails, $passengers] = $this->validateDetails($data, $snapshot);
+        // The clear-text phones of a parcel's sender and recipient never stay in `service_details` (encrypted contacts, P4.1).
+        [$details, $contacts] = $this->contacts->split($validatedDetails);
         $luggage = isset($details['luggage']) && is_numeric($details['luggage']) ? (int) $details['luggage'] : null;
         $weight = $this->weightKg($snapshot, $details);
         $this->assertCapacity($passengers, $luggage, $weight, $snapshot);
 
         $currency = $this->currency($data);
+        // A new parcel request must acknowledge the current restricted-goods policy; an edit keeps the original acknowledgement.
+        $restricted = $pinnedVersion === null && $this->restrictedGoods->requiredFor($data->bookingType)
+            ? $this->restrictedGoods->assertAcknowledged($data->restrictedGoodsPolicyVersion)
+            : null;
         $fare = Money::of($data->proposedFareMinor, $currency);
         $bounds = $this->assertFareBounds($fare, $snapshot, $availability);
         $method = $this->assertPaymentMethod($data->paymentMethod, $snapshot);
@@ -122,6 +133,9 @@ final class BookingRequestValidator
             farePolicy: $guidance->guidance === null ? null : $policy,
             fareBounds: $bounds,
             validatedAt: $now,
+            contacts: $contacts,
+            columns: ParcelColumns::from($details, $currency),
+            restrictedGoodsPolicyVersionId: $restricted?->id,
         );
     }
 

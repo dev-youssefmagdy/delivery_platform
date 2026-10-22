@@ -20,6 +20,7 @@ use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStopRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Services\Coupon\CouponBookingService;
+use App\Services\Courier\BookingContactService;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -46,6 +47,7 @@ final class CreateBookingService
         private readonly SettingsService $settings,
         private readonly CouponBookingService $coupons,
         private readonly CancellationAbuseService $abuse,
+        private readonly BookingContactService $contacts,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -106,6 +108,7 @@ final class CreateBookingService
             $context = TransitionContext::customer($locked);
             $this->stops->replaceFor($booking, array_map(static fn ($stop): array => ['point' => $stop->point, 'address' => $stop->addressOrNull()], $validated->stops));
             $this->transitions->recordCreation($booking, $context);
+            $this->contacts->store($booking, $validated->contacts);
 
             if ($coupon instanceof CouponPlan) {
                 $booking = $this->coupons->reserve($coupon, $booking, $validated);
@@ -146,7 +149,10 @@ final class CreateBookingService
                     'customer_id' => $customer->id,
                     'payment_status' => PaymentStatus::Pending,
                     'idempotency_key' => $data->idempotencyKey,
-                ]);
+                ] + ($validated->restrictedGoodsPolicyVersionId === null ? [] : [
+                    'restricted_goods_policy_version_id' => $validated->restrictedGoodsPolicyVersionId,
+                    'restricted_goods_acknowledged_at' => $validated->validatedAt,
+                ]));
             } catch (UniqueConstraintViolationException $exception) {
                 if ($attempt >= $attempts || ! str_contains($exception->getMessage(), 'bookings_code_unique')) {
                     throw $exception;

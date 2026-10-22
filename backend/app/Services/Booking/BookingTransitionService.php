@@ -198,7 +198,8 @@ final class BookingTransitionService
             BookingStatus::CancelledByCustomer => $this->guardToCancelledByCustomer($booking, $context),
             BookingStatus::CancelledByProvider => $this->guardToCancelledByProvider($booking, $context),
             BookingStatus::CancelledByOperations => $this->guardToCancelledByOperations($context),
-            BookingStatus::Draft, BookingStatus::OffersReceived, BookingStatus::DeliveryAttemptFailed, BookingStatus::Disputed => null,
+            BookingStatus::DeliveryAttemptFailed => $this->requireAssignedProvider($booking, $context),
+            BookingStatus::Draft, BookingStatus::OffersReceived, BookingStatus::Disputed => null,
         };
     }
 
@@ -267,6 +268,11 @@ final class BookingTransitionService
      */
     private function guardToInProgress(Booking $booking, TransitionContext $context): void
     {
+        // After a failed delivery attempt the customer may ask for another one; every other start is the provider's.
+        if ($booking->status === BookingStatus::DeliveryAttemptFailed && $context->actorType === ActorType::Customer && $context->actorId === $booking->customer_id) {
+            return;
+        }
+
         $this->requireAssignedProvider($booking, $context);
 
         if ($booking->status !== BookingStatus::ProviderArrived) {
@@ -295,6 +301,12 @@ final class BookingTransitionService
 
             if ($proofs !== [] && ! $context->proofsSatisfied) {
                 throw BusinessRuleViolation::make('booking_proof_required');
+            }
+
+            // The recipient code is part of the category's contract (SRS §5.1-C); the way back to the sender cannot have one,
+            // and operations may finish a hand-over whose recipient lost the code (audited, with a reason).
+            if ((bool) ($booking->policy_snapshot['safety']['recipient_otp_required'] ?? false) && ! $context->returnLeg && ! $context->recipientOtpVerified && $context->actorType !== ActorType::Admin) {
+                throw BusinessRuleViolation::make('booking_recipient_otp_required');
             }
         }
     }

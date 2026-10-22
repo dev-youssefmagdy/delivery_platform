@@ -50,6 +50,13 @@ interface PayoutRequestRepositoryInterface
 
     public function openCountForMethod(int $methodId): int;
 
+    /**
+     * Ids of approved payouts that are not in a batch yet and share the currency of the oldest one, oldest first.
+     *
+     * @return list<int>
+     */
+    public function approvedUnbatchedIds(int $limit): array;
+
     public function awaitingDecisionCount(): int;
 
     /**

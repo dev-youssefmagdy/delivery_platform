@@ -53,6 +53,19 @@ interface LedgerAccountRepositoryInterface
     public function datatableQuery(LedgerAccountFilterData $filters): Builder;
 
     /**
+     * Customer and provider wallets whose owner matches the term (name, phone prefix or account uuid), for remote selects.
+     *
+     * @return Collection<int, LedgerAccount>
+     */
+    public function walletLookup(string $term, int $limit): Collection;
+
+    /**
+     * @param list<int> $ids
+     * @return Collection<int, LedgerAccount>
+     */
+    public function walletsByIds(array $ids): Collection;
+
+    /**
      * Cached balances of every account, for reconciliation: id, uuid, type and balance.
      *
      * @return Collection<int, LedgerAccount>

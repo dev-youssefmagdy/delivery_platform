@@ -47,4 +47,15 @@ final class WalletStatementService
     {
         return $this->lines->statementPage($accounts->map(static fn (LedgerAccount $account): int => $account->id)->all(), max(1, min(50, $perPage)));
     }
+
+    /**
+     * Every line of the accounts, oldest first (personal data export).
+     *
+     * @param Collection<int, LedgerAccount> $accounts
+     * @return Collection<int, JournalLine>
+     */
+    public function allLines(Collection $accounts): Collection
+    {
+        return $this->lines->statementBetween($accounts->map(static fn (LedgerAccount $account): int => $account->id)->all(), null, null);
+    }
 }

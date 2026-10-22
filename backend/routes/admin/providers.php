@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Provider\ProviderController;
 use App\Http\Controllers\Admin\Provider\ProviderTabController;
 use App\Models\LedgerAccount;
+use App\Models\PayoutRequest;
 use App\Models\ProviderProfile;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,7 @@ Route::prefix('providers')->name('providers.')->group(function (): void {
         Route::get('history', 'history')->name('history')->can('view', 'provider');
         Route::get('jobs', 'jobs')->name('jobs')->can('view', 'provider');
         Route::get('earnings', 'earnings')->name('earnings')->can('view', 'provider');
+        Route::get('payouts', 'payouts')->name('payouts')->can('view', 'provider')->can('viewAny', PayoutRequest::class);
         Route::get('wallet', 'wallet')->name('wallet')->can('view', 'provider')->can('viewWallets', LedgerAccount::class);
         Route::get('deletion-requests', 'deletionRequests')->name('deletion-requests')->can('view', 'provider');
         Route::get('audit', 'audit')->name('audit')->can('view', 'provider');

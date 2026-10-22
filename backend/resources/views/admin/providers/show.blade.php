@@ -65,6 +65,7 @@
     @endif
 
     @php
+        $showPayouts = \Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\PayoutRequest::class);
         $showWallet = \Illuminate\Support\Facades\Gate::allows('viewWallets', \App\Models\LedgerAccount::class);
         $tabs = [
             'profile' => ['label' => __('admin.providers.tabs.profile'), 'icon' => 'user'],
@@ -74,6 +75,7 @@
             'history' => ['label' => __('admin.providers.tabs.history'), 'icon' => 'clock'],
             'jobs' => ['label' => __('admin.providers.tabs.jobs'), 'icon' => 'clipboard'],
             'earnings' => ['label' => __('admin.providers.tabs.earnings'), 'icon' => 'banknotes'],
+            ...($showPayouts ? ['payouts' => ['label' => __('admin.providers.tabs.payouts'), 'icon' => 'banknotes']] : []),
             ...($showWallet ? ['wallet' => ['label' => __('admin.providers.tabs.wallet'), 'icon' => 'banknotes']] : []),
             'data-requests' => ['label' => __('admin.providers.tabs.data_requests'), 'icon' => 'archive'],
             'audit' => ['label' => __('admin.providers.tabs.audit'), 'icon' => 'shield'],
@@ -97,6 +99,9 @@
             <x-admin.tabs.panel id="history" :url="route('admin.providers.tabs.history', $provider)" />
             <x-admin.tabs.panel id="jobs" :url="route('admin.providers.tabs.jobs', $provider)" />
             <x-admin.tabs.panel id="earnings" :url="route('admin.providers.tabs.earnings', $provider)" />
+            @if ($showPayouts)
+                <x-admin.tabs.panel id="payouts" :url="route('admin.providers.tabs.payouts', $provider)" />
+            @endif
             @if ($showWallet)
                 <x-admin.tabs.panel id="wallet" :url="route('admin.providers.tabs.wallet', $provider)" />
             @endif

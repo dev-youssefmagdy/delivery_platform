@@ -14,7 +14,10 @@ use App\Models\CustomerMessage;
 use App\Models\SavedPlace;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
+use App\Models\JournalLine;
+use App\Models\LedgerAccount;
 use App\Models\User;
+use App\Services\Finance\WalletStatementService;
 use App\Repositories\Contracts\Payments\PaymentMethodRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
 use App\Models\UserConsent;
@@ -54,6 +57,7 @@ final class PersonalDataExporter
         private readonly PaymentRepositoryInterface $payments,
         private readonly CouponReservationRepositoryInterface $couponReservations,
         private readonly CouponAttemptRepositoryInterface $couponAttempts,
+        private readonly WalletStatementService $wallet,
     ) {}
 
     /**
@@ -155,6 +159,8 @@ final class PersonalDataExporter
                 'reason' => $attempt->reason_code,
                 'at' => $attempt->created_at->toIso8601String(),
             ])->all(),
+            // The customer wallet: balances and every ledger line of it (credits from refunds / approved adjustments, wallet payments).
+            'wallet' => $this->walletSection($customer),
             'sections_pending' => ['support_tickets', 'ratings'],
         ];
     }
@@ -162,6 +168,22 @@ final class PersonalDataExporter
     /**
      * @return array<string, mixed>
      */
+    private function walletSection(User $customer): array
+    {
+        $accounts = $this->wallet->customerAccounts($customer);
+
+        return [
+            'accounts' => $accounts->map(static fn (LedgerAccount $account): array => ['currency' => $account->currency, 'balance_minor' => $account->balance_minor])->values()->all(),
+            'transactions' => $this->wallet->allLines($accounts)->map(static fn (JournalLine $line): array => [
+                'type' => $line->entry->type->value,
+                'change_minor' => $line->side === $line->account->type->normalSide() ? $line->amount_minor : -$line->amount_minor,
+                'balance_after_minor' => $line->balance_after_minor,
+                'currency' => $line->currency,
+                'posted_at' => $line->entry->posted_at->toIso8601String(),
+            ])->values()->all(),
+        ];
+    }
+
     /**
      * What this customer wrote about the trip: their rating of the provider and their reports.
      *

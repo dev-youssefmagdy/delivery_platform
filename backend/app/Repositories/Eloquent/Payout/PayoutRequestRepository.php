@@ -76,6 +76,18 @@ final class PayoutRequestRepository implements PayoutRequestRepositoryInterface
         return PayoutRequest::query()->where('payout_method_id', $methodId)->whereIn('status', $this->values(PayoutStatus::open()))->count();
     }
 
+    public function approvedUnbatchedIds(int $limit): array
+    {
+        $base = PayoutRequest::query()->where('status', PayoutStatus::Approved->value)->whereNull('payout_batch_id');
+        $currency = (clone $base)->orderBy('id')->value('currency');
+
+        if ($currency === null) {
+            return [];
+        }
+
+        return $base->where('currency', $currency)->orderBy('id')->limit($limit)->pluck('id')->map(static fn (mixed $id): int => (int) $id)->all();
+    }
+
     public function awaitingDecisionCount(): int
     {
         return PayoutRequest::query()->whereIn('status', $this->values(PayoutStatus::awaitingDecision()))->count();

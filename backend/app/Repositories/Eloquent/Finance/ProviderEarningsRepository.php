@@ -34,6 +34,11 @@ final class ProviderEarningsRepository implements ProviderEarningsRepositoryInte
             ->paginate($perPage, self::COLUMNS);
     }
 
+    public function transactionsQuery(int $providerId): Builder
+    {
+        return $this->settled($providerId)->select(self::COLUMNS);
+    }
+
     /**
      * @return Builder<Booking>
      */

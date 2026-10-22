@@ -11,7 +11,12 @@ use App\Models\PayoutRequest;
 use App\Repositories\Contracts\Payout\PayoutBatchRepositoryInterface;
 use App\Repositories\Contracts\Payout\PayoutRequestRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Support\Files\InspectedUpload;
+use App\Support\Files\PrivateFileStorage;
+use App\Support\Files\UploadInspector;
 use Carbon\CarbonImmutable;
+use Illuminate\Http\UploadedFile;
+use Throwable;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -32,6 +37,8 @@ final class PayoutSettlementService
         private readonly PayoutPostingService $postings,
         private readonly PayoutHistory $history,
         private readonly AuditLogger $audit,
+        private readonly UploadInspector $inspector,
+        private readonly PrivateFileStorage $files,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -52,31 +59,45 @@ final class PayoutSettlementService
         });
     }
 
-    public function markPaid(Admin $actor, PayoutRequest $payout, string $transferReference, ?string $evidencePath, ?string $note): PayoutRequest
+    public function markPaid(Admin $actor, PayoutRequest $payout, string $transferReference, ?UploadedFile $evidence, ?string $note): PayoutRequest
     {
-        return $this->db->transaction(function () use ($actor, $payout, $transferReference, $evidencePath, $note): PayoutRequest {
-            $locked = $this->lock($payout);
+        // Inspected before any money moves: a bad file refuses the call without touching the ledger.
+        $upload = $evidence instanceof UploadedFile
+            ? $this->inspector->inspectDocument($evidence, ['application/pdf', 'image/jpeg', 'image/png'], (int) config('admin.payout_evidence_max_kb', 5120))
+            : null;
+        $stored = null;
 
-            if ($locked->status !== PayoutStatus::Processing) {
-                throw ConflictException::make('payout_state_conflict');
-            }
+        try {
+            return $this->db->transaction(function () use ($actor, $payout, $transferReference, $upload, $note, &$stored): PayoutRequest {
+                $locked = $this->lock($payout);
 
-            $locked->transfer_reference = $transferReference;
-            $entry = $this->postings->pay($locked, $actor);
-            $this->payouts->update($locked, [
-                'status' => PayoutStatus::Paid,
-                'transfer_reference' => $transferReference,
-                'evidence_path' => $evidencePath,
-                'paid_entry_id' => $entry->id,
-                'paid_at' => CarbonImmutable::now(),
-                'closed_at' => CarbonImmutable::now(),
-            ]);
-            $this->history->record($locked, PayoutStatus::Processing, PayoutStatus::Paid, $actor, $note, ['transfer_reference' => $transferReference]);
-            $this->audit->record(AuditAction::StatusChanged, $locked, $actor, before: ['status' => PayoutStatus::Processing->value], after: ['status' => PayoutStatus::Paid->value, 'transfer_reference' => $transferReference], reason: $note);
-            $this->refreshBatch($locked);
+                if ($locked->status !== PayoutStatus::Processing) {
+                    throw ConflictException::make('payout_state_conflict');
+                }
 
-            return $locked;
-        });
+                $stored = $upload instanceof InspectedUpload ? $this->files->putFinanceEvidence('payouts', $locked->uuid, $upload) : null;
+                $locked->transfer_reference = $transferReference;
+                $entry = $this->postings->pay($locked, $actor);
+                $this->payouts->update($locked, [
+                    'status' => PayoutStatus::Paid,
+                    'transfer_reference' => $transferReference,
+                    'evidence_path' => $stored,
+                    'paid_entry_id' => $entry->id,
+                    'paid_at' => CarbonImmutable::now(),
+                    'closed_at' => CarbonImmutable::now(),
+                ]);
+                $this->history->record($locked, PayoutStatus::Processing, PayoutStatus::Paid, $actor, $note, ['transfer_reference' => $transferReference, 'evidence' => $stored !== null]);
+                $this->audit->record(AuditAction::StatusChanged, $locked, $actor, before: ['status' => PayoutStatus::Processing->value], after: ['status' => PayoutStatus::Paid->value, 'transfer_reference' => $transferReference], reason: $note);
+                $this->refreshBatch($locked);
+
+                return $locked;
+            });
+        } catch (Throwable $exception) {
+            // The transaction rolled back; do not leave the evidence file of a payment that did not happen.
+            $this->files->delete($stored);
+
+            throw $exception;
+        }
     }
 
     public function markFailed(Admin $actor, PayoutRequest $payout, string $reason): PayoutRequest

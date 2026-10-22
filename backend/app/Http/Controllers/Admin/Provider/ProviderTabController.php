@@ -12,9 +12,11 @@ use App\DataTables\Admin\Provider\ProviderVehiclesDataTable;
 use App\DataTables\Admin\Finance\ProviderWalletDataTable;
 use App\Http\Controllers\Admin\AdminController;
 use App\Models\ProviderProfile;
-use App\Services\Booking\ProviderJobHistoryService;
 use App\Services\Finance\WalletOverviewService;
-use Illuminate\Contracts\View\View;
+use App\DataTables\Admin\Payout\ProviderPayoutsDataTable;
+use App\DataTables\Admin\Provider\ProviderEarningsDataTable;
+use App\Services\Finance\ProviderEarningsService;
+use App\Services\Payout\PayoutMethodService;
 
 /**
  * Lazy-loaded tabs of the provider show page. Each one is its own Yajra DataTable served from its own URL: a normal
@@ -22,8 +24,6 @@ use Illuminate\Contracts\View\View;
  */
 final class ProviderTabController extends AdminController
 {
-    public function __construct(private readonly ProviderJobHistoryService $jobs) {}
-
     public function services(ProviderServicesDataTable $table, ProviderProfile $provider): mixed
     {
         return $table->render('admin.providers.tabs.table', ['intro' => __('admin.providers.services.intro')]);
@@ -50,11 +50,26 @@ final class ProviderTabController extends AdminController
     }
 
     /**
-     * Gross figures from completed jobs only; the wallet tab has the ledger balance and the commission owed. Payouts and net earnings arrive with P3.4.
+     * Earnings (finance figures from the stored price breakdowns): the day / week / month overviews with the wallet position, the
+     * by-category split of the month and the booking-level table.
      */
-    public function earnings(ProviderProfile $provider): View
+    public function earnings(ProviderEarningsDataTable $table, ProviderProfile $provider, ProviderEarningsService $earnings): mixed
     {
-        return view('admin.providers.tabs.earnings', ['totals' => $this->jobs->completedTotals($provider)]);
+        $summaries = [];
+
+        foreach (ProviderEarningsService::PERIODS as $period) {
+            $summaries[$period] = $earnings->summary($provider, $period);
+        }
+
+        return $table->render('admin.providers.tabs.earnings', ['summaries' => $summaries, 'provider' => $provider]);
+    }
+
+    /**
+     * Payouts (payouts.view): payout methods with their verification, and the provider's payout requests.
+     */
+    public function payouts(ProviderPayoutsDataTable $table, ProviderProfile $provider, PayoutMethodService $methods): mixed
+    {
+        return $table->render('admin.providers.tabs.payouts', ['provider' => $provider, 'methods' => $methods->list($provider)]);
     }
 
     /**

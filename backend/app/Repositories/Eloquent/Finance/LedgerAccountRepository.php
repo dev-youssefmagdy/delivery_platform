@@ -101,4 +101,33 @@ final class LedgerAccountRepository implements LedgerAccountRepositoryInterface
     {
         return LedgerAccount::query()->orderBy('id')->get(['id', 'uuid', 'type', 'currency', 'balance_minor']);
     }
+
+    public function walletLookup(string $term, int $limit): Collection
+    {
+        $like = '%'.addcslashes($term, '%_\\').'%';
+        $prefix = addcslashes($term, '%_\\').'%';
+
+        return LedgerAccount::query()
+            ->whereIn('type', [LedgerAccountType::CustomerWallet->value, LedgerAccountType::ProviderWallet->value])
+            ->when($term !== '', static fn (Builder $query) => $query->where(static function (Builder $inner) use ($term, $like, $prefix): void {
+                $inner->where('uuid', $term)
+                    ->orWhere(static fn (Builder $customers) => $customers->where('type', LedgerAccountType::CustomerWallet->value)
+                        ->whereIn('owner_id', static fn ($sub) => $sub->select('id')->from('users')->where('name', 'like', $like)->orWhere('phone_e164', 'like', $prefix)))
+                    ->orWhere(static fn (Builder $providers) => $providers->where('type', LedgerAccountType::ProviderWallet->value)
+                        ->whereIn('owner_id', static fn ($sub) => $sub->select('provider_profiles.id')->from('provider_profiles')
+                            ->join('users', 'users.id', '=', 'provider_profiles.user_id')
+                            ->where(static fn ($match) => $match->where('users.name', 'like', $like)->orWhere('users.phone_e164', 'like', $prefix))));
+            }))
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function walletsByIds(array $ids): Collection
+    {
+        return LedgerAccount::query()
+            ->whereIn('type', [LedgerAccountType::CustomerWallet->value, LedgerAccountType::ProviderWallet->value])
+            ->whereKey($ids)
+            ->get();
+    }
 }

@@ -26,16 +26,20 @@ use App\Http\Controllers\Api\V1\Me\DeviceController;
 use App\Http\Controllers\Api\V1\Me\MeController;
 use App\Http\Controllers\Api\V1\Me\MessageController;
 use App\Http\Controllers\Api\V1\Me\PaymentMethodController;
+use App\Http\Controllers\Api\V1\Me\WalletController;
 use App\Http\Controllers\Api\V1\Me\PhotoController;
 use App\Http\Controllers\Api\V1\Me\SavedPlaceController;
 use App\Http\Controllers\Api\V1\Provider\ApplicationController;
 use App\Http\Controllers\Api\V1\Provider\AvailabilityController;
 use App\Http\Controllers\Api\V1\Provider\CashCollectionController;
 use App\Http\Controllers\Api\V1\Provider\DocumentController;
+use App\Http\Controllers\Api\V1\Provider\EarningsController;
 use App\Http\Controllers\Api\V1\Provider\EligibilityController;
 use App\Http\Controllers\Api\V1\Provider\JobHistoryController;
 use App\Http\Controllers\Api\V1\Provider\LocationController;
 use App\Http\Controllers\Api\V1\Provider\OfferController;
+use App\Http\Controllers\Api\V1\Provider\PayoutController;
+use App\Http\Controllers\Api\V1\Provider\PayoutMethodController;
 use App\Http\Controllers\Api\V1\Provider\TripController;
 use App\Http\Controllers\Api\V1\Provider\TripFeedbackController;
 use App\Http\Controllers\Api\V1\Provider\RequestController;
@@ -109,6 +113,9 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
         Route::post('messages/{message}/read', [MessageController::class, 'read'])->whereUuid('message')->name('messages.read');
         // Saved online payment methods (P3.2): only brand and last four digits are returned.
         Route::get('payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
+        // The customer wallet (P3.4): balance and statement, read-only and scoped to the owner.
+        Route::get('wallet', [WalletController::class, 'show'])->name('wallet.show');
+        Route::get('wallet/transactions', [WalletController::class, 'transactions'])->name('wallet.transactions');
     });
     Route::delete('account-deletion-requests/{deletionRequest}', [AccountDeletionController::class, 'destroy'])
         ->whereUuid('deletionRequest')->name('account-deletion-requests.destroy');
@@ -200,6 +207,13 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     Route::get('bookings', [JobHistoryController::class, 'index'])->name('bookings.index');
     Route::get('bookings/active', [TripController::class, 'active'])->name('bookings.active');
     Route::get('bookings/{booking}', [RequestController::class, 'show'])->whereUuid('booking')->name('bookings.show');
+    // Earnings, wallet statement and payouts (P3.4, SRS §7.6): reads are status-safe, always scoped to the signed-in provider.
+    Route::get('earnings/summary', [EarningsController::class, 'summary'])->name('earnings.summary');
+    Route::get('earnings/transactions', [EarningsController::class, 'transactions'])->name('earnings.transactions');
+    Route::get('wallet/transactions', [EarningsController::class, 'wallet'])->name('wallet.transactions');
+    Route::get('payout-methods', [PayoutMethodController::class, 'index'])->name('payout-methods.index');
+    Route::get('payouts', [PayoutController::class, 'index'])->name('payouts.index');
+    Route::get('payouts/{payout}', [PayoutController::class, 'show'])->whereUuid('payout')->name('payouts.show');
     Route::get('vehicle-photos/{photo}/file', [VehicleController::class, 'photoFile'])->whereUuid('photo')->middleware('signed')->name('vehicle-photos.file');
 
     Route::middleware('account.active')->group(function (): void {
@@ -227,6 +241,15 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::post('applications', [ApplicationController::class, 'store'])->middleware('idempotent')->name('applications.store');
         Route::patch('application', [ApplicationController::class, 'update'])->name('application.update');
         Route::post('application/submit', [ApplicationController::class, 'submit'])->middleware('idempotent')->name('application.submit');
+
+        // Payout methods and payouts (P3.4): a payout reserves the balance in the ledger in one transaction, needs a verified method
+        // and an Idempotency-Key.
+        Route::post('payout-methods', [PayoutMethodController::class, 'store'])->middleware('idempotent')->name('payout-methods.store');
+        Route::patch('payout-methods/{method}', [PayoutMethodController::class, 'update'])->whereUuid('method')->name('payout-methods.update');
+        Route::post('payout-methods/{method}/default', [PayoutMethodController::class, 'makeDefault'])->whereUuid('method')->name('payout-methods.default');
+        Route::delete('payout-methods/{method}', [PayoutMethodController::class, 'destroy'])->whereUuid('method')->name('payout-methods.destroy');
+        Route::post('payouts', [PayoutController::class, 'store'])->middleware('idempotent')->name('payouts.store');
+        Route::post('payouts/{payout}/cancel', [PayoutController::class, 'cancel'])->whereUuid('payout')->middleware('idempotent')->name('payouts.cancel');
 
         Route::post('documents', [DocumentController::class, 'store'])->middleware([RateLimiterName::ProviderUploads->middleware(), 'idempotent'])->name('documents.store');
 

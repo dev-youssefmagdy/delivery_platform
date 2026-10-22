@@ -17,6 +17,7 @@ use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterfac
 use App\Repositories\Contracts\Identity\UserRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderActivityRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderDocumentRepositoryInterface;
+use App\Repositories\Contracts\Payout\ProviderPayoutMethodRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleDocumentRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehiclePhotoRepositoryInterface;
@@ -54,6 +55,7 @@ final class ProviderDeletionService
         private readonly VehicleRepositoryInterface $vehicles,
         private readonly VehiclePhotoRepositoryInterface $photos,
         private readonly AccountScrubber $scrubber,
+        private readonly ProviderPayoutMethodRepositoryInterface $payoutMethods,
         private readonly PrivateFileStorage $storage,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -124,6 +126,8 @@ final class ProviderDeletionService
 
             $paths = $this->removeFiles($locked);
             $this->profiles->scrubPersonalData($locked);
+            // Encrypted payout destinations go with the account; payouts keep only their masked snapshot and their ledger entries stay.
+            $payoutMethodsPurged = $this->payoutMethods->purgeForProvider($locked->id);
             $paths[] = $this->scrubber->scrub($user);
 
             $this->requests->update($request, [
@@ -140,7 +144,7 @@ final class ProviderDeletionService
                 before: ['status' => $request->previous_provider_status->value ?? $locked->status->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid],
+                meta: ['deletion_request' => $request->uuid, 'payout_methods_purged' => $payoutMethodsPurged],
             );
 
             return $request;

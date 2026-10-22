@@ -34,6 +34,17 @@ final class PrivateFileStorage
         return $path;
     }
 
+    /**
+     * Proof of a payout transfer or of an adjustment (a bank receipt): one random file under the finance evidence folder.
+     */
+    public function putFinanceEvidence(string $kind, string $uuid, InspectedUpload $upload): string
+    {
+        $path = 'finance-evidence/'.$kind.'/'.$uuid.'/'.Str::uuid().'.'.$upload->extension;
+        $this->disk()->put($path, $upload->bytes);
+
+        return $path;
+    }
+
     public function delete(?string $path): void
     {
         if ($path !== null && $path !== '') {

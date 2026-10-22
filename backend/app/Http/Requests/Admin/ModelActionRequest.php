@@ -40,6 +40,7 @@ abstract class ModelActionRequest extends FormRequest
      */
     public function rules(): array
     {
-        return $this->reasonIsRequired() ? $this->reasonRules(true) : [];
+        // An optional reason (a note) is still validated so the service receives it.
+        return $this->reasonRules($this->reasonIsRequired());
     }
 }

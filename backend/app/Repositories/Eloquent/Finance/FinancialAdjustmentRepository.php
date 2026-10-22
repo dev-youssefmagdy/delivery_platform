@@ -50,7 +50,11 @@ final class FinancialAdjustmentRepository implements FinancialAdjustmentReposito
     {
         return FinancialAdjustmentRequest::query()
             ->select('financial_adjustment_requests.*')
-            ->with(['account:id,uuid,type,owner_type,owner_id,currency', 'requestedBy:id,name', 'decidedBy:id,name'])
+            ->with([
+                'account' => static fn ($account) => $account->select(['id', 'uuid', 'type', 'owner_type', 'owner_id', 'currency'])->with(['owner' => static fn ($owner) => $owner->morphWith([\App\Models\ProviderProfile::class => ['user:id,name']])]),
+                'requestedBy:id,name',
+                'decidedBy:id,name',
+            ])
             ->when($filters->accountId !== null, static fn (Builder $query) => $query->where('financial_adjustment_requests.ledger_account_id', $filters->accountId))
             ->when($filters->statuses !== [], static fn (Builder $query) => $query->whereIn('financial_adjustment_requests.status', array_map(static fn (ApprovalStatus $status): string => $status->value, $filters->statuses)))
             ->when($filters->directions !== [], static fn (Builder $query) => $query->whereIn('financial_adjustment_requests.direction', array_map(static fn (AdjustmentDirection $direction): string => $direction->value, $filters->directions)))

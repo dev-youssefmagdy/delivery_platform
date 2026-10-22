@@ -94,6 +94,8 @@ return [
         'providers' => App\Support\Admin\Lookups\ProviderLookup::class,
         'zones' => App\Support\Admin\Lookups\ZoneLookup::class,
         'customers' => App\Support\Admin\Lookups\CustomerLookup::class,
+        'finance-providers' => App\Support\Admin\Lookups\FinanceProviderLookup::class,
+        'wallets' => App\Support\Admin\Lookups\WalletLookup::class,
         // @admin-module:lookups
     ],
 

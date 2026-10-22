@@ -26,4 +26,12 @@ class LedgerAccountPolicy
     {
         return $admin->can(AdminPermission::FinanceView->value) || $admin->can(AdminPermission::WalletsView->value);
     }
+
+    /**
+     * Provider statement export: a finance read (`finance.view`) plus the export right (`reports.export`); every export is audited.
+     */
+    public function exportStatements(Authorizable $admin): bool
+    {
+        return $admin->can(AdminPermission::FinanceView->value) && $admin->can(AdminPermission::ReportsExport->value);
+    }
 }

@@ -23,4 +23,11 @@ interface ProviderEarningsRepositoryInterface
      * @return LengthAwarePaginator<int, Booking>
      */
     public function transactionsPage(int $providerId, ?CarbonInterface $from, ?CarbonInterface $to, int $perPage): LengthAwarePaginator;
+
+    /**
+     * Settled bookings of a provider as a query (admin DataTable), newest first.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder<Booking>
+     */
+    public function transactionsQuery(int $providerId): \Illuminate\Database\Eloquent\Builder;
 }

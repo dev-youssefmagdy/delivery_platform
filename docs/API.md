@@ -794,3 +794,13 @@ Errors: `422 offer_scope_required | offer_scope_invalid (meta.scope_errors path 
 ### Adjustments (`POST /bookings/{b}/adjustments`, `/provider/bookings/{b}/adjustments`)
 New `type` values `extra_helper` (`details.helpers` 1-5), `stairs` (`details.floors`). Scoped bookings require `details.scope_item` (helpers, stairs, extra_stops, waiting_allowance, tolls, parking, ...; implied when the type has one item). Errors: `adjustment_scope_item_required | _invalid`, `adjustment_within_scope`, `adjustment_floors_required`, `adjustment_helpers_invalid`. Approved adjustments feed `adjustments_total`, the final fare, the price breakdown and the receipt (`adjustments[].scope_item`, `booking.agreed_scope`).
 
+
+## P4.3 — Flutter flows: contract additions (ADR-158)
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/provider/offer-scope` | Provider token. `data = { version, vehicle_class (code of the vehicle category the provider offers with, null without a current vehicle), schema (the JSON Schema of config/offer_scope.php) }`. The scope builder renders its enums and bounds; the scope sent with a counter-offer must carry `vehicle_class` |
+
+`GET /provider/requests/available` cards: `details` now also carries `scope_required` (bool), `load {weight_kg, volume_m3}`, `pickup_window {start, end}`, `requested_scope` (object, `{}` when none) and `requested_scope_summary [{key, label, value}]`. They are not personal data (the dispatch payload already carried them); no contacts or addresses were added.
+
+Client notes: attachment ids of videos go into the same `photos` field of the form; `restricted_goods_policy_version` is the id from `GET /policies/restricted_goods`; stops send `contact {name, phone, note}`; adjustments of a scoped booking send `details {scope_item, helpers?, floors?}` and `evidence.reference` for `toll_parking`.

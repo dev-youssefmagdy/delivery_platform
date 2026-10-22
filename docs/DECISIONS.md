@@ -884,3 +884,28 @@ Discovered while wiring this: the framework's default middleware priority list n
 **Decision.** Account deletion blanks item labels / notes and stop contacts and deletes every attachment row and file; quantities, dimensions, weights and scope stay for disputes. The export gets a `moving_freight` section with attachments as facts (no files).
 **Why.** Pictures and free text can identify people and homes; the structured facts back financial records.
 
+
+## ADR-158 — The scope builder renders the server's schema; summaries stay server-side · 2026-11-08 · Accepted
+
+**Decision.** The driver app edits an `OfferScope` against a `ScopeTemplate` read from the new `GET /provider/offer-scope` (JSON Schema of `config/offer_scope.php`, its version and the vehicle class the provider offers with). Options and bounds come from the schema; the client check mirrors the schema (plus "included stairs need at least one floor") and a refusal (`offer_scope_invalid`, `meta.scope_errors`) is mapped back onto the same fields. Both apps show the `*_scope_summary` lines exactly as sent (label and value); only the included / excluded / at-cost icon is derived from the raw scope.
+**Why.** A new schema version must not need an app release, and two apps must never disagree about what was promised. The vehicle class cannot be guessed on the device (`offer_scope_vehicle_mismatch`), hence the small endpoint. The request card (`details`) now also carries `scope_required`, `load`, `pickup_window`, `requested_scope` and `requested_scope_summary` (non-personal, same as the dispatch payload): the API doc of P4.2 promised them, the resource did not send them.
+
+## ADR-159 — Proofs go through a persisted retry queue with a fixed key · 2026-11-08 · Accepted
+
+**Decision.** A captured proof (photo, signature, checklist, weight) is stored in `ProofUploadQueue` (SharedPreferences) with its Idempotency-Key generated once at capture. The queue sends one item at a time, retries network / 5xx / 429 / busy / scanner-down with exponential back-off (5 s doubling, capped at 5 min) and the same key, resumes on connectivity and on app start, treats `proof_already_recorded` as done, and parks any other refusal as `failed` for retry / discard. A 401 stops the run and keeps everything. Failed-attempt reports and the recipient code are not queued (their meaning depends on the live state); they keep one key per intent across retries.
+**Why.** Pickup proof is taken where the connection is worst. The server already replays the same picture, so a fixed key makes retries safe. Queueing the attempt report or the OTP could replay a stale decision after the booking moved on.
+
+## ADR-160 — Customer uploads are immediate and referenced by id · 2026-11-08 · Accepted
+
+**Decision.** In moving / freight forms a picked photo or video is uploaded at once with `POST /bookings/attachments` (one key per file path, kept on transport failures) and the photo field stores the attachment id; videos use the same `photos` field (the server accepts photo and video kinds there). Courier keeps local photos. Item checklists carry optional per-item note, weight and dimensions. Intermediate stops (moving / freight) are added with the place search and carry `contact {name, phone, note}`; a half-typed contact blocks submit.
+**Why.** The server limits and scans uploads; uploading early surfaces refusals (type, size, scanner) next to the file instead of at submit. The booking create fingerprint includes stops, policy and type so the Idempotency-Key changes with the payload.
+
+## ADR-161 — Courier acknowledgement is tied to the policy id on screen · 2026-11-08 · Accepted
+
+**Decision.** The courier form reads `GET /policies/restricted_goods`, shows its text and the checkbox "version N"; submit sends that policy id as `restricted_goods_policy_version`. `restricted_goods_ack_stale | _unavailable` clear the tick and re-read the policy.
+**Why.** The server must be able to prove which text the customer accepted; a cached tick must not survive a new version.
+
+## ADR-162 — Failed delivery attempts keep the job open · 2026-11-08 · Accepted
+
+**Decision.** `delivery_attempt_failed` is a finished state only when nothing is awaiting a decision: while `awaiting_resolution` or `resolve_delivery_attempt` is allowed, the driver job stays active (not dropped from the active banner) and the customer booking stays in the live view. Retry is offered only while `attempts.retry_available`; otherwise return to sender or operations. All buttons come from `allowed_actions`.
+**Why.** The attempt flow is a negotiation between two apps; hiding the job after the failure would strand the decision.

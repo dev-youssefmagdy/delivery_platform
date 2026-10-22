@@ -13,6 +13,7 @@ import '../../domain/logic/polyline.dart';
 import '../providers/booking_providers.dart';
 import 'booking_sections.dart';
 import 'booking_texts.dart';
+import 'delivery_cards.dart';
 import 'edit_fare_sheet.dart';
 import 'offer_tile.dart';
 
@@ -105,6 +106,14 @@ class _SearchingViewState extends ConsumerState<SearchingView> {
           formatter: formatter,
           languageCode: language,
         ),
+        if (!booking.scope.isEmpty) ...[
+          const SizedBox(height: AppSpacing.md),
+          BookingScopeCard(booking: booking),
+        ],
+        if (booking.load != null) ...[
+          const SizedBox(height: AppSpacing.md),
+          BookingLoadCard(booking: booking),
+        ],
         const SizedBox(height: AppSpacing.md),
         _SearchBanner(booking: booking),
         const SizedBox(height: AppSpacing.sm),

@@ -36,7 +36,7 @@
 | P3.8 | Flutter: wallet, payments, coupons, earnings, payouts | P1 | 🟡 | 2026-11-06 |
 | P4.1 | Courier/parcel backend | P1 | 🟡 | 2026-11-07 |
 | P4.2 | Furniture moving & freight backend (scoped offers) | P1 | 🟡 | 2026-11-07 |
-| P4.3 | Flutter courier/moving/freight flows | P1 | ❌ | — |
+| P4.3 | Flutter courier/moving/freight flows | P1 | 🟡 | 2026-11-08 |
 | P4.4 | Admin & E2E for non-ride services | P1 | ❌ | — |
 | P5.1 | Safety center, SOS, trusted contacts | P1 | ❌ | — |
 | P5.2 | Reviews moderation & risk signals | P1 | ❌ | — |
@@ -994,3 +994,26 @@ No end-to-end HTTP booking creation was run (zone fixtures); `OfferSubmissionSer
 
 ### Next (P4.3)
 Flutter: scope editor for counter-offers (render the schema in `config/offer_scope.php`, send `scope`), summary lines from `*_scope_summary`, load form (items, volume, window), upload then reference ids, extra-helper / stairs adjustment requests with `details.scope_item`.
+
+
+---
+
+## P4.3 — Flutter courier / moving / freight flows · 🟡 2026-11-08 (gate NOT run)
+
+Committed directly on `main`. ADR-158..162. **By user instruction no test, `flutter test`, `flutter analyze` gate, `dart format` check, integration test, php test or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P4.3).
+
+### Built
+- **platform_core**: `scope/` (`ScopeLine`, `scopeLineStatus`, `ScopeTemplate` read from the server schema, `OfferScope` with `validate`, `scopeIssuesFromServer`, `ScopeSummaryList` with included / excluded / at-cost icons); `delivery/` (models for `delivery`, contacts, proofs, attempts, load, scope blocks; `DeliveryRepository`; `CustodyTimelineView`, `RecipientOtpCard`, `ProofGallery`, `AttemptsList`); `upload/` (`BookingAttachmentRepository`, `ProofUploadQueue` with persisted items, fixed key, back-off); `AttachmentPhotoHandler` (photo / video uploaded at once, ids kept), `CameraCapture`; item checklist rows with optional note / weight / dimensions; adjustments with `extra_helper`, `stairs`, `details.scope_item`, `helpers`, `floors`, `evidence.reference`.
+- **Backend (minimal, real contract gaps)**: `GET /provider/offer-scope` (schema, version, vehicle class) and the request card `details` fields `scope_required`, `load`, `pickup_window`, `requested_scope(_summary)` (P4.2 API doc promised them). Documented in `docs/API.md` (P4.3). `php -l` and `route:list` only.
+- **Customer app**: courier / moving / freight forms through `DynamicFormRenderer` (contact, item checklist with details, dimensions fields) plus restricted-goods acknowledgement against the current policy, stops with contacts (place search), uploads referenced by id (photos / video), booking type by category (`parcel`, `freight`, `on_demand`), stop contacts and policy id in the create call; offer cards with the server's `scope_summary`; requested / agreed scope cards (also while searching); load card with signed-URL files; delivery panel (custody timeline with the times of the timeline notes, recipient code status and how the code travels, contacts, proof viewer, failed-attempt retry / return / operations choice); adjustment cards with the scope item, approval sheet, and a request sheet (extra helper / agreement change) for scoped bookings.
+- **Driver app**: scope builder (large steppers and chips, template from the API, server refusal mapped to fields) as the first step of a scoped counter-offer, capacity / vehicle / scope error texts; request cards with load, window and requested scope; delivery section (custody buttons, proof capture: camera photo, signature canvas (600x300 PNG), checklist, weight, offline-safe queue with retry / discard, recipient code entry with resend cooldown, failed-attempt report with reason + evidence, resolve sheet); contacts, multi-stop navigation list, agreed scope and load sections; scoped adjustment requests (items, helpers, floors, receipt reference). The queue is started by the shell so earlier proofs are sent on launch.
+- ARB `ar` + `en` for every new text (driver: `sc*`, `dl*`, `jbErr*`, `dadj*`; customer: `sc*`, `dc*`, `lf*`, `rg*`, `stp*`, `adj*`); generated l10n regenerated with `flutter gen-l10n`. No code generation was needed (no freezed / riverpod_generator input changed).
+
+### Checks run (compile only, as instructed)
+`dart analyze lib` in `driver_app`, `customer_app` and on the new / changed directories of `packages/platform_core` (clean except an `info` lint in `proof_upload_queue.dart`); `flutter gen-l10n` in both apps; `php -l` and `route:list --path=provider/offer-scope`. No tests, no formatter, no integration run, no device run.
+
+### Known gaps
+No device or real-backend run: camera, signature export, SMS code, signed URLs, videos > a few MB over a weak network are unexercised. The checklist codes of the checklist proof are fixed in the app (`config/courier.php` is not exposed). Moving has no pickup-window field in schema v2 (only `preferred_time`). The customer cannot resend the recipient code (provider only, per API). A proof file is kept at the picker's cache path (not copied), so the OS may remove it before a very late retry (then the item fails with `file_unavailable`). Booking edits only change the fare; load, stops and scope of a created booking cannot be edited from the app.
+
+### Next (P4.4)
+Admin: parcel safety / custody tab already exists; add listing filters for scope items, a proofs viewer, attempt resolution by operations, load files. E2E: two phones (courier OTP, moving scope, freight proof with signature), weak-network proof retry with the same key, `offer_scope_invalid` and `offer_vehicle_capacity_insufficient` paths, stale restricted-goods policy.

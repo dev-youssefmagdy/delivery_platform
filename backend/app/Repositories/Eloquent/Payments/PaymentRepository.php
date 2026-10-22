@@ -68,6 +68,11 @@ final class PaymentRepository implements PaymentRepositoryInterface
             ->get();
     }
 
+    public function forCustomer(int $userId): Collection
+    {
+        return Payment::query()->with('booking:id,code')->where('user_id', $userId)->orderBy('id')->get();
+    }
+
     public function openAttempt(int $bookingId, PaymentKind $kind): ?Payment
     {
         return Payment::query()

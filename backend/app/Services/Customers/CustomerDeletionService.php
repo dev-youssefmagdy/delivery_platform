@@ -14,6 +14,7 @@ use App\Repositories\Contracts\Customers\CustomerActivityRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Services\Payments\PaymentMethodService;
 use App\Services\Identity\AccountScrubber;
 use App\Services\Provider\ProviderDeletionService;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -36,6 +37,7 @@ final class CustomerDeletionService
         private readonly CustomerActivityRepositoryInterface $activity,
         private readonly AccountScrubber $scrubber,
         private readonly BookingRepositoryInterface $bookings,
+        private readonly PaymentMethodService $paymentMethods,
         private readonly ProviderDeletionService $providerDeletions,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -68,6 +70,7 @@ final class CustomerDeletionService
             $previousStatus = $locked->status;
             $scrubbedBookings = $this->bookings->scrubPersonalDataForCustomer($locked->id);
             $photoPath = $this->scrubber->scrub($locked);
+            $methodsPurged = $this->paymentMethods->purgeForCustomer($locked);
 
             $this->requests->update($request, [
                 'status' => DeletionRequestStatus::Completed,
@@ -83,7 +86,7 @@ final class CustomerDeletionService
                 before: ['status' => $previousStatus->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings],
+                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged],
             );
 
             return $request;

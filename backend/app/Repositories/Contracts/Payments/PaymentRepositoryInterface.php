@@ -51,6 +51,13 @@ interface PaymentRepositoryInterface
     public function forBooking(int $bookingId, ?PaymentKind $kind = null): Collection;
 
     /**
+     * Every payment of a customer with its booking (personal data export).
+     *
+     * @return Collection<int, Payment>
+     */
+    public function forCustomer(int $userId): Collection;
+
+    /**
      * The attempt still in flight (pending / requires action / authorized) of a booking and kind, if any.
      */
     public function openAttempt(int $bookingId, PaymentKind $kind): ?Payment;

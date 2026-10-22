@@ -25,7 +25,7 @@ class PaymentMethodResource extends JsonResource
             'type' => $method->type->value,
             'brand' => $method->brand,
             'last4' => $method->last4,
-            'is_default' => $method->is_default,
+            'is_default' => (bool) $method->is_default,
             'status' => $method->status,
             'created_at' => $method->created_at->toIso8601ZuluString(),
         ];

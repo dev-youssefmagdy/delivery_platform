@@ -541,3 +541,52 @@ Errors (envelope): `403 override_forbidden`, `409 override_not_available` (statu
 
 **Realtime (admin).** Private channel `admin.operations` (authorized for admins with `bookings.view` through `/broadcasting/auth` on the admin session). Events (payload envelope `{booking_uuid: null, sequence, occurred_at, payload}`, one stream-wide sequence): `operations.booking_changed` `{uuid, status, previous_status}`, `operations.provider_changed` `{uuid, online}`, `operations.provider_moved` `{uuid, lat, lng, busy}` (throttled per provider). Hints only: the map refetches its snapshot on a gap.
 
+
+
+### 8.15 Payments, tips and cash (P3.2)
+
+Money is integer minor units. Every write needs an `Idempotency-Key` (UUID). The trip amount is never sent by the client: it is the booking's stored price breakdown. A payment becomes `paid` only from the gateway's verified webhook or a server-side gateway query (never from the app returning from the payment page). With no gateway configured, online endpoints answer `503 payments_not_configured` and booking creation accepts only the base methods (cash) until one is configured.
+
+**Customer (`customer` token)**
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/api/v1/bookings/{booking}/payment-intents` | Body `{payment_method_id?, method? (card\|mobile_wallet), wallet_phone?}`. Booking must be `completed_pending_payment` with a card / wallet method. Creates the payment (`pending` / `requires_action`) and returns it with `action {client_secret, url}` to open the gateway UI. A second call while an attempt is open returns the same attempt (200, `replayed`) instead of charging twice; `422 payment_needs_review` while a previous attempt awaits an operator. `201` on create |
+| POST | `/api/v1/bookings/{booking}/tips` | Body `{amount_minor, payment_method_id?, method?, wallet_phone?}`. After the booking is `completed`, only if the service allows tipping and `tips_enabled`; never preselected; `amount_minor` between 1 and `tip_max_basis_points` of the fare; one tip per booking (`422 tip_already_given`). Commission-free by default (rule version may set a tip commission) and posted to the provider wallet when paid |
+| POST | `/api/v1/payments/{payment}/refresh` | The app asks the platform to re-check one of the customer's own payments with the gateway (after returning from the payment page, or the app was closed). Read-only until the gateway itself says paid. Throttled 30/min. Returns the payment |
+| GET | `/api/v1/me/payment-methods` | Active saved methods `{id, type, brand, last4, is_default, status, created_at}`. The gateway token never leaves the server |
+| POST | `/api/v1/me/payment-methods/setup-intent` | Body `{type: card\|mobile_wallet}`. Creates a `pending` method and returns `action`; the method becomes `active` only when the gateway's verified webhook reports it. `422 payment_setup_not_supported` for gateways that save cards during a payment (Paymob) |
+| DELETE | `/api/v1/me/payment-methods/{paymentMethod}` | Forgets the token (best effort at the gateway); another customer's method is a 404 |
+
+Payment resource: `{id, booking_id, kind (trip\|tip), method, gateway, status {code, label}, amount {minor, currency}, refunded_minor, attempt, failure_code, saved_method, expires_at, paid_at, created_at, action}`. `status.code` is one of `pending, requires_action, authorized, paid, failed, partially_refunded, refunded, cash_due, cash_collected, reconciliation_required, not_required`. The booking's `payment {method, status}` mirrors its trip payment; `allowed_actions` gains `pay` and `tip`.
+
+**Provider (`provider` token)**
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/api/v1/provider/bookings/{booking}/cash-collected` | The provider confirms the cash of their completed cash booking: `cash_due` -> `cash_collected` (replay answers 200 with `meta.replayed`). `422 cash_not_collectable` otherwise; another provider's booking is a 404. `allowed_actions` gains `confirm_cash_collected` |
+
+**Gateway callback (no user auth, signature only)**
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/api/v1/payment-gateways/{gateway}/webhook` | `gateway` is `sandbox` (local/testing) or `paymob`; only the configured one answers (others 404). Body as sent by the gateway, verified over the raw body (constant-time HMAC; replay window where the gateway signs a timestamp). Answers `{received, outcome}`: `200` processed / duplicate / ignored, `202` unmatched or amount mismatch, `400` replay window, `401` invalid signature, `500` processing failed (the gateway retries). Own rate limit `payment-webhooks` (setting `rate_limit_payment_webhooks_per_minute`) |
+
+**Realtime.** `payment.status_changed` `{payment_uuid, kind, payment_status}` on `private-customer.{uuid}` and `private-provider.{uuid}` (payload envelope as the booking events, sequence = the booking's counter). A hint: refetch the booking.
+
+**Errors (envelope `errors._code`).** `payments_not_configured` (503), `payment_gateway_unavailable` (503), `payment_method_unsupported`, `booking_not_payable`, `payment_nothing_to_pay`, `payment_needs_review`, `wallet_phone_required`, `payment_method_not_found`, `tips_not_available`, `tip_booking_not_completed`, `tip_amount_invalid`, `tip_amount_too_large` (`meta.max`), `tip_already_given`, `cash_not_collectable`, `payment_transition_invalid` (409).
+
+**Admin panel (session guard).** Pages under `/admin`, behind `can:` policies; writes use FormRequests (Precognition) with a mandatory `reason`:
+
+| Method | Path | Permission | Notes |
+|---|---|---|---|
+| GET | `/admin/payments`, `/admin/payments/{uuid}` | `payments.view` (or `refunds.request` / `refunds.approve`) | Listing (filters: status, kind, method, gateway, reference, created range, amount range) and show page (details, event timeline, refunds tab, activity); payment tabs on the booking and customer pages (`/admin/bookings/{uuid}/tabs/payments`, `/admin/customers/{uuid}/tabs/payments`) |
+| POST | `/admin/payments/{uuid}/refunds` | `refunds.request` | `{amount_minor, reason, idempotency_key}`; only collected online payments (`paid`, `partially_refunded`); at most what is still refundable. At or above `refund_dual_approval_threshold_minor` the refund waits for a second admin, below it runs on the requester's authority |
+| POST | `/admin/payments/{uuid}/sync` | `finance.reconcile` | `{reason}` asks the gateway and applies its answer (verified query) |
+| GET | `/admin/payment-refunds`, `/admin/payment-refunds/{uuid}` | as payments | Refund listing and page |
+| POST | `/admin/payment-refunds/{uuid}/approve`, `/reject` | `refunds.approve` | Approve (optional note) or reject (`reason`); never by the requester (`403 refund_self_approval`). Approval sends the refund to the gateway; the ledger gets the compensating entry when the gateway confirms |
+| GET | `/admin/gateway-webhook-events`, `/{uuid}` | `payments.view` | Every callback received with its outcome (failures highlighted, filter "needs attention") |
+| POST | `/admin/gateway-webhook-events/{uuid}/reprocess` | `finance.reconcile` | `{reason}` processes a failed / unmatched / amount-mismatch event again (audited) |
+| GET / POST | `/admin/payment-reconciliation`, `/run`, `/{uuid}` | `finance.view` or `payments.view`; run: `finance.reconcile` | Reports of `payments:reconcile` |
+
+Console: `php artisan payments:reconcile [--sweep-only]` (scheduled: sweep every 5 minutes, full comparison hourly).

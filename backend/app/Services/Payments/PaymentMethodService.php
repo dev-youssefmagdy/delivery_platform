@@ -161,6 +161,29 @@ final class PaymentMethodService
     }
 
     /**
+     * Account anonymisation: every saved method is forgotten at the processor (best effort) and its row, token and display
+     * data are deleted. Past payments keep their amounts; their link to the method is cleared.
+     */
+    public function purgeForCustomer(User $customer): int
+    {
+        $methods = $this->methods->allForUser($customer->id);
+
+        foreach ($methods as $method) {
+            if ($method->gateway_token !== null && ($gateway = $this->gateways->forName($method->gateway)) !== null) {
+                try {
+                    $gateway->detachMethod($method->gateway_token);
+                } catch (PaymentGatewayException) {
+                    // Best effort at the processor: the platform forgets the token either way.
+                }
+            }
+
+            $this->methods->forceDelete($method);
+        }
+
+        return $methods->count();
+    }
+
+    /**
      * The saved method a customer picked for a payment (own and active), or null when none was named.
      */
     public function resolveOwned(User $customer, ?string $uuid): ?PaymentMethod

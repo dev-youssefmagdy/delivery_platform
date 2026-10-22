@@ -55,4 +55,14 @@ final class PaymentMethodRepository implements PaymentMethodRepositoryInterface
     {
         $method->delete();
     }
+
+    public function allForUser(int $userId): Collection
+    {
+        return PaymentMethod::withTrashed()->where('user_id', $userId)->get();
+    }
+
+    public function forceDelete(PaymentMethod $method): void
+    {
+        $method->forceDelete();
+    }
 }

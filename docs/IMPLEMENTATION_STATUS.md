@@ -27,7 +27,7 @@
 | P2.8 | Admin: bookings, offers monitor, live operations v1 | P0 | 🟡 | 2026-10-29 |
 | P2.9 | E2E ride test, race tests, MVP hardening | P0 | ❌ | — |
 | P3.1 | Double-entry ledger, wallets, commission rules, price breakdown | P1 | 🟡 | 2026-10-30 |
-| P3.2 | Payments: gateway adapter, cash flow, webhooks, tips | P1 | ❌ | — |
+| P3.2 | Payments: gateway adapter, cash flow, webhooks, tips | P1 | 🟡 | 2026-10-31 |
 | P3.3 | Coupon engine and coupon manager | P1 | ❌ | — |
 | P3.4 | Provider earnings, payouts, adjustments, cash reconciliation | P1 | ❌ | — |
 | P3.5 | Cancellation/no-show policies with fees, fare adjustments, receipts | P1 | ❌ | — |
@@ -49,6 +49,39 @@
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+
+---
+
+## P3.2 — Payments: gateway adapter, cash flow, webhooks, tips · 🟡 2026-10-31 (gate NOT run)
+
+Committed directly on `main`. ADR-116..119. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P3.2).
+
+### What was built
+
+- **Gateway adapter** (`App\Integrations\Payments`): vendor-neutral `PaymentGateway` contract (createIntent, setup intent, authorize/capture flag, verifyWebhook with signature and replay window, queryStatus, refund, listTransactions, detachMethod), `PaymentGatewayManager` (one configured gateway, other names 404). Drivers: `sandbox` (local/testing only; boot guard; queued, signed, asynchronous webhooks through the real entry point; never marks paid synchronously) and `paymob` (documented, untested without credentials, flagged in docs/INTEGRATIONS.md with env vars and merchant requirements).
+- **Schema:** `payment_methods` (encrypted token, brand, last4), `payments`, `payment_events`, `gateway_webhook_events` (unique gateway + event id), `payment_refunds`, `payment_reconciliation_runs`; five settings; `payment-webhooks` rate limiter.
+- **Services** (`App\Services\Payments`): `PaymentIntentService` (trip charge at completion, tips), `PaymentTransitionService` (only writer of payment status, graph in `PaymentStatus`, timeline, booking mirror, `payment.status_changed`), `PaymentOutcomeService` + `PaymentSettlementService` (paid = verified webhook/query only; ledger `gateway` / `gatewayTip` postings; `completed_pending_payment -> completed` through `BookingTransitionService`), `PaymentWebhookService` + `PaymentWebhookProcessor` (verify, record, dedupe, late/duplicate/out-of-order rules, amount mismatch, reprocess), `PaymentStatusSyncService` (customer refresh, admin sync, timeout sweep -> `reconciliation_required`), `CashPaymentService` (`cash_due` -> `cash_collected`), `RefundService` + `RefundPostingBuilder` (dual approval, compensating ledger entry on gateway confirmation), `PaymentMethodService`, `PaymentReconciliationService`, `PaymentMethodAvailability`.
+- **Carry-over from P3.1:** `PaymentPositionRepositoryInterface` rebound to `PaymentPositionRepository` (real payments and refunds); `SettlementPostingBuilder::gateway` / `gatewayTip` called; the tip input of the calculator is wired (`breakdownFor($booking, null, $tip)`); cash payment state is `cash_due` -> `cash_collected` with the provider confirmation endpoint; booking status moves only through `BookingTransitionService`.
+- **API:** payment intents, tips, payment refresh, saved methods (list, setup intent, delete), provider cash confirmation, gateway webhook (docs/API.md 8.15). `allowed_actions` gain `pay`, `tip`, `confirm_cash_collected`; booking creation accepts card / wallet only when a gateway is configured.
+- **Admin** (Admin Module Contract): Payments (listing with collapsed filters, show page with timeline, refunds tab, activity; booking and customer payment tabs replace the placeholders), Refunds (request modal with Precognition form and idempotency key, approve / reject with reason, dual approval), Gateway webhook events (failures highlighted, filter "needs attention", reprocess with reason), Payment reconciliation (report pages, run button). Policies `PaymentPolicy`, `PaymentRefundPolicy`, `GatewayWebhookEventPolicy`, `PaymentReconciliationRunPolicy`; permissions are the existing `payments.view`, `refunds.request`, `refunds.approve`, `finance.reconcile`; menu entries under Finance; ar/en strings.
+- **Console:** `payments:reconcile [--sweep-only]` (sweep every 5 minutes, full comparison hourly). Account anonymisation purges saved methods; the personal data export lists methods (brand, last4) and payments.
+
+### Sanity checks run (no test suite)
+
+`php -l` on every new file; `migrate` / `migrate:rollback` / `migrate`; `route:list` (api and admin); `view:cache`; container resolution of every new service and of the rebound repository; boot guard refuses `payments=sandbox` in production. Rolled-back tinker scripts through the sandbox gateway proved: intent stays pending; signed webhook -> paid, settlement entry balanced, booking `completed` via the transition service; duplicate delivery ignored with one ledger entry; tampered body, bad signature and replay window rejected; amount mismatch never marks paid; late success after failure becomes paid; stale failure after paid ignored; unknown reference unmatched; tip paid and credited; second tip refused; partial refund -> `refund.succeeded` webhook -> balanced compensating entry and `partially_refunded`; over-refund refused; refund above the threshold waits, self-approval refused, second admin approves; cash `cash_due` -> `cash_collected` and replay; `ledger:reconcile` stays ok; `payments:reconcile` runs; the HTTP API (intent, resume, refresh, setup intent, tips, webhook duplicate / invalid signature, provider cash confirmation) and the admin pages, DataTables endpoints and Precognition refund validation answered correctly through the HTTP kernel; Paymob HMAC verification round-trips with the documented field order.
+
+### Known gaps / notes for P3.3 and later
+
+- Paymob is untested against the live service (see docs/INTEGRATIONS.md); card and wallet money is only proven against the sandbox.
+- Coupons: the calculator inputs for discount and funding are still zero; P3.3 must set them when the booking breakdown is stored (the gateway posting already supports platform / provider / partner funded discounts and the payment amount is `customer_payable - tip`, so a 100% coupon yields `payment_nothing_to_pay`: P3.3 should complete such bookings without a gateway charge).
+- `platform_wallet` payments (customer wallet top-up and pay) are not implemented; cash refunds and refunds above what the gateway holds are out of scope. Payouts and cash-debt collection are P3.4; cancellation fees posting is P3.5; push notifications for payment events are P3.6 (only the realtime event exists).
+- Flutter apps do not call the new endpoints yet (P3.8): the customer app needs the pay / tip / saved-method screens (open `action.url`, then poll `GET /bookings/{id}` or call `POST /payments/{id}/refresh`), the driver app the cash confirmation button (`confirm_cash_collected`).
+- The sandbox needs a queue worker on the `critical` queue (with `QUEUE_CONNECTION=sync` the webhook runs when the intent transaction commits); `gateway_webhook_events` rows for rejected callbacks are not pruned yet (P6.2 retention).
+- Reconciliation compares a look-back window only and treats gateways without a listing API per known reference.
+
+### Next steps
+
+P3.3 — coupon engine and coupon manager (fill discount and funding in the price breakdown at selection, keep the payment amount consistent).
 
 ---
 

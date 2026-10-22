@@ -36,4 +36,16 @@ interface PaymentMethodRepositoryInterface
     public function clearDefault(int $userId): void;
 
     public function delete(PaymentMethod $method): void;
+
+    /**
+     * Every method row of a customer, pending ones and soft-deleted ones included (account anonymisation).
+     *
+     * @return Collection<int, PaymentMethod>
+     */
+    public function allForUser(int $userId): Collection;
+
+    /**
+     * Removes the row for good (the token is gone with it).
+     */
+    public function forceDelete(PaymentMethod $method): void;
 }

@@ -9,7 +9,11 @@ use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
 use App\Models\CustomerMessage;
 use App\Models\SavedPlace;
+use App\Models\Payment;
+use App\Models\PaymentMethod;
 use App\Models\User;
+use App\Repositories\Contracts\Payments\PaymentMethodRepositoryInterface;
+use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
 use App\Models\UserConsent;
 use App\Models\UserDevice;
 use App\Repositories\Contracts\Booking\BookingReportRepositoryInterface;
@@ -41,6 +45,8 @@ final class PersonalDataExporter
         private readonly RatingRepositoryInterface $ratings,
         private readonly BookingReportRepositoryInterface $reports,
         private readonly BookingStatusEventRepositoryInterface $bookingEvents,
+        private readonly PaymentMethodRepositoryInterface $paymentMethods,
+        private readonly PaymentRepositoryInterface $payments,
     ) {}
 
     /**
@@ -106,7 +112,25 @@ final class PersonalDataExporter
                 'read_at' => $message->read_at?->toIso8601String(),
             ])->all(),
             'bookings' => $this->bookings->exportForCustomer($customer->id)->map(fn (Booking $booking): array => $this->booking($booking))->all(),
-            'sections_pending' => ['payments', 'coupon_usage', 'support_tickets', 'ratings'],
+            // Display data only: brand and last four digits. The gateway token is never exported.
+            'payment_methods' => $this->paymentMethods->activeForUser($customer->id)->map(static fn (PaymentMethod $method): array => [
+                'type' => $method->type->value,
+                'brand' => $method->brand,
+                'last4' => $method->last4,
+                'saved_at' => $method->created_at->toIso8601String(),
+            ])->all(),
+            'payments' => $this->payments->forCustomer($customer->id)->map(static fn (Payment $payment): array => [
+                'id' => $payment->uuid,
+                'booking' => $payment->booking->code,
+                'kind' => $payment->kind->value,
+                'method' => $payment->method_type->value,
+                'status' => $payment->status->value,
+                'amount_minor' => $payment->amount_minor,
+                'refunded_minor' => $payment->refunded_minor,
+                'currency' => $payment->currency,
+                'created_at' => $payment->created_at->toIso8601String(),
+            ])->all(),
+            'sections_pending' => ['coupon_usage', 'support_tickets', 'ratings'],
         ];
     }
 

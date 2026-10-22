@@ -13,7 +13,7 @@
 | Maps: geocode, reverse, search, route/ETA | `MapsProvider` (`App\Integrations\Maps`) | P1.5 | `fake` (offline, deterministic; refused outside local/testing) | `osrm_nominatim` (Nominatim + OSRM, configurable base URLs, 1 req/s spacing, identifying User-Agent) or `google` (Geocoding + Places New Text Search + Routes API v2). Both implemented from vendor docs and **tested only against faked HTTP** (no credentials/network here): verify on staging before go-live. Results are cached (`CachingMapsProvider`, TTLs in `config/maps.php`), failures never cached | `MAPS_DRIVER` (`osrm_nominatim`/`google`/`fake`), `MAPS_API_KEY` + `MAPS_GOOGLE_REGION` (google), `MAPS_NOMINATIM_URL`, `MAPS_OSRM_URL`, `MAPS_USER_AGENT`, `MAPS_CONTACT_EMAIL`, `MAPS_NOMINATIM_MIN_INTERVAL_MS`, `MAPS_COUNTRY_CODES`, `MAPS_TIMEOUT_SECONDS`, `MAPS_CACHE_*_TTL`; Flutter `MAP_TILE_URL`, `MAP_ATTRIBUTION` | unset driver = not configured: endpoints answer `503 maps_unavailable`, never fake success. Public OSM/OSRM servers are for development only (usage policies); production needs self-hosted instances or Google |
 | Realtime | Laravel Reverb 1.12 (framework broadcaster) | P0.2 (installed) / P2.2 (channels + events) | Reverb on `localhost:8080` (`php artisan reverb:start`) | Reverb server behind TLS | `BROADCAST_CONNECTION`, `REVERB_APP_ID`, `REVERB_APP_KEY`, `REVERB_APP_SECRET`, `REVERB_HOST`, `REVERB_PORT`, `REVERB_SCHEME`, `REVERB_SERVER_HOST`, `REVERB_SERVER_PORT`, `REVERB_SCALING_ENABLED`, `VITE_REVERB_*` | configured locally (`BROADCAST_CONNECTION=reverb`); tests use `null` (the channel tests switch to the Reverb driver for real signing). Channels, authorization and the P2.2 events exist (ADR-87); the driver app connects to `private-provider.{uuid}` |
 | Provider geo index | `ProviderGeoIndex` (`App\Services\Location\Index`) | P2.2 | `database` (`PROVIDER_GEO_INDEX=database`: MySQL spatial, tests and local without Redis) | `redis` (Redis 7 `GEOADD` / `GEOSEARCH` per city + a TTL hash per provider; needs the phpredis client) | `PROVIDER_GEO_INDEX` (`redis`/`database`), `REDIS_*`, `REDIS_PREFIX`; `LOCATION_INTERVAL_IDLE` / `_TO_PICKUP` / `_ACTIVE` (seconds), `LOCATION_MAX_BATCH`, `LOCATION_MAX_SAMPLE_AGE`, `LOCATION_CLOCK_SKEW`, `LOCATION_CITY_RECHECK_METERS`, `LOCATION_RETENTION_DAYS`, `LOCATION_BOOKING_RETENTION_DAYS` | tested against a real local Redis (database 15) and the DB twin with the same assertions; skipped automatically when no Redis answers |
-| Payments (card / wallet) | `PaymentGateway` | P3.2 | `fake` (sandbox-style, local/testing only) | TBD (market/merchant eligibility) | `PAYMENT_DRIVER`, `PAYMENT_API_KEY`, `PAYMENT_WEBHOOK_SECRET`, `PAYMENT_MERCHANT_ID` | not configured yet |
+| Payments (card / wallet) | `PaymentGateway` (`App\Integrations\Payments`) | P3.2 | `sandbox` (local/testing only, refused at boot elsewhere: simulates async signed webhooks, never marks paid synchronously) | `paymob` (Paymob Accept, Egypt; implemented from the vendor documentation, **not tested against the live service**: see "Payments (P3.2)" below) | `PAYMENT_DRIVER`, `PAYMENT_RETURN_URL`, `PAYMOB_*`, `PAYMENT_SANDBOX_*` | not configured by default: online methods stay hidden, cash works |
 | Push (FCM / APNs) | `PushNotifier` | P3.6 | `log` | Firebase Cloud Messaging (APNs via FCM) | `PUSH_DRIVER`, `FIREBASE_PROJECT_ID`, `FIREBASE_CREDENTIALS` (path to service-account JSON outside the repo) | not configured yet |
 | Email | Laravel Mail | P1.1 (admin invitations / password reset), P3.6 (platform) | `log` mailer | TBD (SMTP / SES / Postmark) | `MAIL_*` (already in `.env.example`) | `MAIL_MAILER=log`; production needs a real mailer before admins can be invited |
 | Admin TOTP MFA | library only (`pragmarx/google2fa`, `bacon/bacon-qr-code` SVG QR, no external service) | P1.1 | same | same | `ADMIN_MFA_ISSUER`; `ADMIN_MFA_REQUIRED_ROLES`, `ADMIN_LOGIN_LOCKOUT_SECONDS`, `RATE_LIMIT_*` are only defaults of the typed settings (P1.2, ADR-55) | configured |
@@ -22,6 +22,30 @@
 | File scanning | `FileScanner` (`App\Integrations\Files`) | P2.1 | `noop` (stores `skipped`, never `clean`; refused outside local/testing) | `clamav` (clamd INSTREAM over TCP, implemented from the clamd documentation, reply parsing unit-tested, **not tested against a live clamd**: verify on staging). No driver configured = files are stored `not_scanned` and the review screen says so; an unreachable engine refuses the upload (`503 file_scanner_unavailable`) | `FILE_SCANNER_DRIVER` (`noop`/`clamav`), `CLAMAV_HOST`, `CLAMAV_PORT`, `CLAMAV_TIMEOUT_SECONDS` | noop in local/testing; production needs ClamAV |
 | Admin map tiles (Leaflet) | none (browser fetches tiles) | P0.3 | OpenStreetMap tiles (dev only; respect OSM tile policy) | TBD tile provider or self-hosted tiles | `ADMIN_MAP_TILE_URL`, `ADMIN_MAP_ATTRIBUTION`, `ADMIN_MAP_DEFAULT_LAT/LNG/ZOOM` | configured (OSM default) |
 | Crash reporting / analytics | — | P6.4 | none | TBD | — | not configured yet |
+
+## Payments (P3.2)
+
+`PAYMENT_DRIVER` selects the one active gateway: `paymob` (production) or `sandbox` (local/testing; the application refuses to boot with it anywhere else). Empty = not configured: card/wallet payments, saved methods and tips are unavailable and the apps hide them; cash keeps working. `BOOKING_PAYMENT_METHODS` still lists the base methods (default `cash`); `card` and `mobile_wallet` become selectable automatically once a gateway is configured.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `PAYMENT_DRIVER` | empty | `paymob` or `sandbox` |
+| `PAYMENT_RETURN_URL` | empty | Where the gateway sends the customer after the hosted page. The apps never treat the return as proof of payment |
+| `PAYMENT_WEBHOOK_TOLERANCE_SECONDS` | 300 | Replay window for gateways that sign a timestamp (the sandbox does) |
+| `PAYMENT_RECONCILE_WINDOW_HOURS` / `PAYMENT_RECONCILE_GRACE_MINUTES` | 48 / 10 | Look-back of `payments:reconcile` and the age before a payment is compared |
+| `PAYMENT_SANDBOX_SECRET` | derived from `APP_KEY` | Signing secret of the sandbox webhooks |
+| `PAYMENT_SANDBOX_DELAY_SECONDS` | 2 | Delay before the sandbox's webhook job runs (needs a queue worker; `critical` queue) |
+| `PAYMENT_SANDBOX_OUTCOME` / `PAYMENT_SANDBOX_REFUND_OUTCOME` | `succeed` | `succeed`, `fail`, `requires_action` (then succeeds) or `silent` (no webhook: exercises timeouts and reconciliation); refunds: `succeed`, `fail`, `silent` |
+| `PAYMOB_BASE_URL` | `https://accept.paymob.com` | API host |
+| `PAYMOB_API_KEY` | empty | Account API key (auth token for transaction inquiries) |
+| `PAYMOB_SECRET_KEY` / `PAYMOB_PUBLIC_KEY` | empty | Intention API keys (create payment, refund / checkout page) |
+| `PAYMOB_HMAC_SECRET` | empty | Verifies callbacks (HMAC-SHA512) |
+| `PAYMOB_CARD_INTEGRATION_ID` / `PAYMOB_WALLET_INTEGRATION_ID` | empty | Integration (payment method) ids created in the Paymob dashboard |
+| `PAYMOB_NOTIFICATION_URL` | empty | Public HTTPS URL of `POST /api/v1/payment-gateways/paymob/webhook`, also registered as the transaction processed callback in the dashboard |
+
+**Paymob merchant requirements (go-live checklist).** A registered Egyptian merchant account with the card and mobile-wallet integrations activated (wallet payments need Paymob's wallet integration and, depending on the contract, the customer's wallet number), the production API/secret/public keys and HMAC secret, the notification URL registered for both the transaction and the card-token callbacks, a refund permission on the account, and a settlement report access for the finance team. Assumptions that must be verified on a Paymob test account before going live (nothing here was run against Paymob): the unified checkout (`/v1/intention/`) request and response fields, the `card_tokens` parameter for saved cards, the callback field order of the HMAC (`amount_cents ... success`, documented in the driver), the transaction inquiry by `merchant_order_id`, the refund endpoint and its asynchronous confirmation callback, and that the callback `order.merchant_order_id` echoes our payment uuid (`special_reference`). The driver treats Paymob as having no signed timestamp: replay protection is the unique event id plus a transaction inquiry that must agree before a payment is marked paid.
+
+Other facts: the sandbox is the reference for the neutral contract (`App\Integrations\Payments\Contracts\PaymentGateway`); a new gateway = a driver class plus an entry in `IntegrationServiceProvider`. Webhooks of any gateway other than the configured one are refused (404). Secrets are only read from the environment and are never logged, stored or returned.
 
 ## Flutter build-time configuration (P0.4)
 
@@ -46,7 +70,7 @@ expired search are a log-only hook (`BookingNotifier`, nothing is sent) until th
 
 - [ ] SMS Misr account + approved sender token for the launch market (`SMSMISR_*`); run one live OTP end to end before go-live
 - [ ] Maps API key with geocoding/directions enabled (and tile provider for flutter_map)
-- [ ] Payment gateway merchant account, API keys, webhook secret, sandbox for staging
+- [ ] Payment gateway merchant account (Paymob: see "Payments (P3.2)"): API/secret/public keys, HMAC secret, integration ids, notification URL; run a live card payment, a wallet payment, a refund and a replayed webhook on staging before go-live
 - [ ] Firebase project, service-account JSON (stored outside the repo), APNs key uploaded to Firebase
 - [ ] S3-compatible bucket with server-side encryption for the private disk
 - [ ] Mail provider credentials and SPF/DKIM for the sending domain

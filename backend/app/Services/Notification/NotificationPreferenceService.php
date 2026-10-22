@@ -7,6 +7,7 @@ use App\Enums\Notification\NotificationCategory;
 use App\Enums\Notification\NotificationChannel;
 use App\Exceptions\BusinessRuleViolation;
 use App\Models\User;
+use App\Repositories\Contracts\Identity\CustomerProfileRepositoryInterface;
 use App\Repositories\Contracts\Notification\NotificationPreferenceRepositoryInterface;
 use Illuminate\Database\DatabaseManager;
 
@@ -19,6 +20,7 @@ final class NotificationPreferenceService
 {
     public function __construct(
         private readonly NotificationPreferenceRepositoryInterface $preferences,
+        private readonly CustomerProfileRepositoryInterface $customerProfiles,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -90,8 +92,33 @@ final class NotificationPreferenceService
         $this->db->transaction(function () use ($user, $updates): void {
             foreach ($updates as $update) {
                 $this->preferences->upsert($user, $update->category, $update->channel, $update->enabled);
+
+                // The marketing push switch and the customer's marketing consent are one choice (consent screen, profile, settings).
+                if ($update->category === NotificationCategory::Marketing && $update->channel === NotificationChannel::Push) {
+                    $this->mirrorMarketingToProfile($user, $update->enabled);
+                }
             }
         });
+    }
+
+    /**
+     * The customer's marketing consent (consent screen or profile) switches the marketing push preference accordingly, so a
+     * campaign reaches exactly the people who said yes. Other channels keep their own saved choice.
+     */
+    public function syncMarketingConsent(User $user, bool $optIn): void
+    {
+        $this->preferences->upsert($user, NotificationCategory::Marketing, NotificationChannel::Push, $optIn);
+    }
+
+    private function mirrorMarketingToProfile(User $user, bool $optIn): void
+    {
+        $profile = $this->customerProfiles->firstOrCreateFor($user);
+
+        if ($profile->marketing_opt_in === $optIn) {
+            return;
+        }
+
+        $this->customerProfiles->update($profile, ['marketing_opt_in' => $optIn, 'marketing_opt_in_at' => $optIn ? now() : null]);
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Exceptions\BusinessRuleViolation;
 use App\Models\PolicyVersion;
 use App\Models\User;
 use App\Repositories\Contracts\Identity\CustomerProfileRepositoryInterface;
+use App\Services\Notification\NotificationPreferenceService;
 use App\Repositories\Contracts\Identity\UserConsentRepositoryInterface;
 use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,7 @@ final class ConsentService
         private readonly PolicyVersionRepositoryInterface $policies,
         private readonly UserConsentRepositoryInterface $consents,
         private readonly CustomerProfileRepositoryInterface $customerProfiles,
+        private readonly NotificationPreferenceService $notificationPreferences,
     ) {}
 
     public function status(User $user, ClientApp $app): ConsentStatus
@@ -80,13 +82,14 @@ final class ConsentService
     {
         $profile = $this->customerProfiles->firstOrCreateFor($user);
 
-        if ($profile->marketing_opt_in === $optIn) {
-            return;
+        if ($profile->marketing_opt_in !== $optIn) {
+            $this->customerProfiles->update($profile, [
+                'marketing_opt_in' => $optIn,
+                'marketing_opt_in_at' => $optIn ? now() : null,
+            ]);
         }
 
-        $this->customerProfiles->update($profile, [
-            'marketing_opt_in' => $optIn,
-            'marketing_opt_in_at' => $optIn ? now() : null,
-        ]);
+        // The consent screen's marketing choice is also the marketing push preference (P3.7, ADR-137).
+        $this->notificationPreferences->syncMarketingConsent($user, $optIn);
     }
 }

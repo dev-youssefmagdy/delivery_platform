@@ -9,6 +9,7 @@ use App\Exceptions\BusinessRuleViolation;
 use App\Models\User;
 use App\Repositories\Contracts\Identity\CustomerProfileRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserRepositoryInterface;
+use App\Services\Notification\NotificationPreferenceService;
 use App\Support\Media\ImageSanitizer;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +29,7 @@ final class ProfileService
         private readonly ConsentService $consents,
         private readonly AccountDeletionService $deletions,
         private readonly ImageSanitizer $images,
+        private readonly NotificationPreferenceService $notificationPreferences,
     ) {}
 
     public function me(User $user, ClientApp $app): MeData
@@ -75,6 +77,10 @@ final class ProfileService
                 }
 
                 $this->customerProfiles->update($profile, $attributes);
+
+                if (array_key_exists('marketing_opt_in', $attributes)) {
+                    $this->notificationPreferences->syncMarketingConsent($user, (bool) $attributes['marketing_opt_in']);
+                }
             }
         });
 

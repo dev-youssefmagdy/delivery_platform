@@ -2016,4 +2016,542 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supportAppealButton => 'الاعتراض على الرسوم';
+
+  @override
+  String get ernTab => 'الأرباح';
+
+  @override
+  String get ernDay => 'يوم';
+
+  @override
+  String get ernWeek => 'أسبوع';
+
+  @override
+  String get ernMonth => 'شهر';
+
+  @override
+  String get ernEarned => 'ما ربحته';
+
+  @override
+  String ernJobs(int count) {
+    return '$count رحلة';
+  }
+
+  @override
+  String get ernGross => 'الأجرة';
+
+  @override
+  String get ernCommission => 'عمولة المنصة';
+
+  @override
+  String get ernProviderDiscount => 'خصم تحملته';
+
+  @override
+  String get ernPlatformDiscount => 'خصم تحملته المنصة';
+
+  @override
+  String get ernTips => 'الإكراميات';
+
+  @override
+  String get ernNet => 'الصافي';
+
+  @override
+  String get ernCash => 'النقد المحصّل';
+
+  @override
+  String get ernDaily => 'الأرباح اليومية';
+
+  @override
+  String get ernByCategory => 'حسب الخدمة';
+
+  @override
+  String get ernNoJobs => 'لا توجد رحلات مكتملة في هذه الفترة.';
+
+  @override
+  String get ernWalletBalance => 'رصيد المحفظة';
+
+  @override
+  String get ernWalletReserved => 'محجوز للسحب';
+
+  @override
+  String get ernWalletAvailable => 'المتاح للسحب';
+
+  @override
+  String get ernBreakdownLink => 'الأرباح لكل رحلة';
+
+  @override
+  String get ernOpenJob => 'فتح الرحلة';
+
+  @override
+  String get walLedgerTitle => 'سجل المحفظة';
+
+  @override
+  String get walLedgerEmpty => 'لا توجد حركات في المحفظة بعد.';
+
+  @override
+  String get walLoadMore => 'عرض المزيد';
+
+  @override
+  String walBalanceAfter(String amount) {
+    return 'الرصيد: $amount';
+  }
+
+  @override
+  String cashDebtTitle(String amount) {
+    return 'عليك $amount عمولة نقدية';
+  }
+
+  @override
+  String cashDebtWarning(String limit) {
+    return 'حدّك $limit. عند تجاوزه تتوقف عن استلام الطلبات حتى تسدد.';
+  }
+
+  @override
+  String cashDebtBlocked(String limit) {
+    return 'تجاوزت الحد $limit، لذلك لن تصلك طلبات جديدة حتى تسدد.';
+  }
+
+  @override
+  String get cashDebtHowTo => 'سدد العمولة النقدية مع فريق المالية.';
+
+  @override
+  String get cashDebtContact => 'تواصل مع الدعم';
+
+  @override
+  String get cashCollectTitle => 'أكّد استلام النقد';
+
+  @override
+  String cashCollectBody(String amount) {
+    return 'أكّد أنك استلمت $amount نقداً من العميل.';
+  }
+
+  @override
+  String get cashCollectBodyNoAmount => 'أكّد أنك استلمت النقد من العميل.';
+
+  @override
+  String get cashConfirm => 'استلمت النقد';
+
+  @override
+  String get cashConfirmedTitle => 'تم تأكيد النقد';
+
+  @override
+  String get cashConfirmedBody => 'شكراً لك. تمت تسوية الرحلة.';
+
+  @override
+  String get cashErrNotCollectable => 'لا يمكن تأكيد نقد هذه الرحلة الآن.';
+
+  @override
+  String get poTitle => 'السحوبات';
+
+  @override
+  String get poAvailable => 'المتاح للسحب';
+
+  @override
+  String poReservedNote(String amount) {
+    return '$amount محجوز لسحوبات قيد التنفيذ';
+  }
+
+  @override
+  String poLimits(String min, String max) {
+    return 'الحد الأدنى $min والأقصى $max لكل سحب';
+  }
+
+  @override
+  String get poRequest => 'طلب سحب';
+
+  @override
+  String get poHistory => 'السجل';
+
+  @override
+  String get poEmptyTitle => 'لا توجد سحوبات بعد';
+
+  @override
+  String get poEmptyBody => 'ستظهر هنا طلبات السحب وحالتها.';
+
+  @override
+  String poAmountLabel(String currency) {
+    return 'المبلغ ($currency)';
+  }
+
+  @override
+  String get poAll => 'الكل';
+
+  @override
+  String get poMethod => 'وسيلة السحب';
+
+  @override
+  String get poNoMethods => 'أضف وسيلة سحب أولاً.';
+
+  @override
+  String get poNoVerifiedMethods =>
+      'وسائل السحب لديك بانتظار تحقق فريق المالية.';
+
+  @override
+  String get poFeeNote =>
+      'يُحجز المبلغ في محفظتك الآن. الرسوم والموافقة يحددها فريق المالية.';
+
+  @override
+  String get poSubmit => 'إرسال الطلب';
+
+  @override
+  String get poNoBalance => 'رصيدك غير متاح. حاول مجدداً.';
+
+  @override
+  String get poErrAmountInvalid => 'أدخل مبلغاً صحيحاً.';
+
+  @override
+  String poErrBelowMinAmount(String min) {
+    return 'الحد الأدنى للسحب $min.';
+  }
+
+  @override
+  String poErrAboveMaxAmount(String max) {
+    return 'الحد الأقصى للسحب $max.';
+  }
+
+  @override
+  String get poErrChooseMethod => 'اختر وسيلة سحب.';
+
+  @override
+  String get poErrBelowMin => 'المبلغ أقل من الحد الأدنى للسحب.';
+
+  @override
+  String get poErrAboveMax => 'المبلغ أكبر من الحد الأقصى للسحب.';
+
+  @override
+  String get poErrInsufficient => 'المبلغ أكبر من رصيدك المتاح.';
+
+  @override
+  String get poErrNotVerified => 'وسيلة السحب هذه لم يتم التحقق منها بعد.';
+
+  @override
+  String get poErrNotApproved => 'لا يمكن لحسابك طلب سحب الآن.';
+
+  @override
+  String get poErrMethodInUse => 'هذه الوسيلة مستخدمة في سحب قيد التنفيذ.';
+
+  @override
+  String get poErrNotCancellable => 'لم يعد بالإمكان إلغاء هذا السحب.';
+
+  @override
+  String get poErrKeyReused => 'تغيّر شيء في هذا الطلب. ابدأه من جديد.';
+
+  @override
+  String get poDetailTitle => 'السحب';
+
+  @override
+  String get poAmount => 'المبلغ';
+
+  @override
+  String get poFee => 'الرسوم';
+
+  @override
+  String get poNet => 'ما ستستلمه';
+
+  @override
+  String get poRequestedAt => 'تاريخ الطلب';
+
+  @override
+  String get poPaidAt => 'تاريخ الدفع';
+
+  @override
+  String get poReference => 'مرجع التحويل';
+
+  @override
+  String get poReason => 'السبب';
+
+  @override
+  String get poMoneyBack => 'عاد المبلغ إلى محفظتك.';
+
+  @override
+  String get poCancel => 'إلغاء الطلب';
+
+  @override
+  String get poCancelTitle => 'إلغاء هذا السحب؟';
+
+  @override
+  String get poCancelBody => 'يعود المبلغ إلى محفظتك.';
+
+  @override
+  String get poCancelConfirm => 'إلغاء السحب';
+
+  @override
+  String get poCancelled => 'تم إلغاء السحب.';
+
+  @override
+  String get poAskSupport => 'اسأل الدعم عن هذا السحب';
+
+  @override
+  String get poStatusRequested => 'تم الطلب';
+
+  @override
+  String get poStatusReview => 'قيد المراجعة';
+
+  @override
+  String get poStatusApproved => 'تمت الموافقة';
+
+  @override
+  String get poStatusProcessing => 'قيد التحويل';
+
+  @override
+  String get poStatusPaid => 'تم الدفع';
+
+  @override
+  String get poStatusFailed => 'فشل';
+
+  @override
+  String get poStatusRejected => 'مرفوض';
+
+  @override
+  String get poStatusCancelled => 'ملغي';
+
+  @override
+  String get poStatusReversed => 'مُرتجع';
+
+  @override
+  String get poStatusUnknown => 'أخرى';
+
+  @override
+  String get poExplainReview => 'يراجع فريق المالية طلبك.';
+
+  @override
+  String get poExplainApproved => 'تمت الموافقة. سيبدأ التحويل قريباً.';
+
+  @override
+  String get poExplainProcessing => 'التحويل في الطريق.';
+
+  @override
+  String get poExplainPaid => 'تم إرسال المال إلى وسيلة السحب.';
+
+  @override
+  String get poExplainRejected => 'تم رفض الطلب.';
+
+  @override
+  String get poExplainFailed => 'فشل التحويل.';
+
+  @override
+  String get poExplainCancelled => 'ألغيت هذا الطلب.';
+
+  @override
+  String get poExplainReversed => 'أعاد البنك التحويل.';
+
+  @override
+  String get pomTitle => 'وسائل السحب';
+
+  @override
+  String get pomManage => 'إدارة وسائل السحب';
+
+  @override
+  String get pomAdd => 'إضافة وسيلة';
+
+  @override
+  String get pomEdit => 'تعديل';
+
+  @override
+  String get pomEditNote =>
+      'حفاظاً على أمنك لا تُعرض التفاصيل المحفوظة. أدخلها مجدداً لتعديل الوسيلة، وستحتاج إلى تحقق جديد.';
+
+  @override
+  String get pomEmptyTitle => 'لا توجد وسائل سحب';
+
+  @override
+  String get pomEmptyBody =>
+      'أضف حساباً بنكياً أو محفظة هاتف لاستلام السحوبات.';
+
+  @override
+  String get pomVerified => 'تم التحقق';
+
+  @override
+  String get pomUnverified => 'غير موثّقة';
+
+  @override
+  String get pomUnverifiedNote =>
+      'يتحقق فريق المالية من الوسيلة قبل استخدامها.';
+
+  @override
+  String get pomDefault => 'الوسيلة الافتراضية';
+
+  @override
+  String get pomMakeDefault => 'اجعلها افتراضية';
+
+  @override
+  String get pomDefaultSet => 'تم تحديث الوسيلة الافتراضية.';
+
+  @override
+  String get pomDelete => 'حذف';
+
+  @override
+  String get pomDeleteTitle => 'حذف هذه الوسيلة؟';
+
+  @override
+  String get pomDeleteBody => 'يمكنك إضافتها مجدداً لاحقاً.';
+
+  @override
+  String get pomDeleted => 'تم حذف الوسيلة.';
+
+  @override
+  String get pomBank => 'حساب بنكي';
+
+  @override
+  String get pomWallet => 'محفظة هاتف';
+
+  @override
+  String get pomLabel => 'اسم لهذه الوسيلة';
+
+  @override
+  String get pomHolder => 'اسم صاحب الحساب';
+
+  @override
+  String get pomBankName => 'اسم البنك';
+
+  @override
+  String get pomAccount => 'رقم الحساب أو الآيبان';
+
+  @override
+  String get pomAccountInvalid => 'أدخل رقم حساب صحيحاً.';
+
+  @override
+  String get pomWalletNumber => 'رقم هاتف المحفظة';
+
+  @override
+  String get pomWalletInvalid => 'أدخل رقم هاتف صحيحاً.';
+
+  @override
+  String get pomVerifyNote =>
+      'تُخزَّن التفاصيل مشفّرة ويتحقق منها فريق المالية.';
+
+  @override
+  String get pomSave => 'حفظ';
+
+  @override
+  String get pomSaved => 'تم حفظ وسيلة السحب.';
+
+  @override
+  String get fieldRequired => 'هذا الحقل مطلوب.';
+
+  @override
+  String get rcpTitle => 'الإيصال';
+
+  @override
+  String get rcpViewFull => 'الإيصال الكامل';
+
+  @override
+  String rcpNumber(String number) {
+    return 'إيصال $number';
+  }
+
+  @override
+  String get rcpCustomer => 'العميل';
+
+  @override
+  String get jbReceiptCode => 'رمز الحجز';
+
+  @override
+  String get rcpAgreed => 'الأجرة المتفق عليها';
+
+  @override
+  String rcpAdjustment(String label) {
+    return 'إضافة: $label';
+  }
+
+  @override
+  String get rcpSubtotal => 'إجمالي الأجرة';
+
+  @override
+  String get rcpTax => 'الضريبة';
+
+  @override
+  String get rcpOpenPrintable => 'فتح الإيصال للطباعة';
+
+  @override
+  String get rcpErrNotAvailable => 'يتوفر الإيصال بعد اكتمال الرحلة.';
+
+  @override
+  String get adjApprove => 'موافقة';
+
+  @override
+  String get adjReject => 'رفض';
+
+  @override
+  String get adjWithdraw => 'سحب الطلب';
+
+  @override
+  String adjExpires(String time) {
+    return 'أجب قبل $time';
+  }
+
+  @override
+  String adjNewTotal(String amount) {
+    return 'الإجمالي الجديد: $amount';
+  }
+
+  @override
+  String get adjNote => 'ملاحظة';
+
+  @override
+  String get dadjTitle => 'تغييرات الأجرة';
+
+  @override
+  String get dadjRequest => 'طلب تغيير الأجرة';
+
+  @override
+  String get dadjRequestedByYou => 'طلبته أنت';
+
+  @override
+  String get dadjRequestedByCustomer => 'طلبه العميل';
+
+  @override
+  String get dadjTypeExtraStop => 'توقف إضافي';
+
+  @override
+  String get dadjTypeWaiting => 'وقت انتظار';
+
+  @override
+  String get dadjTypeToll => 'رسوم طريق أو انتظار';
+
+  @override
+  String get dadjTypeScope => 'تغيير في نطاق الخدمة';
+
+  @override
+  String get dadjAmount => 'المبلغ';
+
+  @override
+  String get dadjWaitingHelp => 'اتركه فارغاً لاستخدام سعر الانتظار.';
+
+  @override
+  String get dadjReason => 'السبب';
+
+  @override
+  String get dadjCustomerApproves => 'لا تتغير الأجرة إلا إذا وافق العميل.';
+
+  @override
+  String get dadjSend => 'إرسال الطلب';
+
+  @override
+  String get dadjSent => 'تم إرسال الطلب إلى العميل.';
+
+  @override
+  String get dadjErrNotNow => 'لا يمكن طلب تغيير الأجرة الآن.';
+
+  @override
+  String get dadjErrOpenLimit => 'لديك الحد الأقصى من الطلبات المفتوحة.';
+
+  @override
+  String get dadjErrAmount => 'أدخل مبلغاً صحيحاً.';
+
+  @override
+  String get dadjErrReason => 'اكتب السبب.';
+
+  @override
+  String get dadjErrEvidence =>
+      'هذا النوع يحتاج إثباتاً. أضف التفاصيل في السبب.';
+
+  @override
+  String get dadjErrType => 'هذا النوع من التغيير غير مسموح لهذه الخدمة.';
+
+  @override
+  String get dadjErrNotPending => 'تمت الإجابة عن هذا الطلب أو انتهت مدته.';
+
+  @override
+  String get dadjErrCounterpart => 'يمكن للطرف الآخر فقط الإجابة عن هذا الطلب.';
 }

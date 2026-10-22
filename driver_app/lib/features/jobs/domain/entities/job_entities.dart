@@ -13,6 +13,9 @@ enum JobAction implements ApiEnum {
   report('report'),
   chat('chat'),
   appeal('appeal'),
+  confirmCashCollected('confirm_cash_collected'),
+  requestAdjustment('request_adjustment'),
+  viewReceipt('view_receipt'),
   unknown('');
 
   const JobAction(this.value);

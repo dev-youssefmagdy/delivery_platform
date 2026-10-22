@@ -981,5 +981,280 @@
   "supportOpenChatHistory": "سجل المحادثة",
   "supportHelp": "المساعدة والدعم",
   "supportHelpAboutTrip": "احصل على مساعدة بخصوص هذه الرحلة",
-  "supportAppealButton": "الاعتراض على الرسوم"
+  "supportAppealButton": "الاعتراض على الرسوم",
+  "ernTab": "الأرباح",
+  "ernDay": "يوم",
+  "ernWeek": "أسبوع",
+  "ernMonth": "شهر",
+  "ernEarned": "ما ربحته",
+  "ernJobs": "{count} رحلة",
+  "@ernJobs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ernGross": "الأجرة",
+  "ernCommission": "عمولة المنصة",
+  "ernProviderDiscount": "خصم تحملته",
+  "ernPlatformDiscount": "خصم تحملته المنصة",
+  "ernTips": "الإكراميات",
+  "ernNet": "الصافي",
+  "ernCash": "النقد المحصّل",
+  "ernDaily": "الأرباح اليومية",
+  "ernByCategory": "حسب الخدمة",
+  "ernNoJobs": "لا توجد رحلات مكتملة في هذه الفترة.",
+  "ernWalletBalance": "رصيد المحفظة",
+  "ernWalletReserved": "محجوز للسحب",
+  "ernWalletAvailable": "المتاح للسحب",
+  "ernBreakdownLink": "الأرباح لكل رحلة",
+  "ernOpenJob": "فتح الرحلة",
+  "walLedgerTitle": "سجل المحفظة",
+  "walLedgerEmpty": "لا توجد حركات في المحفظة بعد.",
+  "walLoadMore": "عرض المزيد",
+  "walBalanceAfter": "الرصيد: {amount}",
+  "@walBalanceAfter": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cashDebtTitle": "عليك {amount} عمولة نقدية",
+  "@cashDebtTitle": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cashDebtWarning": "حدّك {limit}. عند تجاوزه تتوقف عن استلام الطلبات حتى تسدد.",
+  "@cashDebtWarning": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashDebtBlocked": "تجاوزت الحد {limit}، لذلك لن تصلك طلبات جديدة حتى تسدد.",
+  "@cashDebtBlocked": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashDebtHowTo": "سدد العمولة النقدية مع فريق المالية.",
+  "cashDebtContact": "تواصل مع الدعم",
+  "cashCollectTitle": "أكّد استلام النقد",
+  "cashCollectBody": "أكّد أنك استلمت {amount} نقداً من العميل.",
+  "@cashCollectBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cashCollectBodyNoAmount": "أكّد أنك استلمت النقد من العميل.",
+  "cashConfirm": "استلمت النقد",
+  "cashConfirmedTitle": "تم تأكيد النقد",
+  "cashConfirmedBody": "شكراً لك. تمت تسوية الرحلة.",
+  "cashErrNotCollectable": "لا يمكن تأكيد نقد هذه الرحلة الآن.",
+  "poTitle": "السحوبات",
+  "poAvailable": "المتاح للسحب",
+  "poReservedNote": "{amount} محجوز لسحوبات قيد التنفيذ",
+  "@poReservedNote": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "poLimits": "الحد الأدنى {min} والأقصى {max} لكل سحب",
+  "@poLimits": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "poRequest": "طلب سحب",
+  "poHistory": "السجل",
+  "poEmptyTitle": "لا توجد سحوبات بعد",
+  "poEmptyBody": "ستظهر هنا طلبات السحب وحالتها.",
+  "poAmountLabel": "المبلغ ({currency})",
+  "@poAmountLabel": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "poAll": "الكل",
+  "poMethod": "وسيلة السحب",
+  "poNoMethods": "أضف وسيلة سحب أولاً.",
+  "poNoVerifiedMethods": "وسائل السحب لديك بانتظار تحقق فريق المالية.",
+  "poFeeNote": "يُحجز المبلغ في محفظتك الآن. الرسوم والموافقة يحددها فريق المالية.",
+  "poSubmit": "إرسال الطلب",
+  "poNoBalance": "رصيدك غير متاح. حاول مجدداً.",
+  "poErrAmountInvalid": "أدخل مبلغاً صحيحاً.",
+  "poErrBelowMinAmount": "الحد الأدنى للسحب {min}.",
+  "@poErrBelowMinAmount": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "poErrAboveMaxAmount": "الحد الأقصى للسحب {max}.",
+  "@poErrAboveMaxAmount": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "poErrChooseMethod": "اختر وسيلة سحب.",
+  "poErrBelowMin": "المبلغ أقل من الحد الأدنى للسحب.",
+  "poErrAboveMax": "المبلغ أكبر من الحد الأقصى للسحب.",
+  "poErrInsufficient": "المبلغ أكبر من رصيدك المتاح.",
+  "poErrNotVerified": "وسيلة السحب هذه لم يتم التحقق منها بعد.",
+  "poErrNotApproved": "لا يمكن لحسابك طلب سحب الآن.",
+  "poErrMethodInUse": "هذه الوسيلة مستخدمة في سحب قيد التنفيذ.",
+  "poErrNotCancellable": "لم يعد بالإمكان إلغاء هذا السحب.",
+  "poErrKeyReused": "تغيّر شيء في هذا الطلب. ابدأه من جديد.",
+  "poDetailTitle": "السحب",
+  "poAmount": "المبلغ",
+  "poFee": "الرسوم",
+  "poNet": "ما ستستلمه",
+  "poRequestedAt": "تاريخ الطلب",
+  "poPaidAt": "تاريخ الدفع",
+  "poReference": "مرجع التحويل",
+  "poReason": "السبب",
+  "poMoneyBack": "عاد المبلغ إلى محفظتك.",
+  "poCancel": "إلغاء الطلب",
+  "poCancelTitle": "إلغاء هذا السحب؟",
+  "poCancelBody": "يعود المبلغ إلى محفظتك.",
+  "poCancelConfirm": "إلغاء السحب",
+  "poCancelled": "تم إلغاء السحب.",
+  "poAskSupport": "اسأل الدعم عن هذا السحب",
+  "poStatusRequested": "تم الطلب",
+  "poStatusReview": "قيد المراجعة",
+  "poStatusApproved": "تمت الموافقة",
+  "poStatusProcessing": "قيد التحويل",
+  "poStatusPaid": "تم الدفع",
+  "poStatusFailed": "فشل",
+  "poStatusRejected": "مرفوض",
+  "poStatusCancelled": "ملغي",
+  "poStatusReversed": "مُرتجع",
+  "poStatusUnknown": "أخرى",
+  "poExplainReview": "يراجع فريق المالية طلبك.",
+  "poExplainApproved": "تمت الموافقة. سيبدأ التحويل قريباً.",
+  "poExplainProcessing": "التحويل في الطريق.",
+  "poExplainPaid": "تم إرسال المال إلى وسيلة السحب.",
+  "poExplainRejected": "تم رفض الطلب.",
+  "poExplainFailed": "فشل التحويل.",
+  "poExplainCancelled": "ألغيت هذا الطلب.",
+  "poExplainReversed": "أعاد البنك التحويل.",
+  "pomTitle": "وسائل السحب",
+  "pomManage": "إدارة وسائل السحب",
+  "pomAdd": "إضافة وسيلة",
+  "pomEdit": "تعديل",
+  "pomEditNote": "حفاظاً على أمنك لا تُعرض التفاصيل المحفوظة. أدخلها مجدداً لتعديل الوسيلة، وستحتاج إلى تحقق جديد.",
+  "pomEmptyTitle": "لا توجد وسائل سحب",
+  "pomEmptyBody": "أضف حساباً بنكياً أو محفظة هاتف لاستلام السحوبات.",
+  "pomVerified": "تم التحقق",
+  "pomUnverified": "غير موثّقة",
+  "pomUnverifiedNote": "يتحقق فريق المالية من الوسيلة قبل استخدامها.",
+  "pomDefault": "الوسيلة الافتراضية",
+  "pomMakeDefault": "اجعلها افتراضية",
+  "pomDefaultSet": "تم تحديث الوسيلة الافتراضية.",
+  "pomDelete": "حذف",
+  "pomDeleteTitle": "حذف هذه الوسيلة؟",
+  "pomDeleteBody": "يمكنك إضافتها مجدداً لاحقاً.",
+  "pomDeleted": "تم حذف الوسيلة.",
+  "pomBank": "حساب بنكي",
+  "pomWallet": "محفظة هاتف",
+  "pomLabel": "اسم لهذه الوسيلة",
+  "pomHolder": "اسم صاحب الحساب",
+  "pomBankName": "اسم البنك",
+  "pomAccount": "رقم الحساب أو الآيبان",
+  "pomAccountInvalid": "أدخل رقم حساب صحيحاً.",
+  "pomWalletNumber": "رقم هاتف المحفظة",
+  "pomWalletInvalid": "أدخل رقم هاتف صحيحاً.",
+  "pomVerifyNote": "تُخزَّن التفاصيل مشفّرة ويتحقق منها فريق المالية.",
+  "pomSave": "حفظ",
+  "pomSaved": "تم حفظ وسيلة السحب.",
+  "fieldRequired": "هذا الحقل مطلوب.",
+  "rcpTitle": "الإيصال",
+  "rcpViewFull": "الإيصال الكامل",
+  "rcpNumber": "إيصال {number}",
+  "@rcpNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpCustomer": "العميل",
+  "jbReceiptCode": "رمز الحجز",
+  "rcpAgreed": "الأجرة المتفق عليها",
+  "rcpAdjustment": "إضافة: {label}",
+  "@rcpAdjustment": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpSubtotal": "إجمالي الأجرة",
+  "rcpTax": "الضريبة",
+  "rcpOpenPrintable": "فتح الإيصال للطباعة",
+  "rcpErrNotAvailable": "يتوفر الإيصال بعد اكتمال الرحلة.",
+  "adjApprove": "موافقة",
+  "adjReject": "رفض",
+  "adjWithdraw": "سحب الطلب",
+  "adjExpires": "أجب قبل {time}",
+  "@adjExpires": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "adjNewTotal": "الإجمالي الجديد: {amount}",
+  "@adjNewTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "adjNote": "ملاحظة",
+  "dadjTitle": "تغييرات الأجرة",
+  "dadjRequest": "طلب تغيير الأجرة",
+  "dadjRequestedByYou": "طلبته أنت",
+  "dadjRequestedByCustomer": "طلبه العميل",
+  "dadjTypeExtraStop": "توقف إضافي",
+  "dadjTypeWaiting": "وقت انتظار",
+  "dadjTypeToll": "رسوم طريق أو انتظار",
+  "dadjTypeScope": "تغيير في نطاق الخدمة",
+  "dadjAmount": "المبلغ",
+  "dadjWaitingHelp": "اتركه فارغاً لاستخدام سعر الانتظار.",
+  "dadjReason": "السبب",
+  "dadjCustomerApproves": "لا تتغير الأجرة إلا إذا وافق العميل.",
+  "dadjSend": "إرسال الطلب",
+  "dadjSent": "تم إرسال الطلب إلى العميل.",
+  "dadjErrNotNow": "لا يمكن طلب تغيير الأجرة الآن.",
+  "dadjErrOpenLimit": "لديك الحد الأقصى من الطلبات المفتوحة.",
+  "dadjErrAmount": "أدخل مبلغاً صحيحاً.",
+  "dadjErrReason": "اكتب السبب.",
+  "dadjErrEvidence": "هذا النوع يحتاج إثباتاً. أضف التفاصيل في السبب.",
+  "dadjErrType": "هذا النوع من التغيير غير مسموح لهذه الخدمة.",
+  "dadjErrNotPending": "تمت الإجابة عن هذا الطلب أو انتهت مدته.",
+  "dadjErrCounterpart": "يمكن للطرف الآخر فقط الإجابة عن هذا الطلب."
 }

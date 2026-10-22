@@ -797,5 +797,280 @@
   "supportOpenChatHistory": "Chat history",
   "supportHelp": "Help and support",
   "supportHelpAboutTrip": "Get help with this trip",
-  "supportAppealButton": "Appeal the fee"
+  "supportAppealButton": "Appeal the fee",
+  "ernTab": "Earnings",
+  "ernDay": "Day",
+  "ernWeek": "Week",
+  "ernMonth": "Month",
+  "ernEarned": "You earned",
+  "ernJobs": "{count} jobs",
+  "@ernJobs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ernGross": "Fares",
+  "ernCommission": "Platform commission",
+  "ernProviderDiscount": "Discount you funded",
+  "ernPlatformDiscount": "Discount funded by the platform",
+  "ernTips": "Tips",
+  "ernNet": "Net",
+  "ernCash": "Cash collected",
+  "ernDaily": "Earnings per day",
+  "ernByCategory": "By service",
+  "ernNoJobs": "No completed jobs in this period.",
+  "ernWalletBalance": "Wallet balance",
+  "ernWalletReserved": "Reserved for payouts",
+  "ernWalletAvailable": "Available to withdraw",
+  "ernBreakdownLink": "Earnings per job",
+  "ernOpenJob": "Open job",
+  "walLedgerTitle": "Wallet ledger",
+  "walLedgerEmpty": "No wallet entries yet.",
+  "walLoadMore": "Load more",
+  "walBalanceAfter": "Balance: {amount}",
+  "@walBalanceAfter": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cashDebtTitle": "You owe {amount} in cash commission",
+  "@cashDebtTitle": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cashDebtWarning": "Your limit is {limit}. Above it you stop receiving requests until you settle.",
+  "@cashDebtWarning": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashDebtBlocked": "You are over the {limit} limit, so you do not receive new requests until you settle.",
+  "@cashDebtBlocked": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "cashDebtHowTo": "Settle the cash commission with our finance team.",
+  "cashDebtContact": "Contact support",
+  "cashCollectTitle": "Confirm the cash",
+  "cashCollectBody": "Confirm you collected {amount} in cash from the customer.",
+  "@cashCollectBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cashCollectBodyNoAmount": "Confirm you collected the cash from the customer.",
+  "cashConfirm": "I collected the cash",
+  "cashConfirmedTitle": "Cash confirmed",
+  "cashConfirmedBody": "Thank you. The job is settled.",
+  "cashErrNotCollectable": "The cash of this job cannot be confirmed now.",
+  "poTitle": "Payouts",
+  "poAvailable": "Available to withdraw",
+  "poReservedNote": "{amount} is reserved for open payouts",
+  "@poReservedNote": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "poLimits": "Minimum {min}, maximum {max} per payout",
+  "@poLimits": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "poRequest": "Request a payout",
+  "poHistory": "History",
+  "poEmptyTitle": "No payouts yet",
+  "poEmptyBody": "Your payout requests and their status appear here.",
+  "poAmountLabel": "Amount ({currency})",
+  "@poAmountLabel": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "poAll": "All",
+  "poMethod": "Payout method",
+  "poNoMethods": "Add a payout method first.",
+  "poNoVerifiedMethods": "Your payout methods are waiting for verification by our finance team.",
+  "poFeeNote": "The amount is set aside in your wallet now. The fee and approval are decided by our finance team.",
+  "poSubmit": "Send request",
+  "poNoBalance": "Your balance is not available. Try again.",
+  "poErrAmountInvalid": "Enter a valid amount.",
+  "poErrBelowMinAmount": "The minimum payout is {min}.",
+  "@poErrBelowMinAmount": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "poErrAboveMaxAmount": "The maximum payout is {max}.",
+  "@poErrAboveMaxAmount": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "poErrChooseMethod": "Choose a payout method.",
+  "poErrBelowMin": "The amount is below the minimum payout.",
+  "poErrAboveMax": "The amount is above the maximum payout.",
+  "poErrInsufficient": "The amount is more than your available balance.",
+  "poErrNotVerified": "This payout method is not verified yet.",
+  "poErrNotApproved": "Your account cannot request payouts now.",
+  "poErrMethodInUse": "This method is used by an open payout.",
+  "poErrNotCancellable": "This payout can no longer be cancelled.",
+  "poErrKeyReused": "Something changed in this request. Start it again.",
+  "poDetailTitle": "Payout",
+  "poAmount": "Amount",
+  "poFee": "Fee",
+  "poNet": "You receive",
+  "poRequestedAt": "Requested",
+  "poPaidAt": "Paid",
+  "poReference": "Transfer reference",
+  "poReason": "Reason",
+  "poMoneyBack": "The amount went back to your wallet.",
+  "poCancel": "Cancel request",
+  "poCancelTitle": "Cancel this payout?",
+  "poCancelBody": "The amount returns to your wallet.",
+  "poCancelConfirm": "Cancel payout",
+  "poCancelled": "Payout cancelled.",
+  "poAskSupport": "Ask support about this payout",
+  "poStatusRequested": "Requested",
+  "poStatusReview": "Under review",
+  "poStatusApproved": "Approved",
+  "poStatusProcessing": "Processing",
+  "poStatusPaid": "Paid",
+  "poStatusFailed": "Failed",
+  "poStatusRejected": "Rejected",
+  "poStatusCancelled": "Cancelled",
+  "poStatusReversed": "Reversed",
+  "poStatusUnknown": "Other",
+  "poExplainReview": "Our finance team is reviewing your request.",
+  "poExplainApproved": "Approved. The transfer will start soon.",
+  "poExplainProcessing": "The transfer is on its way.",
+  "poExplainPaid": "The money was sent to your payout method.",
+  "poExplainRejected": "The request was rejected.",
+  "poExplainFailed": "The transfer failed.",
+  "poExplainCancelled": "You cancelled this request.",
+  "poExplainReversed": "The bank returned the transfer.",
+  "pomTitle": "Payout methods",
+  "pomManage": "Manage payout methods",
+  "pomAdd": "Add a method",
+  "pomEdit": "Edit",
+  "pomEditNote": "For your security the saved details are not shown. Enter them again to change this method. It will need verification again.",
+  "pomEmptyTitle": "No payout methods",
+  "pomEmptyBody": "Add a bank account or mobile wallet to receive payouts.",
+  "pomVerified": "Verified",
+  "pomUnverified": "Not verified",
+  "pomUnverifiedNote": "Finance verifies a method before you can use it.",
+  "pomDefault": "Default method",
+  "pomMakeDefault": "Make default",
+  "pomDefaultSet": "Default method updated.",
+  "pomDelete": "Delete",
+  "pomDeleteTitle": "Delete this method?",
+  "pomDeleteBody": "You can add it again later.",
+  "pomDeleted": "Method deleted.",
+  "pomBank": "Bank account",
+  "pomWallet": "Mobile wallet",
+  "pomLabel": "Name for this method",
+  "pomHolder": "Account holder name",
+  "pomBankName": "Bank name",
+  "pomAccount": "Account number or IBAN",
+  "pomAccountInvalid": "Enter a valid account number.",
+  "pomWalletNumber": "Wallet phone number",
+  "pomWalletInvalid": "Enter a valid phone number.",
+  "pomVerifyNote": "Details are stored encrypted and checked by our finance team.",
+  "pomSave": "Save",
+  "pomSaved": "Payout method saved.",
+  "fieldRequired": "This field is required.",
+  "rcpTitle": "Receipt",
+  "rcpViewFull": "Full receipt",
+  "rcpNumber": "Receipt {number}",
+  "@rcpNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpCustomer": "Customer",
+  "jbReceiptCode": "Booking code",
+  "rcpAgreed": "Agreed fare",
+  "rcpAdjustment": "Added: {label}",
+  "@rcpAdjustment": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpSubtotal": "Fare total",
+  "rcpTax": "Tax",
+  "rcpOpenPrintable": "Open printable receipt",
+  "rcpErrNotAvailable": "The receipt is available after the trip is completed.",
+  "adjApprove": "Approve",
+  "adjReject": "Reject",
+  "adjWithdraw": "Withdraw",
+  "adjExpires": "Answer before {time}",
+  "@adjExpires": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "adjNewTotal": "New total: {amount}",
+  "@adjNewTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "adjNote": "Note",
+  "dadjTitle": "Fare changes",
+  "dadjRequest": "Request a fare change",
+  "dadjRequestedByYou": "Requested by you",
+  "dadjRequestedByCustomer": "Requested by the customer",
+  "dadjTypeExtraStop": "Extra stop",
+  "dadjTypeWaiting": "Waiting time",
+  "dadjTypeToll": "Toll or parking",
+  "dadjTypeScope": "Change of scope",
+  "dadjAmount": "Amount",
+  "dadjWaitingHelp": "Leave empty to use the waiting rate.",
+  "dadjReason": "Reason",
+  "dadjCustomerApproves": "The fare changes only if the customer approves.",
+  "dadjSend": "Send request",
+  "dadjSent": "Request sent to the customer.",
+  "dadjErrNotNow": "A fare change cannot be requested now.",
+  "dadjErrOpenLimit": "You already have the maximum number of open requests.",
+  "dadjErrAmount": "Enter a valid amount.",
+  "dadjErrReason": "Describe the reason.",
+  "dadjErrEvidence": "This type needs evidence. Add details in the reason.",
+  "dadjErrType": "This type of change is not allowed for this service.",
+  "dadjErrNotPending": "This request was already answered or has expired.",
+  "dadjErrCounterpart": "Only the other side can answer this request."
 }

@@ -4,6 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:platform_core/platform_core.dart';
 
 import '../features/auth/presentation/providers/auth_providers.dart';
+import '../features/earnings/presentation/screens/earning_lines_screen.dart';
+import '../features/earnings/presentation/screens/payout_detail_screen.dart';
+import '../features/earnings/presentation/screens/payout_method_form_screen.dart';
+import '../features/earnings/presentation/screens/payout_methods_screen.dart';
+import '../features/earnings/presentation/screens/payout_request_screen.dart';
+import '../features/earnings/presentation/screens/payouts_screen.dart';
+import '../features/earnings/presentation/screens/wallet_ledger_screen.dart';
+import '../features/earnings/presentation/screens/job_receipt_screen.dart';
 import '../features/jobs/presentation/screens/application_status_screen.dart';
 import '../features/jobs/presentation/screens/cancel_job_screen.dart';
 import '../features/jobs/presentation/screens/job_screen.dart';
@@ -49,6 +57,17 @@ abstract final class Routes {
   static const notificationSettings = '/notifications/settings';
   static const support = '/support';
   static const supportNew = '/support/new';
+  static const earningLines = '/earnings/lines';
+
+  /// The wallet ledger (also the target of wallet notifications).
+  static const walletLedger = '/wallet';
+  static const payouts = '/payouts';
+  static const payoutRequest = '/payouts/new';
+  static const payoutMethods = '/payout-methods';
+  static const payoutMethodNew = '/payout-methods/edit';
+  static String payout(String id) => '/payouts/$id';
+  static String jobReceipt(String id) => '/job/$id/receipt';
+  static String payoutSupport(String id) => '/support/new?payout=$id';
 
   /// A support request (also the target of reply notifications).
   static String supportTicket(String id) => '/support/ticket/$id';
@@ -84,6 +103,11 @@ bool _isJobPage(String location) =>
     location == Routes.applicationStatus ||
     location == Routes.notifications ||
     location == Routes.notificationSettings ||
+    location == Routes.earningLines ||
+    location == Routes.walletLedger ||
+    location == Routes.payouts ||
+    location.startsWith('${Routes.payouts}/') ||
+    location.startsWith(Routes.payoutMethods) ||
     location == Routes.job ||
     location.startsWith('${Routes.job}/') ||
     location == Routes.support ||
@@ -186,6 +210,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.applicationStatus,
         builder: (_, _) => const ApplicationStatusScreen(),
       ),
+      GoRoute(path: Routes.earningLines, builder: (_, _) => const EarningLinesScreen()),
+      GoRoute(path: Routes.walletLedger, builder: (_, _) => const WalletLedgerScreen()),
+      GoRoute(path: Routes.payouts, builder: (_, _) => const PayoutsScreen()),
+      GoRoute(path: Routes.payoutRequest, builder: (_, _) => const PayoutRequestScreen()),
+      GoRoute(path: '${Routes.payouts}/:id', builder: (_, state) => PayoutDetailScreen(payoutId: state.pathParameters['id']!)),
+      GoRoute(path: Routes.payoutMethods, builder: (_, _) => const PayoutMethodsScreen()),
+      GoRoute(path: Routes.payoutMethodNew, builder: (_, state) => PayoutMethodFormScreen(editing: state.extra as PayoutMethod?)),
       GoRoute(
         path: '${Routes.job}/:id',
         builder: (_, state) =>
@@ -205,6 +236,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'chat',
             builder: (_, state) =>
                 ChatScreen(bookingId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: 'receipt',
+            builder: (_, state) => JobReceiptScreen(bookingId: state.pathParameters['id']!),
           ),
           GoRoute(
             path: 'appeal',

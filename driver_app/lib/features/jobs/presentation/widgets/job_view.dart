@@ -8,6 +8,7 @@ import '../../../../app/router.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../domain/entities/job_entities.dart';
 import '../providers/job_providers.dart';
+import '../../../earnings/presentation/widgets/job_money_widgets.dart';
 import 'completion_summary.dart';
 import 'confirm_sheet.dart';
 import 'countdown.dart';
@@ -337,6 +338,8 @@ class _JobViewState extends ConsumerState<JobView> {
                   ),
                   child: Text(l10n.jbPassengers(job.passengers!)),
                 ),
+              JobAdjustmentsSection(job: job),
+              const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
                   if (job.can(JobAction.cancel))

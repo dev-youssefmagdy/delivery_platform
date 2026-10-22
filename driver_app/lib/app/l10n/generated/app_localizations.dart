@@ -3823,6 +3823,1008 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الاعتراض على الرسوم'**
   String get supportAppealButton;
+
+  /// No description provided for @ernTab.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأرباح'**
+  String get ernTab;
+
+  /// No description provided for @ernDay.
+  ///
+  /// In ar, this message translates to:
+  /// **'يوم'**
+  String get ernDay;
+
+  /// No description provided for @ernWeek.
+  ///
+  /// In ar, this message translates to:
+  /// **'أسبوع'**
+  String get ernWeek;
+
+  /// No description provided for @ernMonth.
+  ///
+  /// In ar, this message translates to:
+  /// **'شهر'**
+  String get ernMonth;
+
+  /// No description provided for @ernEarned.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما ربحته'**
+  String get ernEarned;
+
+  /// No description provided for @ernJobs.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} رحلة'**
+  String ernJobs(int count);
+
+  /// No description provided for @ernGross.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأجرة'**
+  String get ernGross;
+
+  /// No description provided for @ernCommission.
+  ///
+  /// In ar, this message translates to:
+  /// **'عمولة المنصة'**
+  String get ernCommission;
+
+  /// No description provided for @ernProviderDiscount.
+  ///
+  /// In ar, this message translates to:
+  /// **'خصم تحملته'**
+  String get ernProviderDiscount;
+
+  /// No description provided for @ernPlatformDiscount.
+  ///
+  /// In ar, this message translates to:
+  /// **'خصم تحملته المنصة'**
+  String get ernPlatformDiscount;
+
+  /// No description provided for @ernTips.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإكراميات'**
+  String get ernTips;
+
+  /// No description provided for @ernNet.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصافي'**
+  String get ernNet;
+
+  /// No description provided for @ernCash.
+  ///
+  /// In ar, this message translates to:
+  /// **'النقد المحصّل'**
+  String get ernCash;
+
+  /// No description provided for @ernDaily.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأرباح اليومية'**
+  String get ernDaily;
+
+  /// No description provided for @ernByCategory.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسب الخدمة'**
+  String get ernByCategory;
+
+  /// No description provided for @ernNoJobs.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد رحلات مكتملة في هذه الفترة.'**
+  String get ernNoJobs;
+
+  /// No description provided for @ernWalletBalance.
+  ///
+  /// In ar, this message translates to:
+  /// **'رصيد المحفظة'**
+  String get ernWalletBalance;
+
+  /// No description provided for @ernWalletReserved.
+  ///
+  /// In ar, this message translates to:
+  /// **'محجوز للسحب'**
+  String get ernWalletReserved;
+
+  /// No description provided for @ernWalletAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'المتاح للسحب'**
+  String get ernWalletAvailable;
+
+  /// No description provided for @ernBreakdownLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأرباح لكل رحلة'**
+  String get ernBreakdownLink;
+
+  /// No description provided for @ernOpenJob.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح الرحلة'**
+  String get ernOpenJob;
+
+  /// No description provided for @walLedgerTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجل المحفظة'**
+  String get walLedgerTitle;
+
+  /// No description provided for @walLedgerEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد حركات في المحفظة بعد.'**
+  String get walLedgerEmpty;
+
+  /// No description provided for @walLoadMore.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض المزيد'**
+  String get walLoadMore;
+
+  /// No description provided for @walBalanceAfter.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرصيد: {amount}'**
+  String walBalanceAfter(String amount);
+
+  /// No description provided for @cashDebtTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'عليك {amount} عمولة نقدية'**
+  String cashDebtTitle(String amount);
+
+  /// No description provided for @cashDebtWarning.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدّك {limit}. عند تجاوزه تتوقف عن استلام الطلبات حتى تسدد.'**
+  String cashDebtWarning(String limit);
+
+  /// No description provided for @cashDebtBlocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'تجاوزت الحد {limit}، لذلك لن تصلك طلبات جديدة حتى تسدد.'**
+  String cashDebtBlocked(String limit);
+
+  /// No description provided for @cashDebtHowTo.
+  ///
+  /// In ar, this message translates to:
+  /// **'سدد العمولة النقدية مع فريق المالية.'**
+  String get cashDebtHowTo;
+
+  /// No description provided for @cashDebtContact.
+  ///
+  /// In ar, this message translates to:
+  /// **'تواصل مع الدعم'**
+  String get cashDebtContact;
+
+  /// No description provided for @cashCollectTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أكّد استلام النقد'**
+  String get cashCollectTitle;
+
+  /// No description provided for @cashCollectBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أكّد أنك استلمت {amount} نقداً من العميل.'**
+  String cashCollectBody(String amount);
+
+  /// No description provided for @cashCollectBodyNoAmount.
+  ///
+  /// In ar, this message translates to:
+  /// **'أكّد أنك استلمت النقد من العميل.'**
+  String get cashCollectBodyNoAmount;
+
+  /// No description provided for @cashConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'استلمت النقد'**
+  String get cashConfirm;
+
+  /// No description provided for @cashConfirmedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تأكيد النقد'**
+  String get cashConfirmedTitle;
+
+  /// No description provided for @cashConfirmedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'شكراً لك. تمت تسوية الرحلة.'**
+  String get cashConfirmedBody;
+
+  /// No description provided for @cashErrNotCollectable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن تأكيد نقد هذه الرحلة الآن.'**
+  String get cashErrNotCollectable;
+
+  /// No description provided for @poTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'السحوبات'**
+  String get poTitle;
+
+  /// No description provided for @poAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'المتاح للسحب'**
+  String get poAvailable;
+
+  /// No description provided for @poReservedNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'{amount} محجوز لسحوبات قيد التنفيذ'**
+  String poReservedNote(String amount);
+
+  /// No description provided for @poLimits.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحد الأدنى {min} والأقصى {max} لكل سحب'**
+  String poLimits(String min, String max);
+
+  /// No description provided for @poRequest.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب سحب'**
+  String get poRequest;
+
+  /// No description provided for @poHistory.
+  ///
+  /// In ar, this message translates to:
+  /// **'السجل'**
+  String get poHistory;
+
+  /// No description provided for @poEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد سحوبات بعد'**
+  String get poEmptyTitle;
+
+  /// No description provided for @poEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستظهر هنا طلبات السحب وحالتها.'**
+  String get poEmptyBody;
+
+  /// No description provided for @poAmountLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ ({currency})'**
+  String poAmountLabel(String currency);
+
+  /// No description provided for @poAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكل'**
+  String get poAll;
+
+  /// No description provided for @poMethod.
+  ///
+  /// In ar, this message translates to:
+  /// **'وسيلة السحب'**
+  String get poMethod;
+
+  /// No description provided for @poNoMethods.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف وسيلة سحب أولاً.'**
+  String get poNoMethods;
+
+  /// No description provided for @poNoVerifiedMethods.
+  ///
+  /// In ar, this message translates to:
+  /// **'وسائل السحب لديك بانتظار تحقق فريق المالية.'**
+  String get poNoVerifiedMethods;
+
+  /// No description provided for @poFeeNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُحجز المبلغ في محفظتك الآن. الرسوم والموافقة يحددها فريق المالية.'**
+  String get poFeeNote;
+
+  /// No description provided for @poSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الطلب'**
+  String get poSubmit;
+
+  /// No description provided for @poNoBalance.
+  ///
+  /// In ar, this message translates to:
+  /// **'رصيدك غير متاح. حاول مجدداً.'**
+  String get poNoBalance;
+
+  /// No description provided for @poErrAmountInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل مبلغاً صحيحاً.'**
+  String get poErrAmountInvalid;
+
+  /// No description provided for @poErrBelowMinAmount.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحد الأدنى للسحب {min}.'**
+  String poErrBelowMinAmount(String min);
+
+  /// No description provided for @poErrAboveMaxAmount.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحد الأقصى للسحب {max}.'**
+  String poErrAboveMaxAmount(String max);
+
+  /// No description provided for @poErrChooseMethod.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر وسيلة سحب.'**
+  String get poErrChooseMethod;
+
+  /// No description provided for @poErrBelowMin.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ أقل من الحد الأدنى للسحب.'**
+  String get poErrBelowMin;
+
+  /// No description provided for @poErrAboveMax.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ أكبر من الحد الأقصى للسحب.'**
+  String get poErrAboveMax;
+
+  /// No description provided for @poErrInsufficient.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ أكبر من رصيدك المتاح.'**
+  String get poErrInsufficient;
+
+  /// No description provided for @poErrNotVerified.
+  ///
+  /// In ar, this message translates to:
+  /// **'وسيلة السحب هذه لم يتم التحقق منها بعد.'**
+  String get poErrNotVerified;
+
+  /// No description provided for @poErrNotApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن لحسابك طلب سحب الآن.'**
+  String get poErrNotApproved;
+
+  /// No description provided for @poErrMethodInUse.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه الوسيلة مستخدمة في سحب قيد التنفيذ.'**
+  String get poErrMethodInUse;
+
+  /// No description provided for @poErrNotCancellable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يعد بالإمكان إلغاء هذا السحب.'**
+  String get poErrNotCancellable;
+
+  /// No description provided for @poErrKeyReused.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيّر شيء في هذا الطلب. ابدأه من جديد.'**
+  String get poErrKeyReused;
+
+  /// No description provided for @poDetailTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'السحب'**
+  String get poDetailTitle;
+
+  /// No description provided for @poAmount.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ'**
+  String get poAmount;
+
+  /// No description provided for @poFee.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرسوم'**
+  String get poFee;
+
+  /// No description provided for @poNet.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما ستستلمه'**
+  String get poNet;
+
+  /// No description provided for @poRequestedAt.
+  ///
+  /// In ar, this message translates to:
+  /// **'تاريخ الطلب'**
+  String get poRequestedAt;
+
+  /// No description provided for @poPaidAt.
+  ///
+  /// In ar, this message translates to:
+  /// **'تاريخ الدفع'**
+  String get poPaidAt;
+
+  /// No description provided for @poReference.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرجع التحويل'**
+  String get poReference;
+
+  /// No description provided for @poReason.
+  ///
+  /// In ar, this message translates to:
+  /// **'السبب'**
+  String get poReason;
+
+  /// No description provided for @poMoneyBack.
+  ///
+  /// In ar, this message translates to:
+  /// **'عاد المبلغ إلى محفظتك.'**
+  String get poMoneyBack;
+
+  /// No description provided for @poCancel.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء الطلب'**
+  String get poCancel;
+
+  /// No description provided for @poCancelTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء هذا السحب؟'**
+  String get poCancelTitle;
+
+  /// No description provided for @poCancelBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يعود المبلغ إلى محفظتك.'**
+  String get poCancelBody;
+
+  /// No description provided for @poCancelConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء السحب'**
+  String get poCancelConfirm;
+
+  /// No description provided for @poCancelled.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إلغاء السحب.'**
+  String get poCancelled;
+
+  /// No description provided for @poAskSupport.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسأل الدعم عن هذا السحب'**
+  String get poAskSupport;
+
+  /// No description provided for @poStatusRequested.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الطلب'**
+  String get poStatusRequested;
+
+  /// No description provided for @poStatusReview.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد المراجعة'**
+  String get poStatusReview;
+
+  /// No description provided for @poStatusApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت الموافقة'**
+  String get poStatusApproved;
+
+  /// No description provided for @poStatusProcessing.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد التحويل'**
+  String get poStatusProcessing;
+
+  /// No description provided for @poStatusPaid.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الدفع'**
+  String get poStatusPaid;
+
+  /// No description provided for @poStatusFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'فشل'**
+  String get poStatusFailed;
+
+  /// No description provided for @poStatusRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرفوض'**
+  String get poStatusRejected;
+
+  /// No description provided for @poStatusCancelled.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملغي'**
+  String get poStatusCancelled;
+
+  /// No description provided for @poStatusReversed.
+  ///
+  /// In ar, this message translates to:
+  /// **'مُرتجع'**
+  String get poStatusReversed;
+
+  /// No description provided for @poStatusUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخرى'**
+  String get poStatusUnknown;
+
+  /// No description provided for @poExplainReview.
+  ///
+  /// In ar, this message translates to:
+  /// **'يراجع فريق المالية طلبك.'**
+  String get poExplainReview;
+
+  /// No description provided for @poExplainApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت الموافقة. سيبدأ التحويل قريباً.'**
+  String get poExplainApproved;
+
+  /// No description provided for @poExplainProcessing.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحويل في الطريق.'**
+  String get poExplainProcessing;
+
+  /// No description provided for @poExplainPaid.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال المال إلى وسيلة السحب.'**
+  String get poExplainPaid;
+
+  /// No description provided for @poExplainRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم رفض الطلب.'**
+  String get poExplainRejected;
+
+  /// No description provided for @poExplainFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'فشل التحويل.'**
+  String get poExplainFailed;
+
+  /// No description provided for @poExplainCancelled.
+  ///
+  /// In ar, this message translates to:
+  /// **'ألغيت هذا الطلب.'**
+  String get poExplainCancelled;
+
+  /// No description provided for @poExplainReversed.
+  ///
+  /// In ar, this message translates to:
+  /// **'أعاد البنك التحويل.'**
+  String get poExplainReversed;
+
+  /// No description provided for @pomTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'وسائل السحب'**
+  String get pomTitle;
+
+  /// No description provided for @pomManage.
+  ///
+  /// In ar, this message translates to:
+  /// **'إدارة وسائل السحب'**
+  String get pomManage;
+
+  /// No description provided for @pomAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة وسيلة'**
+  String get pomAdd;
+
+  /// No description provided for @pomEdit.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل'**
+  String get pomEdit;
+
+  /// No description provided for @pomEditNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفاظاً على أمنك لا تُعرض التفاصيل المحفوظة. أدخلها مجدداً لتعديل الوسيلة، وستحتاج إلى تحقق جديد.'**
+  String get pomEditNote;
+
+  /// No description provided for @pomEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد وسائل سحب'**
+  String get pomEmptyTitle;
+
+  /// No description provided for @pomEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف حساباً بنكياً أو محفظة هاتف لاستلام السحوبات.'**
+  String get pomEmptyBody;
+
+  /// No description provided for @pomVerified.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم التحقق'**
+  String get pomVerified;
+
+  /// No description provided for @pomUnverified.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير موثّقة'**
+  String get pomUnverified;
+
+  /// No description provided for @pomUnverifiedNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يتحقق فريق المالية من الوسيلة قبل استخدامها.'**
+  String get pomUnverifiedNote;
+
+  /// No description provided for @pomDefault.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوسيلة الافتراضية'**
+  String get pomDefault;
+
+  /// No description provided for @pomMakeDefault.
+  ///
+  /// In ar, this message translates to:
+  /// **'اجعلها افتراضية'**
+  String get pomMakeDefault;
+
+  /// No description provided for @pomDefaultSet.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تحديث الوسيلة الافتراضية.'**
+  String get pomDefaultSet;
+
+  /// No description provided for @pomDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف'**
+  String get pomDelete;
+
+  /// No description provided for @pomDeleteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف هذه الوسيلة؟'**
+  String get pomDeleteTitle;
+
+  /// No description provided for @pomDeleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكنك إضافتها مجدداً لاحقاً.'**
+  String get pomDeleteBody;
+
+  /// No description provided for @pomDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حذف الوسيلة.'**
+  String get pomDeleted;
+
+  /// No description provided for @pomBank.
+  ///
+  /// In ar, this message translates to:
+  /// **'حساب بنكي'**
+  String get pomBank;
+
+  /// No description provided for @pomWallet.
+  ///
+  /// In ar, this message translates to:
+  /// **'محفظة هاتف'**
+  String get pomWallet;
+
+  /// No description provided for @pomLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسم لهذه الوسيلة'**
+  String get pomLabel;
+
+  /// No description provided for @pomHolder.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسم صاحب الحساب'**
+  String get pomHolder;
+
+  /// No description provided for @pomBankName.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسم البنك'**
+  String get pomBankName;
+
+  /// No description provided for @pomAccount.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم الحساب أو الآيبان'**
+  String get pomAccount;
+
+  /// No description provided for @pomAccountInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم حساب صحيحاً.'**
+  String get pomAccountInvalid;
+
+  /// No description provided for @pomWalletNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم هاتف المحفظة'**
+  String get pomWalletNumber;
+
+  /// No description provided for @pomWalletInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم هاتف صحيحاً.'**
+  String get pomWalletInvalid;
+
+  /// No description provided for @pomVerifyNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُخزَّن التفاصيل مشفّرة ويتحقق منها فريق المالية.'**
+  String get pomVerifyNote;
+
+  /// No description provided for @pomSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ'**
+  String get pomSave;
+
+  /// No description provided for @pomSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حفظ وسيلة السحب.'**
+  String get pomSaved;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الحقل مطلوب.'**
+  String get fieldRequired;
+
+  /// No description provided for @rcpTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإيصال'**
+  String get rcpTitle;
+
+  /// No description provided for @rcpViewFull.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإيصال الكامل'**
+  String get rcpViewFull;
+
+  /// No description provided for @rcpNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيصال {number}'**
+  String rcpNumber(String number);
+
+  /// No description provided for @rcpCustomer.
+  ///
+  /// In ar, this message translates to:
+  /// **'العميل'**
+  String get rcpCustomer;
+
+  /// No description provided for @jbReceiptCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز الحجز'**
+  String get jbReceiptCode;
+
+  /// No description provided for @rcpAgreed.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأجرة المتفق عليها'**
+  String get rcpAgreed;
+
+  /// No description provided for @rcpAdjustment.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة: {label}'**
+  String rcpAdjustment(String label);
+
+  /// No description provided for @rcpSubtotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'إجمالي الأجرة'**
+  String get rcpSubtotal;
+
+  /// No description provided for @rcpTax.
+  ///
+  /// In ar, this message translates to:
+  /// **'الضريبة'**
+  String get rcpTax;
+
+  /// No description provided for @rcpOpenPrintable.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح الإيصال للطباعة'**
+  String get rcpOpenPrintable;
+
+  /// No description provided for @rcpErrNotAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'يتوفر الإيصال بعد اكتمال الرحلة.'**
+  String get rcpErrNotAvailable;
+
+  /// No description provided for @adjApprove.
+  ///
+  /// In ar, this message translates to:
+  /// **'موافقة'**
+  String get adjApprove;
+
+  /// No description provided for @adjReject.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض'**
+  String get adjReject;
+
+  /// No description provided for @adjWithdraw.
+  ///
+  /// In ar, this message translates to:
+  /// **'سحب الطلب'**
+  String get adjWithdraw;
+
+  /// No description provided for @adjExpires.
+  ///
+  /// In ar, this message translates to:
+  /// **'أجب قبل {time}'**
+  String adjExpires(String time);
+
+  /// No description provided for @adjNewTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجمالي الجديد: {amount}'**
+  String adjNewTotal(String amount);
+
+  /// No description provided for @adjNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة'**
+  String get adjNote;
+
+  /// No description provided for @dadjTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغييرات الأجرة'**
+  String get dadjTitle;
+
+  /// No description provided for @dadjRequest.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب تغيير الأجرة'**
+  String get dadjRequest;
+
+  /// No description provided for @dadjRequestedByYou.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبته أنت'**
+  String get dadjRequestedByYou;
+
+  /// No description provided for @dadjRequestedByCustomer.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبه العميل'**
+  String get dadjRequestedByCustomer;
+
+  /// No description provided for @dadjTypeExtraStop.
+  ///
+  /// In ar, this message translates to:
+  /// **'توقف إضافي'**
+  String get dadjTypeExtraStop;
+
+  /// No description provided for @dadjTypeWaiting.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقت انتظار'**
+  String get dadjTypeWaiting;
+
+  /// No description provided for @dadjTypeToll.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسوم طريق أو انتظار'**
+  String get dadjTypeToll;
+
+  /// No description provided for @dadjTypeScope.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيير في نطاق الخدمة'**
+  String get dadjTypeScope;
+
+  /// No description provided for @dadjAmount.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ'**
+  String get dadjAmount;
+
+  /// No description provided for @dadjWaitingHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتركه فارغاً لاستخدام سعر الانتظار.'**
+  String get dadjWaitingHelp;
+
+  /// No description provided for @dadjReason.
+  ///
+  /// In ar, this message translates to:
+  /// **'السبب'**
+  String get dadjReason;
+
+  /// No description provided for @dadjCustomerApproves.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا تتغير الأجرة إلا إذا وافق العميل.'**
+  String get dadjCustomerApproves;
+
+  /// No description provided for @dadjSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الطلب'**
+  String get dadjSend;
+
+  /// No description provided for @dadjSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال الطلب إلى العميل.'**
+  String get dadjSent;
+
+  /// No description provided for @dadjErrNotNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن طلب تغيير الأجرة الآن.'**
+  String get dadjErrNotNow;
+
+  /// No description provided for @dadjErrOpenLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك الحد الأقصى من الطلبات المفتوحة.'**
+  String get dadjErrOpenLimit;
+
+  /// No description provided for @dadjErrAmount.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل مبلغاً صحيحاً.'**
+  String get dadjErrAmount;
+
+  /// No description provided for @dadjErrReason.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب السبب.'**
+  String get dadjErrReason;
+
+  /// No description provided for @dadjErrEvidence.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا النوع يحتاج إثباتاً. أضف التفاصيل في السبب.'**
+  String get dadjErrEvidence;
+
+  /// No description provided for @dadjErrType.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا النوع من التغيير غير مسموح لهذه الخدمة.'**
+  String get dadjErrType;
+
+  /// No description provided for @dadjErrNotPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت الإجابة عن هذا الطلب أو انتهت مدته.'**
+  String get dadjErrNotPending;
+
+  /// No description provided for @dadjErrCounterpart.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكن للطرف الآخر فقط الإجابة عن هذا الطلب.'**
+  String get dadjErrCounterpart;
 }
 
 class _AppLocalizationsDelegate

@@ -8,6 +8,7 @@ import '../../../../app/router.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../domain/entities/job_entities.dart';
 import '../providers/job_providers.dart';
+import '../../../earnings/presentation/widgets/job_money_widgets.dart';
 import 'job_texts.dart';
 
 /// The end of a job: the amount, how it is paid (cash to collect), the net
@@ -110,6 +111,20 @@ class CompletionSummary extends ConsumerWidget {
                 ],
               ),
             ),
+          ),
+        ],
+        if (job.can(JobAction.confirmCashCollected)) ...[
+          const SizedBox(height: AppSpacing.md),
+          CashCollectedCard(job: job),
+        ],
+        if (job.can(JobAction.viewReceipt)) ...[
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            key: const Key('summary-receipt'),
+            label: l10n.rcpViewFull,
+            icon: Icons.receipt_long_outlined,
+            secondary: true,
+            onPressed: () => context.push(Routes.jobReceipt(job.id)),
           ),
         ],
         if (job.can(JobAction.rateCustomer)) ...[

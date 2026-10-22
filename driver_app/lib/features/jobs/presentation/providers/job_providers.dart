@@ -58,7 +58,7 @@ void _bindRealtime(
   });
 }
 
-bool _isBookingEvent(RealtimeEvent e) => e.name.startsWith('booking.');
+bool _isBookingEvent(RealtimeEvent e) => e.name.startsWith('booking.') || e.name == 'payment.status_changed';
 
 String? _eventBooking(RealtimeEvent e) => e.data['booking_uuid'] as String?;
 

@@ -2067,4 +2067,554 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supportAppealButton => 'Appeal the fee';
+
+  @override
+  String get ernTab => 'Earnings';
+
+  @override
+  String get ernDay => 'Day';
+
+  @override
+  String get ernWeek => 'Week';
+
+  @override
+  String get ernMonth => 'Month';
+
+  @override
+  String get ernEarned => 'You earned';
+
+  @override
+  String ernJobs(int count) {
+    return '$count jobs';
+  }
+
+  @override
+  String get ernGross => 'Fares';
+
+  @override
+  String get ernCommission => 'Platform commission';
+
+  @override
+  String get ernProviderDiscount => 'Discount you funded';
+
+  @override
+  String get ernPlatformDiscount => 'Discount funded by the platform';
+
+  @override
+  String get ernTips => 'Tips';
+
+  @override
+  String get ernNet => 'Net';
+
+  @override
+  String get ernCash => 'Cash collected';
+
+  @override
+  String get ernDaily => 'Earnings per day';
+
+  @override
+  String get ernByCategory => 'By service';
+
+  @override
+  String get ernNoJobs => 'No completed jobs in this period.';
+
+  @override
+  String get ernWalletBalance => 'Wallet balance';
+
+  @override
+  String get ernWalletReserved => 'Reserved for payouts';
+
+  @override
+  String get ernWalletAvailable => 'Available to withdraw';
+
+  @override
+  String get ernBreakdownLink => 'Earnings per job';
+
+  @override
+  String get ernOpenJob => 'Open job';
+
+  @override
+  String get walLedgerTitle => 'Wallet ledger';
+
+  @override
+  String get walLedgerEmpty => 'No wallet entries yet.';
+
+  @override
+  String get walLoadMore => 'Load more';
+
+  @override
+  String walBalanceAfter(String amount) {
+    return 'Balance: $amount';
+  }
+
+  @override
+  String cashDebtTitle(String amount) {
+    return 'You owe $amount in cash commission';
+  }
+
+  @override
+  String cashDebtWarning(String limit) {
+    return 'Your limit is $limit. Above it you stop receiving requests until you settle.';
+  }
+
+  @override
+  String cashDebtBlocked(String limit) {
+    return 'You are over the $limit limit, so you do not receive new requests until you settle.';
+  }
+
+  @override
+  String get cashDebtHowTo =>
+      'Settle the cash commission with our finance team.';
+
+  @override
+  String get cashDebtContact => 'Contact support';
+
+  @override
+  String get cashCollectTitle => 'Confirm the cash';
+
+  @override
+  String cashCollectBody(String amount) {
+    return 'Confirm you collected $amount in cash from the customer.';
+  }
+
+  @override
+  String get cashCollectBodyNoAmount =>
+      'Confirm you collected the cash from the customer.';
+
+  @override
+  String get cashConfirm => 'I collected the cash';
+
+  @override
+  String get cashConfirmedTitle => 'Cash confirmed';
+
+  @override
+  String get cashConfirmedBody => 'Thank you. The job is settled.';
+
+  @override
+  String get cashErrNotCollectable =>
+      'The cash of this job cannot be confirmed now.';
+
+  @override
+  String get poTitle => 'Payouts';
+
+  @override
+  String get poAvailable => 'Available to withdraw';
+
+  @override
+  String poReservedNote(String amount) {
+    return '$amount is reserved for open payouts';
+  }
+
+  @override
+  String poLimits(String min, String max) {
+    return 'Minimum $min, maximum $max per payout';
+  }
+
+  @override
+  String get poRequest => 'Request a payout';
+
+  @override
+  String get poHistory => 'History';
+
+  @override
+  String get poEmptyTitle => 'No payouts yet';
+
+  @override
+  String get poEmptyBody =>
+      'Your payout requests and their status appear here.';
+
+  @override
+  String poAmountLabel(String currency) {
+    return 'Amount ($currency)';
+  }
+
+  @override
+  String get poAll => 'All';
+
+  @override
+  String get poMethod => 'Payout method';
+
+  @override
+  String get poNoMethods => 'Add a payout method first.';
+
+  @override
+  String get poNoVerifiedMethods =>
+      'Your payout methods are waiting for verification by our finance team.';
+
+  @override
+  String get poFeeNote =>
+      'The amount is set aside in your wallet now. The fee and approval are decided by our finance team.';
+
+  @override
+  String get poSubmit => 'Send request';
+
+  @override
+  String get poNoBalance => 'Your balance is not available. Try again.';
+
+  @override
+  String get poErrAmountInvalid => 'Enter a valid amount.';
+
+  @override
+  String poErrBelowMinAmount(String min) {
+    return 'The minimum payout is $min.';
+  }
+
+  @override
+  String poErrAboveMaxAmount(String max) {
+    return 'The maximum payout is $max.';
+  }
+
+  @override
+  String get poErrChooseMethod => 'Choose a payout method.';
+
+  @override
+  String get poErrBelowMin => 'The amount is below the minimum payout.';
+
+  @override
+  String get poErrAboveMax => 'The amount is above the maximum payout.';
+
+  @override
+  String get poErrInsufficient =>
+      'The amount is more than your available balance.';
+
+  @override
+  String get poErrNotVerified => 'This payout method is not verified yet.';
+
+  @override
+  String get poErrNotApproved => 'Your account cannot request payouts now.';
+
+  @override
+  String get poErrMethodInUse => 'This method is used by an open payout.';
+
+  @override
+  String get poErrNotCancellable => 'This payout can no longer be cancelled.';
+
+  @override
+  String get poErrKeyReused =>
+      'Something changed in this request. Start it again.';
+
+  @override
+  String get poDetailTitle => 'Payout';
+
+  @override
+  String get poAmount => 'Amount';
+
+  @override
+  String get poFee => 'Fee';
+
+  @override
+  String get poNet => 'You receive';
+
+  @override
+  String get poRequestedAt => 'Requested';
+
+  @override
+  String get poPaidAt => 'Paid';
+
+  @override
+  String get poReference => 'Transfer reference';
+
+  @override
+  String get poReason => 'Reason';
+
+  @override
+  String get poMoneyBack => 'The amount went back to your wallet.';
+
+  @override
+  String get poCancel => 'Cancel request';
+
+  @override
+  String get poCancelTitle => 'Cancel this payout?';
+
+  @override
+  String get poCancelBody => 'The amount returns to your wallet.';
+
+  @override
+  String get poCancelConfirm => 'Cancel payout';
+
+  @override
+  String get poCancelled => 'Payout cancelled.';
+
+  @override
+  String get poAskSupport => 'Ask support about this payout';
+
+  @override
+  String get poStatusRequested => 'Requested';
+
+  @override
+  String get poStatusReview => 'Under review';
+
+  @override
+  String get poStatusApproved => 'Approved';
+
+  @override
+  String get poStatusProcessing => 'Processing';
+
+  @override
+  String get poStatusPaid => 'Paid';
+
+  @override
+  String get poStatusFailed => 'Failed';
+
+  @override
+  String get poStatusRejected => 'Rejected';
+
+  @override
+  String get poStatusCancelled => 'Cancelled';
+
+  @override
+  String get poStatusReversed => 'Reversed';
+
+  @override
+  String get poStatusUnknown => 'Other';
+
+  @override
+  String get poExplainReview => 'Our finance team is reviewing your request.';
+
+  @override
+  String get poExplainApproved => 'Approved. The transfer will start soon.';
+
+  @override
+  String get poExplainProcessing => 'The transfer is on its way.';
+
+  @override
+  String get poExplainPaid => 'The money was sent to your payout method.';
+
+  @override
+  String get poExplainRejected => 'The request was rejected.';
+
+  @override
+  String get poExplainFailed => 'The transfer failed.';
+
+  @override
+  String get poExplainCancelled => 'You cancelled this request.';
+
+  @override
+  String get poExplainReversed => 'The bank returned the transfer.';
+
+  @override
+  String get pomTitle => 'Payout methods';
+
+  @override
+  String get pomManage => 'Manage payout methods';
+
+  @override
+  String get pomAdd => 'Add a method';
+
+  @override
+  String get pomEdit => 'Edit';
+
+  @override
+  String get pomEditNote =>
+      'For your security the saved details are not shown. Enter them again to change this method. It will need verification again.';
+
+  @override
+  String get pomEmptyTitle => 'No payout methods';
+
+  @override
+  String get pomEmptyBody =>
+      'Add a bank account or mobile wallet to receive payouts.';
+
+  @override
+  String get pomVerified => 'Verified';
+
+  @override
+  String get pomUnverified => 'Not verified';
+
+  @override
+  String get pomUnverifiedNote =>
+      'Finance verifies a method before you can use it.';
+
+  @override
+  String get pomDefault => 'Default method';
+
+  @override
+  String get pomMakeDefault => 'Make default';
+
+  @override
+  String get pomDefaultSet => 'Default method updated.';
+
+  @override
+  String get pomDelete => 'Delete';
+
+  @override
+  String get pomDeleteTitle => 'Delete this method?';
+
+  @override
+  String get pomDeleteBody => 'You can add it again later.';
+
+  @override
+  String get pomDeleted => 'Method deleted.';
+
+  @override
+  String get pomBank => 'Bank account';
+
+  @override
+  String get pomWallet => 'Mobile wallet';
+
+  @override
+  String get pomLabel => 'Name for this method';
+
+  @override
+  String get pomHolder => 'Account holder name';
+
+  @override
+  String get pomBankName => 'Bank name';
+
+  @override
+  String get pomAccount => 'Account number or IBAN';
+
+  @override
+  String get pomAccountInvalid => 'Enter a valid account number.';
+
+  @override
+  String get pomWalletNumber => 'Wallet phone number';
+
+  @override
+  String get pomWalletInvalid => 'Enter a valid phone number.';
+
+  @override
+  String get pomVerifyNote =>
+      'Details are stored encrypted and checked by our finance team.';
+
+  @override
+  String get pomSave => 'Save';
+
+  @override
+  String get pomSaved => 'Payout method saved.';
+
+  @override
+  String get fieldRequired => 'This field is required.';
+
+  @override
+  String get rcpTitle => 'Receipt';
+
+  @override
+  String get rcpViewFull => 'Full receipt';
+
+  @override
+  String rcpNumber(String number) {
+    return 'Receipt $number';
+  }
+
+  @override
+  String get rcpCustomer => 'Customer';
+
+  @override
+  String get jbReceiptCode => 'Booking code';
+
+  @override
+  String get rcpAgreed => 'Agreed fare';
+
+  @override
+  String rcpAdjustment(String label) {
+    return 'Added: $label';
+  }
+
+  @override
+  String get rcpSubtotal => 'Fare total';
+
+  @override
+  String get rcpTax => 'Tax';
+
+  @override
+  String get rcpOpenPrintable => 'Open printable receipt';
+
+  @override
+  String get rcpErrNotAvailable =>
+      'The receipt is available after the trip is completed.';
+
+  @override
+  String get adjApprove => 'Approve';
+
+  @override
+  String get adjReject => 'Reject';
+
+  @override
+  String get adjWithdraw => 'Withdraw';
+
+  @override
+  String adjExpires(String time) {
+    return 'Answer before $time';
+  }
+
+  @override
+  String adjNewTotal(String amount) {
+    return 'New total: $amount';
+  }
+
+  @override
+  String get adjNote => 'Note';
+
+  @override
+  String get dadjTitle => 'Fare changes';
+
+  @override
+  String get dadjRequest => 'Request a fare change';
+
+  @override
+  String get dadjRequestedByYou => 'Requested by you';
+
+  @override
+  String get dadjRequestedByCustomer => 'Requested by the customer';
+
+  @override
+  String get dadjTypeExtraStop => 'Extra stop';
+
+  @override
+  String get dadjTypeWaiting => 'Waiting time';
+
+  @override
+  String get dadjTypeToll => 'Toll or parking';
+
+  @override
+  String get dadjTypeScope => 'Change of scope';
+
+  @override
+  String get dadjAmount => 'Amount';
+
+  @override
+  String get dadjWaitingHelp => 'Leave empty to use the waiting rate.';
+
+  @override
+  String get dadjReason => 'Reason';
+
+  @override
+  String get dadjCustomerApproves =>
+      'The fare changes only if the customer approves.';
+
+  @override
+  String get dadjSend => 'Send request';
+
+  @override
+  String get dadjSent => 'Request sent to the customer.';
+
+  @override
+  String get dadjErrNotNow => 'A fare change cannot be requested now.';
+
+  @override
+  String get dadjErrOpenLimit =>
+      'You already have the maximum number of open requests.';
+
+  @override
+  String get dadjErrAmount => 'Enter a valid amount.';
+
+  @override
+  String get dadjErrReason => 'Describe the reason.';
+
+  @override
+  String get dadjErrEvidence =>
+      'This type needs evidence. Add details in the reason.';
+
+  @override
+  String get dadjErrType =>
+      'This type of change is not allowed for this service.';
+
+  @override
+  String get dadjErrNotPending =>
+      'This request was already answered or has expired.';
+
+  @override
+  String get dadjErrCounterpart =>
+      'Only the other side can answer this request.';
 }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platform_core/platform_core.dart';
 
+import '../../../earnings/presentation/providers/earnings_providers.dart';
+import '../../../earnings/presentation/widgets/cash_debt_banner.dart';
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../availability/presentation/widgets/availability_card.dart';
@@ -26,6 +28,10 @@ class HomeTab extends ConsumerWidget {
       key: const Key('home-tab'),
       padding: const EdgeInsetsDirectional.all(AppSpacing.md),
       children: [
+        if (ref.watch(walletPositionProvider).value case final position?) ...[
+          CashDebtBanner(position: position),
+          if (position.hasCashDebt) const SizedBox(height: AppSpacing.md),
+        ],
         AvailabilityCard(vehicles: vehicles),
         const SizedBox(height: AppSpacing.md),
         Card(

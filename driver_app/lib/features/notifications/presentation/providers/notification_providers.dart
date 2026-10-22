@@ -7,6 +7,7 @@ import 'package:platform_core/platform_core.dart';
 
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
+import '../../../earnings/presentation/providers/earnings_providers.dart';
 import '../../../../core/providers.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../../jobs/presentation/providers/job_providers.dart';
@@ -29,6 +30,9 @@ String? driverRouteFor(NotificationLink link) {
     NotificationLinkType.application => Routes.applicationStatus,
     NotificationLinkType.documents => Routes.providerOnboarding,
     NotificationLinkType.chat when id != null => Routes.jobChat(id),
+    NotificationLinkType.payout when id != null => Routes.payout(id),
+    NotificationLinkType.payout => Routes.payouts,
+    NotificationLinkType.wallet => Routes.walletLedger,
     NotificationLinkType.support when id != null => Routes.supportTicket(id),
     NotificationLinkType.support => Routes.support,
     NotificationLinkType.inbox => Routes.notifications,
@@ -186,6 +190,9 @@ final pushCoordinatorProvider = Provider<PushCoordinator>((ref) {
       validate: (link) async {
         if ((link.type == NotificationLinkType.booking || link.type == NotificationLinkType.chat) && link.id != null) {
           await ref.read(jobRepositoryProvider).job(link.id!);
+        }
+        if (link.type == NotificationLinkType.payout && link.id != null) {
+          await ref.read(earningsRepositoryProvider).payout(link.id!);
         }
         if (link.type == NotificationLinkType.support && link.id != null) {
           await ref.read(supportRepositoryProvider).ticket(link.id!);

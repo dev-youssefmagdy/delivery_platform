@@ -12,6 +12,7 @@ import '../../../availability/presentation/providers/availability_providers.dart
 import '../../../notifications/presentation/providers/notification_providers.dart';
 import '../../domain/entities/job_entities.dart';
 import '../providers/job_providers.dart';
+import '../../../earnings/presentation/widgets/earnings_tab.dart';
 import '../widgets/active_job_banner.dart';
 import '../widgets/history_tab.dart';
 import '../widgets/home_tab.dart';
@@ -84,6 +85,7 @@ class _DriverShellState extends ConsumerState<DriverShell>
       l10n.jbTabRequests,
       l10n.jbTabOffers,
       l10n.jbTabHistory,
+      l10n.ernTab,
     ];
 
     return Scaffold(
@@ -153,6 +155,7 @@ class _DriverShellState extends ConsumerState<DriverShell>
                   RequestsTab(onGoOnline: () => setState(() => _index = 0)),
                   const OffersTab(),
                   const HistoryTab(),
+                  const EarningsTab(),
                 ],
               ),
             ),
@@ -186,6 +189,12 @@ class _DriverShellState extends ConsumerState<DriverShell>
           NavigationDestination(
             icon: const Icon(Icons.history),
             label: l10n.jbTabHistory,
+          ),
+          NavigationDestination(
+            key: const Key('nav-earnings'),
+            icon: const Icon(Icons.account_balance_wallet_outlined),
+            selectedIcon: const Icon(Icons.account_balance_wallet),
+            label: l10n.ernTab,
           ),
         ],
       ),

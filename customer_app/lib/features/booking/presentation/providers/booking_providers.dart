@@ -27,7 +27,7 @@ Duration? _noAutoRetry(int retryCount, Object error) => null;
 const pollWhenOffline = Duration(seconds: 5);
 const pollWhenLive = Duration(seconds: 20);
 
-bool _isBookingEvent(RealtimeEvent e) => e.name.startsWith('booking.');
+bool _isBookingEvent(RealtimeEvent e) => e.name.startsWith('booking.') || e.name == 'payment.status_changed';
 
 String? _eventBooking(RealtimeEvent e) => e.data['booking_uuid'] as String?;
 

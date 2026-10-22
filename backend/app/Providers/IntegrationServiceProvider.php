@@ -14,6 +14,9 @@ use App\Integrations\Maps\Drivers\CachingMapsProvider;
 use App\Integrations\Maps\Drivers\FakeMapsProvider;
 use App\Integrations\Maps\Drivers\GoogleMapsProvider;
 use App\Integrations\Maps\Drivers\OsrmNominatimMapsProvider;
+use App\Integrations\Push\Contracts\PushNotifier;
+use App\Integrations\Push\Drivers\FcmPushNotifier;
+use App\Integrations\Push\Drivers\LogPushNotifier;
 use App\Integrations\Sms\Contracts\SmsGateway;
 use App\Integrations\Sms\Drivers\LogSmsGateway;
 use App\Integrations\Sms\Drivers\SmsMisrGateway;
@@ -40,6 +43,7 @@ class IntegrationServiceProvider extends ServiceProvider
             'google' => GoogleMapsProvider::class,
         ]],
         'payments' => [PaymentGateway::class, ['sandbox' => SandboxPaymentGateway::class, 'paymob' => PaymobPaymentGateway::class]],
+        'push' => [PushNotifier::class, ['log' => LogPushNotifier::class, 'fcm' => FcmPushNotifier::class]],
         'file_scanner' => [FileScanner::class, ['noop' => NoopFileScanner::class, 'clamav' => ClamAvFileScanner::class]],
     ];
 

@@ -165,6 +165,16 @@ use App\Repositories\Eloquent\Provider\VehicleDocumentRepository;
 use App\Repositories\Eloquent\Provider\VehiclePhotoRepository;
 use App\Repositories\Eloquent\Provider\VehicleRepository;
 use App\Repositories\Eloquent\Settings\SettingsRepository;
+use App\Repositories\Contracts\Notification\AppNotificationRepositoryInterface;
+use App\Repositories\Contracts\Notification\NotificationDeliveryRepositoryInterface;
+use App\Repositories\Contracts\Notification\NotificationPreferenceRepositoryInterface;
+use App\Repositories\Contracts\Notification\NotificationTemplateRepositoryInterface;
+use App\Repositories\Contracts\Notification\PushCampaignRepositoryInterface;
+use App\Repositories\Eloquent\Notification\AppNotificationRepository;
+use App\Repositories\Eloquent\Notification\NotificationDeliveryRepository;
+use App\Repositories\Eloquent\Notification\NotificationPreferenceRepository;
+use App\Repositories\Eloquent\Notification\NotificationTemplateRepository;
+use App\Repositories\Eloquent\Notification\PushCampaignRepository;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -223,6 +233,11 @@ class RepositoryServiceProvider extends ServiceProvider
         CouponRepositoryInterface::class => CouponRepository::class,
         CouponReservationRepositoryInterface::class => CouponReservationRepository::class,
         CouponAttemptRepositoryInterface::class => CouponAttemptRepository::class,
+        NotificationTemplateRepositoryInterface::class => NotificationTemplateRepository::class,
+        AppNotificationRepositoryInterface::class => AppNotificationRepository::class,
+        NotificationDeliveryRepositoryInterface::class => NotificationDeliveryRepository::class,
+        NotificationPreferenceRepositoryInterface::class => NotificationPreferenceRepository::class,
+        PushCampaignRepositoryInterface::class => PushCampaignRepository::class,
         // @admin-module:bindings
         ProviderWorkloadRepositoryInterface::class => ProviderWorkloadRepository::class,
         ProviderLocationRepositoryInterface::class => ProviderLocationRepository::class,

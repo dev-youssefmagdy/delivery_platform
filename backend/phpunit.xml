@@ -31,6 +31,7 @@
         <env name="DB_DATABASE" value="delivery_platform_testing"/>
         <env name="DB_URL" value=""/>
         <env name="SMS_DRIVER" value="log"/>
+        <env name="PUSH_DRIVER" value="log"/>
         <env name="MAPS_DRIVER" value="fake"/>
         <env name="FILE_SCANNER_DRIVER" value="noop"/>
         <env name="MAPS_NOMINATIM_MIN_INTERVAL_MS" value="0"/>

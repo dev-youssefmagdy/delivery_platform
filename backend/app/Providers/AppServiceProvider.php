@@ -176,6 +176,10 @@ class AppServiceProvider extends ServiceProvider
             'booking_adjustment_request' => \App\Models\BookingAdjustmentRequest::class,
             'booking_receipt' => \App\Models\BookingReceipt::class,
             'cash_reconciliation' => \App\Models\CashReconciliation::class,
+            'notification_template' => \App\Models\NotificationTemplate::class,
+            'push_campaign' => \App\Models\PushCampaign::class,
+            'app_notification' => \App\Models\AppNotification::class,
+            'notification_delivery' => \App\Models\NotificationDelivery::class,
             // @admin-module:morph-map
         ]);
 

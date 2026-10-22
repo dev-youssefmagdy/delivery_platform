@@ -10,7 +10,16 @@ return [
     'sms' => ['driver' => env('SMS_DRIVER')],
     'maps' => ['driver' => env('MAPS_DRIVER')],
     'payments' => ['driver' => env('PAYMENT_DRIVER')],
-    'push' => ['driver' => env('PUSH_DRIVER')],
+    // fcm: Firebase Cloud Messaging HTTP v1 (APNs through FCM). `credentials` is the path of the service-account JSON, kept outside the repository.
+    'push' => [
+        'driver' => env('PUSH_DRIVER'),
+        'fcm' => [
+            'project_id' => env('FIREBASE_PROJECT_ID'),
+            'credentials' => env('FIREBASE_CREDENTIALS'),
+        ],
+    ],
+    // The mailer used for notification emails; `log` / `array` only in local/testing (the same boot guard applies).
+    'email' => ['driver' => env('MAIL_MAILER')],
     'phone_relay' => ['driver' => env('PHONE_RELAY_DRIVER')],
     'file_scanner' => [
         'driver' => env('FILE_SCANNER_DRIVER'),
@@ -24,7 +33,7 @@ return [
     /*
     | Drivers that simulate success and therefore must never run in staging/production.
     */
-    'non_production_drivers' => ['fake', 'log', 'noop', 'sandbox'],
+    'non_production_drivers' => ['fake', 'log', 'noop', 'sandbox', 'array'],
 
     'non_production_environments' => ['local', 'testing'],
 ];

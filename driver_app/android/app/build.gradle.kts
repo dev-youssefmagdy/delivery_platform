@@ -4,6 +4,11 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Firebase push: the config file is not in git (docs/SETUP.md). Without it the app builds and runs without push.
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 android {
     namespace = "com.deliveryplatform.driver"
     compileSdk = flutter.compileSdkVersion

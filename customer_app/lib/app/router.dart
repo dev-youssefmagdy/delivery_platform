@@ -21,6 +21,8 @@ import '../features/map/presentation/screens/pin_adjust_screen.dart';
 import '../features/map/presentation/screens/place_search_screen.dart';
 import '../features/map/presentation/screens/saved_places_screen.dart';
 import '../features/language/presentation/screens/language_screen.dart';
+import '../features/notifications/presentation/screens/notification_settings_screen.dart';
+import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
 
@@ -39,9 +41,10 @@ abstract final class Routes {
   static const pinAdjust = '/pin-adjust';
   static const savedPlaces = '/saved-places';
   static const bookingNew = '/booking/new';
+  static const notifications = '/notifications';
+  static const notificationSettings = '/notifications/settings';
 
-  /// A booking at any stage; also the target of deep links and notification
-  /// taps (push wiring in P3.6).
+  /// A booking at any stage; also the target of deep links and notification taps.
   static String booking(String id) => '/booking/$id';
   static String bookingCancel(String id) => '/booking/$id/cancel';
   static String bookingReport(String id) => '/booking/$id/report';
@@ -84,6 +87,8 @@ const _readyOnly = {
   Routes.placeSearch,
   Routes.pinAdjust,
   Routes.savedPlaces,
+  Routes.notifications,
+  Routes.notificationSettings,
 };
 
 /// Pure redirect rules (unit tested). Returns null to stay.
@@ -158,6 +163,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.savedPlaces,
         builder: (_, _) => const SavedPlacesScreen(),
+      ),
+      GoRoute(
+        path: Routes.notifications,
+        builder: (_, _) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: Routes.notificationSettings,
+        builder: (_, _) => const NotificationSettingsScreen(),
       ),
       GoRoute(
         path: Routes.bookingNew,

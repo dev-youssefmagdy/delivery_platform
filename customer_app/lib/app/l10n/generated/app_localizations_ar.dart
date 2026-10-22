@@ -1449,4 +1449,76 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tripsClearFilters => 'مسح التصفية';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notificationsMarkAllRead => 'تعليم الكل كمقروء';
+
+  @override
+  String get notificationUnavailable =>
+      'لم يعد هذا متاحًا. يمكنك الاطلاع على التفاصيل في إشعاراتك.';
+
+  @override
+  String get notificationSettingsTitle => 'إعدادات الإشعارات';
+
+  @override
+  String get notificationChannelPush => 'الإشعارات الفورية';
+
+  @override
+  String get notificationChannelSms => 'الرسائل النصية';
+
+  @override
+  String get notificationChannelEmail => 'البريد الإلكتروني';
+
+  @override
+  String get notificationChannelInApp => 'صندوق الوارد';
+
+  @override
+  String get notificationEssentialExplain =>
+      'الإشعارات الخاصة برحلاتك وحسابك ومدفوعاتك وسلامتك أساسية: تبقى الإشعارات الفورية مفعّلة لها حتى لا يفوتك أمر مهم. يمكنك اختيار القنوات الأخرى والفئات الاختيارية أدناه.';
+
+  @override
+  String get notificationEssentialBadge => 'أساسي: الإشعار الفوري مفعّل دائمًا';
+
+  @override
+  String get notificationOptInBadge => 'متوقف حتى تفعّله';
+
+  @override
+  String get notificationLockedOn => 'مفعّل دائمًا لهذه الفئة';
+
+  @override
+  String get pushStatusReady => 'الإشعارات الفورية مفعّلة على هذا الجهاز.';
+
+  @override
+  String get pushStatusPermissionNeeded =>
+      'فعّل الإشعارات الفورية لتعرف أخبار رحلاتك فورًا.';
+
+  @override
+  String get pushStatusDenied =>
+      'الإشعارات الفورية محظورة. اسمح بها من إعدادات هاتفك.';
+
+  @override
+  String get pushStatusFailed => 'تعذّر إعداد الإشعارات الفورية. حاول لاحقًا.';
+
+  @override
+  String get pushStatusNotConfigured =>
+      'الإشعارات الفورية غير متاحة في هذا الإصدار. ستجد كل شيء في صندوق الوارد.';
+
+  @override
+  String get pushEnable => 'تفعيل';
+
+  @override
+  String get pushRationaleTitle => 'ابقَ على اطلاع';
+
+  @override
+  String get pushRationaleBody =>
+      'سنخبرك بتحديثات الرحلات والمدفوعات والسلامة. تبقى الإشعارات على شاشة القفل قصيرة ولا تعرض بيانات شخصية.';
+
+  @override
+  String get pushRationaleLater => 'ليس الآن';
+
+  @override
+  String get accountNotifications => 'الإشعارات';
 }

@@ -7,6 +7,7 @@ import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../auth/presentation/widgets/auth_error_text.dart';
+import '../../../notifications/presentation/providers/notification_providers.dart';
 
 /// Account tab: language, saved places, sign-out and account deletion.
 class AccountScreen extends ConsumerStatefulWidget {
@@ -56,6 +57,17 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             leading: const Icon(Icons.bookmarks_outlined),
             title: Text(l10n.homeSavedPlaces),
             onTap: () => context.push(Routes.savedPlaces),
+          ),
+          ListTile(
+            key: const Key('home-notifications'),
+            minTileHeight: context.density.minTouchTarget,
+            leading: Badge(
+              isLabelVisible: ref.watch(unreadCountProvider) > 0,
+              label: Text('${ref.watch(unreadCountProvider)}'),
+              child: const Icon(Icons.notifications_outlined),
+            ),
+            title: Text(l10n.accountNotifications),
+            onTap: () => context.push(Routes.notifications),
           ),
           ListTile(
             minTileHeight: context.density.minTouchTarget,

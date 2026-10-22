@@ -1473,4 +1473,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tripsClearFilters => 'Clear filters';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsMarkAllRead => 'Mark all as read';
+
+  @override
+  String get notificationUnavailable =>
+      'This is no longer available. You can find the details in your notifications.';
+
+  @override
+  String get notificationSettingsTitle => 'Notification settings';
+
+  @override
+  String get notificationChannelPush => 'Push notifications';
+
+  @override
+  String get notificationChannelSms => 'Text messages';
+
+  @override
+  String get notificationChannelEmail => 'Email';
+
+  @override
+  String get notificationChannelInApp => 'Inbox';
+
+  @override
+  String get notificationEssentialExplain =>
+      'Notifications about your trips, account, payments and safety are essential: push stays on for them so you never miss something important. You can choose other channels and the optional categories below.';
+
+  @override
+  String get notificationEssentialBadge => 'Essential: push always on';
+
+  @override
+  String get notificationOptInBadge => 'Off until you turn it on';
+
+  @override
+  String get notificationLockedOn => 'Always on for this category';
+
+  @override
+  String get pushStatusReady => 'Push notifications are on for this device.';
+
+  @override
+  String get pushStatusPermissionNeeded =>
+      'Turn on push notifications to hear about your trips right away.';
+
+  @override
+  String get pushStatusDenied =>
+      'Push notifications are blocked. Allow them in your phone settings.';
+
+  @override
+  String get pushStatusFailed =>
+      'We could not set up push notifications. Try again later.';
+
+  @override
+  String get pushStatusNotConfigured =>
+      'Push notifications are not available in this version. You still get everything in your inbox.';
+
+  @override
+  String get pushEnable => 'Turn on';
+
+  @override
+  String get pushRationaleTitle => 'Stay informed';
+
+  @override
+  String get pushRationaleBody =>
+      'We will notify you about trip updates, payments and safety. Notifications on the lock screen stay short and never show personal details.';
+
+  @override
+  String get pushRationaleLater => 'Not now';
+
+  @override
+  String get accountNotifications => 'Notifications';
 }

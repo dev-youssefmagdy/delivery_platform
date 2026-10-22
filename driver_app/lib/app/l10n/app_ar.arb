@@ -847,5 +847,27 @@
         "type": "int"
       }
     }
-  }
+  },
+  "notificationsTitle": "الإشعارات",
+  "notificationsMarkAllRead": "تعليم الكل كمقروء",
+  "notificationUnavailable": "لم يعد هذا متاحًا. يمكنك الاطلاع على التفاصيل في إشعاراتك.",
+  "notificationSettingsTitle": "إعدادات الإشعارات",
+  "notificationChannelPush": "الإشعارات الفورية",
+  "notificationChannelSms": "الرسائل النصية",
+  "notificationChannelEmail": "البريد الإلكتروني",
+  "notificationChannelInApp": "صندوق الوارد",
+  "notificationEssentialExplain": "الإشعارات الخاصة برحلاتك وحسابك ومدفوعاتك وسلامتك أساسية: تبقى الإشعارات الفورية مفعّلة لها حتى لا يفوتك أمر مهم. يمكنك اختيار القنوات الأخرى والفئات الاختيارية أدناه.",
+  "notificationEssentialBadge": "أساسي: الإشعار الفوري مفعّل دائمًا",
+  "notificationOptInBadge": "متوقف حتى تفعّله",
+  "notificationLockedOn": "مفعّل دائمًا لهذه الفئة",
+  "pushStatusReady": "الإشعارات الفورية مفعّلة على هذا الجهاز.",
+  "pushStatusPermissionNeeded": "فعّل الإشعارات الفورية لتعرف أخبار رحلاتك فورًا.",
+  "pushStatusDenied": "الإشعارات الفورية محظورة. اسمح بها من إعدادات هاتفك.",
+  "pushStatusFailed": "تعذّر إعداد الإشعارات الفورية. حاول لاحقًا.",
+  "pushStatusNotConfigured": "الإشعارات الفورية غير متاحة في هذا الإصدار. ستجد كل شيء في صندوق الوارد.",
+  "pushEnable": "تفعيل",
+  "pushRationaleTitle": "ابقَ على اطلاع",
+  "pushRationaleBody": "سنخبرك بتحديثات الرحلات والمدفوعات والسلامة. تبقى الإشعارات على شاشة القفل قصيرة ولا تعرض بيانات شخصية.",
+  "pushRationaleLater": "ليس الآن",
+  "accountNotifications": "الإشعارات"
 }

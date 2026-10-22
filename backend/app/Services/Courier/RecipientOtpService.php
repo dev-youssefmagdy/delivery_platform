@@ -275,6 +275,7 @@ final class RecipientOtpService
             'locked' => $otp?->locked_at !== null,
             'delivery_status' => $otp?->delivery_status->value,
             'attempts_remaining' => $otp === null || $otp->verified_at !== null ? null : max(0, $otp->max_attempts - $otp->attempts),
+            'attempts_used' => $otp?->attempts,
             'max_attempts' => $otp?->max_attempts,
             'resend_available_at' => $otp?->resend_available_at?->toIso8601ZuluString(),
             'resends_left' => $otp === null ? null : max(0, (int) config('courier.recipient_otp.max_resends', 3) - $otp->resend_count),

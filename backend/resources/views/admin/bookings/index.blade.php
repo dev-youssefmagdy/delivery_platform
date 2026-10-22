@@ -24,6 +24,9 @@
         <x-admin.filters.text name="provider_phone" :label="__('admin.bookings.filters.provider_phone')" :placeholder="__('admin.bookings.filters.phone_hint')" />
         <x-admin.filters.boolean name="has_incident" :label="__('admin.bookings.filters.has_incident')" />
         <x-admin.filters.boolean name="has_ticket" :label="__('admin.bookings.filters.has_ticket')" />
+        <x-admin.filters.enum name="custody_statuses" :label="__('admin.bookings.filters.custody_status')" :enum="\App\Enums\Booking\CustodyStatus::class" multiple />
+        <x-admin.filters.enum name="parcel_sizes" :label="__('admin.bookings.filters.parcel_size')" :enum="\App\Enums\Booking\ParcelSize::class" multiple />
+        <x-admin.filters.boolean name="is_fragile" :label="__('admin.bookings.filters.is_fragile')" />
     </x-admin.filters-card>
 
     <x-admin.card :padding="false" class="p-4">

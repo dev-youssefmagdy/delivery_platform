@@ -28,6 +28,7 @@ use App\Repositories\Contracts\Booking\BookingOfferRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Services\Courier\RecipientOtpService;
 use App\Services\Dispatch\EventSequencer;
 use App\Services\Finance\BookingSettlementService;
 use App\Services\Payments\FreeBookingCompletionService;
@@ -73,6 +74,7 @@ final class BookingOverrideService
         private readonly EventSequencer $sequencer,
         private readonly BookingSettlementService $settlement,
         private readonly FreeBookingCompletionService $freeCompletion,
+        private readonly RecipientOtpService $recipientOtps,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -112,6 +114,7 @@ final class BookingOverrideService
             BookingOverrideAction::ExtendSearch, BookingOverrideAction::RedispatchNow => $booking->status->isSearching(),
             BookingOverrideAction::ForceTransition => $this->forceTargets($booking) !== [],
             BookingOverrideAction::LiftPinLock => $booking->pin_locked_at !== null && $booking->status === BookingStatus::ProviderArrived,
+            BookingOverrideAction::LiftRecipientOtpLock => $booking->status === BookingStatus::InProgress && ($this->recipientOtps->state($booking)['locked'] ?? false) === true,
         };
     }
 
@@ -266,6 +269,26 @@ final class BookingOverrideService
 
             $this->transitions->annotate($booking, 'pin_lock_lifted', $this->context($actor, $data), ['previous_attempts' => $attempts]);
             $this->announceToParties($booking, ['pin_lock_lifted' => true]);
+
+            return ['previous_attempts' => $attempts, 'flag_cleared' => $clearsFlag];
+        });
+    }
+
+    /**
+     * Lifts the lock after too many wrong recipient codes (P4.1): attempts back to zero and the support flag of that reason
+     * cleared; the provider may enter the code again or ask for a new one. The code itself is never shown to anybody.
+     *
+     * @throws ConflictException `override_not_available` when the code is not locked
+     */
+    public function liftRecipientOtpLock(Admin $actor, string $bookingUuid, BookingOverrideData $data): BookingOverrideResult
+    {
+        return $this->perform($actor, $bookingUuid, BookingOverrideAction::LiftRecipientOtpLock, $data, function (Booking $booking) use ($actor, $data): array {
+            $attempts = $this->recipientOtps->lift($booking);
+            $clearsFlag = $booking->support_flag_reason === SupportFlagReason::RecipientOtpAttemptsExceeded->value;
+
+            $this->bookings->forceUpdate($booking, ['lock_version' => $booking->lock_version + 1] + ($clearsFlag ? ['support_flagged_at' => null, 'support_flag_reason' => null] : []));
+            $this->transitions->annotate($booking, 'recipient_otp_lock_lifted', $this->context($actor, $data), ['previous_attempts' => $attempts]);
+            $this->announceToParties($booking, ['recipient_otp_lock_lifted' => true]);
 
             return ['previous_attempts' => $attempts, 'flag_cleared' => $clearsFlag];
         });

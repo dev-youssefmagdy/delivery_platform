@@ -65,4 +65,9 @@ class BookingPolicy
     {
         return $actor instanceof Admin && $actor->can(AdminPermission::BookingsPinOverride->value);
     }
+
+    public function liftRecipientOtpLock(Authorizable $actor, Booking $booking): bool
+    {
+        return $actor instanceof Admin && $actor->can(AdminPermission::BookingsPinOverride->value);
+    }
 }

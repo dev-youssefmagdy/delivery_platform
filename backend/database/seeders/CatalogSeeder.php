@@ -197,6 +197,8 @@ class CatalogSeeder extends Seeder
                 'max_weight_kg' => 20, 'max_volume_m3' => 0.1, 'pickup_proof' => true, 'proofs' => [ProofType::Photo, ProofType::RecipientOtp], 'recipient_otp' => true,
                 'fields' => [
                     self::field('recipient', 'contact', 'بيانات المستلم', 'Recipient', required: true),
+                    // P4.1: optional sender contact (met at pickup). Both contacts are kept encrypted in booking_contacts, not in service_details.
+                    self::field('sender', 'contact', 'بيانات المرسل', 'Sender'),
                     self::field('parcel_category', 'select', 'نوع الطرد', 'Parcel type', required: true, options: [
                         ['documents', 'مستندات', 'Documents'], ['clothes', 'ملابس', 'Clothes'], ['food', 'طعام', 'Food'],
                         ['electronics', 'إلكترونيات', 'Electronics'], ['other', 'أخرى', 'Other'],

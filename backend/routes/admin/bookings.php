@@ -44,6 +44,7 @@ Route::prefix('bookings')->name('bookings.')->group(function (): void {
         Route::post('redispatch', 'redispatch')->name('redispatch')->can('manage', 'booking');
         Route::post('force-transition', 'forceTransition')->name('force-transition')->can('forceTransition', 'booking');
         Route::post('lift-pin-lock', 'liftPinLock')->name('lift-pin-lock')->can('liftPinLock', 'booking');
+        Route::post('lift-recipient-otp-lock', 'liftRecipientOtpLock')->name('lift-recipient-otp-lock')->can('liftRecipientOtpLock', 'booking');
         Route::post('contact', 'contact')->name('contact')->can('manage', 'booking');
     });
 });

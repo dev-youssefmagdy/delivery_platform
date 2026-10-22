@@ -8,6 +8,7 @@
         Action::RedispatchNow->value => ['route' => 'admin.bookings.redispatch', 'variant' => 'primary', 'icon' => 'refresh', 'key' => 'redispatch'],
         Action::ForceTransition->value => ['route' => 'admin.bookings.force-transition', 'variant' => 'warning', 'icon' => 'bolt', 'key' => 'force_transition'],
         Action::LiftPinLock->value => ['route' => 'admin.bookings.lift-pin-lock', 'variant' => 'warning', 'icon' => 'lock-closed', 'key' => 'lift_pin_lock'],
+        Action::LiftRecipientOtpLock->value => ['route' => 'admin.bookings.lift-recipient-otp-lock', 'variant' => 'warning', 'icon' => 'lock-closed', 'key' => 'lift_recipient_otp_lock'],
         default => ['route' => 'admin.bookings.contact', 'variant' => 'primary', 'icon' => 'inbox', 'key' => 'contact'],
     };
     $stage = \App\Enums\Booking\CancellationStage::of($booking->status);

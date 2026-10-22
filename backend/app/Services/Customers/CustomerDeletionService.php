@@ -9,7 +9,11 @@ use App\Exceptions\BusinessRuleViolation;
 use App\Models\AccountDeletionRequest;
 use App\Models\Admin;
 use App\Models\User;
+use App\Repositories\Contracts\Booking\BookingContactRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
+use App\Repositories\Contracts\Booking\RecipientOtpRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerActivityRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
@@ -46,6 +50,10 @@ final class CustomerDeletionService
         private readonly ProviderDeletionService $providerDeletions,
         private readonly SupportTicketRepositoryInterface $tickets,
         private readonly BookingMessageRepositoryInterface $chat,
+        private readonly BookingContactRepositoryInterface $contacts,
+        private readonly RecipientOtpRepositoryInterface $recipientOtps,
+        private readonly DeliveryAttemptRepositoryInterface $deliveryAttempts,
+        private readonly BookingProofRepositoryInterface $proofs,
         private readonly PrivateFileStorage $files,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -86,7 +94,13 @@ final class CustomerDeletionService
             // staff notes stay for dispute and finance records. Chat: what the person wrote, text and images, is removed.
             $ticketFiles = $this->tickets->scrubOfUser($locked->id);
             $chatFiles = $this->chat->scrubSentBy($locked->id);
-            $supportFiles = [...$ticketFiles, ...$chatFiles];
+            // Parcels (P4.1): the sender / recipient names and phones, the recipient code hashes, the free text of failed attempts and the
+            // proof pictures (which may show people) go; custody events, proof rows (type, time, SHA-256) and attempt outcomes stay.
+            $contactsScrubbed = $this->contacts->scrubForCustomer($locked->id);
+            $this->recipientOtps->purgeForCustomer($locked->id);
+            $this->deliveryAttempts->scrubForCustomer($locked->id);
+            $proofFiles = $this->proofs->detachFilesForCustomer($locked->id);
+            $supportFiles = [...$ticketFiles, ...$chatFiles, ...$proofFiles];
 
             $this->requests->update($request, [
                 'status' => DeletionRequestStatus::Completed,
@@ -102,7 +116,7 @@ final class CustomerDeletionService
                 before: ['status' => $previousStatus->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged, 'coupon_attempts_scrubbed' => $couponAttemptsScrubbed, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles)],
+                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged, 'coupon_attempts_scrubbed' => $couponAttemptsScrubbed, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles), 'booking_contacts_scrubbed' => $contactsScrubbed, 'proof_files_removed' => count($proofFiles)],
             );
 
             return $request;

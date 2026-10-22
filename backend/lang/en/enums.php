@@ -369,6 +369,12 @@ return [
         'skipped' => 'Test number (not sent)',
     ],
 
+    'parcel_size' => [
+        'small' => 'Small (envelope)',
+        'medium' => 'Medium (shoe box)',
+        'large' => 'Large (bag)',
+    ],
+
     'proof_type' => [
         'photo' => 'Photo',
         'signature' => 'Signature',
@@ -1083,6 +1089,7 @@ return [
         'redispatch_now' => 'Re-dispatch now',
         'force_transition' => 'Force status',
         'lift_pin_lock' => 'Lift PIN lock',
+        'lift_recipient_otp_lock' => 'Lift recipient code lock',
     ],
 
     'operations_cancellation_fee' => [

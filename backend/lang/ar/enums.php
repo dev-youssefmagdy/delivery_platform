@@ -369,6 +369,12 @@ return [
         'skipped' => 'رقم تجريبي (لم يُرسل)',
     ],
 
+    'parcel_size' => [
+        'small' => 'صغير (مظروف)',
+        'medium' => 'متوسط (صندوق حذاء)',
+        'large' => 'كبير (حقيبة)',
+    ],
+
     'proof_type' => [
         'photo' => 'صورة',
         'signature' => 'توقيع',
@@ -1083,6 +1089,7 @@ return [
         'redispatch_now' => 'إعادة الإرسال الآن',
         'force_transition' => 'فرض الحالة',
         'lift_pin_lock' => 'رفع قفل الرمز',
+        'lift_recipient_otp_lock' => 'رفع قفل رمز المستلم',
     ],
 
     'operations_cancellation_fee' => [

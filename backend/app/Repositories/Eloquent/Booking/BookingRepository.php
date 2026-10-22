@@ -253,6 +253,9 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
             ->when($filters->customerPhone !== null, fn (Builder $query) => $query->whereHas('customer', fn (Builder $inner) => $this->applyPhoneFilter($inner, (string) $filters->customerPhone)))
             ->when($filters->providerPhone !== null, fn (Builder $query) => $query->whereHas('provider.user', fn (Builder $inner) => $this->applyPhoneFilter($inner, (string) $filters->providerPhone)))
             ->when($filters->providerId !== null, static fn (Builder $query) => $query->where('bookings.provider_id', $filters->providerId))
+            ->when($filters->custodyStatuses !== [], static fn (Builder $query) => $query->whereIn('bookings.custody_status', array_map(static fn ($status): string => $status->value, $filters->custodyStatuses)))
+            ->when($filters->parcelSizes !== [], static fn (Builder $query) => $query->whereIn('bookings.parcel_size', array_map(static fn ($size): string => $size->value, $filters->parcelSizes)))
+            ->when($filters->isFragile !== null, static fn (Builder $query) => $query->where('bookings.is_fragile', $filters->isFragile))
             ->when($filters->hasTicket !== null, static function (Builder $query) use ($filters): void {
                 $ticket = static fn ($sub) => $sub->select(DB::raw(1))->from('support_tickets')->whereColumn('support_tickets.booking_id', 'bookings.id');
 

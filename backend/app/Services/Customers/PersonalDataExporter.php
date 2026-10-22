@@ -8,7 +8,10 @@ use App\Models\BookingMessage;
 use App\Models\SupportTicket;
 use App\Models\TicketMessage;
 use App\Models\BookingStatusEvent;
+use App\Models\BookingContact;
+use App\Models\BookingProof;
 use App\Models\BookingStop;
+use App\Models\DeliveryAttempt;
 use App\DTOs\Coupon\CouponActivityFilterData;
 use App\Models\CouponAttempt;
 use App\Models\CouponReservation;
@@ -26,7 +29,10 @@ use App\Models\UserConsent;
 use App\Models\UserDevice;
 use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingContactRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Coupon\CouponAttemptRepositoryInterface;
@@ -62,6 +68,9 @@ final class PersonalDataExporter
         private readonly CouponReservationRepositoryInterface $couponReservations,
         private readonly CouponAttemptRepositoryInterface $couponAttempts,
         private readonly WalletStatementService $wallet,
+        private readonly BookingContactRepositoryInterface $contacts,
+        private readonly BookingProofRepositoryInterface $proofs,
+        private readonly DeliveryAttemptRepositoryInterface $deliveryAttempts,
     ) {}
 
     /**
@@ -225,6 +234,37 @@ final class PersonalDataExporter
         ];
     }
 
+    /**
+     * Parcel data of a booking (P4.1): the contacts the customer typed (third-party data they entered), proofs as facts (type,
+     * stage, time, hash; the pictures are not part of the export), failed delivery attempts and the restricted-goods acknowledgement.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function parcel(Booking $booking): ?array
+    {
+        $contacts = $this->contacts->forBooking($booking->id);
+        $proofs = $this->proofs->forBooking($booking->id);
+        $attempts = $this->deliveryAttempts->forBooking($booking->id);
+
+        if ($contacts->isEmpty() && $proofs->isEmpty() && $attempts->isEmpty() && $booking->custody_status === null) {
+            return null;
+        }
+
+        return [
+            'custody_status' => $booking->custody_status?->value,
+            'restricted_goods_acknowledged_at' => $booking->restricted_goods_acknowledged_at?->toIso8601String(),
+            'contacts' => $contacts->map(static fn (BookingContact $contact): array => ['role' => $contact->role->value, 'name' => $contact->name(), 'phone' => $contact->phone()])->values()->all(),
+            'proofs' => $proofs->map(static fn (BookingProof $proof): array => ['type' => $proof->proof_type->value, 'stage' => $proof->stage->value, 'taken_at' => $proof->created_at->toIso8601String(), 'sha256' => $proof->sha256])->values()->all(),
+            'delivery_attempts' => $attempts->map(static fn (DeliveryAttempt $attempt): array => [
+                'number' => $attempt->attempt_number,
+                'outcome' => $attempt->outcome->value,
+                'reason' => $attempt->reason,
+                'resolution' => $attempt->resolution?->value,
+                'at' => $attempt->created_at->toIso8601String(),
+            ])->values()->all(),
+        ];
+    }
+
     private function booking(Booking $booking): array
     {
         return [
@@ -254,6 +294,7 @@ final class PersonalDataExporter
                 'fee_minor' => $booking->cancellation_fee_minor,
             ],
             'ratings_and_reports' => $this->feedback($booking),
+            'parcel' => $this->parcel($booking),
             'timeline' => $this->bookingEvents->forBooking($booking)->map(static fn (BookingStatusEvent $event): array => [
                 'from' => $event->from_status?->value,
                 'to' => $event->to_status->value,

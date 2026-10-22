@@ -5,6 +5,8 @@ namespace App\DTOs\Booking;
 use App\DTOs\Concerns\ParsesFilterInput;
 use App\DTOs\Contracts\FilterData;
 use App\Enums\Booking\BookingStatus;
+use App\Enums\Booking\CustodyStatus;
+use App\Enums\Booking\ParcelSize;
 use App\Enums\Catalog\BookingType;
 use App\Enums\Payments\PaymentMethodType;
 use App\Enums\Payments\PaymentStatus;
@@ -13,7 +15,7 @@ use Illuminate\Http\Request;
 
 /**
  * Filters of the admin Bookings listing (Plan Appendix C): code, statuses, service category, booking type, city/zone,
- * payment status and method, created range, customer phone, provider phone, has incident, has ticket (P3.7). Phones are matched exactly (full number) or by their last digits, never shown.
+ * payment status and method, created range, customer phone, provider phone, has incident, has ticket (P3.7), custody status, parcel size and fragile (P4.1 indexed columns). Phones are matched exactly (full number) or by their last digits, never shown.
  */
 final readonly class BookingAdminFilterData implements FilterData
 {
@@ -27,6 +29,8 @@ final readonly class BookingAdminFilterData implements FilterData
      * @param list<int> $zoneIds
      * @param list<PaymentStatus> $paymentStatuses
      * @param list<PaymentMethodType> $paymentMethods
+     * @param list<CustodyStatus> $custodyStatuses
+     * @param list<ParcelSize> $parcelSizes
      */
     public function __construct(
         public ?string $code = null,
@@ -44,6 +48,9 @@ final readonly class BookingAdminFilterData implements FilterData
         public ?bool $hasIncident = null,
         public ?int $providerId = null,
         public ?bool $hasTicket = null,
+        public array $custodyStatuses = [],
+        public array $parcelSizes = [],
+        public ?bool $isFragile = null,
     ) {}
 
     public static function fromRequest(Request $request): static
@@ -66,6 +73,9 @@ final readonly class BookingAdminFilterData implements FilterData
             providerPhone: self::stringFilter($input, 'provider_phone', 24),
             hasIncident: self::boolFilter($input, 'has_incident'),
             hasTicket: self::boolFilter($input, 'has_ticket'),
+            custodyStatuses: self::enumListFilter($input, 'custody_statuses', CustodyStatus::class),
+            parcelSizes: self::enumListFilter($input, 'parcel_sizes', ParcelSize::class),
+            isFragile: self::boolFilter($input, 'is_fragile'),
         );
     }
 
@@ -74,6 +84,7 @@ final readonly class BookingAdminFilterData implements FilterData
         return self::countActive([
             $this->code, $this->statuses, $this->serviceCategoryIds, $this->bookingTypes, $this->cityIds, $this->zoneIds,
             $this->paymentStatuses, $this->paymentMethods, $this->from ?? $this->to, $this->customerPhone, $this->providerPhone, $this->hasIncident, $this->hasTicket,
+            $this->custodyStatuses, $this->parcelSizes, $this->isFragile,
         ]);
     }
 
@@ -93,6 +104,9 @@ final readonly class BookingAdminFilterData implements FilterData
             'provider_phone' => $this->providerPhone,
             'has_incident' => $this->hasIncident === null ? null : ($this->hasIncident ? '1' : '0'),
             'has_ticket' => $this->hasTicket === null ? null : ($this->hasTicket ? '1' : '0'),
+            'custody_statuses' => array_map(static fn (CustodyStatus $status): string => $status->value, $this->custodyStatuses),
+            'parcel_sizes' => array_map(static fn (ParcelSize $size): string => $size->value, $this->parcelSizes),
+            'is_fragile' => $this->isFragile === null ? null : ($this->isFragile ? '1' : '0'),
         ], static fn (mixed $value): bool => $value !== null && $value !== []);
     }
     /**

@@ -20,6 +20,7 @@ enum BookingOverrideAction: string implements HasLabel
     case RedispatchNow = 'redispatch_now';
     case ForceTransition = 'force_transition';
     case LiftPinLock = 'lift_pin_lock';
+    case LiftRecipientOtpLock = 'lift_recipient_otp_lock';
 
     public function permission(): AdminPermission
     {
@@ -27,7 +28,7 @@ enum BookingOverrideAction: string implements HasLabel
             self::CancelByOperations => AdminPermission::BookingsCancel,
             self::ExtendSearch, self::RedispatchNow => AdminPermission::BookingsManage,
             self::ForceTransition => AdminPermission::BookingsAssignOverride,
-            self::LiftPinLock => AdminPermission::BookingsPinOverride,
+            self::LiftPinLock, self::LiftRecipientOtpLock => AdminPermission::BookingsPinOverride,
         };
     }
 

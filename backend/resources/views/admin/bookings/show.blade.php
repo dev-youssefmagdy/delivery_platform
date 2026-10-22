@@ -28,6 +28,9 @@
         @if ($can(\App\Enums\Booking\BookingOverrideAction::LiftPinLock))
             <x-admin.button variant="warning" icon="lock-closed" data-modal-open="admin-global-modal" :data-modal-url="$form('lift_pin_lock')">{{ __('admin.bookings.actions.lift_pin_lock') }}</x-admin.button>
         @endif
+        @if ($can(\App\Enums\Booking\BookingOverrideAction::LiftRecipientOtpLock))
+            <x-admin.button variant="warning" icon="lock-closed" data-modal-open="admin-global-modal" :data-modal-url="$form('lift_recipient_otp_lock')">{{ __('admin.bookings.actions.lift_recipient_otp_lock') }}</x-admin.button>
+        @endif
         @if ($can(\App\Enums\Booking\BookingOverrideAction::ForceTransition))
             <x-admin.button variant="warning" icon="bolt" data-modal-open="admin-global-modal" :data-modal-url="$form('force_transition')">{{ __('admin.bookings.actions.force_transition') }}</x-admin.button>
         @endif

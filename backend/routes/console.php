@@ -30,6 +30,8 @@ Schedule::command('bookings:expire-searches')->everyFiveSeconds()->withoutOverla
 
 Schedule::command('offers:expire')->everyFiveSeconds()->withoutOverlapping();
 
+Schedule::command('courier:escalate-attempts')->everyMinute()->withoutOverlapping();
+
 Schedule::command('locations:prune')->dailyAt('03:30')->withoutOverlapping();
 
 Schedule::command('ledger:reconcile')->dailyAt('04:00')->withoutOverlapping();

@@ -43,7 +43,7 @@ final class BookingTabController extends AdminController
 
     public function safety(Booking $booking): View
     {
-        return view('admin.bookings.tabs.safety', ['safety' => $this->tabs->safety($booking), 'booking' => $booking]);
+        return view('admin.bookings.tabs.safety', ['safety' => $this->tabs->safety($booking, Gate::allows('viewPii', $booking)), 'booking' => $booking]);
     }
 
     public function ratings(Booking $booking): View

@@ -56,6 +56,8 @@ final class BookingProofRepository implements BookingProofRepositoryInterface
 
         // Proofs are append-only at model level; this is the one deliberate, audited erasure of the pictures.
         DB::table('booking_proofs')->whereIn('booking_id', $bookingIds)->whereNotNull('storage_path')->update(['storage_path' => null]);
+        // The optional free-text note of a proof goes with the pictures.
+        DB::table('booking_proofs')->whereIn('booking_id', $bookingIds)->whereNotNull('metadata')->update(['metadata' => DB::raw("JSON_REMOVE(metadata, '\$.note')")]);
 
         return array_values($paths);
     }

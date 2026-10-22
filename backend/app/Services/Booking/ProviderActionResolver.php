@@ -7,7 +7,12 @@ use App\Enums\Booking\ProviderBookingAction;
 use App\Enums\Common\ActorType;
 use App\Enums\Payments\PaymentMethodType;
 use App\Enums\Payments\PaymentStatus;
+use App\Enums\Identity\ClientApp;
+use App\Enums\Support\TicketSource;
 use App\Models\Booking;
+use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
+use App\Support\Chat\AppealEligibility;
+use App\Support\Chat\ChatWindow;
 
 /**
  * `allowed_actions` of the assigned provider's view of a booking. Mirrors the guards of the transition service: start is
@@ -15,7 +20,10 @@ use App\Models\Booking;
  */
 final class ProviderActionResolver
 {
-    public function __construct(private readonly RatingService $ratings) {}
+    public function __construct(
+        private readonly RatingService $ratings,
+        private readonly SupportTicketRepositoryInterface $tickets,
+    ) {}
 
     /**
      * @return list<ProviderBookingAction>
@@ -73,6 +81,16 @@ final class ProviderActionResolver
 
         if (BookingReportService::canReport($booking)) {
             $actions[] = ProviderBookingAction::Report;
+        }
+
+        if (ChatWindow::hasConversation($booking)) {
+            $actions[] = ProviderBookingAction::Chat;
+        }
+
+        $providerUserId = $booking->provider?->user_id;
+
+        if ($providerUserId !== null && AppealEligibility::allowed($booking, ClientApp::Provider) && $this->tickets->findForBookingAndSource($booking->id, $providerUserId, TicketSource::Appeal->value) === null) {
+            $actions[] = ProviderBookingAction::Appeal;
         }
 
         return $actions;

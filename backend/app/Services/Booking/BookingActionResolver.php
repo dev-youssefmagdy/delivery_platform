@@ -10,7 +10,12 @@ use App\Enums\Settings\SettingKey;
 use App\Integrations\Payments\PaymentGatewayManager;
 use App\Models\Booking;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
+use App\Enums\Identity\ClientApp;
+use App\Enums\Support\TicketSource;
+use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Services\Settings\SettingsService;
+use App\Support\Chat\AppealEligibility;
+use App\Support\Chat\ChatWindow;
 
 /**
  * Computes `allowed_actions` for the customer's view of a booking. Apps render buttons from this list and never infer
@@ -24,6 +29,7 @@ final class BookingActionResolver
         private readonly PaymentRepositoryInterface $payments,
         private readonly SettingsService $settings,
         private readonly PaymentGatewayManager $gateways,
+        private readonly SupportTicketRepositoryInterface $tickets,
     ) {}
 
     /**
@@ -79,6 +85,15 @@ final class BookingActionResolver
 
         if (BookingReportService::canReport($booking)) {
             $actions[] = BookingAction::Report;
+        }
+
+        // Chat with the selected provider (reading stays possible after the window closes; the chat endpoint says whether sending is open).
+        if (ChatWindow::hasConversation($booking)) {
+            $actions[] = BookingAction::Chat;
+        }
+
+        if (AppealEligibility::allowed($booking, ClientApp::Customer) && $this->tickets->findForBookingAndSource($booking->id, $booking->customer_id, TicketSource::Appeal->value) === null) {
+            $actions[] = BookingAction::Appeal;
         }
 
         return $actions;

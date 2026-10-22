@@ -547,6 +547,8 @@ return [
     ],
 
     'booking_action' => [
+        'chat' => 'Chat',
+        'appeal' => 'Appeal fee',
         'pay' => 'Pay online',
         'tip' => 'Leave a tip',
         'update_request' => 'Edit the request',
@@ -990,6 +992,8 @@ return [
     ],
 
     'provider_booking_action' => [
+        'chat' => 'Chat',
+        'appeal' => 'Appeal fee',
         'confirm_cash_collected' => 'Confirm cash collected',
         'request_adjustment' => 'Change the fare',
         'view_receipt' => 'View the receipt',

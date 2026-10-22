@@ -24,6 +24,8 @@ enum ProviderBookingAction: string implements HasLabel
     case ConfirmCashCollected = 'confirm_cash_collected';
     case RequestAdjustment = 'request_adjustment';
     case ViewReceipt = 'view_receipt';
+    case Chat = 'chat';
+    case Appeal = 'appeal';
 
     public function label(): string
     {

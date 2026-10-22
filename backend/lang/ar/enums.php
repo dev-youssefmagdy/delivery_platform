@@ -547,6 +547,8 @@ return [
     ],
 
     'booking_action' => [
+        'chat' => 'محادثة',
+        'appeal' => 'اعتراض على الرسوم',
         'pay' => 'الدفع إلكترونياً',
         'tip' => 'ترك إكرامية',
         'update_request' => 'تعديل الطلب',
@@ -990,6 +992,8 @@ return [
     ],
 
     'provider_booking_action' => [
+        'chat' => 'محادثة',
+        'appeal' => 'اعتراض على الرسوم',
         'confirm_cash_collected' => 'تأكيد تحصيل النقد',
         'request_adjustment' => 'تعديل الأجرة',
         'view_receipt' => 'عرض الإيصال',

@@ -24,6 +24,7 @@ use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Support\TicketThreadRepositoryInterface;
+use App\Support\Chat\AppealEligibility;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
@@ -100,10 +101,7 @@ final class TicketService
         $booking = $this->bookingFor($user, $app, $bookingUuid);
         $decision = (array) ($booking->cancellation_decision ?? []);
 
-        $chargedToMe = (int) ($booking->cancellation_fee_minor ?? 0) > 0 && ($decision['payer'] ?? null) === $app->value;
-        $penalised = $app === ClientApp::Provider && ! empty($decision['penalty']);
-
-        if (! $booking->status->isCancellation() || (! $chargedToMe && ! $penalised)) {
+        if (! AppealEligibility::allowed($booking, $app)) {
             throw BusinessRuleViolation::make('appeal_not_available');
         }
 

@@ -23,6 +23,8 @@ enum BookingAction: string implements HasLabel
     case Tip = 'tip';
     case RequestAdjustment = 'request_adjustment';
     case ViewReceipt = 'view_receipt';
+    case Chat = 'chat';
+    case Appeal = 'appeal';
 
     public function label(): string
     {

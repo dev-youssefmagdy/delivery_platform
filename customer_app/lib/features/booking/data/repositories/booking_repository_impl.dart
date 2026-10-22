@@ -43,6 +43,7 @@ class BookingRepositoryImpl implements BookingRepository {
       'proposed_fare_minor': request.proposedFareMinor,
       'currency': ?request.currency,
       'payment_method': request.paymentMethod.value,
+      if (request.couponCode != null && request.couponCode!.isNotEmpty) 'coupon_code': request.couponCode,
     };
     return BookingDto.booking(
       (await _remote.create(body, idempotencyKey)).data,

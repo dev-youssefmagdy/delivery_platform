@@ -27,6 +27,7 @@ String? customerRouteFor(NotificationLink link) {
   return switch (link.type) {
     NotificationLinkType.booking when id != null => Routes.booking(id),
     NotificationLinkType.chat when id != null => Routes.bookingChat(id),
+    NotificationLinkType.wallet => Routes.wallet,
     NotificationLinkType.support when id != null => Routes.supportTicket(id),
     NotificationLinkType.support => Routes.support,
     NotificationLinkType.inbox => Routes.notifications,

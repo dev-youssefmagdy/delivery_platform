@@ -912,5 +912,259 @@
   "supportHelpAboutTrip": "احصل على مساعدة بخصوص هذه الرحلة",
   "supportAppealButton": "الاعتراض على الرسوم",
   "actionRefresh": "تحديث",
-  "actionBack": "رجوع"
+  "actionBack": "رجوع",
+  "navWallet": "المحفظة",
+  "navOffers": "العروض",
+  "walTitle": "المحفظة",
+  "walBalance": "رصيد المحفظة",
+  "walNoWallet": "تُفتح محفظتك عند أول استرداد أو رصيد.",
+  "walTransactions": "العمليات",
+  "walEmptyTitle": "لا توجد عمليات بعد",
+  "walEmptyBody": "ستظهر هنا المبالغ المستردة والأرصدة والرسوم.",
+  "walLoadMore": "عرض المزيد",
+  "walBalanceAfter": "الرصيد: {amount}",
+  "@walBalanceAfter": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walDebtTitle": "عليك رسوم إلغاء مستحقة",
+  "walDebtBody": "رسوم إلغاء غير مدفوعة: {amount}. سدّدها لتتمكن من الحجز دون قيود.",
+  "@walDebtBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walSettleDebt": "سدّد المبلغ المستحق",
+  "walSettlePay": "ادفع {amount}",
+  "@walSettlePay": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walErrDebtBlocksBooking": "لديك رسوم إلغاء غير مدفوعة. سدّدها من تبويب المحفظة لتتمكن من الحجز مجدداً.",
+  "walFeeDebtNote": "أُضيفت الرسوم إلى محفظتك كمبلغ مستحق. يمكنك سداده من تبويب المحفظة.",
+  "walOpenWallet": "فتح المحفظة",
+  "bkErrCooldown": "الحجز متوقف لفترة قصيرة بعد تكرار الإلغاء. حاول لاحقاً.",
+  "pmTitle": "وسائل الدفع",
+  "pmIntro": "تُدخل بيانات بطاقتك في صفحة مزود الدفع فقط. نحتفظ بنوع البطاقة وآخر أربعة أرقام فقط.",
+  "pmEmptyTitle": "لا توجد وسائل دفع محفوظة",
+  "pmEmptyBody": "أضف بطاقة أو محفظة هاتف للدفع بسرعة أكبر.",
+  "pmCard": "بطاقة",
+  "pmWallet": "محفظة هاتف",
+  "pmPending": "بانتظار التأكيد",
+  "pmDefault": "الافتراضية",
+  "pmAddCard": "إضافة بطاقة",
+  "pmAddWallet": "إضافة محفظة هاتف",
+  "pmDelete": "إزالة",
+  "pmDeleteTitle": "إزالة وسيلة الدفع هذه؟",
+  "pmDeleteBody": "يمكنك إضافتها مجدداً لاحقاً.",
+  "pmDeleted": "تمت إزالة وسيلة الدفع.",
+  "pmSetupPending": "ستظهر وسيلة الدفع هنا بعد أن يؤكدها مزود الدفع.",
+  "pmErrSetupUnsupported": "تُحفظ البطاقة أثناء دفع أجرة رحلة مع هذا المزود.",
+  "payNow": "ادفع الآن",
+  "payDueTitle": "مبلغ مستحق للدفع",
+  "payCouponSaved": "وفّرت {amount} بالكوبون.",
+  "@payCouponSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "payNewCard": "بطاقة أخرى",
+  "payNewWallet": "محفظة أخرى",
+  "payWalletPhone": "رقم هاتف المحفظة",
+  "payWalletPhoneHelp": "اتركه فارغاً لاستخدام هاتف حسابك.",
+  "paySecureNote": "ستدفع في صفحة مزود الدفع الآمنة.",
+  "payAwaitingTitle": "بانتظار تأكيد الدفع",
+  "payAwaitingBody": "أتمّ الدفع في صفحة المزود. نتأكد من الدفع لدى المزود قبل اعتباره مدفوعاً، وقد يستغرق ذلك لحظات.",
+  "payCheckStatus": "تحقق من حالة الدفع",
+  "payOpenAgain": "فتح صفحة الدفع مجدداً",
+  "payLaunchFailed": "تعذّر فتح صفحة الدفع. حاول مجدداً.",
+  "payPaidTitle": "تم استلام الدفع",
+  "payPaidBody": "شكراً لك. تم تأكيد دفعتك.",
+  "payFailedTitle": "لم تتم عملية الدفع",
+  "payTryAgain": "حاول مجدداً",
+  "payFailInsufficient": "الرصيد غير كافٍ. استخدم وسيلة أخرى أو حاول مجدداً.",
+  "payFailExpired": "انتهت صلاحية البطاقة. استخدم بطاقة أخرى.",
+  "payFailAuth": "تعذّر على البنك التحقق من الدفع. حاول مجدداً أو استخدم وسيلة أخرى.",
+  "payFailCancelled": "تم إلغاء الدفع.",
+  "payFailTimeout": "انتهت مهلة صفحة الدفع. ابدأ من جديد.",
+  "payFailDeclined": "تم رفض الدفع. حاول مجدداً أو استخدم وسيلة أخرى.",
+  "payReviewTitle": "نراجع دفعتك",
+  "payReviewBody": "تعذّر تأكيد هذه الدفعة تلقائياً. لا تدفع مجدداً؛ فريقنا يراجعها.",
+  "payContactSupport": "اسأل الدعم عن هذه الدفعة",
+  "payErrUnavailable": "الدفع الإلكتروني غير متاح حالياً. حاول لاحقاً.",
+  "payErrMethod": "لا يمكن استخدام وسيلة الدفع هذه. اختر وسيلة أخرى.",
+  "payErrNotPayable": "لا يمكن دفع هذه الرحلة الآن.",
+  "payErrNothingToPay": "لا يوجد مبلغ للدفع.",
+  "payErrNeedsReview": "هناك دفعة سابقة قيد المراجعة. يرجى انتظار فريقنا.",
+  "payErrWalletPhone": "أدخل رقم هاتف محفظتك.",
+  "payStatusFailed": "فشل",
+  "payStatusRefunded": "تم الاسترداد",
+  "payStatusPartRefunded": "تم استرداد جزء",
+  "payStatusNotRequired": "لا يوجد مبلغ للدفع",
+  "payStatusReview": "قيد المراجعة",
+  "bkPaymentOnlineNote": "يُدفع إلكترونياً بعد الرحلة.",
+  "tipTitle": "اترك إكرامية",
+  "tipBody": "اختياري. الإكرامية كاملة لسائقك.",
+  "tipOther": "مبلغ آخر",
+  "tipAmountLabel": "مبلغ الإكرامية ({currency})",
+  "@tipAmountLabel": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "tipPay": "ادفع إكرامية {amount}",
+  "@tipPay": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "tipErrNotAvailable": "الإكرامية غير متاحة لهذه الرحلة.",
+  "tipErrInvalid": "أدخل مبلغ إكرامية صحيحاً.",
+  "tipErrTooLarge": "الإكرامية أكبر من الحد الأقصى المسموح.",
+  "tipErrAlreadyGiven": "لقد تركت إكرامية لهذه الرحلة بالفعل.",
+  "cpnTitle": "العروض",
+  "cpnAvailable": "عروض لك",
+  "cpnNoneAvailable": "لا توجد عروض الآن. لديك كود؟ أدخله عند الحجز.",
+  "cpnAutoNote": "يُطبَّق هذا العرض تلقائياً عند الحجز إذا كنت مستحقاً له.",
+  "cpnTerms": "الشروط",
+  "cpnValidUntil": "صالح حتى {date}",
+  "@cpnValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cpnHistory": "استخدام الكوبونات مؤخراً",
+  "cpnNoHistory": "لم تستخدم كوبوناً بعد.",
+  "cpnUsedStatus": "مستخدم",
+  "cpnReservedStatus": "محجوز",
+  "cpnReleasedStatus": "أُعيد",
+  "cpnReversedStatus": "أُلغي",
+  "cpnUnknownStatus": "أخرى",
+  "cpnFormTitle": "كوبون",
+  "cpnFormLabel": "كود الكوبون",
+  "cpnApply": "تطبيق",
+  "cpnNeedFare": "حدد أجرتك أولاً للتحقق من الكوبون.",
+  "cpnNotChecked": "اضغط تطبيق لمعرفة خصمك. يؤكده الخادم عند الحجز.",
+  "cpnQuoteDiscount": "ستوفر {amount} مع {title}",
+  "@cpnQuoteDiscount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cpnReasonEligible": "الكوبون ينطبق.",
+  "cpnReasonNotFound": "كود الكوبون غير موجود.",
+  "cpnReasonNotActive": "هذا الكوبون غير مفعّل.",
+  "cpnReasonNotStarted": "لم يبدأ هذا الكوبون بعد.",
+  "cpnReasonExpired": "انتهت صلاحية هذا الكوبون.",
+  "cpnReasonExhausted": "هذا الكوبون لم يعد متاحاً.",
+  "cpnReasonService": "هذا الكوبون لا يشمل هذه الخدمة.",
+  "cpnReasonArea": "هذا الكوبون لا يشمل منطقتك.",
+  "cpnReasonPayment": "هذا الكوبون لا يعمل مع وسيلة الدفع المختارة.",
+  "cpnReasonNewOnly": "هذا الكوبون للعملاء الجدد فقط.",
+  "cpnReasonReturningOnly": "هذا الكوبون للعملاء السابقين فقط.",
+  "cpnReasonSchedule": "هذا الكوبون غير صالح في هذا الوقت.",
+  "cpnReasonMinimum": "الأجرة أقل من الحد الأدنى لهذا الكوبون.",
+  "cpnReasonCustomerLimit": "استخدمت هذا الكوبون بالحد الأقصى المسموح.",
+  "cpnReasonStacking": "لا يمكن دمج هذا الكوبون مع عرض آخر.",
+  "cpnReasonCurrency": "هذا الكوبون لا يطابق عملتك.",
+  "cpnReasonNoDiscount": "لا يمنح هذا الكوبون خصماً على هذه الأجرة.",
+  "cpnReasonUnknown": "لا يمكن استخدام هذا الكوبون.",
+  "rcpTitle": "الإيصال",
+  "rcpViewFull": "الإيصال الكامل",
+  "rcpNumber": "إيصال {number}",
+  "@rcpNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpDriver": "السائق",
+  "rcpFrom": "من",
+  "rcpTo": "إلى",
+  "rcpBreakdown": "التفاصيل",
+  "rcpAdjustment": "إضافة: {label}",
+  "@rcpAdjustment": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpSubtotal": "المجموع الفرعي",
+  "rcpDiscount": "خصم الكوبون",
+  "rcpServiceFee": "رسوم الخدمة",
+  "rcpTax": "الضريبة",
+  "rcpTaxRate": "الضريبة ({rate}%)",
+  "@rcpTaxRate": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpTip": "الإكرامية",
+  "rcpTotal": "الإجمالي المطلوب",
+  "rcpOpenPrintable": "فتح الإيصال للطباعة",
+  "adjTitle": "تغييرات الأجرة",
+  "adjApprove": "موافقة",
+  "adjReject": "رفض",
+  "adjWithdraw": "سحب الطلب",
+  "adjApproved": "وافقت على التغيير. تم تحديث الأجرة.",
+  "adjRejected": "رفضت التغيير.",
+  "adjRequestedByYou": "طلبته أنت",
+  "adjRequestedByDriver": "طلبه السائق",
+  "adjExpires": "أجب قبل {time}",
+  "@adjExpires": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "adjNewTotal": "الإجمالي الجديد: {amount}",
+  "@adjNewTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "adjNote": "ملاحظة",
+  "adjSheetTitle": "يطلب سائقك تغيير الأجرة",
+  "adjSheetBody": "الطلب: {type}. لا تتغير الأجرة إلا إذا وافقت.",
+  "@adjSheetBody": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "adjOldTotal": "الإجمالي الحالي",
+  "adjNewTotalLabel": "الإجمالي عند الموافقة",
+  "adjNoteOptional": "ملاحظة (اختيارية)",
+  "adjDecideLater": "قرر لاحقاً",
+  "adjErrNotPending": "تمت الإجابة عن هذا الطلب أو انتهت مدته.",
+  "adjErrCounterpart": "يمكن للطرف الآخر فقط الإجابة عن هذا الطلب."
 }

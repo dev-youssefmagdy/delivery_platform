@@ -1777,4 +1777,508 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get actionBack => 'رجوع';
+
+  @override
+  String get navWallet => 'المحفظة';
+
+  @override
+  String get navOffers => 'العروض';
+
+  @override
+  String get walTitle => 'المحفظة';
+
+  @override
+  String get walBalance => 'رصيد المحفظة';
+
+  @override
+  String get walNoWallet => 'تُفتح محفظتك عند أول استرداد أو رصيد.';
+
+  @override
+  String get walTransactions => 'العمليات';
+
+  @override
+  String get walEmptyTitle => 'لا توجد عمليات بعد';
+
+  @override
+  String get walEmptyBody => 'ستظهر هنا المبالغ المستردة والأرصدة والرسوم.';
+
+  @override
+  String get walLoadMore => 'عرض المزيد';
+
+  @override
+  String walBalanceAfter(String amount) {
+    return 'الرصيد: $amount';
+  }
+
+  @override
+  String get walDebtTitle => 'عليك رسوم إلغاء مستحقة';
+
+  @override
+  String walDebtBody(String amount) {
+    return 'رسوم إلغاء غير مدفوعة: $amount. سدّدها لتتمكن من الحجز دون قيود.';
+  }
+
+  @override
+  String get walSettleDebt => 'سدّد المبلغ المستحق';
+
+  @override
+  String walSettlePay(String amount) {
+    return 'ادفع $amount';
+  }
+
+  @override
+  String get walErrDebtBlocksBooking =>
+      'لديك رسوم إلغاء غير مدفوعة. سدّدها من تبويب المحفظة لتتمكن من الحجز مجدداً.';
+
+  @override
+  String get walFeeDebtNote =>
+      'أُضيفت الرسوم إلى محفظتك كمبلغ مستحق. يمكنك سداده من تبويب المحفظة.';
+
+  @override
+  String get walOpenWallet => 'فتح المحفظة';
+
+  @override
+  String get bkErrCooldown =>
+      'الحجز متوقف لفترة قصيرة بعد تكرار الإلغاء. حاول لاحقاً.';
+
+  @override
+  String get pmTitle => 'وسائل الدفع';
+
+  @override
+  String get pmIntro =>
+      'تُدخل بيانات بطاقتك في صفحة مزود الدفع فقط. نحتفظ بنوع البطاقة وآخر أربعة أرقام فقط.';
+
+  @override
+  String get pmEmptyTitle => 'لا توجد وسائل دفع محفوظة';
+
+  @override
+  String get pmEmptyBody => 'أضف بطاقة أو محفظة هاتف للدفع بسرعة أكبر.';
+
+  @override
+  String get pmCard => 'بطاقة';
+
+  @override
+  String get pmWallet => 'محفظة هاتف';
+
+  @override
+  String get pmPending => 'بانتظار التأكيد';
+
+  @override
+  String get pmDefault => 'الافتراضية';
+
+  @override
+  String get pmAddCard => 'إضافة بطاقة';
+
+  @override
+  String get pmAddWallet => 'إضافة محفظة هاتف';
+
+  @override
+  String get pmDelete => 'إزالة';
+
+  @override
+  String get pmDeleteTitle => 'إزالة وسيلة الدفع هذه؟';
+
+  @override
+  String get pmDeleteBody => 'يمكنك إضافتها مجدداً لاحقاً.';
+
+  @override
+  String get pmDeleted => 'تمت إزالة وسيلة الدفع.';
+
+  @override
+  String get pmSetupPending =>
+      'ستظهر وسيلة الدفع هنا بعد أن يؤكدها مزود الدفع.';
+
+  @override
+  String get pmErrSetupUnsupported =>
+      'تُحفظ البطاقة أثناء دفع أجرة رحلة مع هذا المزود.';
+
+  @override
+  String get payNow => 'ادفع الآن';
+
+  @override
+  String get payDueTitle => 'مبلغ مستحق للدفع';
+
+  @override
+  String payCouponSaved(String amount) {
+    return 'وفّرت $amount بالكوبون.';
+  }
+
+  @override
+  String get payNewCard => 'بطاقة أخرى';
+
+  @override
+  String get payNewWallet => 'محفظة أخرى';
+
+  @override
+  String get payWalletPhone => 'رقم هاتف المحفظة';
+
+  @override
+  String get payWalletPhoneHelp => 'اتركه فارغاً لاستخدام هاتف حسابك.';
+
+  @override
+  String get paySecureNote => 'ستدفع في صفحة مزود الدفع الآمنة.';
+
+  @override
+  String get payAwaitingTitle => 'بانتظار تأكيد الدفع';
+
+  @override
+  String get payAwaitingBody =>
+      'أتمّ الدفع في صفحة المزود. نتأكد من الدفع لدى المزود قبل اعتباره مدفوعاً، وقد يستغرق ذلك لحظات.';
+
+  @override
+  String get payCheckStatus => 'تحقق من حالة الدفع';
+
+  @override
+  String get payOpenAgain => 'فتح صفحة الدفع مجدداً';
+
+  @override
+  String get payLaunchFailed => 'تعذّر فتح صفحة الدفع. حاول مجدداً.';
+
+  @override
+  String get payPaidTitle => 'تم استلام الدفع';
+
+  @override
+  String get payPaidBody => 'شكراً لك. تم تأكيد دفعتك.';
+
+  @override
+  String get payFailedTitle => 'لم تتم عملية الدفع';
+
+  @override
+  String get payTryAgain => 'حاول مجدداً';
+
+  @override
+  String get payFailInsufficient =>
+      'الرصيد غير كافٍ. استخدم وسيلة أخرى أو حاول مجدداً.';
+
+  @override
+  String get payFailExpired => 'انتهت صلاحية البطاقة. استخدم بطاقة أخرى.';
+
+  @override
+  String get payFailAuth =>
+      'تعذّر على البنك التحقق من الدفع. حاول مجدداً أو استخدم وسيلة أخرى.';
+
+  @override
+  String get payFailCancelled => 'تم إلغاء الدفع.';
+
+  @override
+  String get payFailTimeout => 'انتهت مهلة صفحة الدفع. ابدأ من جديد.';
+
+  @override
+  String get payFailDeclined =>
+      'تم رفض الدفع. حاول مجدداً أو استخدم وسيلة أخرى.';
+
+  @override
+  String get payReviewTitle => 'نراجع دفعتك';
+
+  @override
+  String get payReviewBody =>
+      'تعذّر تأكيد هذه الدفعة تلقائياً. لا تدفع مجدداً؛ فريقنا يراجعها.';
+
+  @override
+  String get payContactSupport => 'اسأل الدعم عن هذه الدفعة';
+
+  @override
+  String get payErrUnavailable =>
+      'الدفع الإلكتروني غير متاح حالياً. حاول لاحقاً.';
+
+  @override
+  String get payErrMethod =>
+      'لا يمكن استخدام وسيلة الدفع هذه. اختر وسيلة أخرى.';
+
+  @override
+  String get payErrNotPayable => 'لا يمكن دفع هذه الرحلة الآن.';
+
+  @override
+  String get payErrNothingToPay => 'لا يوجد مبلغ للدفع.';
+
+  @override
+  String get payErrNeedsReview =>
+      'هناك دفعة سابقة قيد المراجعة. يرجى انتظار فريقنا.';
+
+  @override
+  String get payErrWalletPhone => 'أدخل رقم هاتف محفظتك.';
+
+  @override
+  String get payStatusFailed => 'فشل';
+
+  @override
+  String get payStatusRefunded => 'تم الاسترداد';
+
+  @override
+  String get payStatusPartRefunded => 'تم استرداد جزء';
+
+  @override
+  String get payStatusNotRequired => 'لا يوجد مبلغ للدفع';
+
+  @override
+  String get payStatusReview => 'قيد المراجعة';
+
+  @override
+  String get bkPaymentOnlineNote => 'يُدفع إلكترونياً بعد الرحلة.';
+
+  @override
+  String get tipTitle => 'اترك إكرامية';
+
+  @override
+  String get tipBody => 'اختياري. الإكرامية كاملة لسائقك.';
+
+  @override
+  String get tipOther => 'مبلغ آخر';
+
+  @override
+  String tipAmountLabel(String currency) {
+    return 'مبلغ الإكرامية ($currency)';
+  }
+
+  @override
+  String tipPay(String amount) {
+    return 'ادفع إكرامية $amount';
+  }
+
+  @override
+  String get tipErrNotAvailable => 'الإكرامية غير متاحة لهذه الرحلة.';
+
+  @override
+  String get tipErrInvalid => 'أدخل مبلغ إكرامية صحيحاً.';
+
+  @override
+  String get tipErrTooLarge => 'الإكرامية أكبر من الحد الأقصى المسموح.';
+
+  @override
+  String get tipErrAlreadyGiven => 'لقد تركت إكرامية لهذه الرحلة بالفعل.';
+
+  @override
+  String get cpnTitle => 'العروض';
+
+  @override
+  String get cpnAvailable => 'عروض لك';
+
+  @override
+  String get cpnNoneAvailable =>
+      'لا توجد عروض الآن. لديك كود؟ أدخله عند الحجز.';
+
+  @override
+  String get cpnAutoNote =>
+      'يُطبَّق هذا العرض تلقائياً عند الحجز إذا كنت مستحقاً له.';
+
+  @override
+  String get cpnTerms => 'الشروط';
+
+  @override
+  String cpnValidUntil(String date) {
+    return 'صالح حتى $date';
+  }
+
+  @override
+  String get cpnHistory => 'استخدام الكوبونات مؤخراً';
+
+  @override
+  String get cpnNoHistory => 'لم تستخدم كوبوناً بعد.';
+
+  @override
+  String get cpnUsedStatus => 'مستخدم';
+
+  @override
+  String get cpnReservedStatus => 'محجوز';
+
+  @override
+  String get cpnReleasedStatus => 'أُعيد';
+
+  @override
+  String get cpnReversedStatus => 'أُلغي';
+
+  @override
+  String get cpnUnknownStatus => 'أخرى';
+
+  @override
+  String get cpnFormTitle => 'كوبون';
+
+  @override
+  String get cpnFormLabel => 'كود الكوبون';
+
+  @override
+  String get cpnApply => 'تطبيق';
+
+  @override
+  String get cpnNeedFare => 'حدد أجرتك أولاً للتحقق من الكوبون.';
+
+  @override
+  String get cpnNotChecked => 'اضغط تطبيق لمعرفة خصمك. يؤكده الخادم عند الحجز.';
+
+  @override
+  String cpnQuoteDiscount(String amount, String title) {
+    return 'ستوفر $amount مع $title';
+  }
+
+  @override
+  String get cpnReasonEligible => 'الكوبون ينطبق.';
+
+  @override
+  String get cpnReasonNotFound => 'كود الكوبون غير موجود.';
+
+  @override
+  String get cpnReasonNotActive => 'هذا الكوبون غير مفعّل.';
+
+  @override
+  String get cpnReasonNotStarted => 'لم يبدأ هذا الكوبون بعد.';
+
+  @override
+  String get cpnReasonExpired => 'انتهت صلاحية هذا الكوبون.';
+
+  @override
+  String get cpnReasonExhausted => 'هذا الكوبون لم يعد متاحاً.';
+
+  @override
+  String get cpnReasonService => 'هذا الكوبون لا يشمل هذه الخدمة.';
+
+  @override
+  String get cpnReasonArea => 'هذا الكوبون لا يشمل منطقتك.';
+
+  @override
+  String get cpnReasonPayment => 'هذا الكوبون لا يعمل مع وسيلة الدفع المختارة.';
+
+  @override
+  String get cpnReasonNewOnly => 'هذا الكوبون للعملاء الجدد فقط.';
+
+  @override
+  String get cpnReasonReturningOnly => 'هذا الكوبون للعملاء السابقين فقط.';
+
+  @override
+  String get cpnReasonSchedule => 'هذا الكوبون غير صالح في هذا الوقت.';
+
+  @override
+  String get cpnReasonMinimum => 'الأجرة أقل من الحد الأدنى لهذا الكوبون.';
+
+  @override
+  String get cpnReasonCustomerLimit =>
+      'استخدمت هذا الكوبون بالحد الأقصى المسموح.';
+
+  @override
+  String get cpnReasonStacking => 'لا يمكن دمج هذا الكوبون مع عرض آخر.';
+
+  @override
+  String get cpnReasonCurrency => 'هذا الكوبون لا يطابق عملتك.';
+
+  @override
+  String get cpnReasonNoDiscount => 'لا يمنح هذا الكوبون خصماً على هذه الأجرة.';
+
+  @override
+  String get cpnReasonUnknown => 'لا يمكن استخدام هذا الكوبون.';
+
+  @override
+  String get rcpTitle => 'الإيصال';
+
+  @override
+  String get rcpViewFull => 'الإيصال الكامل';
+
+  @override
+  String rcpNumber(String number) {
+    return 'إيصال $number';
+  }
+
+  @override
+  String get rcpDriver => 'السائق';
+
+  @override
+  String get rcpFrom => 'من';
+
+  @override
+  String get rcpTo => 'إلى';
+
+  @override
+  String get rcpBreakdown => 'التفاصيل';
+
+  @override
+  String rcpAdjustment(String label) {
+    return 'إضافة: $label';
+  }
+
+  @override
+  String get rcpSubtotal => 'المجموع الفرعي';
+
+  @override
+  String get rcpDiscount => 'خصم الكوبون';
+
+  @override
+  String get rcpServiceFee => 'رسوم الخدمة';
+
+  @override
+  String get rcpTax => 'الضريبة';
+
+  @override
+  String rcpTaxRate(String rate) {
+    return 'الضريبة ($rate%)';
+  }
+
+  @override
+  String get rcpTip => 'الإكرامية';
+
+  @override
+  String get rcpTotal => 'الإجمالي المطلوب';
+
+  @override
+  String get rcpOpenPrintable => 'فتح الإيصال للطباعة';
+
+  @override
+  String get adjTitle => 'تغييرات الأجرة';
+
+  @override
+  String get adjApprove => 'موافقة';
+
+  @override
+  String get adjReject => 'رفض';
+
+  @override
+  String get adjWithdraw => 'سحب الطلب';
+
+  @override
+  String get adjApproved => 'وافقت على التغيير. تم تحديث الأجرة.';
+
+  @override
+  String get adjRejected => 'رفضت التغيير.';
+
+  @override
+  String get adjRequestedByYou => 'طلبته أنت';
+
+  @override
+  String get adjRequestedByDriver => 'طلبه السائق';
+
+  @override
+  String adjExpires(String time) {
+    return 'أجب قبل $time';
+  }
+
+  @override
+  String adjNewTotal(String amount) {
+    return 'الإجمالي الجديد: $amount';
+  }
+
+  @override
+  String get adjNote => 'ملاحظة';
+
+  @override
+  String get adjSheetTitle => 'يطلب سائقك تغيير الأجرة';
+
+  @override
+  String adjSheetBody(String type) {
+    return 'الطلب: $type. لا تتغير الأجرة إلا إذا وافقت.';
+  }
+
+  @override
+  String get adjOldTotal => 'الإجمالي الحالي';
+
+  @override
+  String get adjNewTotalLabel => 'الإجمالي عند الموافقة';
+
+  @override
+  String get adjNoteOptional => 'ملاحظة (اختيارية)';
+
+  @override
+  String get adjDecideLater => 'قرر لاحقاً';
+
+  @override
+  String get adjErrNotPending => 'تمت الإجابة عن هذا الطلب أو انتهت مدته.';
+
+  @override
+  String get adjErrCounterpart => 'يمكن للطرف الآخر فقط الإجابة عن هذا الطلب.';
 }

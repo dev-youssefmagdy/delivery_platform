@@ -8,6 +8,7 @@ import 'package:platform_core/platform_core.dart';
 import '../../../../core/providers.dart';
 import '../../../../core/realtime_providers.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../payments/presentation/providers/payments_providers.dart';
 import '../../data/datasources/booking_remote_data_source.dart';
 import '../../data/repositories/booking_repository_impl.dart';
 import '../../domain/entities/booking_entities.dart';
@@ -119,17 +120,24 @@ class BookingDraftNotifier extends Notifier<BookingDraft> {
   @override
   BookingDraft build() => const BookingDraft();
 
-  void setFare(int? minor) => state = minor == null
-      ? state.copyWith(clearFare: true, clearError: true)
-      : state.copyWith(fareMinor: minor, clearError: true);
+  void setFare(int? minor) {
+    // A different fare makes a coupon quote stale (the code stays; the server prices the trip).
+    ref.read(couponCheckProvider.notifier).invalidateQuote();
+    state = minor == null
+        ? state.copyWith(clearFare: true, clearError: true)
+        : state.copyWith(fareMinor: minor, clearError: true);
+  }
 
   void setPassengers(int count) =>
       state = state.copyWith(passengers: count, clearError: true);
 
-  void setPayment(PaymentMethodType method) =>
-      state = state.copyWith(payment: method, clearError: true);
+  void setPayment(PaymentMethodType method) {
+    ref.read(couponCheckProvider.notifier).invalidateQuote();
+    state = state.copyWith(payment: method, clearError: true);
+  }
 
   void reset() {
+    ref.read(couponCheckProvider.notifier).clear();
     _key = null;
     _fingerprint = null;
     state = const BookingDraft();
@@ -147,6 +155,7 @@ class BookingDraftNotifier extends Notifier<BookingDraft> {
       request.proposedFareMinor,
       request.passengers,
       request.paymentMethod.value,
+      request.couponCode,
       jsonEncode(request.serviceDetails, toEncodable: (o) => '$o'),
     ]);
     if (fingerprint != _fingerprint || _key == null) {
@@ -161,6 +170,7 @@ class BookingDraftNotifier extends Notifier<BookingDraft> {
       _key = null;
       _fingerprint = null;
       state = const BookingDraft();
+      ref.read(couponCheckProvider.notifier).clear();
       ref.invalidate(activeBookingProvider);
       return booking;
     } on ApiException catch (e) {

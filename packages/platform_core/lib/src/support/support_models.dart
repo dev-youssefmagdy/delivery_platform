@@ -300,9 +300,14 @@ class NewTicketInput {
     required this.subject,
     required this.body,
     this.bookingId,
+    this.paymentId,
+    this.payoutId,
     this.attachmentPaths = const [],
   });
 
+  /// Money tickets link the payment or payout the person is asking about (ids they own).
+  final String? paymentId;
+  final String? payoutId;
   final String category;
   final String subject;
   final String body;

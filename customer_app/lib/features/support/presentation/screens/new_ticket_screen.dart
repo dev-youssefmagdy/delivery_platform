@@ -11,7 +11,11 @@ import '../widgets/support_texts.dart';
 
 /// Contact support: optionally about one booking (opened from the booking screen).
 class NewTicketScreen extends ConsumerStatefulWidget {
-  const NewTicketScreen({super.key, this.bookingId, this.bookingCode});
+  const NewTicketScreen({super.key, this.bookingId, this.bookingCode, this.paymentId, this.payoutId});
+
+  /// Money questions link the payment or payout (ids the person owns).
+  final String? paymentId;
+  final String? payoutId;
 
   final String? bookingId;
   final String? bookingCode;
@@ -36,7 +40,7 @@ class _NewTicketScreenState extends ConsumerState<NewTicketScreen> {
     _key ??= newClientKey();
     try {
       final ticket = await ref.read(supportActionsProvider).open(
-        NewTicketInput(category: category, subject: subject, body: body, bookingId: widget.bookingId, attachmentPaths: paths),
+        NewTicketInput(category: category, subject: subject, body: body, bookingId: widget.bookingId, paymentId: widget.paymentId, payoutId: widget.payoutId, attachmentPaths: paths),
         _key!,
       );
       messenger.showSnackBar(SnackBar(content: Text(l10n.supportSent)));

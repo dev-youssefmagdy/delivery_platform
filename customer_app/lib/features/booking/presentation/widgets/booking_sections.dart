@@ -8,6 +8,7 @@ import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../catalog/presentation/providers/catalog_providers.dart';
 import '../../../map/domain/place_selection.dart';
+import '../../../payments/presentation/screens/receipt_screen.dart' show receiptPaymentStatusText;
 import '../../../map/presentation/providers/map_providers.dart';
 import '../../domain/entities/booking_entities.dart';
 import '../providers/booking_providers.dart';
@@ -162,10 +163,14 @@ class ReceiptSection extends StatelessWidget {
     super.key,
     required this.receipt,
     required this.formatter,
+    this.onOpenFull,
   });
 
   final Receipt receipt;
   final MoneyFormatter formatter;
+
+  /// Opens the full receipt with every line of the breakdown.
+  final VoidCallback? onOpenFull;
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +203,16 @@ class ReceiptSection extends StatelessWidget {
                 l10n.bkReceiptTotal,
                 MoneyText(money: receipt.finalFare!, formatter: formatter),
               ),
+            if (receipt.couponApplied && receipt.discount != null && !receipt.discount!.isZero)
+              row(
+                l10n.rcpDiscount,
+                Text('-${formatter.format(receipt.discount!)}', key: const Key('receipt-discount'), textDirection: TextDirection.ltr),
+              ),
+            if (receipt.customerPayable != null)
+              row(
+                l10n.rcpTotal,
+                MoneyText(money: receipt.customerPayable!, formatter: formatter),
+              ),
             row(l10n.bkReceiptPayment, Text(_method(l10n, receipt.paymentMethod))),
             row(l10n.bkReceiptPaymentStatus, Text(_payment(l10n, receipt.paymentStatus))),
             if (receipt.durationSeconds != null)
@@ -214,6 +229,16 @@ class ReceiptSection extends StatelessWidget {
                   ),
                 ),
               ),
+            if (onOpenFull != null)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
+                child: OutlinedButton.icon(
+                  key: const Key('receipt-open-full'),
+                  icon: const Icon(Icons.receipt_long_outlined),
+                  label: Text(l10n.rcpViewFull),
+                  onPressed: onOpenFull,
+                ),
+              ),
           ],
         ),
       ),
@@ -221,14 +246,14 @@ class ReceiptSection extends StatelessWidget {
   }
 
   String _method(AppLocalizations l10n, PaymentMethodType t) =>
-      t == PaymentMethodType.cash ? l10n.bkPaymentCash : l10n.bkPaymentOther;
+      switch (t) {
+        PaymentMethodType.cash => l10n.bkPaymentCash,
+        PaymentMethodType.card => l10n.pmCard,
+        PaymentMethodType.mobileWallet => l10n.pmWallet,
+        _ => l10n.bkPaymentOther,
+      };
 
-  String _payment(AppLocalizations l10n, PaymentStatus s) => switch (s) {
-    PaymentStatus.cashDue => l10n.bkPaymentStatusCashDue,
-    PaymentStatus.paid || PaymentStatus.cashCollected => l10n.bkPaymentStatusPaid,
-    PaymentStatus.pending => l10n.bkPaymentStatusPending,
-    _ => l10n.bkPaymentStatusOther,
-  };
+  String _payment(AppLocalizations l10n, PaymentStatus s) => receiptPaymentStatusText(l10n, s);
 }
 
 /// Shows a failure of a user action as a snackbar (ARB text).

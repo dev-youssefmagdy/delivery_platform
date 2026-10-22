@@ -11,6 +11,10 @@ enum BookingAction implements ApiEnum {
   report('report'),
   chat('chat'),
   appeal('appeal'),
+  pay('pay'),
+  tip('tip'),
+  requestAdjustment('request_adjustment'),
+  viewReceipt('view_receipt'),
   unknown('');
 
   const BookingAction(this.value);
@@ -290,9 +294,17 @@ class Receipt {
     this.completedAt,
     this.durationSeconds,
     this.plannedDistanceMeters,
+    this.couponApplied = false,
+    this.discount,
+    this.customerPayable,
   });
 
   final String bookingCode;
+  final bool couponApplied;
+  final Money? discount;
+
+  /// What the customer pays after any coupon (server computed).
+  final Money? customerPayable;
   final Money? agreedFare;
   final Money? finalFare;
   final PaymentMethodType paymentMethod;
@@ -517,8 +529,10 @@ class BookingRequest {
     this.passengers,
     this.currency,
     this.paymentMethod = PaymentMethodType.cash,
+    this.couponCode,
   });
 
+  final String? couponCode;
   final int serviceCategoryId;
   final PlaceInfo pickup;
   final PlaceInfo? dropoff;

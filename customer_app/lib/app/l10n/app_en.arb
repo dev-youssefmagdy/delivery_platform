@@ -902,5 +902,259 @@
   "supportHelpAboutTrip": "Get help with this trip",
   "supportAppealButton": "Appeal the fee",
   "actionRefresh": "Refresh",
-  "actionBack": "Back"
+  "actionBack": "Back",
+  "navWallet": "Wallet",
+  "navOffers": "Offers",
+  "walTitle": "Wallet",
+  "walBalance": "Wallet balance",
+  "walNoWallet": "Your wallet opens with your first refund or credit.",
+  "walTransactions": "Transactions",
+  "walEmptyTitle": "No transactions yet",
+  "walEmptyBody": "Refunds, credits and fees will appear here.",
+  "walLoadMore": "Load more",
+  "walBalanceAfter": "Balance: {amount}",
+  "@walBalanceAfter": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walDebtTitle": "You owe a cancellation fee",
+  "walDebtBody": "Unpaid cancellation fees: {amount}. Pay them to keep booking without limits.",
+  "@walDebtBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walSettleDebt": "Pay what I owe",
+  "walSettlePay": "Pay {amount}",
+  "@walSettlePay": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walErrDebtBlocksBooking": "You have unpaid cancellation fees. Pay them from the Wallet tab to book again.",
+  "walFeeDebtNote": "The fee was added to your wallet balance as a debt. You can pay it from the Wallet tab.",
+  "walOpenWallet": "Open wallet",
+  "bkErrCooldown": "Booking is paused for a short time after repeated cancellations. Please try again later.",
+  "pmTitle": "Payment methods",
+  "pmIntro": "Your card details are entered only on the payment provider's page. We keep just the brand and the last four digits.",
+  "pmEmptyTitle": "No saved methods",
+  "pmEmptyBody": "Add a card or a mobile wallet to pay faster.",
+  "pmCard": "Card",
+  "pmWallet": "Mobile wallet",
+  "pmPending": "Waiting for confirmation",
+  "pmDefault": "Default",
+  "pmAddCard": "Add a card",
+  "pmAddWallet": "Add a mobile wallet",
+  "pmDelete": "Remove",
+  "pmDeleteTitle": "Remove this method?",
+  "pmDeleteBody": "You can add it again later.",
+  "pmDeleted": "Payment method removed.",
+  "pmSetupPending": "The method will appear here once your payment provider confirms it.",
+  "pmErrSetupUnsupported": "Cards are saved while you pay for a trip with this provider.",
+  "payNow": "Pay now",
+  "payDueTitle": "Payment due",
+  "payCouponSaved": "You saved {amount} with your coupon.",
+  "@payCouponSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "payNewCard": "Another card",
+  "payNewWallet": "Another wallet",
+  "payWalletPhone": "Wallet phone number",
+  "payWalletPhoneHelp": "Leave empty to use your account phone.",
+  "paySecureNote": "You will pay on your payment provider's secure page.",
+  "payAwaitingTitle": "Waiting for confirmation",
+  "payAwaitingBody": "Finish the payment on the provider's page. We confirm it with the provider before marking it paid; this can take a moment.",
+  "payCheckStatus": "Check payment status",
+  "payOpenAgain": "Open the payment page again",
+  "payLaunchFailed": "We could not open the payment page. Try again.",
+  "payPaidTitle": "Payment received",
+  "payPaidBody": "Thank you. Your payment was confirmed.",
+  "payFailedTitle": "The payment did not go through",
+  "payTryAgain": "Try again",
+  "payFailInsufficient": "There were not enough funds. Use another method or try again.",
+  "payFailExpired": "The card has expired. Use another card.",
+  "payFailAuth": "The bank could not verify the payment. Try again or use another method.",
+  "payFailCancelled": "The payment was cancelled.",
+  "payFailTimeout": "The payment page timed out. Start again.",
+  "payFailDeclined": "The payment was declined. Try again or use another method.",
+  "payReviewTitle": "We are checking your payment",
+  "payReviewBody": "We could not confirm this payment automatically. Do not pay again; our team is looking into it.",
+  "payContactSupport": "Ask support about this payment",
+  "payErrUnavailable": "Online payment is not available right now. Try again later.",
+  "payErrMethod": "This payment method cannot be used. Choose another one.",
+  "payErrNotPayable": "This trip cannot be paid now.",
+  "payErrNothingToPay": "There is nothing to pay.",
+  "payErrNeedsReview": "A previous payment is being reviewed. Please wait for our team.",
+  "payErrWalletPhone": "Enter the phone number of your mobile wallet.",
+  "payStatusFailed": "Failed",
+  "payStatusRefunded": "Refunded",
+  "payStatusPartRefunded": "Partly refunded",
+  "payStatusNotRequired": "Nothing to pay",
+  "payStatusReview": "Under review",
+  "bkPaymentOnlineNote": "Paid online after the trip.",
+  "tipTitle": "Leave a tip",
+  "tipBody": "Optional. The whole tip goes to your driver.",
+  "tipOther": "Other amount",
+  "tipAmountLabel": "Tip amount ({currency})",
+  "@tipAmountLabel": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "tipPay": "Pay tip {amount}",
+  "@tipPay": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "tipErrNotAvailable": "Tips are not available for this trip.",
+  "tipErrInvalid": "Enter a valid tip amount.",
+  "tipErrTooLarge": "That tip is higher than the allowed maximum.",
+  "tipErrAlreadyGiven": "You already left a tip for this trip.",
+  "cpnTitle": "Offers",
+  "cpnAvailable": "Offers for you",
+  "cpnNoneAvailable": "No offers right now. Have a code? Enter it when you book.",
+  "cpnAutoNote": "This offer is applied automatically when you book if you qualify.",
+  "cpnTerms": "Terms",
+  "cpnValidUntil": "Valid until {date}",
+  "@cpnValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cpnHistory": "Recent coupon use",
+  "cpnNoHistory": "You have not used a coupon yet.",
+  "cpnUsedStatus": "Used",
+  "cpnReservedStatus": "Reserved",
+  "cpnReleasedStatus": "Released",
+  "cpnReversedStatus": "Reversed",
+  "cpnUnknownStatus": "Other",
+  "cpnFormTitle": "Coupon",
+  "cpnFormLabel": "Coupon code",
+  "cpnApply": "Apply",
+  "cpnNeedFare": "Set your fare first to check the coupon.",
+  "cpnNotChecked": "Tap Apply to see your discount. The server confirms it when you book.",
+  "cpnQuoteDiscount": "You save {amount} with {title}",
+  "@cpnQuoteDiscount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cpnReasonEligible": "The coupon applies.",
+  "cpnReasonNotFound": "This coupon code does not exist.",
+  "cpnReasonNotActive": "This coupon is not active.",
+  "cpnReasonNotStarted": "This coupon has not started yet.",
+  "cpnReasonExpired": "This coupon has expired.",
+  "cpnReasonExhausted": "This coupon is no longer available.",
+  "cpnReasonService": "This coupon does not cover this service.",
+  "cpnReasonArea": "This coupon does not cover your area.",
+  "cpnReasonPayment": "This coupon does not work with the chosen payment method.",
+  "cpnReasonNewOnly": "This coupon is for new customers only.",
+  "cpnReasonReturningOnly": "This coupon is for returning customers only.",
+  "cpnReasonSchedule": "This coupon is not valid at this time of day.",
+  "cpnReasonMinimum": "The fare is below the minimum for this coupon.",
+  "cpnReasonCustomerLimit": "You have already used this coupon the maximum number of times.",
+  "cpnReasonStacking": "This coupon cannot be combined with another offer.",
+  "cpnReasonCurrency": "This coupon does not match your currency.",
+  "cpnReasonNoDiscount": "This coupon gives no discount on this fare.",
+  "cpnReasonUnknown": "This coupon cannot be used.",
+  "rcpTitle": "Receipt",
+  "rcpViewFull": "Full receipt",
+  "rcpNumber": "Receipt {number}",
+  "@rcpNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpDriver": "Driver",
+  "rcpFrom": "From",
+  "rcpTo": "To",
+  "rcpBreakdown": "Breakdown",
+  "rcpAdjustment": "Added: {label}",
+  "@rcpAdjustment": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpSubtotal": "Subtotal",
+  "rcpDiscount": "Coupon discount",
+  "rcpServiceFee": "Service fee",
+  "rcpTax": "Tax",
+  "rcpTaxRate": "Tax ({rate}%)",
+  "@rcpTaxRate": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "rcpTip": "Tip",
+  "rcpTotal": "Total to pay",
+  "rcpOpenPrintable": "Open printable receipt",
+  "adjTitle": "Fare changes",
+  "adjApprove": "Approve",
+  "adjReject": "Reject",
+  "adjWithdraw": "Withdraw",
+  "adjApproved": "You approved the change. The fare was updated.",
+  "adjRejected": "You rejected the change.",
+  "adjRequestedByYou": "Requested by you",
+  "adjRequestedByDriver": "Requested by the driver",
+  "adjExpires": "Answer before {time}",
+  "@adjExpires": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "adjNewTotal": "New total: {amount}",
+  "@adjNewTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "adjNote": "Note",
+  "adjSheetTitle": "Your driver asks to change the fare",
+  "adjSheetBody": "Request: {type}. The fare changes only if you approve.",
+  "@adjSheetBody": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "adjOldTotal": "Current total",
+  "adjNewTotalLabel": "Total if approved",
+  "adjNoteOptional": "Note (optional)",
+  "adjDecideLater": "Decide later",
+  "adjErrNotPending": "This request was already answered or has expired.",
+  "adjErrCounterpart": "Only the other side can answer this request."
 }

@@ -6,6 +6,7 @@ import 'package:platform_core/platform_core.dart';
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
+import '../../../payments/presentation/widgets/trip_payment_card.dart';
 import '../../domain/entities/booking_entities.dart';
 import 'booking_sections.dart';
 import 'rating_card.dart';
@@ -36,6 +37,10 @@ class ClosedView extends ConsumerWidget {
           languageCode: language,
         ),
         const SizedBox(height: AppSpacing.md),
+        if (TripPaymentCard.needed(booking)) ...[
+          TripPaymentCard(key: ValueKey('pay-${booking.id}'), booking: booking),
+          const SizedBox(height: AppSpacing.md),
+        ],
         if (noProvider)
           Card(
             key: const Key('no-provider-card'),
@@ -93,6 +98,15 @@ class ClosedView extends ConsumerWidget {
                     )
                   else
                     Text(l10n.bkCancelledNoFee),
+                  if (cancellation.fee != null && !cancellation.fee!.isZero && booking.status == BookingStatus.cancelledByCustomer) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(l10n.walFeeDebtNote, style: theme.textTheme.bodySmall),
+                    TextButton(
+                      key: const Key('cancellation-open-wallet'),
+                      onPressed: () => context.push(Routes.wallet),
+                      child: Text(l10n.walOpenWallet),
+                    ),
+                  ],
                   if (cancellation.cancelledAt != null)
                     Text(
                       formatDateTime(context, cancellation.cancelledAt),
@@ -105,7 +119,17 @@ class ClosedView extends ConsumerWidget {
         ],
         if (booking.receipt != null) ...[
           const SizedBox(height: AppSpacing.md),
-          ReceiptSection(receipt: booking.receipt!, formatter: formatter),
+          ReceiptSection(
+            receipt: booking.receipt!,
+            formatter: formatter,
+            onOpenFull: booking.can(BookingAction.viewReceipt) || booking.isFinished
+                ? () => context.push(Routes.bookingReceipt(booking.id))
+                : null,
+          ),
+        ],
+        if (booking.can(BookingAction.tip)) ...[
+          const SizedBox(height: AppSpacing.md),
+          TipCard(key: ValueKey('tip-${booking.id}'), booking: booking),
         ],
         if (booking.can(BookingAction.rate)) ...[
           const SizedBox(height: AppSpacing.md),

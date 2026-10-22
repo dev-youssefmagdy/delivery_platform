@@ -1806,4 +1806,521 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionBack => 'Back';
+
+  @override
+  String get navWallet => 'Wallet';
+
+  @override
+  String get navOffers => 'Offers';
+
+  @override
+  String get walTitle => 'Wallet';
+
+  @override
+  String get walBalance => 'Wallet balance';
+
+  @override
+  String get walNoWallet =>
+      'Your wallet opens with your first refund or credit.';
+
+  @override
+  String get walTransactions => 'Transactions';
+
+  @override
+  String get walEmptyTitle => 'No transactions yet';
+
+  @override
+  String get walEmptyBody => 'Refunds, credits and fees will appear here.';
+
+  @override
+  String get walLoadMore => 'Load more';
+
+  @override
+  String walBalanceAfter(String amount) {
+    return 'Balance: $amount';
+  }
+
+  @override
+  String get walDebtTitle => 'You owe a cancellation fee';
+
+  @override
+  String walDebtBody(String amount) {
+    return 'Unpaid cancellation fees: $amount. Pay them to keep booking without limits.';
+  }
+
+  @override
+  String get walSettleDebt => 'Pay what I owe';
+
+  @override
+  String walSettlePay(String amount) {
+    return 'Pay $amount';
+  }
+
+  @override
+  String get walErrDebtBlocksBooking =>
+      'You have unpaid cancellation fees. Pay them from the Wallet tab to book again.';
+
+  @override
+  String get walFeeDebtNote =>
+      'The fee was added to your wallet balance as a debt. You can pay it from the Wallet tab.';
+
+  @override
+  String get walOpenWallet => 'Open wallet';
+
+  @override
+  String get bkErrCooldown =>
+      'Booking is paused for a short time after repeated cancellations. Please try again later.';
+
+  @override
+  String get pmTitle => 'Payment methods';
+
+  @override
+  String get pmIntro =>
+      'Your card details are entered only on the payment provider\'s page. We keep just the brand and the last four digits.';
+
+  @override
+  String get pmEmptyTitle => 'No saved methods';
+
+  @override
+  String get pmEmptyBody => 'Add a card or a mobile wallet to pay faster.';
+
+  @override
+  String get pmCard => 'Card';
+
+  @override
+  String get pmWallet => 'Mobile wallet';
+
+  @override
+  String get pmPending => 'Waiting for confirmation';
+
+  @override
+  String get pmDefault => 'Default';
+
+  @override
+  String get pmAddCard => 'Add a card';
+
+  @override
+  String get pmAddWallet => 'Add a mobile wallet';
+
+  @override
+  String get pmDelete => 'Remove';
+
+  @override
+  String get pmDeleteTitle => 'Remove this method?';
+
+  @override
+  String get pmDeleteBody => 'You can add it again later.';
+
+  @override
+  String get pmDeleted => 'Payment method removed.';
+
+  @override
+  String get pmSetupPending =>
+      'The method will appear here once your payment provider confirms it.';
+
+  @override
+  String get pmErrSetupUnsupported =>
+      'Cards are saved while you pay for a trip with this provider.';
+
+  @override
+  String get payNow => 'Pay now';
+
+  @override
+  String get payDueTitle => 'Payment due';
+
+  @override
+  String payCouponSaved(String amount) {
+    return 'You saved $amount with your coupon.';
+  }
+
+  @override
+  String get payNewCard => 'Another card';
+
+  @override
+  String get payNewWallet => 'Another wallet';
+
+  @override
+  String get payWalletPhone => 'Wallet phone number';
+
+  @override
+  String get payWalletPhoneHelp => 'Leave empty to use your account phone.';
+
+  @override
+  String get paySecureNote =>
+      'You will pay on your payment provider\'s secure page.';
+
+  @override
+  String get payAwaitingTitle => 'Waiting for confirmation';
+
+  @override
+  String get payAwaitingBody =>
+      'Finish the payment on the provider\'s page. We confirm it with the provider before marking it paid; this can take a moment.';
+
+  @override
+  String get payCheckStatus => 'Check payment status';
+
+  @override
+  String get payOpenAgain => 'Open the payment page again';
+
+  @override
+  String get payLaunchFailed =>
+      'We could not open the payment page. Try again.';
+
+  @override
+  String get payPaidTitle => 'Payment received';
+
+  @override
+  String get payPaidBody => 'Thank you. Your payment was confirmed.';
+
+  @override
+  String get payFailedTitle => 'The payment did not go through';
+
+  @override
+  String get payTryAgain => 'Try again';
+
+  @override
+  String get payFailInsufficient =>
+      'There were not enough funds. Use another method or try again.';
+
+  @override
+  String get payFailExpired => 'The card has expired. Use another card.';
+
+  @override
+  String get payFailAuth =>
+      'The bank could not verify the payment. Try again or use another method.';
+
+  @override
+  String get payFailCancelled => 'The payment was cancelled.';
+
+  @override
+  String get payFailTimeout => 'The payment page timed out. Start again.';
+
+  @override
+  String get payFailDeclined =>
+      'The payment was declined. Try again or use another method.';
+
+  @override
+  String get payReviewTitle => 'We are checking your payment';
+
+  @override
+  String get payReviewBody =>
+      'We could not confirm this payment automatically. Do not pay again; our team is looking into it.';
+
+  @override
+  String get payContactSupport => 'Ask support about this payment';
+
+  @override
+  String get payErrUnavailable =>
+      'Online payment is not available right now. Try again later.';
+
+  @override
+  String get payErrMethod =>
+      'This payment method cannot be used. Choose another one.';
+
+  @override
+  String get payErrNotPayable => 'This trip cannot be paid now.';
+
+  @override
+  String get payErrNothingToPay => 'There is nothing to pay.';
+
+  @override
+  String get payErrNeedsReview =>
+      'A previous payment is being reviewed. Please wait for our team.';
+
+  @override
+  String get payErrWalletPhone =>
+      'Enter the phone number of your mobile wallet.';
+
+  @override
+  String get payStatusFailed => 'Failed';
+
+  @override
+  String get payStatusRefunded => 'Refunded';
+
+  @override
+  String get payStatusPartRefunded => 'Partly refunded';
+
+  @override
+  String get payStatusNotRequired => 'Nothing to pay';
+
+  @override
+  String get payStatusReview => 'Under review';
+
+  @override
+  String get bkPaymentOnlineNote => 'Paid online after the trip.';
+
+  @override
+  String get tipTitle => 'Leave a tip';
+
+  @override
+  String get tipBody => 'Optional. The whole tip goes to your driver.';
+
+  @override
+  String get tipOther => 'Other amount';
+
+  @override
+  String tipAmountLabel(String currency) {
+    return 'Tip amount ($currency)';
+  }
+
+  @override
+  String tipPay(String amount) {
+    return 'Pay tip $amount';
+  }
+
+  @override
+  String get tipErrNotAvailable => 'Tips are not available for this trip.';
+
+  @override
+  String get tipErrInvalid => 'Enter a valid tip amount.';
+
+  @override
+  String get tipErrTooLarge => 'That tip is higher than the allowed maximum.';
+
+  @override
+  String get tipErrAlreadyGiven => 'You already left a tip for this trip.';
+
+  @override
+  String get cpnTitle => 'Offers';
+
+  @override
+  String get cpnAvailable => 'Offers for you';
+
+  @override
+  String get cpnNoneAvailable =>
+      'No offers right now. Have a code? Enter it when you book.';
+
+  @override
+  String get cpnAutoNote =>
+      'This offer is applied automatically when you book if you qualify.';
+
+  @override
+  String get cpnTerms => 'Terms';
+
+  @override
+  String cpnValidUntil(String date) {
+    return 'Valid until $date';
+  }
+
+  @override
+  String get cpnHistory => 'Recent coupon use';
+
+  @override
+  String get cpnNoHistory => 'You have not used a coupon yet.';
+
+  @override
+  String get cpnUsedStatus => 'Used';
+
+  @override
+  String get cpnReservedStatus => 'Reserved';
+
+  @override
+  String get cpnReleasedStatus => 'Released';
+
+  @override
+  String get cpnReversedStatus => 'Reversed';
+
+  @override
+  String get cpnUnknownStatus => 'Other';
+
+  @override
+  String get cpnFormTitle => 'Coupon';
+
+  @override
+  String get cpnFormLabel => 'Coupon code';
+
+  @override
+  String get cpnApply => 'Apply';
+
+  @override
+  String get cpnNeedFare => 'Set your fare first to check the coupon.';
+
+  @override
+  String get cpnNotChecked =>
+      'Tap Apply to see your discount. The server confirms it when you book.';
+
+  @override
+  String cpnQuoteDiscount(String amount, String title) {
+    return 'You save $amount with $title';
+  }
+
+  @override
+  String get cpnReasonEligible => 'The coupon applies.';
+
+  @override
+  String get cpnReasonNotFound => 'This coupon code does not exist.';
+
+  @override
+  String get cpnReasonNotActive => 'This coupon is not active.';
+
+  @override
+  String get cpnReasonNotStarted => 'This coupon has not started yet.';
+
+  @override
+  String get cpnReasonExpired => 'This coupon has expired.';
+
+  @override
+  String get cpnReasonExhausted => 'This coupon is no longer available.';
+
+  @override
+  String get cpnReasonService => 'This coupon does not cover this service.';
+
+  @override
+  String get cpnReasonArea => 'This coupon does not cover your area.';
+
+  @override
+  String get cpnReasonPayment =>
+      'This coupon does not work with the chosen payment method.';
+
+  @override
+  String get cpnReasonNewOnly => 'This coupon is for new customers only.';
+
+  @override
+  String get cpnReasonReturningOnly =>
+      'This coupon is for returning customers only.';
+
+  @override
+  String get cpnReasonSchedule =>
+      'This coupon is not valid at this time of day.';
+
+  @override
+  String get cpnReasonMinimum =>
+      'The fare is below the minimum for this coupon.';
+
+  @override
+  String get cpnReasonCustomerLimit =>
+      'You have already used this coupon the maximum number of times.';
+
+  @override
+  String get cpnReasonStacking =>
+      'This coupon cannot be combined with another offer.';
+
+  @override
+  String get cpnReasonCurrency => 'This coupon does not match your currency.';
+
+  @override
+  String get cpnReasonNoDiscount =>
+      'This coupon gives no discount on this fare.';
+
+  @override
+  String get cpnReasonUnknown => 'This coupon cannot be used.';
+
+  @override
+  String get rcpTitle => 'Receipt';
+
+  @override
+  String get rcpViewFull => 'Full receipt';
+
+  @override
+  String rcpNumber(String number) {
+    return 'Receipt $number';
+  }
+
+  @override
+  String get rcpDriver => 'Driver';
+
+  @override
+  String get rcpFrom => 'From';
+
+  @override
+  String get rcpTo => 'To';
+
+  @override
+  String get rcpBreakdown => 'Breakdown';
+
+  @override
+  String rcpAdjustment(String label) {
+    return 'Added: $label';
+  }
+
+  @override
+  String get rcpSubtotal => 'Subtotal';
+
+  @override
+  String get rcpDiscount => 'Coupon discount';
+
+  @override
+  String get rcpServiceFee => 'Service fee';
+
+  @override
+  String get rcpTax => 'Tax';
+
+  @override
+  String rcpTaxRate(String rate) {
+    return 'Tax ($rate%)';
+  }
+
+  @override
+  String get rcpTip => 'Tip';
+
+  @override
+  String get rcpTotal => 'Total to pay';
+
+  @override
+  String get rcpOpenPrintable => 'Open printable receipt';
+
+  @override
+  String get adjTitle => 'Fare changes';
+
+  @override
+  String get adjApprove => 'Approve';
+
+  @override
+  String get adjReject => 'Reject';
+
+  @override
+  String get adjWithdraw => 'Withdraw';
+
+  @override
+  String get adjApproved => 'You approved the change. The fare was updated.';
+
+  @override
+  String get adjRejected => 'You rejected the change.';
+
+  @override
+  String get adjRequestedByYou => 'Requested by you';
+
+  @override
+  String get adjRequestedByDriver => 'Requested by the driver';
+
+  @override
+  String adjExpires(String time) {
+    return 'Answer before $time';
+  }
+
+  @override
+  String adjNewTotal(String amount) {
+    return 'New total: $amount';
+  }
+
+  @override
+  String get adjNote => 'Note';
+
+  @override
+  String get adjSheetTitle => 'Your driver asks to change the fare';
+
+  @override
+  String adjSheetBody(String type) {
+    return 'Request: $type. The fare changes only if you approve.';
+  }
+
+  @override
+  String get adjOldTotal => 'Current total';
+
+  @override
+  String get adjNewTotalLabel => 'Total if approved';
+
+  @override
+  String get adjNoteOptional => 'Note (optional)';
+
+  @override
+  String get adjDecideLater => 'Decide later';
+
+  @override
+  String get adjErrNotPending =>
+      'This request was already answered or has expired.';
+
+  @override
+  String get adjErrCounterpart =>
+      'Only the other side can answer this request.';
 }

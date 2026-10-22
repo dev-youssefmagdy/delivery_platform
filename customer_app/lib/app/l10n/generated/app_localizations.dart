@@ -3289,6 +3289,924 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'رجوع'**
   String get actionBack;
+
+  /// No description provided for @navWallet.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحفظة'**
+  String get navWallet;
+
+  /// No description provided for @navOffers.
+  ///
+  /// In ar, this message translates to:
+  /// **'العروض'**
+  String get navOffers;
+
+  /// No description provided for @walTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحفظة'**
+  String get walTitle;
+
+  /// No description provided for @walBalance.
+  ///
+  /// In ar, this message translates to:
+  /// **'رصيد المحفظة'**
+  String get walBalance;
+
+  /// No description provided for @walNoWallet.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُفتح محفظتك عند أول استرداد أو رصيد.'**
+  String get walNoWallet;
+
+  /// No description provided for @walTransactions.
+  ///
+  /// In ar, this message translates to:
+  /// **'العمليات'**
+  String get walTransactions;
+
+  /// No description provided for @walEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد عمليات بعد'**
+  String get walEmptyTitle;
+
+  /// No description provided for @walEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستظهر هنا المبالغ المستردة والأرصدة والرسوم.'**
+  String get walEmptyBody;
+
+  /// No description provided for @walLoadMore.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض المزيد'**
+  String get walLoadMore;
+
+  /// No description provided for @walBalanceAfter.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرصيد: {amount}'**
+  String walBalanceAfter(String amount);
+
+  /// No description provided for @walDebtTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'عليك رسوم إلغاء مستحقة'**
+  String get walDebtTitle;
+
+  /// No description provided for @walDebtBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسوم إلغاء غير مدفوعة: {amount}. سدّدها لتتمكن من الحجز دون قيود.'**
+  String walDebtBody(String amount);
+
+  /// No description provided for @walSettleDebt.
+  ///
+  /// In ar, this message translates to:
+  /// **'سدّد المبلغ المستحق'**
+  String get walSettleDebt;
+
+  /// No description provided for @walSettlePay.
+  ///
+  /// In ar, this message translates to:
+  /// **'ادفع {amount}'**
+  String walSettlePay(String amount);
+
+  /// No description provided for @walErrDebtBlocksBooking.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك رسوم إلغاء غير مدفوعة. سدّدها من تبويب المحفظة لتتمكن من الحجز مجدداً.'**
+  String get walErrDebtBlocksBooking;
+
+  /// No description provided for @walFeeDebtNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُضيفت الرسوم إلى محفظتك كمبلغ مستحق. يمكنك سداده من تبويب المحفظة.'**
+  String get walFeeDebtNote;
+
+  /// No description provided for @walOpenWallet.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح المحفظة'**
+  String get walOpenWallet;
+
+  /// No description provided for @bkErrCooldown.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحجز متوقف لفترة قصيرة بعد تكرار الإلغاء. حاول لاحقاً.'**
+  String get bkErrCooldown;
+
+  /// No description provided for @pmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'وسائل الدفع'**
+  String get pmTitle;
+
+  /// No description provided for @pmIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُدخل بيانات بطاقتك في صفحة مزود الدفع فقط. نحتفظ بنوع البطاقة وآخر أربعة أرقام فقط.'**
+  String get pmIntro;
+
+  /// No description provided for @pmEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد وسائل دفع محفوظة'**
+  String get pmEmptyTitle;
+
+  /// No description provided for @pmEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف بطاقة أو محفظة هاتف للدفع بسرعة أكبر.'**
+  String get pmEmptyBody;
+
+  /// No description provided for @pmCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'بطاقة'**
+  String get pmCard;
+
+  /// No description provided for @pmWallet.
+  ///
+  /// In ar, this message translates to:
+  /// **'محفظة هاتف'**
+  String get pmWallet;
+
+  /// No description provided for @pmPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'بانتظار التأكيد'**
+  String get pmPending;
+
+  /// No description provided for @pmDefault.
+  ///
+  /// In ar, this message translates to:
+  /// **'الافتراضية'**
+  String get pmDefault;
+
+  /// No description provided for @pmAddCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة بطاقة'**
+  String get pmAddCard;
+
+  /// No description provided for @pmAddWallet.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة محفظة هاتف'**
+  String get pmAddWallet;
+
+  /// No description provided for @pmDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'إزالة'**
+  String get pmDelete;
+
+  /// No description provided for @pmDeleteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إزالة وسيلة الدفع هذه؟'**
+  String get pmDeleteTitle;
+
+  /// No description provided for @pmDeleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكنك إضافتها مجدداً لاحقاً.'**
+  String get pmDeleteBody;
+
+  /// No description provided for @pmDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت إزالة وسيلة الدفع.'**
+  String get pmDeleted;
+
+  /// No description provided for @pmSetupPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستظهر وسيلة الدفع هنا بعد أن يؤكدها مزود الدفع.'**
+  String get pmSetupPending;
+
+  /// No description provided for @pmErrSetupUnsupported.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُحفظ البطاقة أثناء دفع أجرة رحلة مع هذا المزود.'**
+  String get pmErrSetupUnsupported;
+
+  /// No description provided for @payNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'ادفع الآن'**
+  String get payNow;
+
+  /// No description provided for @payDueTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مبلغ مستحق للدفع'**
+  String get payDueTitle;
+
+  /// No description provided for @payCouponSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'وفّرت {amount} بالكوبون.'**
+  String payCouponSaved(String amount);
+
+  /// No description provided for @payNewCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'بطاقة أخرى'**
+  String get payNewCard;
+
+  /// No description provided for @payNewWallet.
+  ///
+  /// In ar, this message translates to:
+  /// **'محفظة أخرى'**
+  String get payNewWallet;
+
+  /// No description provided for @payWalletPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم هاتف المحفظة'**
+  String get payWalletPhone;
+
+  /// No description provided for @payWalletPhoneHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتركه فارغاً لاستخدام هاتف حسابك.'**
+  String get payWalletPhoneHelp;
+
+  /// No description provided for @paySecureNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستدفع في صفحة مزود الدفع الآمنة.'**
+  String get paySecureNote;
+
+  /// No description provided for @payAwaitingTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'بانتظار تأكيد الدفع'**
+  String get payAwaitingTitle;
+
+  /// No description provided for @payAwaitingBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أتمّ الدفع في صفحة المزود. نتأكد من الدفع لدى المزود قبل اعتباره مدفوعاً، وقد يستغرق ذلك لحظات.'**
+  String get payAwaitingBody;
+
+  /// No description provided for @payCheckStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحقق من حالة الدفع'**
+  String get payCheckStatus;
+
+  /// No description provided for @payOpenAgain.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح صفحة الدفع مجدداً'**
+  String get payOpenAgain;
+
+  /// No description provided for @payLaunchFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر فتح صفحة الدفع. حاول مجدداً.'**
+  String get payLaunchFailed;
+
+  /// No description provided for @payPaidTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم استلام الدفع'**
+  String get payPaidTitle;
+
+  /// No description provided for @payPaidBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'شكراً لك. تم تأكيد دفعتك.'**
+  String get payPaidBody;
+
+  /// No description provided for @payFailedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تتم عملية الدفع'**
+  String get payFailedTitle;
+
+  /// No description provided for @payTryAgain.
+  ///
+  /// In ar, this message translates to:
+  /// **'حاول مجدداً'**
+  String get payTryAgain;
+
+  /// No description provided for @payFailInsufficient.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرصيد غير كافٍ. استخدم وسيلة أخرى أو حاول مجدداً.'**
+  String get payFailInsufficient;
+
+  /// No description provided for @payFailExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت صلاحية البطاقة. استخدم بطاقة أخرى.'**
+  String get payFailExpired;
+
+  /// No description provided for @payFailAuth.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر على البنك التحقق من الدفع. حاول مجدداً أو استخدم وسيلة أخرى.'**
+  String get payFailAuth;
+
+  /// No description provided for @payFailCancelled.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إلغاء الدفع.'**
+  String get payFailCancelled;
+
+  /// No description provided for @payFailTimeout.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت مهلة صفحة الدفع. ابدأ من جديد.'**
+  String get payFailTimeout;
+
+  /// No description provided for @payFailDeclined.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم رفض الدفع. حاول مجدداً أو استخدم وسيلة أخرى.'**
+  String get payFailDeclined;
+
+  /// No description provided for @payReviewTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'نراجع دفعتك'**
+  String get payReviewTitle;
+
+  /// No description provided for @payReviewBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر تأكيد هذه الدفعة تلقائياً. لا تدفع مجدداً؛ فريقنا يراجعها.'**
+  String get payReviewBody;
+
+  /// No description provided for @payContactSupport.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسأل الدعم عن هذه الدفعة'**
+  String get payContactSupport;
+
+  /// No description provided for @payErrUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدفع الإلكتروني غير متاح حالياً. حاول لاحقاً.'**
+  String get payErrUnavailable;
+
+  /// No description provided for @payErrMethod.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن استخدام وسيلة الدفع هذه. اختر وسيلة أخرى.'**
+  String get payErrMethod;
+
+  /// No description provided for @payErrNotPayable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن دفع هذه الرحلة الآن.'**
+  String get payErrNotPayable;
+
+  /// No description provided for @payErrNothingToPay.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد مبلغ للدفع.'**
+  String get payErrNothingToPay;
+
+  /// No description provided for @payErrNeedsReview.
+  ///
+  /// In ar, this message translates to:
+  /// **'هناك دفعة سابقة قيد المراجعة. يرجى انتظار فريقنا.'**
+  String get payErrNeedsReview;
+
+  /// No description provided for @payErrWalletPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم هاتف محفظتك.'**
+  String get payErrWalletPhone;
+
+  /// No description provided for @payStatusFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'فشل'**
+  String get payStatusFailed;
+
+  /// No description provided for @payStatusRefunded.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الاسترداد'**
+  String get payStatusRefunded;
+
+  /// No description provided for @payStatusPartRefunded.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم استرداد جزء'**
+  String get payStatusPartRefunded;
+
+  /// No description provided for @payStatusNotRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد مبلغ للدفع'**
+  String get payStatusNotRequired;
+
+  /// No description provided for @payStatusReview.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد المراجعة'**
+  String get payStatusReview;
+
+  /// No description provided for @bkPaymentOnlineNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُدفع إلكترونياً بعد الرحلة.'**
+  String get bkPaymentOnlineNote;
+
+  /// No description provided for @tipTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'اترك إكرامية'**
+  String get tipTitle;
+
+  /// No description provided for @tipBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختياري. الإكرامية كاملة لسائقك.'**
+  String get tipBody;
+
+  /// No description provided for @tipOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'مبلغ آخر'**
+  String get tipOther;
+
+  /// No description provided for @tipAmountLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'مبلغ الإكرامية ({currency})'**
+  String tipAmountLabel(String currency);
+
+  /// No description provided for @tipPay.
+  ///
+  /// In ar, this message translates to:
+  /// **'ادفع إكرامية {amount}'**
+  String tipPay(String amount);
+
+  /// No description provided for @tipErrNotAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإكرامية غير متاحة لهذه الرحلة.'**
+  String get tipErrNotAvailable;
+
+  /// No description provided for @tipErrInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل مبلغ إكرامية صحيحاً.'**
+  String get tipErrInvalid;
+
+  /// No description provided for @tipErrTooLarge.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإكرامية أكبر من الحد الأقصى المسموح.'**
+  String get tipErrTooLarge;
+
+  /// No description provided for @tipErrAlreadyGiven.
+  ///
+  /// In ar, this message translates to:
+  /// **'لقد تركت إكرامية لهذه الرحلة بالفعل.'**
+  String get tipErrAlreadyGiven;
+
+  /// No description provided for @cpnTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'العروض'**
+  String get cpnTitle;
+
+  /// No description provided for @cpnAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'عروض لك'**
+  String get cpnAvailable;
+
+  /// No description provided for @cpnNoneAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد عروض الآن. لديك كود؟ أدخله عند الحجز.'**
+  String get cpnNoneAvailable;
+
+  /// No description provided for @cpnAutoNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُطبَّق هذا العرض تلقائياً عند الحجز إذا كنت مستحقاً له.'**
+  String get cpnAutoNote;
+
+  /// No description provided for @cpnTerms.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشروط'**
+  String get cpnTerms;
+
+  /// No description provided for @cpnValidUntil.
+  ///
+  /// In ar, this message translates to:
+  /// **'صالح حتى {date}'**
+  String cpnValidUntil(String date);
+
+  /// No description provided for @cpnHistory.
+  ///
+  /// In ar, this message translates to:
+  /// **'استخدام الكوبونات مؤخراً'**
+  String get cpnHistory;
+
+  /// No description provided for @cpnNoHistory.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تستخدم كوبوناً بعد.'**
+  String get cpnNoHistory;
+
+  /// No description provided for @cpnUsedStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'مستخدم'**
+  String get cpnUsedStatus;
+
+  /// No description provided for @cpnReservedStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'محجوز'**
+  String get cpnReservedStatus;
+
+  /// No description provided for @cpnReleasedStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُعيد'**
+  String get cpnReleasedStatus;
+
+  /// No description provided for @cpnReversedStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُلغي'**
+  String get cpnReversedStatus;
+
+  /// No description provided for @cpnUnknownStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخرى'**
+  String get cpnUnknownStatus;
+
+  /// No description provided for @cpnFormTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'كوبون'**
+  String get cpnFormTitle;
+
+  /// No description provided for @cpnFormLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'كود الكوبون'**
+  String get cpnFormLabel;
+
+  /// No description provided for @cpnApply.
+  ///
+  /// In ar, this message translates to:
+  /// **'تطبيق'**
+  String get cpnApply;
+
+  /// No description provided for @cpnNeedFare.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدد أجرتك أولاً للتحقق من الكوبون.'**
+  String get cpnNeedFare;
+
+  /// No description provided for @cpnNotChecked.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط تطبيق لمعرفة خصمك. يؤكده الخادم عند الحجز.'**
+  String get cpnNotChecked;
+
+  /// No description provided for @cpnQuoteDiscount.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستوفر {amount} مع {title}'**
+  String cpnQuoteDiscount(String amount, String title);
+
+  /// No description provided for @cpnReasonEligible.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكوبون ينطبق.'**
+  String get cpnReasonEligible;
+
+  /// No description provided for @cpnReasonNotFound.
+  ///
+  /// In ar, this message translates to:
+  /// **'كود الكوبون غير موجود.'**
+  String get cpnReasonNotFound;
+
+  /// No description provided for @cpnReasonNotActive.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الكوبون غير مفعّل.'**
+  String get cpnReasonNotActive;
+
+  /// No description provided for @cpnReasonNotStarted.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يبدأ هذا الكوبون بعد.'**
+  String get cpnReasonNotStarted;
+
+  /// No description provided for @cpnReasonExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت صلاحية هذا الكوبون.'**
+  String get cpnReasonExpired;
+
+  /// No description provided for @cpnReasonExhausted.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الكوبون لم يعد متاحاً.'**
+  String get cpnReasonExhausted;
+
+  /// No description provided for @cpnReasonService.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الكوبون لا يشمل هذه الخدمة.'**
+  String get cpnReasonService;
+
+  /// No description provided for @cpnReasonArea.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الكوبون لا يشمل منطقتك.'**
+  String get cpnReasonArea;
+
+  /// No description provided for @cpnReasonPayment.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الكوبون لا يعمل مع وسيلة الدفع المختارة.'**
+  String get cpnReasonPayment;
+
+  /// No description provided for @cpnReasonNewOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الكوبون للعملاء الجدد فقط.'**
+  String get cpnReasonNewOnly;
+
+  /// No description provided for @cpnReasonReturningOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الكوبون للعملاء السابقين فقط.'**
+  String get cpnReasonReturningOnly;
+
+  /// No description provided for @cpnReasonSchedule.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الكوبون غير صالح في هذا الوقت.'**
+  String get cpnReasonSchedule;
+
+  /// No description provided for @cpnReasonMinimum.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأجرة أقل من الحد الأدنى لهذا الكوبون.'**
+  String get cpnReasonMinimum;
+
+  /// No description provided for @cpnReasonCustomerLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'استخدمت هذا الكوبون بالحد الأقصى المسموح.'**
+  String get cpnReasonCustomerLimit;
+
+  /// No description provided for @cpnReasonStacking.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن دمج هذا الكوبون مع عرض آخر.'**
+  String get cpnReasonStacking;
+
+  /// No description provided for @cpnReasonCurrency.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الكوبون لا يطابق عملتك.'**
+  String get cpnReasonCurrency;
+
+  /// No description provided for @cpnReasonNoDiscount.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمنح هذا الكوبون خصماً على هذه الأجرة.'**
+  String get cpnReasonNoDiscount;
+
+  /// No description provided for @cpnReasonUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن استخدام هذا الكوبون.'**
+  String get cpnReasonUnknown;
+
+  /// No description provided for @rcpTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإيصال'**
+  String get rcpTitle;
+
+  /// No description provided for @rcpViewFull.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإيصال الكامل'**
+  String get rcpViewFull;
+
+  /// No description provided for @rcpNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيصال {number}'**
+  String rcpNumber(String number);
+
+  /// No description provided for @rcpDriver.
+  ///
+  /// In ar, this message translates to:
+  /// **'السائق'**
+  String get rcpDriver;
+
+  /// No description provided for @rcpFrom.
+  ///
+  /// In ar, this message translates to:
+  /// **'من'**
+  String get rcpFrom;
+
+  /// No description provided for @rcpTo.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلى'**
+  String get rcpTo;
+
+  /// No description provided for @rcpBreakdown.
+  ///
+  /// In ar, this message translates to:
+  /// **'التفاصيل'**
+  String get rcpBreakdown;
+
+  /// No description provided for @rcpAdjustment.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة: {label}'**
+  String rcpAdjustment(String label);
+
+  /// No description provided for @rcpSubtotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'المجموع الفرعي'**
+  String get rcpSubtotal;
+
+  /// No description provided for @rcpDiscount.
+  ///
+  /// In ar, this message translates to:
+  /// **'خصم الكوبون'**
+  String get rcpDiscount;
+
+  /// No description provided for @rcpServiceFee.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسوم الخدمة'**
+  String get rcpServiceFee;
+
+  /// No description provided for @rcpTax.
+  ///
+  /// In ar, this message translates to:
+  /// **'الضريبة'**
+  String get rcpTax;
+
+  /// No description provided for @rcpTaxRate.
+  ///
+  /// In ar, this message translates to:
+  /// **'الضريبة ({rate}%)'**
+  String rcpTaxRate(String rate);
+
+  /// No description provided for @rcpTip.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإكرامية'**
+  String get rcpTip;
+
+  /// No description provided for @rcpTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجمالي المطلوب'**
+  String get rcpTotal;
+
+  /// No description provided for @rcpOpenPrintable.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح الإيصال للطباعة'**
+  String get rcpOpenPrintable;
+
+  /// No description provided for @adjTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغييرات الأجرة'**
+  String get adjTitle;
+
+  /// No description provided for @adjApprove.
+  ///
+  /// In ar, this message translates to:
+  /// **'موافقة'**
+  String get adjApprove;
+
+  /// No description provided for @adjReject.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض'**
+  String get adjReject;
+
+  /// No description provided for @adjWithdraw.
+  ///
+  /// In ar, this message translates to:
+  /// **'سحب الطلب'**
+  String get adjWithdraw;
+
+  /// No description provided for @adjApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'وافقت على التغيير. تم تحديث الأجرة.'**
+  String get adjApproved;
+
+  /// No description provided for @adjRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفضت التغيير.'**
+  String get adjRejected;
+
+  /// No description provided for @adjRequestedByYou.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبته أنت'**
+  String get adjRequestedByYou;
+
+  /// No description provided for @adjRequestedByDriver.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبه السائق'**
+  String get adjRequestedByDriver;
+
+  /// No description provided for @adjExpires.
+  ///
+  /// In ar, this message translates to:
+  /// **'أجب قبل {time}'**
+  String adjExpires(String time);
+
+  /// No description provided for @adjNewTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجمالي الجديد: {amount}'**
+  String adjNewTotal(String amount);
+
+  /// No description provided for @adjNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة'**
+  String get adjNote;
+
+  /// No description provided for @adjSheetTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'يطلب سائقك تغيير الأجرة'**
+  String get adjSheetTitle;
+
+  /// No description provided for @adjSheetBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلب: {type}. لا تتغير الأجرة إلا إذا وافقت.'**
+  String adjSheetBody(String type);
+
+  /// No description provided for @adjOldTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجمالي الحالي'**
+  String get adjOldTotal;
+
+  /// No description provided for @adjNewTotalLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجمالي عند الموافقة'**
+  String get adjNewTotalLabel;
+
+  /// No description provided for @adjNoteOptional.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة (اختيارية)'**
+  String get adjNoteOptional;
+
+  /// No description provided for @adjDecideLater.
+  ///
+  /// In ar, this message translates to:
+  /// **'قرر لاحقاً'**
+  String get adjDecideLater;
+
+  /// No description provided for @adjErrNotPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت الإجابة عن هذا الطلب أو انتهت مدته.'**
+  String get adjErrNotPending;
+
+  /// No description provided for @adjErrCounterpart.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكن للطرف الآخر فقط الإجابة عن هذا الطلب.'**
+  String get adjErrCounterpart;
 }
 
 class _AppLocalizationsDelegate

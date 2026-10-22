@@ -55,6 +55,8 @@ class SupportRemoteDataSource {
       'subject': input.subject,
       'body': input.body,
       if (input.bookingId != null) 'booking_id': input.bookingId,
+      if (input.paymentId != null) 'payment_id': input.paymentId,
+      if (input.payoutId != null) 'payout_id': input.payoutId,
       if (input.attachmentPaths.isNotEmpty)
         'attachments[]': [for (final p in input.attachmentPaths) await MultipartFile.fromFile(p)],
     }),

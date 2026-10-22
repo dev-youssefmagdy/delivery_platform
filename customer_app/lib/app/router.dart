@@ -13,6 +13,9 @@ import '../features/booking/presentation/screens/booking_form_screen.dart';
 import '../features/booking/presentation/screens/booking_screen.dart';
 import '../features/booking/presentation/screens/cancel_booking_screen.dart';
 import '../features/booking/presentation/screens/report_screen.dart';
+import '../features/payments/presentation/screens/payment_methods_screen.dart';
+import '../features/payments/presentation/screens/receipt_screen.dart';
+import '../features/payments/presentation/screens/wallet_screen.dart';
 import '../features/support/presentation/screens/appeal_screen.dart';
 import '../features/support/presentation/screens/chat_screen.dart';
 import '../features/support/presentation/screens/new_ticket_screen.dart';
@@ -51,6 +54,10 @@ abstract final class Routes {
   static const support = '/support';
   static const supportNew = '/support/new';
 
+  /// The wallet as a full screen (also the target of wallet notifications); the Wallet tab shows the same content.
+  static const wallet = '/wallet';
+  static const paymentMethods = '/wallet/methods';
+
   /// A support request (also the target of reply notifications).
   static String supportTicket(String id) => '/support/ticket/$id';
 
@@ -60,7 +67,12 @@ abstract final class Routes {
   static String bookingReport(String id) => '/booking/$id/report';
   static String bookingChat(String id) => '/booking/$id/chat';
   static String bookingAppeal(String id) => '/booking/$id/appeal';
+  static String bookingReceipt(String id) => '/booking/$id/receipt';
   static String bookingSupport(String id, String code) => '/support/new?booking=$id&code=$code';
+
+  /// A question about one payment (ticket with `payment_id`).
+  static String paymentSupport(String bookingId, String code, String? paymentId) =>
+      '/support/new?booking=$bookingId&code=$code${paymentId == null ? '' : '&payment=$paymentId'}';
 }
 
 /// Where the splash screen sends the user.
@@ -102,6 +114,8 @@ const _readyOnly = {
   Routes.savedPlaces,
   Routes.notifications,
   Routes.notificationSettings,
+  Routes.wallet,
+  Routes.paymentMethods,
 };
 
 /// Pure redirect rules (unit tested). Returns null to stay.
@@ -185,6 +199,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.notificationSettings,
         builder: (_, _) => const NotificationSettingsScreen(),
       ),
+      GoRoute(path: Routes.wallet, builder: (_, _) => const WalletScreen(showBack: true)),
+      GoRoute(path: Routes.paymentMethods, builder: (_, _) => const PaymentMethodsScreen()),
       GoRoute(
         path: Routes.support,
         builder: (_, _) => const TicketsScreen(),
@@ -194,6 +210,8 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, state) => NewTicketScreen(
               bookingId: state.uri.queryParameters['booking'],
               bookingCode: state.uri.queryParameters['code'],
+              paymentId: state.uri.queryParameters['payment'],
+              payoutId: state.uri.queryParameters['payout'],
             ),
           ),
           GoRoute(
@@ -226,6 +244,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'chat',
             builder: (_, state) =>
                 ChatScreen(bookingId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: 'receipt',
+            builder: (_, state) =>
+                ReceiptScreen(bookingId: state.pathParameters['id']!),
           ),
           GoRoute(
             path: 'appeal',

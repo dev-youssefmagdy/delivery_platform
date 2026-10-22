@@ -171,6 +171,8 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, state) => NewTicketScreen(
               bookingId: state.uri.queryParameters['booking'],
               bookingCode: state.uri.queryParameters['code'],
+              paymentId: state.uri.queryParameters['payment'],
+              payoutId: state.uri.queryParameters['payout'],
             ),
           ),
           GoRoute(

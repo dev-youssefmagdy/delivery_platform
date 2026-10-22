@@ -18,6 +18,8 @@ import '../../domain/logic/fare_input.dart';
 import '../../domain/logic/polyline.dart';
 import '../providers/booking_providers.dart';
 import '../widgets/booking_texts.dart';
+import '../widgets/payment_coupon_section.dart';
+import '../../../payments/presentation/providers/payments_providers.dart' show couponCheckProvider;
 
 PlaceInfo placeInfoOf(PlaceSelection s) => PlaceInfo(
   lat: s.point.latitude,
@@ -76,6 +78,12 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
     return _form!;
   }
 
+  /// The chosen method, or cash when the service does not accept it any more.
+  PaymentMethodType _effectivePayment(ServiceCategoryInfo category, PaymentMethodType chosen) {
+    final accepted = category.paymentMethods.isEmpty ? const [PaymentMethodType.cash] : category.paymentMethods;
+    return accepted.contains(chosen) ? chosen : (accepted.contains(PaymentMethodType.cash) ? PaymentMethodType.cash : accepted.first);
+  }
+
   void _onFareChanged(String text) {
     final notifier = ref.read(bookingDraftProvider.notifier);
     final minor = parseFareMinor(text, exponent: _exponent());
@@ -125,7 +133,8 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
             passengers: category.maxPassengers == null ? null : draft.passengers,
             proposedFareMinor: draft.fareMinor!,
             currency: currency,
-            paymentMethod: draft.payment,
+            paymentMethod: _effectivePayment(category, draft.payment),
+            couponCode: ref.read(couponCheckProvider).code.isEmpty ? null : ref.read(couponCheckProvider).code,
           ),
         );
     if (booking != null && mounted) {
@@ -196,8 +205,11 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
         : decodePolyline(estimate.value!.polyline);
     final form = _formFor(category);
     final suggestions = _suggestions(estimate.value?.guidance, category);
-    final cashOnly = category.paymentMethods.isEmpty ||
-        category.paymentMethods.contains(PaymentMethodType.cash);
+    final paymentLabel = switch (_effectivePayment(category, draft.payment)) {
+      PaymentMethodType.card => l10n.pmCard,
+      PaymentMethodType.mobileWallet => l10n.pmWallet,
+      _ => l10n.bkPaymentCash,
+    };
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.bkFormTitle)),
@@ -301,18 +313,9 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
               ),
             ],
             const SizedBox(height: AppSpacing.md),
-            Text(l10n.bkPaymentTitle, style: Theme.of(context).textTheme.titleMedium),
-            ListTile(
-              key: const Key('payment-cash'),
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.payments_outlined),
-              title: Text(l10n.bkPaymentCash),
-              subtitle: cashOnly ? null : Text(l10n.bkPaymentCashUnavailable),
-              trailing: Icon(
-                Icons.check_circle,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
+            PaymentChooser(category: category),
+            const SizedBox(height: AppSpacing.md),
+            CouponBox(category: category, lat: pickup.point.latitude, lng: pickup.point.longitude),
             const SizedBox(height: AppSpacing.sm),
             _Summary(
               category: category.name.resolve(language),
@@ -326,6 +329,7 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
                       ),
                     ),
               estimate: estimate.value,
+              payment: paymentLabel,
             ),
             const SizedBox(height: AppSpacing.md),
             if (draft.error != null)
@@ -541,11 +545,12 @@ class _PassengerStepper extends StatelessWidget {
 }
 
 class _Summary extends StatelessWidget {
-  const _Summary({required this.category, required this.fare, required this.estimate});
+  const _Summary({required this.category, required this.fare, required this.estimate, required this.payment});
 
   final String category;
   final String? fare;
   final RouteEstimate? estimate;
+  final String payment;
 
   @override
   Widget build(BuildContext context) {
@@ -561,7 +566,7 @@ class _Summary extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Text(category),
             Text(l10n.bkSummaryFare(fare ?? l10n.bkSummaryFareNone)),
-            Text(l10n.bkSummaryPayment(l10n.bkPaymentCash)),
+            Text(l10n.bkSummaryPayment(payment)),
           ],
         ),
       ),

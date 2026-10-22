@@ -167,6 +167,9 @@ abstract final class BookingDto {
       completedAt: _time(m['completed_at']),
       durationSeconds: _int(m['duration_s']),
       plannedDistanceMeters: _int(m['planned_distance_m']),
+      couponApplied: m['coupon_applied'] == true,
+      discount: money(m['discount']),
+      customerPayable: money(m['customer_payable']),
     );
   }
 

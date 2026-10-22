@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:platform_core/platform_core.dart';
 
 import '../../../../app/l10n/generated/app_localizations.dart';
+import '../../../payments/presentation/providers/payments_providers.dart' show couponReasonText;
 import '../../domain/entities/booking_entities.dart';
 
 /// Booking status as ARB text (the server label is only a fallback).
@@ -162,6 +163,16 @@ String bookingErrorText(AppLocalizations l10n, Object error) {
       return l10n.otpErrorTooManyRequests(error.retryAfterSeconds ?? 60);
     case 'idempotency_request_in_progress':
       return l10n.bkErrInProgress;
+    case 'customer_fee_debt_outstanding':
+      return l10n.walErrDebtBlocksBooking;
+    case 'cancellation_cooldown_active':
+      return l10n.bkErrCooldown;
+    case 'payments_not_configured':
+      return l10n.payErrUnavailable;
+  }
+  if (error.code.startsWith('coupon_')) {
+    final reason = error.meta['reason_code'];
+    return couponReasonText(l10n, reason is String ? reason : error.code.substring(7), fallback: error.message);
   }
   return error.message ?? l10n.errorGenericBody;
 }

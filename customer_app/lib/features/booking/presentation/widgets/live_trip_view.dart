@@ -8,6 +8,7 @@ import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../../map/presentation/widgets/booking_map.dart';
+import '../../../payments/presentation/widgets/adjustments_section.dart';
 import '../../domain/entities/booking_entities.dart';
 import '../../domain/logic/polyline.dart';
 import '../providers/booking_providers.dart';
@@ -130,6 +131,10 @@ class _LiveTripViewState extends ConsumerState<LiveTripView> {
               style: theme.textTheme.titleSmall,
             ),
           ),
+        ],
+        if (booking.isAssigned) ...[
+          const SizedBox(height: AppSpacing.md),
+          AdjustmentsSection(bookingId: booking.id),
         ],
         const SizedBox(height: AppSpacing.md),
         _StatusTimeline(booking: booking),

@@ -33,6 +33,9 @@ use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Demo\DemoItemRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\BookingParticipationRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
+use App\Repositories\Contracts\Coupon\CouponAttemptRepositoryInterface;
+use App\Repositories\Contracts\Coupon\CouponRepositoryInterface;
+use App\Repositories\Contracts\Coupon\CouponReservationRepositoryInterface;
 use App\Repositories\Contracts\Finance\CommissionRuleRepositoryInterface;
 use App\Repositories\Contracts\Finance\FinancialPositionRepositoryInterface;
 use App\Repositories\Contracts\Finance\JournalEntryRepositoryInterface;
@@ -111,6 +114,9 @@ use App\Repositories\Eloquent\Demo\DemoItemRepository;
 use App\Repositories\Eloquent\Dispatch\BookingParticipationRepository;
 use App\Repositories\Eloquent\Operations\OperationsMapRepository;
 use App\Repositories\Eloquent\Dispatch\DispatchRecipientRepository;
+use App\Repositories\Eloquent\Coupon\CouponAttemptRepository;
+use App\Repositories\Eloquent\Coupon\CouponRepository;
+use App\Repositories\Eloquent\Coupon\CouponReservationRepository;
 use App\Repositories\Eloquent\Finance\CommissionRuleRepository;
 use App\Repositories\Eloquent\Finance\JournalEntryRepository;
 use App\Repositories\Eloquent\Finance\JournalLineRepository;
@@ -200,6 +206,9 @@ class RepositoryServiceProvider extends ServiceProvider
         VehicleDocumentRepositoryInterface::class => VehicleDocumentRepository::class,
         VehiclePhotoRepositoryInterface::class => VehiclePhotoRepository::class,
         VehicleRepositoryInterface::class => VehicleRepository::class,
+        CouponRepositoryInterface::class => CouponRepository::class,
+        CouponReservationRepositoryInterface::class => CouponReservationRepository::class,
+        CouponAttemptRepositoryInterface::class => CouponAttemptRepository::class,
         // @admin-module:bindings
         ProviderWorkloadRepositoryInterface::class => ProviderWorkloadRepository::class,
         ProviderLocationRepositoryInterface::class => ProviderLocationRepository::class,

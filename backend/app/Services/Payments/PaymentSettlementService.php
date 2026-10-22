@@ -14,6 +14,7 @@ use App\Models\Payment;
 use App\Models\ProviderProfile;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
+use App\Services\Coupon\CouponReservationService;
 use App\Services\Finance\BookingSettlementService;
 use App\Services\Finance\LedgerAccountResolver;
 use App\Services\Finance\LedgerService;
@@ -42,6 +43,7 @@ final class PaymentSettlementService
         private readonly PaymentRepositoryInterface $payments,
         private readonly PaymentTransitionService $transitions,
         private readonly CurrencyRegistry $currencies,
+        private readonly CouponReservationService $coupons,
     ) {}
 
     public function settle(Payment $payment): Payment
@@ -94,6 +96,10 @@ final class PaymentSettlementService
                 actorType: ActorType::System,
             ));
             $entryId = $result->entry->id;
+
+            if ($payment->kind === PaymentKind::Trip) {
+                $this->coupons->linkSettlement($booking, $entryId);
+            }
         }
 
         $now = CarbonImmutable::now();

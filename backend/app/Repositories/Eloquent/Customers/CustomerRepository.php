@@ -55,6 +55,21 @@ final class CustomerRepository extends BaseRepository implements CustomerReposit
                 : $query->whereDoesntHave('deletionRequests', static fn (Builder $inner) => $inner->where('status', DeletionRequestStatus::Pending->value)));
     }
 
+    public function lookup(string $term, int $limit): Collection
+    {
+        return $this->query()
+            ->whereHas('customerProfile')
+            ->when($term !== '', fn (Builder $query) => $this->applyUserSearch($query, $term))
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function findManyByIds(array $ids): Collection
+    {
+        return $this->query()->withTrashed()->whereKey($ids)->get();
+    }
+
     public function findByUuidWithTrashed(string $uuid): ?User
     {
         return $this->query()->withTrashed()->where('uuid', $uuid)->first();

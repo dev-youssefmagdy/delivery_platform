@@ -12,6 +12,7 @@ use App\Enums\Common\AuditAction;
 use App\Enums\Finance\JournalEntryType;
 use App\Enums\Finance\LedgerAccountType;
 use App\Enums\Payments\PaymentEventType;
+use App\Enums\Payments\PaymentKind;
 use App\Enums\Payments\PaymentStatus;
 use App\Enums\Payments\RefundStatus;
 use App\Enums\Settings\SettingKey;
@@ -34,6 +35,7 @@ use App\Repositories\Contracts\Finance\JournalLineRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentRefundRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Services\Coupon\CouponReservationService;
 use App\Services\Finance\LedgerAccountResolver;
 use App\Services\Finance\LedgerService;
 use App\Services\Settings\SettingsService;
@@ -72,6 +74,7 @@ final class RefundService
         private readonly SettingsService $settings,
         private readonly CurrencyRegistry $currencies,
         private readonly AuditLogger $audit,
+        private readonly CouponReservationService $coupons,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -289,6 +292,12 @@ final class RefundService
             $this->transitions->note($payment, PaymentEventType::RefundCompleted, $actor, $meta);
         } else {
             $this->transitions->transition($payment, $target, PaymentEventType::RefundCompleted, $actor, meta: $meta);
+        }
+
+        // SRS §11.2 step 7: a fully refunded trip gives the coupon use and budget back when the coupon's terms say so (the ledger
+        // reversal above already returned the discount funding); a partial refund keeps the discount.
+        if ($target === PaymentStatus::Refunded && $payment->kind === PaymentKind::Trip) {
+            $this->coupons->reverse($booking, 'trip_refunded');
         }
 
         return $this->refunds->update($refund, ['status' => RefundStatus::Completed, 'journal_entry_id' => $result->entry->id, 'completed_at' => CarbonImmutable::now(), 'failure_code' => null]);

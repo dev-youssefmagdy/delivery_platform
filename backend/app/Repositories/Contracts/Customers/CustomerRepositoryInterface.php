@@ -49,4 +49,17 @@ interface CustomerRepositoryInterface extends BaseRepositoryInterface
      * True when the account also has a provider profile (such accounts are handled by the provider module).
      */
     public function hasProviderProfile(User $user): bool;
+
+    /**
+     * Customers matching a search term (name, masked phone search), for remote selects.
+     *
+     * @return Collection<int, User>
+     */
+    public function lookup(string $term, int $limit): Collection;
+
+    /**
+     * @param list<int|string> $ids
+     * @return Collection<int, User>
+     */
+    public function findManyByIds(array $ids): Collection;
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Booking;
 
 use App\DTOs\Booking\BookingCreationResult;
+use App\DTOs\Coupon\CouponPlan;
 use App\DTOs\Booking\CreateBookingData;
 use App\DTOs\Booking\TransitionContext;
 use App\DTOs\Booking\ValidatedBookingRequest;
@@ -11,12 +12,14 @@ use App\Enums\Catalog\BookingType;
 use App\Enums\Payments\PaymentStatus;
 use App\Enums\Settings\SettingKey;
 use App\Exceptions\ConflictException;
+use App\Exceptions\CouponRejectedException;
 use App\Exceptions\ForbiddenActionException;
 use App\Models\Booking;
 use App\Models\User;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStopRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
+use App\Services\Coupon\CouponBookingService;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -41,6 +44,7 @@ final class CreateBookingService
         private readonly CustomerRepositoryInterface $customers,
         private readonly BookingTransitionService $transitions,
         private readonly SettingsService $settings,
+        private readonly CouponBookingService $coupons,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -60,8 +64,29 @@ final class CreateBookingService
 
         $now = CarbonImmutable::now();
         $validated = $this->validator->validate($data, $now);
+        // Coupon pre-check outside the transaction so a refused code is always logged (SRS §11.2 step 8); the reservation itself
+        // is made inside it, under the coupon row lock, once the booking exists.
+        $coupon = $this->coupons->prepare($customer, $data->couponCode, $validated);
 
-        return $this->db->transaction(function () use ($customer, $data, $validated, $now): BookingCreationResult {
+        try {
+            return $this->createLocked($customer, $data, $validated, $now, $coupon);
+        } catch (CouponRejectedException $exception) {
+            if ($coupon instanceof CouponPlan) {
+                $this->coupons->recordFailure($coupon, $customer, $exception, $validated->category->id);
+
+                // A suggested (automatic) promotion that ran out in the meantime never blocks the booking.
+                if ($coupon->automatic) {
+                    return $this->createLocked($customer, $data, $validated, $now, null);
+                }
+            }
+
+            throw $exception;
+        }
+    }
+
+    private function createLocked(User $customer, CreateBookingData $data, ValidatedBookingRequest $validated, CarbonImmutable $now, ?CouponPlan $coupon): BookingCreationResult
+    {
+        return $this->db->transaction(function () use ($customer, $data, $validated, $now, $coupon): BookingCreationResult {
             $locked = $this->customers->lockForUpdate($customer->id) ?? throw (new ModelNotFoundException)->setModel(User::class);
             $this->assertMayBook($locked);
 
@@ -80,6 +105,10 @@ final class CreateBookingService
             $context = TransitionContext::customer($locked);
             $this->stops->replaceFor($booking, array_map(static fn ($stop): array => ['point' => $stop->point, 'address' => $stop->addressOrNull()], $validated->stops));
             $this->transitions->recordCreation($booking, $context);
+
+            if ($coupon instanceof CouponPlan) {
+                $booking = $this->coupons->reserve($coupon, $booking, $validated);
+            }
 
             if ($this->searchOpensNow($validated, $now)) {
                 $booking = $this->transitions->transition($booking, BookingStatus::SearchingOffers, $context);

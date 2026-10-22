@@ -167,6 +167,8 @@ class AppServiceProvider extends ServiceProvider
             'payment_refund' => PaymentRefund::class,
             'gateway_webhook_event' => GatewayWebhookEvent::class,
             'payment_reconciliation_run' => PaymentReconciliationRun::class,
+            'coupon' => \App\Models\Coupon::class,
+            'coupon_reservation' => \App\Models\CouponReservation::class,
             // @admin-module:morph-map
         ]);
 

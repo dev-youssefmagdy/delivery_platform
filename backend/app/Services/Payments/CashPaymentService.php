@@ -53,6 +53,8 @@ final class CashPaymentService
         $currency = $this->currencies->get($booking->currency);
         $breakdown = PriceBreakdown::fromArray((array) $booking->price_breakdown, $currency);
 
+        $due = $breakdown->customerPayable->subtract($breakdown->tip);
+
         $payment = $this->payments->insert([
             'uuid' => (string) Str::uuid(),
             'booking_id' => $booking->id,
@@ -61,9 +63,10 @@ final class CashPaymentService
             'kind' => PaymentKind::Trip,
             'method_type' => PaymentMethodType::Cash,
             'gateway' => null,
-            'amount_minor' => $breakdown->customerPayable->subtract($breakdown->tip)->amount,
+            'amount_minor' => $due->amount,
             'currency' => $booking->currency,
-            'status' => PaymentStatus::CashDue,
+            // A coupon that covers the whole payable leaves no cash to collect (P3.3).
+            'status' => $due->isPositive() ? PaymentStatus::CashDue : PaymentStatus::NotRequired,
         ]);
         $this->transitions->opened($payment, PaymentEventType::StatusChanged, PaymentActor::system(), ['method' => 'cash']);
 

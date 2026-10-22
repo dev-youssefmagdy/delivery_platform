@@ -30,6 +30,7 @@ use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
 use App\Services\Audit\AuditLogger;
 use App\Services\Dispatch\EventSequencer;
 use App\Services\Finance\BookingSettlementService;
+use App\Services\Payments\FreeBookingCompletionService;
 use App\Services\Operations\OperationsFeedPublisher;
 use Carbon\CarbonImmutable;
 use Closure;
@@ -71,6 +72,7 @@ final class BookingOverrideService
         private readonly OperationsFeedPublisher $feed,
         private readonly EventSequencer $sequencer,
         private readonly BookingSettlementService $settlement,
+        private readonly FreeBookingCompletionService $freeCompletion,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -237,7 +239,7 @@ final class BookingOverrideService
 
             // An operator finishing a trip must leave the same money trail as the provider doing it (P3.1).
             if ($from === BookingStatus::InProgress && ($target === BookingStatus::Completed || $target === BookingStatus::CompletedPendingPayment)) {
-                $this->settlement->onCompleted($moved);
+                $this->freeCompletion->completeIfNothingToPay($this->settlement->onCompleted($moved));
             }
 
             return ['from' => $from->value, 'to' => $target->value] + ($pinVerified ? ['pin_bypassed' => true] : []);

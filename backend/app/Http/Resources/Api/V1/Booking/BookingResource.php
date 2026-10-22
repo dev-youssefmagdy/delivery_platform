@@ -135,7 +135,8 @@ class BookingResource extends JsonResource
 
     /**
      * Receipt basics once the trip is finished (SRS §6.7): the agreed and final amounts, payment state, times and the
-     * planned route size. Coupons, fees and tax appear with the money core (P3).
+     * planned route size and, with a coupon, the server-computed discount and what the customer pays. The discount is never taken
+     * from the client (Plan I12).
      *
      * @return array<string, mixed>|null
      */
@@ -150,6 +151,9 @@ class BookingResource extends JsonResource
             'agreed_fare' => ['amount_minor' => $booking->agreed_fare_minor, 'currency' => $booking->currency],
             'final_fare' => ['amount_minor' => $booking->final_fare_minor, 'currency' => $booking->currency],
             'payment' => ['method' => $booking->payment_method->value, 'status' => $booking->payment_status->value],
+            'coupon_applied' => $booking->coupon_reservation_id !== null && (int) ($booking->price_breakdown['discount_minor'] ?? 0) > 0,
+            'discount' => ['amount_minor' => (int) ($booking->price_breakdown['discount_minor'] ?? 0), 'currency' => $booking->currency],
+            'customer_payable' => isset($booking->price_breakdown['customer_payable_minor']) ? ['amount_minor' => (int) $booking->price_breakdown['customer_payable_minor'], 'currency' => $booking->currency] : null,
             'started_at' => $booking->started_at?->toIso8601ZuluString(),
             'completed_at' => $booking->completed_at?->toIso8601ZuluString(),
             'duration_s' => $booking->started_at !== null && $booking->completed_at !== null ? (int) $booking->started_at->diffInSeconds($booking->completed_at) : null,

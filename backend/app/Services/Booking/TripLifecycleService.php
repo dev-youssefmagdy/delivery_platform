@@ -16,6 +16,7 @@ use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Location\ProviderLastLocationRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Services\Finance\BookingSettlementService;
+use App\Services\Payments\FreeBookingCompletionService;
 use App\Support\Geo\GeoPoint;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -42,6 +43,7 @@ final class TripLifecycleService
         private readonly BookingTransitionService $transitions,
         private readonly BookingNotifier $notifier,
         private readonly BookingSettlementService $settlement,
+        private readonly FreeBookingCompletionService $freeCompletion,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -85,6 +87,8 @@ final class TripLifecycleService
             // Same transaction as the status change: the price breakdown is stored and a cash trip is settled in the
             // ledger, or the completion does not happen (a retry is safe: both steps are idempotent).
             $completed = $this->settlement->onCompleted($completed);
+            // A coupon that covers the whole payable leaves nothing to charge: complete without a gateway payment (P3.3).
+            $completed = $this->freeCompletion->completeIfNothingToPay($completed);
             $this->providers->incrementCompletedJobs($provider->id);
             $this->notifier->completed($completed);
         });
@@ -122,6 +126,7 @@ final class TripLifecycleService
 
             if ($afterTransition !== null) {
                 $afterTransition($moved);
+                $moved = $moved->refresh();
             }
 
             return new TripActionResult($moved);

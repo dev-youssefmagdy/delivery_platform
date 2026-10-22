@@ -21,6 +21,7 @@ use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Booking\ShareLinkRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
+use App\Services\Coupon\CouponReservationService;
 use App\Services\Dispatch\EventSequencer;
 use App\Services\Provider\ProviderEligibilityService;
 use App\Support\Booking\BookingStatusGate;
@@ -46,6 +47,7 @@ final class BookingTransitionService
         private readonly ProviderEligibilityService $eligibility,
         private readonly EventSequencer $sequencer,
         private readonly ShareLinkRepositoryInterface $shareLinks,
+        private readonly CouponReservationService $coupons,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -127,6 +129,11 @@ final class BookingTransitionService
             ]);
 
             $locked->refresh();
+
+            // ADR-17: a booking that ends without a trip gives its coupon use and held budget back.
+            if ($to === BookingStatus::ExpiredNoProvider || $to->isCancellation()) {
+                $this->coupons->release($locked, $to === BookingStatus::ExpiredNoProvider ? 'booking_expired' : 'booking_cancelled');
+            }
 
             if (in_array($to, [BookingStatus::Completed, BookingStatus::CompletedPendingPayment, BookingStatus::ExpiredNoProvider], true) || $to->isCancellation()) {
                 $this->shareLinks->revokeForBooking($locked->id, $context->now());

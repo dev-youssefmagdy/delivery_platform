@@ -109,6 +109,11 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
             ->count();
     }
 
+    public function completedCountForCustomer(int $customerId): int
+    {
+        return $this->query()->where('customer_id', $customerId)->whereIn('status', [BookingStatus::Completed->value, BookingStatus::CompletedPendingPayment->value])->count();
+    }
+
     public function searchesExpiredBefore(CarbonInterface $now, int $limit): array
     {
         return array_map('intval', $this->query()

@@ -93,6 +93,7 @@ return [
         'cities' => App\Support\Admin\Lookups\CityLookup::class,
         'providers' => App\Support\Admin\Lookups\ProviderLookup::class,
         'zones' => App\Support\Admin\Lookups\ZoneLookup::class,
+        'customers' => App\Support\Admin\Lookups\CustomerLookup::class,
         // @admin-module:lookups
     ],
 

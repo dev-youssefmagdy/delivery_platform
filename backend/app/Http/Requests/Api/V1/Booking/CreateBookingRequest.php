@@ -43,6 +43,8 @@ class CreateBookingRequest extends FormRequest
             'currency' => ['nullable', 'string', 'size:3'],
             'payment_method' => ['nullable', 'string', Rule::enum(PaymentMethodType::class)],
             'stops' => ['nullable', 'array', 'max:10'],
+            // Only a code: the discount is computed by the server (Plan I12); any amount sent here is never read.
+            'coupon_code' => ['nullable', 'string', 'max:40', 'regex:/^[A-Za-z0-9_-]+$/'],
         ]
             + $this->locationRules('pickup', true)
             + $this->locationRules('dropoff', false)
@@ -79,6 +81,7 @@ class CreateBookingRequest extends FormRequest
             currency: $this->filled('currency') ? (string) $this->input('currency') : null,
             paymentMethod: $this->filled('payment_method') ? PaymentMethodType::from((string) $this->input('payment_method')) : PaymentMethodType::Cash,
             idempotencyKey: (string) $this->headers->get(Idempotency::HEADER) ?: null,
+            couponCode: $this->filled('coupon_code') ? (string) $this->input('coupon_code') : null,
         );
     }
 

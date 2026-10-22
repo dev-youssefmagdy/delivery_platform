@@ -68,6 +68,11 @@ interface BookingRepositoryInterface extends BaseRepositoryInterface
     public function inFlightOnDemandCount(int $customerId, ?int $exceptId = null): int;
 
     /**
+     * Trips the customer has completed (a customer with none is "new" for coupon segments).
+     */
+    public function completedCountForCustomer(int $customerId): int;
+
+    /**
      * @return list<int> ids of searching bookings whose window ended, oldest first
      */
     public function searchesExpiredBefore(CarbonInterface $now, int $limit): array;

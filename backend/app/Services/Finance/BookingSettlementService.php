@@ -15,6 +15,7 @@ use App\Enums\Settings\SettingKey;
 use App\Models\Booking;
 use App\Models\ProviderProfile;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Services\Coupon\CouponReservationService;
 use App\Services\Payments\CashPaymentService;
 use App\Services\Settings\SettingsService;
 use App\Support\Money\CurrencyRegistry;
@@ -35,7 +36,11 @@ use LogicException;
  *    Card and wallet bookings are settled by PaymentSettlementService when the gateway confirms the payment (P3.2); the
  *    breakdown is stored for them now so the receipt and the later posting use the same numbers.
  *
- * Add-ons and coupons are zero until their milestones fill the corresponding input (P4, P3.3). The tip input is wired
+ * Coupons (P3.3): the discount and its funding split come from the booking's coupon reservation, computed on the agreed
+ * fare under the terms of the version the reservation was made with (CouponReservationService::discountFor), never from the
+ * client. At completion the reservation is committed (a redemption and funding entries are written) with the amounts of the
+ * stored breakdown; the ledger postings below already carry platform / provider / partner funding. Add-ons are zero until P4.
+ * The tip input is wired
  * (P3.2): a tip is its own payment and its own entry, so the stored booking breakdown keeps tip = 0 and a tip is priced by
  * `breakdownFor($booking, null, $tip)` when its payment is settled (PaymentSettlementService).
  */
@@ -51,11 +56,13 @@ final class BookingSettlementService
         private readonly SettingsService $settings,
         private readonly CurrencyRegistry $currencies,
         private readonly CashPaymentService $cashPayments,
+        private readonly CouponReservationService $coupons,
     ) {}
 
     public function onCompleted(Booking $booking): Booking
     {
         $booking = $this->withBreakdown($booking);
+        $this->coupons->commit($booking, PriceBreakdown::fromArray((array) $booking->price_breakdown, $this->currencies->get($booking->currency)));
 
         if ($booking->payment_method === PaymentMethodType::Cash) {
             $booking = $this->settleCash($booking);
@@ -76,11 +83,14 @@ final class BookingSettlementService
         $currency = $this->currencies->get($booking->currency);
         $fare = $booking->final_fare_minor ?? $booking->agreed_fare_minor ?? throw new LogicException('A booking needs an agreed fare to be priced.');
 
+        $agreed = Money::of($fare, $currency);
+        $coupon = $this->coupons->discountFor($booking, $agreed);
+
         return $this->calculator->calculate(new PriceBreakdownInput(
-            agreedFare: Money::of($fare, $currency),
+            agreedFare: $agreed,
             addons: Money::zero($currency),
-            discount: Money::zero($currency),
-            funding: DiscountFundingSplit::of(DiscountFunding::Platform),
+            discount: $coupon?->amount ?? Money::zero($currency),
+            funding: $coupon?->funding ?? DiscountFundingSplit::of(DiscountFunding::Platform),
             customerFee: Money::of($this->settings->int(SettingKey::CustomerServiceFeeMinor), $currency),
             taxRateBp: $this->settings->int(SettingKey::TaxRateBasisPoints),
             tip: $tip ?? Money::zero($currency),
@@ -120,7 +130,7 @@ final class BookingSettlementService
         $lines = $this->postings->cash($breakdown, $this->accounts->settlementAccounts($provider, $booking->currency));
 
         if ($lines !== []) {
-            $this->ledger->post(new JournalEntryData(
+            $result = $this->ledger->post(new JournalEntryData(
                 type: JournalEntryType::BookingSettlementCash,
                 idempotencyKey: 'booking-settlement:'.$booking->uuid,
                 descriptionKey: 'ledger.entry.booking_settlement_cash',
@@ -134,6 +144,7 @@ final class BookingSettlementService
                 ],
                 actorType: ActorType::System,
             ));
+            $this->coupons->linkSettlement($booking, $result->entry->id);
         }
 
         return $booking->settled_at === null ? $this->bookings->forceUpdate($booking, ['settled_at' => CarbonImmutable::now()]) : $booking;

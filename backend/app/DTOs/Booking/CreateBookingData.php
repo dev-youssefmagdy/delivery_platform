@@ -29,5 +29,6 @@ final readonly class CreateBookingData
         public ?string $currency,
         public PaymentMethodType $paymentMethod,
         public ?string $idempotencyKey = null,
+        public ?string $couponCode = null,
     ) {}
 }

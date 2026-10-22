@@ -32,6 +32,11 @@ return [
     ],
 
     'audit_action' => [
+        'assigned' => 'Assigned',
+        'escalated' => 'Escalated',
+        'resolved' => 'Resolved',
+        'reopened' => 'Reopened',
+        'linked' => 'Linked',
         'requested' => 'Requested',
         'reprocessed' => 'Reprocessed',
         'cash_collected' => 'Cash collected',
@@ -854,6 +859,7 @@ return [
     ],
 
     'notification_event' => [
+        'booking.message_received' => 'New chat message',
         'provider.application_submitted' => 'Driver application submitted',
         'provider.application_more_info' => 'Driver application needs changes',
         'provider.application_approved' => 'Driver application approved',
@@ -1108,5 +1114,55 @@ return [
         'stacking_not_allowed' => 'Cannot be combined',
         'currency_mismatch' => 'Currency mismatch',
         'no_discount' => 'No discount',
+    ],
+
+    'ticket_category' => [
+        'booking' => 'Booking',
+        'fare_extra_charge' => 'Fare or extra charge',
+        'payment_refund' => 'Payment or refund',
+        'coupon' => 'Coupon',
+        'driver_provider' => 'Driver or provider',
+        'customer_conduct' => 'Customer conduct',
+        'lost_item' => 'Lost item',
+        'damaged_goods' => 'Damaged goods',
+        'delivery_failure' => 'Delivery failure',
+        'safety_harassment' => 'Safety or harassment',
+        'account' => 'Account',
+        'verification' => 'Verification',
+        'payout' => 'Payout',
+        'technical' => 'Technical issue',
+        'other' => 'Other',
+    ],
+
+    'ticket_priority' => ['low' => 'Low', 'normal' => 'Normal', 'high' => 'High', 'urgent' => 'Urgent'],
+
+    'ticket_status' => [
+        'open' => 'Open',
+        'in_progress' => 'In progress',
+        'waiting_user' => 'Waiting for the user',
+        'escalated' => 'Escalated',
+        'resolved' => 'Resolved',
+        'closed' => 'Closed',
+    ],
+
+    'ticket_group' => ['support' => 'Support', 'finance' => 'Finance', 'safety' => 'Safety', 'operations' => 'Operations'],
+
+    'ticket_visibility' => ['public' => 'Visible to the user', 'internal' => 'Internal note'],
+
+    'ticket_source' => ['app' => 'App', 'report' => 'Booking report', 'appeal' => 'Fee appeal', 'admin' => 'Admin'],
+
+    'ticket_event_type' => [
+        'created' => 'Ticket created',
+        'reply' => 'Reply',
+        'internal_note' => 'Internal note',
+        'assigned' => 'Assigned',
+        'unassigned' => 'Unassigned',
+        'status_changed' => 'Status changed',
+        'priority_changed' => 'Priority changed',
+        'escalated' => 'Escalated',
+        'resolved' => 'Resolved',
+        'reopened' => 'Reopened',
+        'linked' => 'Finance operation linked',
+        'sla_breached' => 'SLA breached',
     ],
 ];

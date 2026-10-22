@@ -41,6 +41,7 @@ return [
     'booking.provider_heading' => ['title' => 'Driver on the way', 'body' => 'Your driver is on the way.'],
     'booking.provider_arrived' => ['title' => 'Your driver arrived', 'body' => 'Your driver has arrived.'],
     'booking.trip_started' => ['title' => 'Trip started', 'body' => 'Your trip has started.'],
+    'booking.message_received' => ['title' => 'New message', 'body' => 'You have a new message about booking {code}.'],
     'booking.completed' => [
         'title' => 'Trip completed', 'body' => 'Booking {code} is complete.',
         'email_subject' => 'Your trip is complete', 'email_body' => "Booking {code} is complete.\nYour receipt is available in the app.",

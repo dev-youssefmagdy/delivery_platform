@@ -432,6 +432,24 @@ return [
             'icon' => 'inbox',
             'permission' => App\Enums\Admin\AdminPermission::NotificationsManage,
         ],
+        [
+            'key' => 'support_tickets',
+            'group' => 'support',
+            'label' => 'admin.support_tickets.menu',
+            'route' => 'admin.support-tickets.index',
+            'active' => 'admin.support-tickets.*',
+            'icon' => 'lifebuoy',
+            'permission' => [App\Enums\Admin\AdminPermission::SupportView, App\Enums\Admin\AdminPermission::SupportViewAll],
+        ],
+        [
+            'key' => 'macros',
+            'group' => 'support',
+            'label' => 'admin.macros.menu',
+            'route' => 'admin.macros.index',
+            'active' => 'admin.macros.*',
+            'icon' => 'document',
+            'permission' => App\Enums\Admin\AdminPermission::MacrosManage,
+        ],
         // @admin-module:menu
     ],
 ];

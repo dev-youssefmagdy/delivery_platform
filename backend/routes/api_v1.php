@@ -50,6 +50,8 @@ use App\Http\Controllers\Api\V1\Provider\TripController;
 use App\Http\Controllers\Api\V1\Provider\TripFeedbackController;
 use App\Http\Controllers\Api\V1\Provider\RequestController;
 use App\Http\Controllers\Api\V1\Provider\VehicleController;
+use App\Http\Controllers\Api\V1\Support\BookingChatController;
+use App\Http\Controllers\Api\V1\Support\SupportTicketController;
 use App\Http\Controllers\Api\V1\Webhooks\PaymentWebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -178,6 +180,14 @@ Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bo
     Route::post('{booking}/adjustments/{adjustment}/withdraw', [BookingAdjustmentController::class, 'withdraw'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.withdraw');
     // The immutable receipt of a completed booking (JSON + a signed link to the printable HTML receipt).
     Route::get('{booking}/receipt', [BookingReceiptController::class, 'show'])->whereUuid('booking')->name('receipt');
+    // Booking chat (P3.7, SRS §14.2): only the customer and the selected provider, inside the configured window. Reading and the
+    // read receipt stay possible for a participant; writing needs an open window and an account in good standing.
+    Route::get('{booking}/messages', [BookingChatController::class, 'index'])->whereUuid('booking')->name('messages.index');
+    Route::post('{booking}/messages/read', [BookingChatController::class, 'read'])->whereUuid('booking')->name('messages.read');
+    Route::get('{booking}/messages/{message}/attachment', [BookingChatController::class, 'attachment'])->whereUuid(['booking', 'message'])->middleware('signed')->name('messages.attachment');
+    Route::post('{booking}/messages', [BookingChatController::class, 'store'])->whereUuid('booking')->middleware(['account.active', 'throttle:'.(int) config('support.chat.per_minute', 30).',1'])->name('messages.store');
+    // A disputed cancellation fee opens a support ticket carrying the fee decision snapshot.
+    Route::post('{booking}/cancellation-appeal', [SupportTicketController::class, 'appeal'])->whereUuid('booking')->middleware('idempotent')->name('cancellation-appeal');
 
     Route::middleware('account.active:strict')->group(function (): void {
         Route::post('/', [BookingController::class, 'store'])->middleware('idempotent')->name('store');
@@ -229,6 +239,11 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     Route::get('bookings/{booking}', [RequestController::class, 'show'])->whereUuid('booking')->name('bookings.show');
     Route::get('bookings/{booking}/adjustments', [TripAdjustmentController::class, 'index'])->whereUuid('booking')->name('adjustments.index');
     Route::get('bookings/{booking}/receipt', [TripReceiptController::class, 'show'])->whereUuid('booking')->name('receipt');
+    // Booking chat with the customer (P3.7): same rules as the customer side, decided by the service.
+    Route::get('bookings/{booking}/messages', [BookingChatController::class, 'index'])->whereUuid('booking')->name('bookings.messages.index');
+    Route::post('bookings/{booking}/messages/read', [BookingChatController::class, 'read'])->whereUuid('booking')->name('bookings.messages.read');
+    Route::get('bookings/{booking}/messages/{message}/attachment', [BookingChatController::class, 'attachment'])->whereUuid(['booking', 'message'])->middleware('signed')->name('bookings.messages.attachment');
+    Route::post('bookings/{booking}/cancellation-appeal', [SupportTicketController::class, 'appeal'])->whereUuid('booking')->middleware('idempotent')->name('bookings.cancellation-appeal');
     // Earnings, wallet statement and payouts (P3.4, SRS §7.6): reads are status-safe, always scoped to the signed-in provider.
     Route::get('earnings/summary', [EarningsController::class, 'summary'])->name('earnings.summary');
     Route::get('earnings/transactions', [EarningsController::class, 'transactions'])->name('earnings.transactions');
@@ -264,6 +279,7 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::post('bookings/{booking}/adjustments/{adjustment}/reject', [TripAdjustmentController::class, 'reject'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.reject');
         Route::post('bookings/{booking}/adjustments/{adjustment}/withdraw', [TripAdjustmentController::class, 'withdraw'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.withdraw');
         Route::post('bookings/{booking}/skip', [RequestController::class, 'skip'])->whereUuid('booking')->name('requests.skip');
+        Route::post('bookings/{booking}/messages', [BookingChatController::class, 'store'])->whereUuid('booking')->middleware('throttle:'.(int) config('support.chat.per_minute', 30).',1')->name('bookings.messages.store');
 
         Route::post('applications', [ApplicationController::class, 'store'])->middleware('idempotent')->name('applications.store');
         Route::patch('application', [ApplicationController::class, 'update'])->name('application.update');
@@ -287,6 +303,17 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::delete('vehicles/{vehicle:uuid}/photos/{photo}', [VehicleController::class, 'destroyPhoto'])->whereUuid(['vehicle', 'photo'])->name('vehicles.photos.destroy');
         Route::post('vehicles/{vehicle:uuid}/submit-review', [VehicleController::class, 'submitReview'])->whereUuid('vehicle')->middleware('idempotent')->name('vehicles.submit-review');
     });
+});
+
+// Help center and tickets (P3.7, SRS §14.3) for both apps. Reading and writing stay available to a restricted account (asking
+// support must work when something is wrong with the account); everything is scoped to the signed-in person and app.
+Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->prefix('support')->name('support.')->group(function (): void {
+    Route::get('categories', [SupportTicketController::class, 'categories'])->name('categories');
+    Route::get('tickets', [SupportTicketController::class, 'index'])->name('tickets.index');
+    Route::post('tickets', [SupportTicketController::class, 'store'])->middleware('idempotent')->name('tickets.store');
+    Route::get('tickets/{ticket}', [SupportTicketController::class, 'show'])->whereUuid('ticket')->name('tickets.show');
+    Route::post('tickets/{ticket}/messages', [SupportTicketController::class, 'reply'])->whereUuid('ticket')->middleware('idempotent')->name('tickets.reply');
+    Route::get('tickets/{ticket}/attachments/{attachment}', [SupportTicketController::class, 'attachment'])->whereUuid(['ticket', 'attachment'])->middleware('signed')->name('tickets.attachment');
 });
 
 // Private channel authorization for the mobile apps (ADR-07): the pusher-protocol clients post `socket_id` and

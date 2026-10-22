@@ -110,7 +110,11 @@
             @if ($showCoupons)
                 <x-admin.tabs.panel id="coupons" :url="route('admin.customers.tabs.coupons', $customer)" />
             @endif
-            <x-admin.tabs.panel id="tickets"><x-admin.available-after :title="__('admin.customers.tabs.tickets')" milestone="P3.7" :module="__('admin.customers.modules.tickets')" /></x-admin.tabs.panel>
+            @can('viewAny', \App\Models\SupportTicket::class)
+                <x-admin.tabs.panel id="tickets" :url="route('admin.customers.tabs.tickets', $customer)" />
+            @else
+                <x-admin.tabs.panel id="tickets"><x-admin.empty-state icon="lifebuoy" :title="__('admin.customers.tickets.forbidden')" compact /></x-admin.tabs.panel>
+            @endcan
             <x-admin.tabs.panel id="ratings" :url="route('admin.customers.tabs.ratings', $customer)" />
 
             <x-admin.tabs.panel id="consents" :url="route('admin.customers.tabs.consents', $customer)" />

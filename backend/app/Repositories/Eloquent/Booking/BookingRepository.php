@@ -247,8 +247,14 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
             ->when($filters->customerPhone !== null, fn (Builder $query) => $query->whereHas('customer', fn (Builder $inner) => $this->applyPhoneFilter($inner, (string) $filters->customerPhone)))
             ->when($filters->providerPhone !== null, fn (Builder $query) => $query->whereHas('provider.user', fn (Builder $inner) => $this->applyPhoneFilter($inner, (string) $filters->providerPhone)))
             ->when($filters->providerId !== null, static fn (Builder $query) => $query->where('bookings.provider_id', $filters->providerId))
+            ->when($filters->hasTicket !== null, static function (Builder $query) use ($filters): void {
+                $ticket = static fn ($sub) => $sub->select(DB::raw(1))->from('support_tickets')->whereColumn('support_tickets.booking_id', 'bookings.id');
+
+                $filters->hasTicket ? $query->whereExists($ticket) : $query->whereNotExists($ticket);
+            })
             ->when($filters->hasIncident !== null, static function (Builder $query) use ($filters): void {
-                $incident = static fn ($sub) => $sub->select(DB::raw(1))->from('booking_reports')->whereColumn('booking_reports.booking_id', 'bookings.id');
+                // Reports are tickets since P3.7 (`source = report`).
+                $incident = static fn ($sub) => $sub->select(DB::raw(1))->from('support_tickets')->whereColumn('support_tickets.booking_id', 'bookings.id')->where('support_tickets.source', 'report');
 
                 $filters->hasIncident
                     ? $query->where(static fn (Builder $inner) => $inner->whereNotNull('bookings.support_flagged_at')->orWhereExists($incident))

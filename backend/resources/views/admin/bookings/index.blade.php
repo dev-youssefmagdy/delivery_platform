@@ -23,6 +23,7 @@
         <x-admin.filters.text name="customer_phone" :label="__('admin.bookings.filters.customer_phone')" :placeholder="__('admin.bookings.filters.phone_hint')" />
         <x-admin.filters.text name="provider_phone" :label="__('admin.bookings.filters.provider_phone')" :placeholder="__('admin.bookings.filters.phone_hint')" />
         <x-admin.filters.boolean name="has_incident" :label="__('admin.bookings.filters.has_incident')" />
+        <x-admin.filters.boolean name="has_ticket" :label="__('admin.bookings.filters.has_ticket')" />
     </x-admin.filters-card>
 
     <x-admin.card :padding="false" class="p-4">

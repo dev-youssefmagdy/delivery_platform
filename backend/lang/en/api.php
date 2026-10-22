@@ -116,6 +116,17 @@ return [
         'created' => 'Thanks for your rating.',
     ],
 
+    'chat' => [
+        'sent' => 'Message sent.',
+    ],
+
+    'support' => [
+        'ticket_created' => 'Your request was sent. We will reply as soon as possible.',
+        'reply_sent' => 'Your reply was sent.',
+        'appeal_created' => 'Your appeal was sent to support.',
+        'appeal_subject' => 'Appeal of the fee on booking :code',
+    ],
+
     'report' => [
         'created' => 'Your report was received.',
     ],
@@ -141,6 +152,23 @@ return [
     ],
 
     'errors' => [
+        'chat_forbidden' => 'You are not part of this booking conversation.',
+        'chat_closed' => 'The conversation for this booking is closed.',
+        'chat_empty' => 'Write a message or attach an image.',
+        'chat_message_too_long' => 'The message is too long (maximum :max characters).',
+        'ticket_category_not_allowed' => 'This category is not available here.',
+        'ticket_limit_reached' => 'You have too many open requests (:max). Wait for an answer or reply to an existing one.',
+        'ticket_rate_limited' => 'You sent too many new requests today (:max). Please try again tomorrow.',
+        'ticket_link_invalid' => 'The linked booking, payment or payout was not found.',
+        'ticket_closed' => 'This request is closed. Open a new one if you still need help.',
+        'ticket_empty_reply' => 'Write a reply.',
+        'ticket_too_many_attachments' => 'You can attach up to :max files.',
+        'appeal_not_available' => 'There is no fee on this booking that can be appealed.',
+        'appeal_already_open' => 'You already appealed this booking.',
+        'ticket_assignee_invalid' => 'This person cannot take tickets of this team.',
+        'ticket_finished' => 'This ticket is already resolved or closed.',
+        'ticket_not_resolved' => 'Only a resolved or closed ticket can be reopened.',
+        'ticket_escalation_invalid' => 'The ticket is already with this team.',
         'booking_not_cancellable' => 'This booking can no longer be cancelled.',
         'cancellation_reason_not_allowed' => 'This reason cannot be used for this booking.',
         'cancellation_note_required' => 'Please describe the reason.',

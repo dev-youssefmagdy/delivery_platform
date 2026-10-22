@@ -116,6 +116,17 @@ return [
         'created' => 'شكراً لتقييمك.',
     ],
 
+    'chat' => [
+        'sent' => 'تم إرسال الرسالة.',
+    ],
+
+    'support' => [
+        'ticket_created' => 'تم إرسال طلبك. سنرد عليك في أقرب وقت ممكن.',
+        'reply_sent' => 'تم إرسال ردك.',
+        'appeal_created' => 'تم إرسال اعتراضك إلى الدعم.',
+        'appeal_subject' => 'اعتراض على الرسوم في الحجز :code',
+    ],
+
     'report' => [
         'created' => 'تم استلام بلاغك.',
     ],
@@ -141,6 +152,23 @@ return [
     ],
 
     'errors' => [
+        'chat_forbidden' => 'أنت لست طرفاً في محادثة هذا الحجز.',
+        'chat_closed' => 'تم إغلاق المحادثة الخاصة بهذا الحجز.',
+        'chat_empty' => 'اكتب رسالة أو أرفق صورة.',
+        'chat_message_too_long' => 'الرسالة طويلة جداً (الحد الأقصى :max حرفاً).',
+        'ticket_category_not_allowed' => 'هذا التصنيف غير متاح هنا.',
+        'ticket_limit_reached' => 'لديك عدد كبير من الطلبات المفتوحة (:max). انتظر الرد أو أضف رداً على طلب قائم.',
+        'ticket_rate_limited' => 'أرسلت طلبات جديدة كثيرة اليوم (:max). حاول مرة أخرى غداً.',
+        'ticket_link_invalid' => 'لم يتم العثور على الحجز أو الدفعة أو السحب المرتبط.',
+        'ticket_closed' => 'تم إغلاق هذا الطلب. افتح طلباً جديداً إذا كنت ما زلت بحاجة إلى مساعدة.',
+        'ticket_empty_reply' => 'اكتب رداً.',
+        'ticket_too_many_attachments' => 'يمكنك إرفاق حتى :max ملفات.',
+        'appeal_not_available' => 'لا توجد رسوم على هذا الحجز يمكن الاعتراض عليها.',
+        'appeal_already_open' => 'لقد قدمت اعتراضاً على هذا الحجز من قبل.',
+        'ticket_assignee_invalid' => 'لا يمكن لهذا الشخص استلام تذاكر هذا الفريق.',
+        'ticket_finished' => 'هذه التذكرة محلولة أو مغلقة بالفعل.',
+        'ticket_not_resolved' => 'يمكن إعادة فتح التذكرة المحلولة أو المغلقة فقط.',
+        'ticket_escalation_invalid' => 'التذكرة موجودة بالفعل لدى هذا الفريق.',
         'booking_not_cancellable' => 'لا يمكن إلغاء هذا الحجز بعد الآن.',
         'cancellation_reason_not_allowed' => 'لا يمكن استخدام هذا السبب لهذا الحجز.',
         'cancellation_note_required' => 'يرجى وصف السبب.',

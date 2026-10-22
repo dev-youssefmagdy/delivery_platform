@@ -13,8 +13,7 @@ use Illuminate\Http\Request;
 
 /**
  * Filters of the admin Bookings listing (Plan Appendix C): code, statuses, service category, booking type, city/zone,
- * payment status and method, created range, customer phone, provider phone, has incident. "Has ticket" arrives with
- * the support module (P3.7). Phones are matched exactly (full number) or by their last digits, never shown.
+ * payment status and method, created range, customer phone, provider phone, has incident, has ticket (P3.7). Phones are matched exactly (full number) or by their last digits, never shown.
  */
 final readonly class BookingAdminFilterData implements FilterData
 {
@@ -44,6 +43,7 @@ final readonly class BookingAdminFilterData implements FilterData
         public ?string $providerPhone = null,
         public ?bool $hasIncident = null,
         public ?int $providerId = null,
+        public ?bool $hasTicket = null,
     ) {}
 
     public static function fromRequest(Request $request): static
@@ -65,6 +65,7 @@ final readonly class BookingAdminFilterData implements FilterData
             customerPhone: self::stringFilter($input, 'customer_phone', 24),
             providerPhone: self::stringFilter($input, 'provider_phone', 24),
             hasIncident: self::boolFilter($input, 'has_incident'),
+            hasTicket: self::boolFilter($input, 'has_ticket'),
         );
     }
 
@@ -72,7 +73,7 @@ final readonly class BookingAdminFilterData implements FilterData
     {
         return self::countActive([
             $this->code, $this->statuses, $this->serviceCategoryIds, $this->bookingTypes, $this->cityIds, $this->zoneIds,
-            $this->paymentStatuses, $this->paymentMethods, $this->from ?? $this->to, $this->customerPhone, $this->providerPhone, $this->hasIncident,
+            $this->paymentStatuses, $this->paymentMethods, $this->from ?? $this->to, $this->customerPhone, $this->providerPhone, $this->hasIncident, $this->hasTicket,
         ]);
     }
 
@@ -91,6 +92,7 @@ final readonly class BookingAdminFilterData implements FilterData
             'customer_phone' => $this->customerPhone,
             'provider_phone' => $this->providerPhone,
             'has_incident' => $this->hasIncident === null ? null : ($this->hasIncident ? '1' : '0'),
+            'has_ticket' => $this->hasTicket === null ? null : ($this->hasTicket ? '1' : '0'),
         ], static fn (mixed $value): bool => $value !== null && $value !== []);
     }
     /**

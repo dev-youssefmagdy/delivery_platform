@@ -47,3 +47,7 @@ Schedule::command('notifications:retry-overdue')->everyMinute()->withoutOverlapp
 Schedule::command('push-campaigns:dispatch-due')->everyMinute()->withoutOverlapping();
 
 Schedule::command('model:prune', ['--model' => [AppNotification::class]])->dailyAt('05:00')->withoutOverlapping();
+
+Schedule::command('chat:purge-expired')->dailyAt('03:45')->withoutOverlapping();
+
+Schedule::command('support:maintain')->everyFiveMinutes()->withoutOverlapping();

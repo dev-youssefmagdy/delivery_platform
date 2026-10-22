@@ -32,6 +32,11 @@ return [
     ],
 
     'audit_action' => [
+        'assigned' => 'تم التعيين',
+        'escalated' => 'تم التصعيد',
+        'resolved' => 'تم الحل',
+        'reopened' => 'أُعيد فتحه',
+        'linked' => 'تم الربط',
         'requested' => 'تم الطلب',
         'reprocessed' => 'أُعيدت المعالجة',
         'cash_collected' => 'حُصّل النقد',
@@ -854,6 +859,7 @@ return [
     ],
 
     'notification_event' => [
+        'booking.message_received' => 'رسالة محادثة جديدة',
         'provider.application_submitted' => 'تم إرسال طلب السائق',
         'provider.application_more_info' => 'طلب السائق يحتاج تعديلات',
         'provider.application_approved' => 'تمت الموافقة على طلب السائق',
@@ -1108,5 +1114,55 @@ return [
         'stacking_not_allowed' => 'لا يمكن دمجه',
         'currency_mismatch' => 'عملة غير متطابقة',
         'no_discount' => 'لا يوجد خصم',
+    ],
+
+    'ticket_category' => [
+        'booking' => 'الحجز',
+        'fare_extra_charge' => 'الأجرة أو رسوم إضافية',
+        'payment_refund' => 'الدفع أو الاسترداد',
+        'coupon' => 'القسيمة',
+        'driver_provider' => 'السائق أو مقدم الخدمة',
+        'customer_conduct' => 'سلوك العميل',
+        'lost_item' => 'غرض مفقود',
+        'damaged_goods' => 'بضاعة تالفة',
+        'delivery_failure' => 'تعذر التسليم',
+        'safety_harassment' => 'السلامة أو التحرش',
+        'account' => 'الحساب',
+        'verification' => 'التحقق',
+        'payout' => 'السحب',
+        'technical' => 'مشكلة تقنية',
+        'other' => 'أخرى',
+    ],
+
+    'ticket_priority' => ['low' => 'منخفضة', 'normal' => 'عادية', 'high' => 'عالية', 'urgent' => 'عاجلة'],
+
+    'ticket_status' => [
+        'open' => 'مفتوحة',
+        'in_progress' => 'قيد المعالجة',
+        'waiting_user' => 'بانتظار المستخدم',
+        'escalated' => 'مصعّدة',
+        'resolved' => 'تم الحل',
+        'closed' => 'مغلقة',
+    ],
+
+    'ticket_group' => ['support' => 'الدعم', 'finance' => 'المالية', 'safety' => 'السلامة', 'operations' => 'العمليات'],
+
+    'ticket_visibility' => ['public' => 'ظاهرة للمستخدم', 'internal' => 'ملاحظة داخلية'],
+
+    'ticket_source' => ['app' => 'التطبيق', 'report' => 'بلاغ على حجز', 'appeal' => 'اعتراض على رسوم', 'admin' => 'لوحة الإدارة'],
+
+    'ticket_event_type' => [
+        'created' => 'إنشاء التذكرة',
+        'reply' => 'رد',
+        'internal_note' => 'ملاحظة داخلية',
+        'assigned' => 'تعيين',
+        'unassigned' => 'إلغاء التعيين',
+        'status_changed' => 'تغيير الحالة',
+        'priority_changed' => 'تغيير الأولوية',
+        'escalated' => 'تصعيد',
+        'resolved' => 'حل',
+        'reopened' => 'إعادة فتح',
+        'linked' => 'ربط عملية مالية',
+        'sla_breached' => 'تجاوز مهلة الرد',
     ],
 ];

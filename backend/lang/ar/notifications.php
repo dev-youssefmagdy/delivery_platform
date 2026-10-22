@@ -41,6 +41,7 @@ return [
     'booking.provider_heading' => ['title' => 'السائق في الطريق', 'body' => 'سائقك في الطريق إليك.'],
     'booking.provider_arrived' => ['title' => 'وصل سائقك', 'body' => 'وصل السائق.'],
     'booking.trip_started' => ['title' => 'بدأت الرحلة', 'body' => 'بدأت رحلتك.'],
+    'booking.message_received' => ['title' => 'رسالة جديدة', 'body' => 'لديك رسالة جديدة بخصوص الحجز {code}.'],
     'booking.completed' => [
         'title' => 'اكتملت الرحلة', 'body' => 'اكتمل الحجز {code}.',
         'email_subject' => 'اكتملت رحلتك', 'email_body' => "اكتمل الحجز {code}.\nإيصالك متاح في التطبيق.",

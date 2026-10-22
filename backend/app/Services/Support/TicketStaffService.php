@@ -15,6 +15,7 @@ use App\Models\Admin;
 use App\Models\SupportTicket;
 use App\Models\TicketAttachment;
 use App\Models\TicketMessage;
+use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Support\TicketThreadRepositoryInterface;
 use App\Services\Audit\AuditLogger;
@@ -43,6 +44,7 @@ final class TicketStaffService
         private readonly TicketAssigner $assigner,
         private readonly TicketNotifier $notifier,
         private readonly SlaCalculator $sla,
+        private readonly PaymentRepositoryInterface $payments,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
     ) {}
@@ -61,6 +63,24 @@ final class TicketStaffService
     public function events(SupportTicket $ticket): Collection
     {
         return $this->thread->events($ticket);
+    }
+
+    /**
+     * Payments of the ticket's booking (and the one it is explicitly linked to): where a refund request starts. The ticket
+     * itself changes nothing in them.
+     *
+     * @return Collection<int, \App\Models\Payment>
+     */
+    public function linkedPayments(SupportTicket $ticket): Collection
+    {
+        $payments = $ticket->booking_id === null ? collect() : $this->payments->forBooking($ticket->booking_id);
+
+        if ($ticket->payment_id !== null && ! $payments->contains('id', $ticket->payment_id)) {
+            $linked = $this->payments->find($ticket->payment_id);
+            $payments = $linked === null ? $payments : $payments->push($linked);
+        }
+
+        return $payments->values();
     }
 
     /**

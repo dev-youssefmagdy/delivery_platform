@@ -10,6 +10,7 @@ use App\DataTables\Admin\Customers\CustomerDevicesDataTable;
 use App\DataTables\Admin\Customers\CustomerMessagesDataTable;
 use App\DataTables\Admin\Customers\CustomerRatingsDataTable;
 use App\DataTables\Admin\Customers\CustomerSavedPlacesDataTable;
+use App\DataTables\Admin\Customers\CustomerTicketsDataTable;
 use App\Http\Controllers\Admin\AdminController;
 use App\DataTables\Admin\Finance\CustomerWalletDataTable;
 use App\Models\User;
@@ -37,6 +38,11 @@ final class CustomerTabController extends AdminController
     public function ratings(CustomerRatingsDataTable $table, User $customer): mixed
     {
         return $table->render('admin.customers.tabs.table', ['intro' => __('admin.customers.ratings.intro')]);
+    }
+
+    public function tickets(CustomerTicketsDataTable $table, User $customer): mixed
+    {
+        return $table->render('admin.customers.tabs.table', ['intro' => __('admin.customers.tickets.intro')]);
     }
 
     public function devices(CustomerDevicesDataTable $table, User $customer): mixed

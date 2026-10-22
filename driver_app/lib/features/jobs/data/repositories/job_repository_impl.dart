@@ -27,6 +27,12 @@ class JobRepositoryImpl implements JobRepository {
       JobDto.feed(await _remote.available());
 
   @override
+  Future<JobHistoryPage> history({int page = 1}) async {
+    final r = await _remote.history(page);
+    return JobDto.historyPage(r.data, r.meta);
+  }
+
+  @override
   Future<List<MyOffer>> myOffers() async =>
       JobDto.offers((await _remote.offers()).data);
 

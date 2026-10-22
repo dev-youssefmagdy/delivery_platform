@@ -401,30 +401,59 @@ final jobDetailProvider = FutureProvider.autoDispose.family<Job, String>(
   retry: _noAutoRetry,
 );
 
-/// Job history: the bookings the driver was selected for, newest first
-/// (taken from the driver's own offers; there is no separate history
-/// endpoint yet).
-final jobHistoryProvider = FutureProvider.autoDispose<List<JobHistoryEntry>>((
-  ref,
-) async {
-  final offers = await ref.watch(jobRepositoryProvider).myOffers();
-  final entries = [
-    for (final o in offers)
-      if (o.state == OfferState.selected && o.bookingId.isNotEmpty)
-        JobHistoryEntry(
-          bookingId: o.bookingId,
-          offerId: o.id,
-          amount: o.amount,
-          expiresAt: o.expiresAt,
-          closedAt: o.closedAt,
+/// Job history (`GET /provider/bookings`), newest first, loaded page by page.
+class JobHistoryState {
+  const JobHistoryState({
+    required this.items,
+    required this.page,
+    required this.hasMore,
+    this.loadingMore = false,
+  });
+
+  final List<JobHistoryEntry> items;
+  final int page;
+  final bool hasMore;
+  final bool loadingMore;
+}
+
+class JobHistoryNotifier extends AsyncNotifier<JobHistoryState> {
+  @override
+  Future<JobHistoryState> build() async {
+    final page = await ref.read(jobRepositoryProvider).history();
+    return JobHistoryState(
+      items: page.items,
+      page: page.currentPage,
+      hasMore: page.hasMore,
+    );
+  }
+
+  Future<void> loadMore() async {
+    final current = state.value;
+    if (current == null || !current.hasMore || current.loadingMore) return;
+    state = AsyncData(
+      JobHistoryState(items: current.items, page: current.page, hasMore: true, loadingMore: true),
+    );
+    try {
+      final next = await ref.read(jobRepositoryProvider).history(page: current.page + 1);
+      state = AsyncData(
+        JobHistoryState(
+          items: [...current.items, ...next.items],
+          page: next.currentPage,
+          hasMore: next.hasMore,
         ),
-  ];
-  final seen = <String>{};
-  return [
-    for (final e in entries)
-      if (seen.add(e.bookingId)) e,
-  ];
-}, retry: _noAutoRetry);
+      );
+    } on Object {
+      state = AsyncData(
+        JobHistoryState(items: current.items, page: current.page, hasMore: current.hasMore),
+      );
+    }
+  }
+}
+
+final jobHistoryProvider = AsyncNotifierProvider.autoDispose<JobHistoryNotifier, JobHistoryState>(
+  JobHistoryNotifier.new,
+  retry: _noAutoRetry,
+);
 
 // ---------------------------------------------------------------------------
 // Writes

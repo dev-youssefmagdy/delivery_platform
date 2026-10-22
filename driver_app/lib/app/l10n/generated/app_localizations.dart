@@ -3229,6 +3229,138 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الرمز غير صحيح. المحاولات المتبقية: {count}'**
   String jbErrPinInvalidLeft(int count);
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsMarkAllRead.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعليم الكل كمقروء'**
+  String get notificationsMarkAllRead;
+
+  /// No description provided for @notificationUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يعد هذا متاحًا. يمكنك الاطلاع على التفاصيل في إشعاراتك.'**
+  String get notificationUnavailable;
+
+  /// No description provided for @notificationSettingsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعدادات الإشعارات'**
+  String get notificationSettingsTitle;
+
+  /// No description provided for @notificationChannelPush.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات الفورية'**
+  String get notificationChannelPush;
+
+  /// No description provided for @notificationChannelSms.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرسائل النصية'**
+  String get notificationChannelSms;
+
+  /// No description provided for @notificationChannelEmail.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد الإلكتروني'**
+  String get notificationChannelEmail;
+
+  /// No description provided for @notificationChannelInApp.
+  ///
+  /// In ar, this message translates to:
+  /// **'صندوق الوارد'**
+  String get notificationChannelInApp;
+
+  /// No description provided for @notificationEssentialExplain.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات الخاصة برحلاتك وحسابك ومدفوعاتك وسلامتك أساسية: تبقى الإشعارات الفورية مفعّلة لها حتى لا يفوتك أمر مهم. يمكنك اختيار القنوات الأخرى والفئات الاختيارية أدناه.'**
+  String get notificationEssentialExplain;
+
+  /// No description provided for @notificationEssentialBadge.
+  ///
+  /// In ar, this message translates to:
+  /// **'أساسي: الإشعار الفوري مفعّل دائمًا'**
+  String get notificationEssentialBadge;
+
+  /// No description provided for @notificationOptInBadge.
+  ///
+  /// In ar, this message translates to:
+  /// **'متوقف حتى تفعّله'**
+  String get notificationOptInBadge;
+
+  /// No description provided for @notificationLockedOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'مفعّل دائمًا لهذه الفئة'**
+  String get notificationLockedOn;
+
+  /// No description provided for @pushStatusReady.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات الفورية مفعّلة على هذا الجهاز.'**
+  String get pushStatusReady;
+
+  /// No description provided for @pushStatusPermissionNeeded.
+  ///
+  /// In ar, this message translates to:
+  /// **'فعّل الإشعارات الفورية لتعرف أخبار رحلاتك فورًا.'**
+  String get pushStatusPermissionNeeded;
+
+  /// No description provided for @pushStatusDenied.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات الفورية محظورة. اسمح بها من إعدادات هاتفك.'**
+  String get pushStatusDenied;
+
+  /// No description provided for @pushStatusFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر إعداد الإشعارات الفورية. حاول لاحقًا.'**
+  String get pushStatusFailed;
+
+  /// No description provided for @pushStatusNotConfigured.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات الفورية غير متاحة في هذا الإصدار. ستجد كل شيء في صندوق الوارد.'**
+  String get pushStatusNotConfigured;
+
+  /// No description provided for @pushEnable.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفعيل'**
+  String get pushEnable;
+
+  /// No description provided for @pushRationaleTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابقَ على اطلاع'**
+  String get pushRationaleTitle;
+
+  /// No description provided for @pushRationaleBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'سنخبرك بتحديثات الرحلات والمدفوعات والسلامة. تبقى الإشعارات على شاشة القفل قصيرة ولا تعرض بيانات شخصية.'**
+  String get pushRationaleBody;
+
+  /// No description provided for @pushRationaleLater.
+  ///
+  /// In ar, this message translates to:
+  /// **'ليس الآن'**
+  String get pushRationaleLater;
+
+  /// No description provided for @accountNotifications.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات'**
+  String get accountNotifications;
 }
 
 class _AppLocalizationsDelegate

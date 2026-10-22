@@ -12,9 +12,9 @@ import '../../domain/entities/job_entities.dart';
 import '../providers/job_providers.dart';
 import 'job_texts.dart';
 
-/// Job history: the bookings the driver was selected for; tapping one opens
-/// the read-only detail (the same screen as the active job, with whatever
-/// actions the server still allows).
+/// Job history from `GET /provider/bookings`: the jobs the driver held, newest
+/// first; tapping one opens the read-only detail (the same screen as the active
+/// job, with whatever actions the server still allows).
 class HistoryTab extends ConsumerWidget {
   const HistoryTab({super.key});
 
@@ -22,20 +22,18 @@ class HistoryTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final history = ref.watch(jobHistoryProvider);
-    return AsyncStateView<List<JobHistoryEntry>>(
+    return AsyncStateView<JobHistoryState>(
       value: history,
       onRetry: () => ref.invalidate(jobHistoryProvider),
       onSignIn: () => ref.read(authActionsProvider).logout(),
       builder: (context, data) => RefreshIndicator(
         onRefresh: () async => ref.refresh(jobHistoryProvider.future),
-        child: data.isEmpty
+        child: data.items.isEmpty
             ? ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   Padding(
-                    padding: const EdgeInsetsDirectional.only(
-                      top: AppSpacing.xl,
-                    ),
+                    padding: const EdgeInsetsDirectional.only(top: AppSpacing.xl),
                     child: EmptyState(
                       key: const Key('history-empty'),
                       icon: Icons.history,
@@ -45,12 +43,22 @@ class HistoryTab extends ConsumerWidget {
                   ),
                 ],
               )
-            : ListView.builder(
-                key: const Key('history-list'),
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-                itemCount: data.length,
-                itemBuilder: (_, i) => HistoryRow(entry: data[i]),
+            : NotificationListener<ScrollNotification>(
+                onNotification: (n) {
+                  if (n.metrics.pixels >= n.metrics.maxScrollExtent - 200) {
+                    ref.read(jobHistoryProvider.notifier).loadMore();
+                  }
+                  return false;
+                },
+                child: ListView.builder(
+                  key: const Key('history-list'),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+                  itemCount: data.items.length + (data.loadingMore ? 1 : 0),
+                  itemBuilder: (_, i) => i >= data.items.length
+                      ? const Center(child: CircularProgressIndicator())
+                      : HistoryRow(entry: data.items[i]),
+                ),
               ),
       ),
     );
@@ -67,8 +75,7 @@ class HistoryRow extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final formatter = ref.watch(moneyFormatterProvider);
     final language = Localizations.localeOf(context).languageCode;
-    final job = ref.watch(jobDetailProvider(entry.bookingId));
-    final when = entry.closedAt ?? entry.expiresAt;
+    final theme = Theme.of(context);
     return Card(
       key: Key('history-${entry.bookingId}'),
       child: InkWell(
@@ -76,59 +83,32 @@ class HistoryRow extends ConsumerWidget {
         onTap: () => context.push('${Routes.job}/${entry.bookingId}'),
         child: Padding(
           padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-          child: job.when(
-            loading: () => const Skeleton(height: 56),
-            error: (_, _) => _row(
-              context,
-              title: l10n.jbHistoryJob,
-              subtitle: formatDateTime(context, when),
-              amount: entry.amount == null
-                  ? null
-                  : formatter.format(entry.amount!),
-              chip: null,
-            ),
-            data: (j) {
-              final money = j.finalFare ?? j.agreedFare ?? entry.amount;
-              return _row(
-                context,
-                title: '${j.code} · ${j.service.resolve(language)}',
-                subtitle:
-                    '${formatDateTime(context, when)}\n${j.pickup.label ?? ''}',
-                amount: money == null ? null : formatter.format(money),
-                chip: StatusChip(
-                  label: jobStatusText(l10n, j.status),
-                  tone: jobStatusTone(j.status),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _row(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-    required String? amount,
-    required Widget? chip,
-  }) {
-    final theme = Theme.of(context);
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(title, style: theme.textTheme.titleMedium),
-              Text(subtitle, style: theme.textTheme.bodySmall),
-              if (chip != null) ...[const SizedBox(height: AppSpacing.xs), chip],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${entry.code} · ${entry.service.resolve(language)}',
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    if (entry.when != null)
+                      Text(formatDateTime(context, entry.when!), style: theme.textTheme.bodySmall),
+                    const SizedBox(height: AppSpacing.xs),
+                    StatusChip(
+                      label: jobStatusText(l10n, entry.status),
+                      tone: jobStatusTone(entry.status),
+                    ),
+                  ],
+                ),
+              ),
+              if (entry.amount != null)
+                Text(formatter.format(entry.amount!), style: theme.textTheme.titleLarge),
             ],
           ),
         ),
-        if (amount != null) Text(amount, style: theme.textTheme.titleLarge),
-      ],
+      ),
     );
   }
 }

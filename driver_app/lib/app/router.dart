@@ -12,6 +12,8 @@ import '../features/auth/presentation/screens/account_status_screen.dart';
 import '../features/auth/presentation/screens/auth_screen.dart';
 import '../features/auth/presentation/screens/otp_screen.dart';
 import '../features/language/presentation/screens/language_screen.dart';
+import '../features/notifications/presentation/screens/notification_settings_screen.dart';
+import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/provider_onboarding/presentation/screens/provider_onboarding_screen.dart';
 import '../features/provider_onboarding/presentation/widgets/vehicle_editor_screen.dart';
@@ -38,6 +40,8 @@ abstract final class Routes {
 
   /// A job: `/job/:id`, with `/job/:id/cancel` and `/job/:id/report`.
   static const job = '/job';
+  static const notifications = '/notifications';
+  static const notificationSettings = '/notifications/settings';
 }
 
 /// Where the splash screen sends the user.
@@ -65,6 +69,8 @@ String routeForStage(AuthStage stage) => switch (stage) {
 
 bool _isJobPage(String location) =>
     location == Routes.applicationStatus ||
+    location == Routes.notifications ||
+    location == Routes.notificationSettings ||
     location == Routes.job ||
     location.startsWith('${Routes.job}/');
 
@@ -132,6 +138,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.providerOnboarding,
         builder: (_, _) => const ProviderOnboardingScreen(),
+      ),
+      GoRoute(
+        path: Routes.notifications,
+        builder: (_, _) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: Routes.notificationSettings,
+        builder: (_, _) => const NotificationSettingsScreen(),
       ),
       GoRoute(
         path: Routes.applicationStatus,

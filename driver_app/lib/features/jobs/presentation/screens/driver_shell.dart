@@ -9,6 +9,7 @@ import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../availability/presentation/providers/availability_providers.dart';
+import '../../../notifications/presentation/providers/notification_providers.dart';
 import '../../domain/entities/job_entities.dart';
 import '../providers/job_providers.dart';
 import '../widgets/active_job_banner.dart';
@@ -89,6 +90,16 @@ class _DriverShellState extends ConsumerState<DriverShell>
       appBar: AppBar(
         title: Text(titles[_index]),
         actions: [
+          IconButton(
+            key: const Key('driver-notifications'),
+            tooltip: l10n.notificationsTitle,
+            icon: Badge(
+              isLabelVisible: ref.watch(unreadCountProvider) > 0,
+              label: Text('${ref.watch(unreadCountProvider)}'),
+              child: const Icon(Icons.inbox_outlined),
+            ),
+            onPressed: () => context.push(Routes.notifications),
+          ),
           IconButton(
             key: const Key('onboarding-refresh'),
             tooltip: l10n.actionRefresh,

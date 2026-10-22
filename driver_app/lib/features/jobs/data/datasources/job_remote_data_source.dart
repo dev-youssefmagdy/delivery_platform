@@ -10,6 +10,9 @@ class JobRemoteDataSource {
   Future<ApiResult<Object?>> available() =>
       _api.get('/provider/requests/available');
 
+  Future<ApiResult<Object?>> history(int page) =>
+      _api.get('/provider/bookings', query: {'page': page});
+
   Future<ApiResult<Object?>> offers() => _api.get('/provider/offers');
 
   Future<ApiResult<Object?>> acceptCustomerFare(

@@ -437,19 +437,39 @@ class Job {
   bool get collectsCash => paymentMethod == PaymentMethodType.cash;
 }
 
-/// One row of the job history, taken from the driver's own selected offers.
+/// One row of the job history (`GET /provider/bookings`): enough to list the
+/// job; the detail screen loads the rest.
 class JobHistoryEntry {
   const JobHistoryEntry({
     required this.bookingId,
-    required this.offerId,
-    required this.amount,
-    required this.expiresAt,
-    this.closedAt,
+    required this.code,
+    required this.status,
+    required this.service,
+    required this.when,
+    this.amount,
   });
 
   final String bookingId;
-  final String offerId;
+  final String code;
+  final BookingStatus status;
+  final LocalizedText service;
   final Money? amount;
-  final DateTime expiresAt;
-  final DateTime? closedAt;
+
+  /// Completion, cancellation or creation time, whichever applies.
+  final DateTime? when;
+}
+
+/// A page of the job history.
+class JobHistoryPage {
+  const JobHistoryPage({
+    required this.items,
+    required this.currentPage,
+    required this.lastPage,
+  });
+
+  final List<JobHistoryEntry> items;
+  final int currentPage;
+  final int lastPage;
+
+  bool get hasMore => currentPage < lastPage;
 }

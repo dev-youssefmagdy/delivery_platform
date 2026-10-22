@@ -8,6 +8,9 @@ abstract interface class JobRepository {
 
   Future<List<MyOffer>> myOffers();
 
+  /// The provider's job history, newest first (`GET /provider/bookings`).
+  Future<JobHistoryPage> history({int page = 1});
+
   Future<MyOffer> acceptCustomerFare(
     String bookingId, {
     required String idempotencyKey,

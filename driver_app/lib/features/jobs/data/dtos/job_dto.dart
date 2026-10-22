@@ -88,6 +88,32 @@ abstract final class JobDto {
     );
   }
 
+  /// One item of `GET /provider/bookings` (docs/API.md 8.14).
+  static JobHistoryEntry? historyEntry(Object? v) {
+    final m = _map(v);
+    if (m['id'] == null) return null;
+    return JobHistoryEntry(
+      bookingId: '${m['id']}',
+      code: '${m['code'] ?? ''}',
+      status: BookingStatus.parse(m['status'] as String?),
+      service: LocalizedText.fromJson(_map(m['service'])['name']),
+      amount: money(m['final_fare']) ?? money(m['agreed_fare']),
+      when:
+          _time(m['completed_at']) ??
+          _time(m['cancelled_at']) ??
+          _time(m['created_at']),
+    );
+  }
+
+  static JobHistoryPage historyPage(Object? data, Map<String, dynamic> meta) {
+    final pagination = _map(meta['pagination']);
+    return JobHistoryPage(
+      items: [for (final e in _list(data)) ?historyEntry(e)],
+      currentPage: _int(pagination['current_page']) ?? 1,
+      lastPage: _int(pagination['last_page']) ?? 1,
+    );
+  }
+
   static List<MyOffer> offers(Object? data) => [
     for (final e in _list(data)) ?offer(e),
   ];

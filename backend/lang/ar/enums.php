@@ -371,6 +371,17 @@ return [
         'skipped' => 'رقم تجريبي (لم يُرسل)',
     ],
 
+    'cargo_type' => [
+        'general' => 'بضائع عامة',
+        'building' => 'مواد بناء',
+        'food' => 'طعام',
+        'machinery' => 'معدات وآلات',
+        'documents' => 'مستندات',
+        'clothes' => 'ملابس',
+        'electronics' => 'إلكترونيات',
+        'other' => 'أخرى',
+    ],
+
     'parcel_size' => [
         'small' => 'صغير (مظروف)',
         'medium' => 'متوسط (صندوق حذاء)',
@@ -1094,6 +1105,7 @@ return [
         'force_transition' => 'فرض الحالة',
         'lift_pin_lock' => 'رفع قفل الرمز',
         'lift_recipient_otp_lock' => 'رفع قفل رمز المستلم',
+        'resolve_delivery_attempt' => 'حسم محاولة تسليم فاشلة',
     ],
 
     'operations_cancellation_fee' => [

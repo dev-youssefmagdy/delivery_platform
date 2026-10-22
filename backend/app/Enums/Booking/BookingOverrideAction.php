@@ -21,12 +21,13 @@ enum BookingOverrideAction: string implements HasLabel
     case ForceTransition = 'force_transition';
     case LiftPinLock = 'lift_pin_lock';
     case LiftRecipientOtpLock = 'lift_recipient_otp_lock';
+    case ResolveDeliveryAttempt = 'resolve_delivery_attempt';
 
     public function permission(): AdminPermission
     {
         return match ($this) {
             self::CancelByOperations => AdminPermission::BookingsCancel,
-            self::ExtendSearch, self::RedispatchNow => AdminPermission::BookingsManage,
+            self::ExtendSearch, self::RedispatchNow, self::ResolveDeliveryAttempt => AdminPermission::BookingsManage,
             self::ForceTransition => AdminPermission::BookingsAssignOverride,
             self::LiftPinLock, self::LiftRecipientOtpLock => AdminPermission::BookingsPinOverride,
         };

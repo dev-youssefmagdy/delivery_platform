@@ -5,6 +5,7 @@ namespace App\DTOs\Booking;
 use App\DTOs\Concerns\ParsesFilterInput;
 use App\DTOs\Contracts\FilterData;
 use App\Enums\Booking\BookingStatus;
+use App\Enums\Booking\CargoType;
 use App\Enums\Booking\CustodyStatus;
 use App\Enums\Booking\ParcelSize;
 use App\Enums\Catalog\BookingType;
@@ -15,7 +16,7 @@ use Illuminate\Http\Request;
 
 /**
  * Filters of the admin Bookings listing (Plan Appendix C): code, statuses, service category, booking type, city/zone,
- * payment status and method, created range, customer phone, provider phone, has incident, has ticket (P3.7), custody status, parcel size and fragile (P4.1 indexed columns). Phones are matched exactly (full number) or by their last digits, never shown.
+ * payment status and method, created range, customer phone, provider phone, has incident, has ticket (P3.7), custody status, parcel size and fragile (P4.1 indexed columns), cargo type, vehicle class and cargo weight range (P4.4). Phones are matched exactly (full number) or by their last digits, never shown.
  */
 final readonly class BookingAdminFilterData implements FilterData
 {
@@ -31,6 +32,8 @@ final readonly class BookingAdminFilterData implements FilterData
      * @param list<PaymentMethodType> $paymentMethods
      * @param list<CustodyStatus> $custodyStatuses
      * @param list<ParcelSize> $parcelSizes
+     * @param list<CargoType> $cargoTypes
+     * @param list<int> $vehicleCategoryIds vehicle classes named by the requested or accepted scope
      */
     public function __construct(
         public ?string $code = null,
@@ -51,11 +54,16 @@ final readonly class BookingAdminFilterData implements FilterData
         public array $custodyStatuses = [],
         public array $parcelSizes = [],
         public ?bool $isFragile = null,
+        public array $cargoTypes = [],
+        public array $vehicleCategoryIds = [],
+        public ?int $weightMin = null,
+        public ?int $weightMax = null,
     ) {}
 
     public static function fromRequest(Request $request): static
     {
         $input = self::filterInput($request);
+        [$weightMin, $weightMax] = self::intRangeFilter($input, 'cargo_weight_kg');
         [$from, $to] = self::dateRangeFilter($input, 'created_at');
 
         return new self(
@@ -76,6 +84,10 @@ final readonly class BookingAdminFilterData implements FilterData
             custodyStatuses: self::enumListFilter($input, 'custody_statuses', CustodyStatus::class),
             parcelSizes: self::enumListFilter($input, 'parcel_sizes', ParcelSize::class),
             isFragile: self::boolFilter($input, 'is_fragile'),
+            cargoTypes: self::enumListFilter($input, 'cargo_types', CargoType::class),
+            vehicleCategoryIds: self::idListFilter($input, 'vehicle_category_ids'),
+            weightMin: $weightMin,
+            weightMax: $weightMax,
         );
     }
 
@@ -84,7 +96,7 @@ final readonly class BookingAdminFilterData implements FilterData
         return self::countActive([
             $this->code, $this->statuses, $this->serviceCategoryIds, $this->bookingTypes, $this->cityIds, $this->zoneIds,
             $this->paymentStatuses, $this->paymentMethods, $this->from ?? $this->to, $this->customerPhone, $this->providerPhone, $this->hasIncident, $this->hasTicket,
-            $this->custodyStatuses, $this->parcelSizes, $this->isFragile,
+            $this->custodyStatuses, $this->parcelSizes, $this->isFragile, $this->cargoTypes, $this->vehicleCategoryIds, $this->weightMin ?? $this->weightMax,
         ]);
     }
 
@@ -107,6 +119,9 @@ final readonly class BookingAdminFilterData implements FilterData
             'custody_statuses' => array_map(static fn (CustodyStatus $status): string => $status->value, $this->custodyStatuses),
             'parcel_sizes' => array_map(static fn (ParcelSize $size): string => $size->value, $this->parcelSizes),
             'is_fragile' => $this->isFragile === null ? null : ($this->isFragile ? '1' : '0'),
+            'cargo_types' => array_map(static fn (CargoType $type): string => $type->value, $this->cargoTypes),
+            'vehicle_category_ids' => $this->vehicleCategoryIds,
+            'cargo_weight_kg' => array_filter(['min' => $this->weightMin, 'max' => $this->weightMax], static fn (?int $value): bool => $value !== null),
         ], static fn (mixed $value): bool => $value !== null && $value !== []);
     }
     /**

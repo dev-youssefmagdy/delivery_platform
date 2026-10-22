@@ -428,6 +428,7 @@ return [
         'override_extension_invalid' => 'أدخل عدد ثوانٍ بين :min و:max.',
         'override_target_invalid' => 'لا يمكن نقل الحجز إلى هذه الحالة من حالته الحالية.',
         'override_reason_required' => 'السبب مطلوب.',
+        'override_resolution_invalid' => 'اختر طريقة حسم محاولة التسليم الفاشلة.',
         'override_fee_policy_unavailable' => 'لا تحتوي سياسة الإلغاء على قاعدة لهذه المرحلة؛ أسقط الرسوم.',
         'booking_search_policy_missing' => 'لم تُضبط مدة بحث لهذا الحجز.',
         'booking_redispatch_not_allowed' => 'لا تعيد هذه الخدمة البحث تلقائياً بعد إلغاء مقدّم الخدمة.',

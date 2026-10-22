@@ -22,6 +22,8 @@ use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleDocumentRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehiclePhotoRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
+use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
+use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Services\Audit\AuditLogger;
 use App\Services\Identity\AccountScrubber;
 use App\Support\Files\PrivateFileStorage;
@@ -56,6 +58,8 @@ final class ProviderDeletionService
         private readonly VehiclePhotoRepositoryInterface $photos,
         private readonly AccountScrubber $scrubber,
         private readonly ProviderPayoutMethodRepositoryInterface $payoutMethods,
+        private readonly SupportTicketRepositoryInterface $tickets,
+        private readonly BookingMessageRepositoryInterface $chat,
         private readonly PrivateFileStorage $storage,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -128,6 +132,11 @@ final class ProviderDeletionService
             $this->profiles->scrubPersonalData($locked);
             // Encrypted payout destinations go with the account; payouts keep only their masked snapshot and their ledger entries stay.
             $payoutMethodsPurged = $this->payoutMethods->purgeForProvider($locked->id);
+            // Support and chat (P3.7 gap closed in P4.4): ticket subjects, the driver's own ticket messages and evidence files, and every
+            // chat message they sent (text and image) are removed, exactly like the customer path; ticket rows and staff notes stay.
+            $ticketFiles = $this->tickets->scrubOfUser($user->id);
+            $chatFiles = $this->chat->scrubSentBy($user->id);
+            $paths = [...$paths, ...$ticketFiles, ...$chatFiles];
             $paths[] = $this->scrubber->scrub($user);
 
             $this->requests->update($request, [
@@ -144,7 +153,7 @@ final class ProviderDeletionService
                 before: ['status' => $request->previous_provider_status->value ?? $locked->status->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid, 'payout_methods_purged' => $payoutMethodsPurged],
+                meta: ['deletion_request' => $request->uuid, 'payout_methods_purged' => $payoutMethodsPurged, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles)],
             );
 
             return $request;

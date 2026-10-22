@@ -12,6 +12,7 @@ use App\Http\Requests\Admin\Booking\ForceBookingTransitionRequest;
 use App\Http\Requests\Admin\Booking\LiftPinLockRequest;
 use App\Http\Requests\Admin\Booking\LiftRecipientOtpLockRequest;
 use App\Http\Requests\Admin\Booking\RedispatchBookingRequest;
+use App\Http\Requests\Admin\Booking\ResolveDeliveryAttemptRequest;
 use App\Models\Booking;
 use App\Services\Booking\BookingOverrideService;
 use App\Services\Booking\NoOfferQueueService;
@@ -39,7 +40,7 @@ final class BookingOverrideController extends AdminController
     {
         $ability = match ($form) {
             BookingOverrideAction::CancelByOperations->value => 'cancelByOperations',
-            BookingOverrideAction::ExtendSearch->value, BookingOverrideAction::RedispatchNow->value, 'contact' => 'manage',
+            BookingOverrideAction::ExtendSearch->value, BookingOverrideAction::RedispatchNow->value, BookingOverrideAction::ResolveDeliveryAttempt->value, 'contact' => 'manage',
             BookingOverrideAction::ForceTransition->value => 'forceTransition',
             BookingOverrideAction::LiftPinLock->value => 'liftPinLock',
             BookingOverrideAction::LiftRecipientOtpLock->value => 'liftRecipientOtpLock',
@@ -96,6 +97,13 @@ final class BookingOverrideController extends AdminController
         $this->overrides->liftRecipientOtpLock($this->actor(), $booking->uuid, $request->toDto());
 
         return $this->done($request, __('admin.bookings.messages.recipient_otp_lock_lifted'));
+    }
+
+    public function resolveAttempt(ResolveDeliveryAttemptRequest $request, Booking $booking): AdminFormResponse
+    {
+        $this->overrides->resolveDeliveryAttempt($this->actor(), $booking->uuid, $request->toDto());
+
+        return $this->done($request, __('admin.bookings.messages.attempt_resolved'));
     }
 
     public function contact(ContactBookingCustomerRequest $request, Booking $booking): AdminFormResponse

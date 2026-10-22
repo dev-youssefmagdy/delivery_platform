@@ -28,6 +28,9 @@ use App\Repositories\Contracts\Booking\BookingOfferRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Models\DeliveryAttempt;
+use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
+use App\Services\Courier\DeliveryAttemptService;
 use App\Services\Courier\RecipientOtpService;
 use App\Services\Dispatch\EventSequencer;
 use App\Services\Finance\BookingSettlementService;
@@ -75,6 +78,8 @@ final class BookingOverrideService
         private readonly BookingSettlementService $settlement,
         private readonly FreeBookingCompletionService $freeCompletion,
         private readonly RecipientOtpService $recipientOtps,
+        private readonly DeliveryAttemptService $deliveryAttempts,
+        private readonly DeliveryAttemptRepositoryInterface $attempts,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -114,6 +119,7 @@ final class BookingOverrideService
             BookingOverrideAction::ExtendSearch, BookingOverrideAction::RedispatchNow => $booking->status->isSearching(),
             BookingOverrideAction::ForceTransition => $this->forceTargets($booking) !== [],
             BookingOverrideAction::LiftPinLock => $booking->pin_locked_at !== null && $booking->status === BookingStatus::ProviderArrived,
+            BookingOverrideAction::ResolveDeliveryAttempt => $booking->status === BookingStatus::DeliveryAttemptFailed && $this->attempts->latestFor($booking->id)?->isPending() === true,
             BookingOverrideAction::LiftRecipientOtpLock => $booking->status === BookingStatus::InProgress && ($this->recipientOtps->state($booking)['locked'] ?? false) === true,
         };
     }
@@ -291,6 +297,30 @@ final class BookingOverrideService
             $this->announceToParties($booking, ['recipient_otp_lock_lifted' => true]);
 
             return ['previous_attempts' => $attempts, 'flag_cleared' => $clearsFlag];
+        });
+    }
+
+    /**
+     * Operations resolves the pending failed delivery attempt (P4.4): retry (only while attempts are left), return to sender,
+     * or keep it escalated (the booking stays `delivery_attempt_failed`, flagged, for the other overrides).
+     *
+     * @throws ConflictException `override_not_available`
+     * @throws BusinessRuleViolation `override_resolution_invalid`, `delivery_attempts_exhausted`
+     */
+    public function resolveDeliveryAttempt(Admin $actor, string $bookingUuid, BookingOverrideData $data): BookingOverrideResult
+    {
+        $resolution = $data->resolution ?? throw BusinessRuleViolation::make('override_resolution_invalid', 'resolution');
+
+        return $this->perform($actor, $bookingUuid, BookingOverrideAction::ResolveDeliveryAttempt, $data, function (Booking $booking) use ($actor, $data, $resolution): array {
+            $attempt = $this->attempts->latestFor($booking->id);
+
+            if (! $attempt instanceof DeliveryAttempt) {
+                throw ConflictException::make('override_not_available', context: ['booking_status' => $booking->status->value]);
+            }
+
+            $this->deliveryAttempts->resolveByOperator($actor, $booking, $attempt->uuid, $resolution, $data->reason);
+
+            return ['attempt' => $attempt->attempt_number, 'resolution' => $resolution->value];
         });
     }
 

@@ -428,6 +428,7 @@ return [
         'override_extension_invalid' => 'Enter a number of seconds between :min and :max.',
         'override_target_invalid' => 'The booking cannot move to this status from its current one.',
         'override_reason_required' => 'A reason is required.',
+        'override_resolution_invalid' => 'Choose how the failed delivery is resolved.',
         'override_fee_policy_unavailable' => 'The cancellation policy has no rule for this stage; waive the fee.',
         'booking_search_policy_missing' => 'The booking has no search window configured.',
         'booking_redispatch_not_allowed' => 'This service does not search again automatically after a provider cancels.',

@@ -31,6 +31,9 @@
         @if ($can(\App\Enums\Booking\BookingOverrideAction::LiftRecipientOtpLock))
             <x-admin.button variant="warning" icon="lock-closed" data-modal-open="admin-global-modal" :data-modal-url="$form('lift_recipient_otp_lock')">{{ __('admin.bookings.actions.lift_recipient_otp_lock') }}</x-admin.button>
         @endif
+        @if ($can(\App\Enums\Booking\BookingOverrideAction::ResolveDeliveryAttempt))
+            <x-admin.button variant="warning" icon="bolt" data-modal-open="admin-global-modal" :data-modal-url="$form('resolve_delivery_attempt')">{{ __('admin.bookings.actions.resolve_delivery_attempt') }}</x-admin.button>
+        @endif
         @if ($can(\App\Enums\Booking\BookingOverrideAction::ForceTransition))
             <x-admin.button variant="warning" icon="bolt" data-modal-open="admin-global-modal" :data-modal-url="$form('force_transition')">{{ __('admin.bookings.actions.force_transition') }}</x-admin.button>
         @endif
@@ -65,6 +68,7 @@
             'dispatch' => ['label' => __('admin.bookings.tabs.dispatch'), 'icon' => 'bolt'],
             'snapshots' => ['label' => __('admin.bookings.tabs.snapshots'), 'icon' => 'document'],
             'safety' => ['label' => __('admin.bookings.tabs.safety'), 'icon' => 'shield'],
+            ...(app(\App\Services\Booking\BookingDeliveryAdminService::class)->applies($booking) ? ['delivery' => ['label' => __('admin.bookings.tabs.delivery'), 'icon' => 'cube']] : []),
             'ratings' => ['label' => __('admin.bookings.tabs.ratings'), 'icon' => 'star'],
             ...(\Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\Payment::class) ? ['payment' => ['label' => __('admin.bookings.tabs.payment'), 'icon' => 'banknotes']] : []),
             'adjustments' => ['label' => __('admin.booking_adjustments.tab'), 'icon' => 'banknotes'],
@@ -83,6 +87,9 @@
             <x-admin.tabs.panel id="dispatch" :url="route('admin.bookings.tabs.dispatch', $booking)" />
             <x-admin.tabs.panel id="snapshots" :url="route('admin.bookings.tabs.snapshots', $booking)" />
             <x-admin.tabs.panel id="safety" :url="route('admin.bookings.tabs.safety', $booking)" />
+            @if (app(\App\Services\Booking\BookingDeliveryAdminService::class)->applies($booking))
+                <x-admin.tabs.panel id="delivery" :url="route('admin.bookings.tabs.delivery', $booking)" />
+            @endif
             <x-admin.tabs.panel id="ratings" :url="route('admin.bookings.tabs.ratings', $booking)" />
             @can('viewAny', \App\Models\Payment::class)
                 <x-admin.tabs.panel id="payment" :url="route('admin.bookings.tabs.payments', $booking)" />

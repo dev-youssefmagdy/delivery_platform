@@ -27,7 +27,10 @@
                 </label>
 
                 <template x-if="['text', 'integer', 'decimal', 'weight'].includes(field.type)">
-                    <input class="form-control" x-bind:type="field.type === 'text' ? 'text' : 'number'" step="any" x-model="answers[field.key]">
+                    <div class="flex items-center gap-2">
+                        <input class="form-control" x-bind:type="field.type === 'text' ? 'text' : 'number'" step="any" x-model="answers[field.key]">
+                        <span x-show="field.type === 'weight'" class="text-sm text-slate-500">kg</span>
+                    </div>
                 </template>
                 <template x-if="field.type === 'textarea'">
                     <textarea class="form-control" rows="3" x-model="answers[field.key]"></textarea>
@@ -52,9 +55,17 @@
                     </div>
                 </template>
                 <template x-if="field.type === 'item_checklist'">
-                    <div class="space-y-1">
+                    {{-- v2: each ticked item takes a quantity and optional note, weight and dimensions; free-text lines follow. --}}
+                    <div class="space-y-2">
                         <template x-for="option in field.options" x-bind:key="option.value">
-                            <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" class="form-check" x-on:change="toggleOption(field, option.value)"> <span x-text="text(option.label)"></span></label>
+                            <div x-data="{ on: false }" class="rounded-(--radius-control) border border-slate-200 bg-white px-3 py-2">
+                                <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" class="form-check" x-model="on" x-on:change="toggleOption(field, option.value)"> <span x-text="text(option.label)"></span></label>
+                                <div x-show="on" class="mt-2 grid gap-2 sm:grid-cols-3">
+                                    <input class="form-control" type="number" min="1" value="1" aria-label="{{ $p('quantity') }}" placeholder="{{ $p('quantity') }}">
+                                    <input class="form-control" type="number" step="any" aria-label="{{ $p('weight') }}" placeholder="{{ $p('weight') }}">
+                                    <input class="form-control" type="text" aria-label="{{ $p('item_note') }}" placeholder="{{ $p('item_note') }}">
+                                </div>
+                            </div>
                         </template>
                     </div>
                 </template>
@@ -78,6 +89,7 @@
                     </div>
                 </template>
 
+                <p class="form-hint" x-show="field.min !== null && field.max !== null && ['integer', 'decimal', 'weight', 'dimensions'].includes(field.type)">{{ $p('range') }} <span x-text="field.min + ' – ' + field.max" dir="ltr"></span></p>
                 <p class="form-hint" x-show="text(field.help)" x-text="text(field.help)"></p>
             </div>
         </template>

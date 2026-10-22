@@ -371,6 +371,17 @@ return [
         'skipped' => 'Test number (not sent)',
     ],
 
+    'cargo_type' => [
+        'general' => 'General goods',
+        'building' => 'Building materials',
+        'food' => 'Food',
+        'machinery' => 'Machinery',
+        'documents' => 'Documents',
+        'clothes' => 'Clothes',
+        'electronics' => 'Electronics',
+        'other' => 'Other',
+    ],
+
     'parcel_size' => [
         'small' => 'Small (envelope)',
         'medium' => 'Medium (shoe box)',
@@ -1094,6 +1105,7 @@ return [
         'force_transition' => 'Force status',
         'lift_pin_lock' => 'Lift PIN lock',
         'lift_recipient_otp_lock' => 'Lift recipient code lock',
+        'resolve_delivery_attempt' => 'Resolve failed delivery',
     ],
 
     'operations_cancellation_fee' => [

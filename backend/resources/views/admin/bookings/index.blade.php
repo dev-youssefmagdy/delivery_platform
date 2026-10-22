@@ -26,6 +26,9 @@
         <x-admin.filters.boolean name="has_ticket" :label="__('admin.bookings.filters.has_ticket')" />
         <x-admin.filters.enum name="custody_statuses" :label="__('admin.bookings.filters.custody_status')" :enum="\App\Enums\Booking\CustodyStatus::class" multiple />
         <x-admin.filters.enum name="parcel_sizes" :label="__('admin.bookings.filters.parcel_size')" :enum="\App\Enums\Booking\ParcelSize::class" multiple />
+        <x-admin.filters.enum name="cargo_types" :label="__('admin.bookings.filters.cargo_type')" :enum="\App\Enums\Booking\CargoType::class" multiple />
+        <x-admin.filters.remote-select name="vehicle_category_ids" :label="__('admin.bookings.filters.vehicle_class')" lookup="vehicle-categories" multiple />
+        <x-admin.filters.number-range name="cargo_weight_kg" :label="__('admin.bookings.filters.cargo_weight')" suffix="kg" step="1" min="0" />
         <x-admin.filters.boolean name="is_fragile" :label="__('admin.bookings.filters.is_fragile')" />
     </x-admin.filters-card>
 

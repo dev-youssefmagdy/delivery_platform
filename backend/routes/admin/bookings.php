@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Booking\BookingController;
+use App\Http\Controllers\Admin\Booking\BookingDeliveryController;
 use App\Http\Controllers\Admin\Booking\BookingOverrideController;
 use App\Http\Controllers\Admin\Booking\BookingTabController;
 use App\Http\Controllers\Admin\Booking\NoOfferQueueController;
@@ -36,6 +37,14 @@ Route::prefix('bookings')->name('bookings.')->group(function (): void {
         Route::get('audit', 'audit')->name('audit')->can('view', 'booking');
     });
 
+    // Delivery and load (P4.4): contacts are revealed (audited) and pictures streamed through signed, audited URLs; bookings.view_pii only.
+    Route::controller(BookingDeliveryController::class)->prefix('{booking:uuid}')->whereUuid('booking')->group(function (): void {
+        Route::get('tabs/delivery', 'tab')->name('tabs.delivery')->can('view', 'booking');
+        Route::post('contacts/reveal', 'reveal')->name('contacts.reveal')->can('viewPii', 'booking');
+        Route::get('files/proofs/{proof}', 'proof')->whereUuid('proof')->name('files.proof')->middleware('signed')->can('viewPii', 'booking');
+        Route::get('files/attachments/{attachment}', 'attachment')->whereUuid('attachment')->name('files.attachment')->middleware('signed')->can('viewPii', 'booking');
+    });
+
     Route::controller(BookingOverrideController::class)->prefix('{booking:uuid}')->whereUuid('booking')->group(function (): void {
         // Form fragments for the global modal; each ability is checked again inside the action.
         Route::get('override-forms/{form}', 'form')->where('form', '[a-z_]+')->name('override-form')->can('view', 'booking');
@@ -45,6 +54,7 @@ Route::prefix('bookings')->name('bookings.')->group(function (): void {
         Route::post('force-transition', 'forceTransition')->name('force-transition')->can('forceTransition', 'booking');
         Route::post('lift-pin-lock', 'liftPinLock')->name('lift-pin-lock')->can('liftPinLock', 'booking');
         Route::post('lift-recipient-otp-lock', 'liftRecipientOtpLock')->name('lift-recipient-otp-lock')->can('liftRecipientOtpLock', 'booking');
+        Route::post('resolve-delivery-attempt', 'resolveAttempt')->name('resolve-attempt')->can('manage', 'booking');
         Route::post('contact', 'contact')->name('contact')->can('manage', 'booking');
     });
 });

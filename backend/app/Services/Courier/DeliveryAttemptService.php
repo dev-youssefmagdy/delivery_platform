@@ -12,6 +12,7 @@ use App\Enums\Common\ActorType;
 use App\Exceptions\BusinessRuleViolation;
 use App\Exceptions\ConflictException;
 use App\Models\Booking;
+use App\Models\Admin;
 use App\Models\DeliveryAttempt;
 use App\Models\ProviderProfile;
 use App\Models\User;
@@ -159,6 +160,17 @@ final class DeliveryAttemptService
     }
 
     /**
+     * Operations resolves the pending attempt (retry / return to sender / escalate). Runs inside the operator override
+     * transaction (`BookingOverrideService`), which owns the permission, the mandatory reason, the audit entry and the notices.
+     *
+     * @return array{attempt: DeliveryAttempt, booking: Booking, replayed: bool}
+     */
+    public function resolveByOperator(Admin $admin, Booking $booking, string $attemptUuid, DeliveryAttemptResolution $resolution, string $reason): array
+    {
+        return $this->resolve($booking, $attemptUuid, $resolution, ActorType::Admin, $admin->id, new TransitionContext(ActorType::Admin, $admin->id, $reason));
+    }
+
+    /**
      * Escalates attempts nobody resolved in time to operations. Returns how many were escalated.
      */
     public function escalateStale(?CarbonImmutable $now = null, int $limit = 200): int
@@ -224,7 +236,7 @@ final class DeliveryAttemptService
                 'resolved_at' => CarbonImmutable::now(),
             ]);
 
-            if ($by !== ActorType::System) {
+            if ($by !== ActorType::System && $by !== ActorType::Admin) {
                 $this->notifier->deliveryAttemptResolved($moved, $attempt->uuid, $by);
             }
 

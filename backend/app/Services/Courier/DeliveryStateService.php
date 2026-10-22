@@ -58,6 +58,8 @@ final class DeliveryStateService
                 'pickup_required' => (bool) ($safety['pickup_proof_required'] ?? false),
                 'delivery_required' => array_values(array_map('strval', (array) ($safety['delivery_proof_types'] ?? []))),
                 'return_required' => array_values(array_map('strval', (array) config('courier.proofs.return_proof_types', ['photo']))),
+                // The codes a checklist proof may carry (P4.4): the apps no longer hard-code them.
+                'checklist_items' => array_values(array_map('strval', (array) config('courier.proofs.checklist_items', []))),
                 'present' => $present,
                 'current_stage' => $stage?->value,
             ],

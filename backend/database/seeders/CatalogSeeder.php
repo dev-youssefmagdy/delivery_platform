@@ -225,6 +225,8 @@ class CatalogSeeder extends Seeder
                     self::field('estimated_weight', 'weight', 'الوزن التقريبي (كجم)', 'Approximate weight (kg)', min: 1, max: 1000),
                     self::field('estimated_volume', 'decimal', 'الحجم التقريبي (م³)', 'Approximate volume (m³)', min: 0.1, max: 3),
                     self::field('helpers', 'integer', 'عدد العمال', 'Helpers', helpAr: 'عمال للتحميل والتنزيل', helpEn: 'Loaders for loading and unloading', min: 0, max: 3),
+                    self::field('pickup_window_start', 'datetime', 'بداية موعد التحميل', 'Pickup window starts', helpAr: 'اختياري، يُحدد مع نهاية الموعد', helpEn: 'Optional, set together with the end'),
+                    self::field('pickup_window_end', 'datetime', 'نهاية موعد التحميل', 'Pickup window ends', helpAr: 'اختياري', helpEn: 'Optional'),
                     self::field('photos', 'photo', 'صور الحمولة', 'Photos of the load', max: 5),
                 ],
             ],
@@ -260,6 +262,9 @@ class CatalogSeeder extends Seeder
                     self::field('disassembly', 'boolean', 'فك وتركيب الأثاث', 'Disassembly and assembly'),
                     self::field('packing', 'boolean', 'تغليف الأثاث', 'Packing'),
                     self::field('preferred_time', 'datetime', 'الموعد المفضل', 'Preferred time'),
+                    // v3 (P4.4): an optional window for the loading, both ends or none (same rule as freight).
+                    self::field('pickup_window_start', 'datetime', 'بداية موعد التحميل', 'Pickup window starts', helpAr: 'اختياري، يُحدد مع نهاية الموعد', helpEn: 'Optional, set together with the end'),
+                    self::field('pickup_window_end', 'datetime', 'نهاية موعد التحميل', 'Pickup window ends', helpAr: 'اختياري', helpEn: 'Optional'),
                     self::field('access_notes', 'textarea', 'ملاحظات الوصول والركن', 'Access and parking notes', max: 500),
                     self::field('photos', 'photo', 'صور الأثاث', 'Photos of the furniture', max: 8),
                 ],

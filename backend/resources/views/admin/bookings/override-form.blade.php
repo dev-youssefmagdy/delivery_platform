@@ -9,6 +9,7 @@
         Action::ForceTransition->value => ['route' => 'admin.bookings.force-transition', 'variant' => 'warning', 'icon' => 'bolt', 'key' => 'force_transition'],
         Action::LiftPinLock->value => ['route' => 'admin.bookings.lift-pin-lock', 'variant' => 'warning', 'icon' => 'lock-closed', 'key' => 'lift_pin_lock'],
         Action::LiftRecipientOtpLock->value => ['route' => 'admin.bookings.lift-recipient-otp-lock', 'variant' => 'warning', 'icon' => 'lock-closed', 'key' => 'lift_recipient_otp_lock'],
+        Action::ResolveDeliveryAttempt->value => ['route' => 'admin.bookings.resolve-attempt', 'variant' => 'warning', 'icon' => 'bolt', 'key' => 'resolve_delivery_attempt'],
         default => ['route' => 'admin.bookings.contact', 'variant' => 'primary', 'icon' => 'inbox', 'key' => 'contact'],
     };
     $stage = \App\Enums\Booking\CancellationStage::of($booking->status);
@@ -52,6 +53,21 @@
                 :label="__('admin.bookings.fields.target_status')"
                 :hint="__('admin.bookings.forms.force_transition.target_hint', ['status' => $booking->status->label()])"
                 :options="collect($forceTargets)->mapWithKeys(fn ($status) => [$status->value => $status->label()])->all()"
+                :placeholder="__('admin.form.select_placeholder')"
+                required
+            />
+        @elseif ($form === Action::ResolveDeliveryAttempt->value)
+            @php($retryLeft = $booking->delivery_attempts_count < \App\Services\Courier\DeliveryAttemptService::maxAttempts())
+            <x-admin.form.select
+                name="resolution"
+                id="override-resolution"
+                :label="__('admin.bookings.fields.resolution')"
+                :hint="__('admin.bookings.forms.resolve_delivery_attempt.resolution_hint', ['count' => $booking->delivery_attempts_count, 'max' => \App\Services\Courier\DeliveryAttemptService::maxAttempts()])"
+                :options="array_filter([
+                    \App\Enums\Booking\DeliveryAttemptResolution::Retry->value => $retryLeft ? \App\Enums\Booking\DeliveryAttemptResolution::Retry->label() : null,
+                    \App\Enums\Booking\DeliveryAttemptResolution::ReturnToSender->value => \App\Enums\Booking\DeliveryAttemptResolution::ReturnToSender->label(),
+                    \App\Enums\Booking\DeliveryAttemptResolution::Operations->value => \App\Enums\Booking\DeliveryAttemptResolution::Operations->label(),
+                ])"
                 :placeholder="__('admin.form.select_placeholder')"
                 required
             />

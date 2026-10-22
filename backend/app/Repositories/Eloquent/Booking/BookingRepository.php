@@ -9,6 +9,7 @@ use App\Enums\Booking\OfferStatus;
 use App\Enums\Catalog\BookingType;
 use App\Enums\Dispatch\DispatchResponse;
 use App\Models\Booking;
+use App\Models\VehicleCategory;
 use App\Models\ProviderProfile;
 use App\Models\User;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
@@ -255,6 +256,16 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
             ->when($filters->providerId !== null, static fn (Builder $query) => $query->where('bookings.provider_id', $filters->providerId))
             ->when($filters->custodyStatuses !== [], static fn (Builder $query) => $query->whereIn('bookings.custody_status', array_map(static fn ($status): string => $status->value, $filters->custodyStatuses)))
             ->when($filters->parcelSizes !== [], static fn (Builder $query) => $query->whereIn('bookings.parcel_size', array_map(static fn ($size): string => $size->value, $filters->parcelSizes)))
+            ->when($filters->cargoTypes !== [], static function (Builder $query) use ($filters): void {
+                $values = array_map(static fn ($type): string => $type->value, $filters->cargoTypes);
+                $query->where(static fn (Builder $inner) => $inner->whereIn('bookings.service_details->cargo_type', $values)->orWhereIn('bookings.service_details->parcel_category', $values));
+            })
+            ->when($filters->vehicleCategoryIds !== [], static function (Builder $query) use ($filters): void {
+                $codes = VehicleCategory::query()->whereIn('id', $filters->vehicleCategoryIds)->pluck('code')->all();
+                $query->where(static fn (Builder $inner) => $inner->whereIn('bookings.agreed_scope->vehicle_class', $codes)->orWhereIn('bookings.requested_scope->vehicle_class', $codes));
+            })
+            ->when($filters->weightMin !== null, static fn (Builder $query) => $query->where('bookings.cargo_weight_kg', '>=', $filters->weightMin))
+            ->when($filters->weightMax !== null, static fn (Builder $query) => $query->where('bookings.cargo_weight_kg', '<=', $filters->weightMax))
             ->when($filters->isFragile !== null, static fn (Builder $query) => $query->where('bookings.is_fragile', $filters->isFragile))
             ->when($filters->hasTicket !== null, static function (Builder $query) use ($filters): void {
                 $ticket = static fn ($sub) => $sub->select(DB::raw(1))->from('support_tickets')->whereColumn('support_tickets.booking_id', 'bookings.id');

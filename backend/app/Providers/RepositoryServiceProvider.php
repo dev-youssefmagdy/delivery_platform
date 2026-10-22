@@ -170,6 +170,14 @@ use App\Repositories\Contracts\Notification\NotificationDeliveryRepositoryInterf
 use App\Repositories\Contracts\Notification\NotificationPreferenceRepositoryInterface;
 use App\Repositories\Contracts\Notification\NotificationTemplateRepositoryInterface;
 use App\Repositories\Contracts\Notification\PushCampaignRepositoryInterface;
+use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
+use App\Repositories\Contracts\Support\SupportMacroRepositoryInterface;
+use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
+use App\Repositories\Contracts\Support\TicketThreadRepositoryInterface;
+use App\Repositories\Eloquent\Support\BookingMessageRepository;
+use App\Repositories\Eloquent\Support\SupportMacroRepository;
+use App\Repositories\Eloquent\Support\SupportTicketRepository;
+use App\Repositories\Eloquent\Support\TicketThreadRepository;
 use App\Repositories\Eloquent\Notification\AppNotificationRepository;
 use App\Repositories\Eloquent\Notification\NotificationDeliveryRepository;
 use App\Repositories\Eloquent\Notification\NotificationPreferenceRepository;
@@ -238,6 +246,10 @@ class RepositoryServiceProvider extends ServiceProvider
         NotificationDeliveryRepositoryInterface::class => NotificationDeliveryRepository::class,
         NotificationPreferenceRepositoryInterface::class => NotificationPreferenceRepository::class,
         PushCampaignRepositoryInterface::class => PushCampaignRepository::class,
+        BookingMessageRepositoryInterface::class => BookingMessageRepository::class,
+        SupportMacroRepositoryInterface::class => SupportMacroRepository::class,
+        SupportTicketRepositoryInterface::class => SupportTicketRepository::class,
+        TicketThreadRepositoryInterface::class => TicketThreadRepository::class,
         // @admin-module:bindings
         ProviderWorkloadRepositoryInterface::class => ProviderWorkloadRepository::class,
         ProviderLocationRepositoryInterface::class => ProviderLocationRepository::class,

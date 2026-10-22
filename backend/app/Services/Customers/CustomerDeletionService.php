@@ -13,6 +13,9 @@ use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerActivityRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
+use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
+use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
+use App\Support\Files\PrivateFileStorage;
 use App\Services\Audit\AuditLogger;
 use App\Repositories\Contracts\Coupon\CouponAttemptRepositoryInterface;
 use App\Services\Payments\PaymentMethodService;
@@ -41,6 +44,9 @@ final class CustomerDeletionService
         private readonly PaymentMethodService $paymentMethods,
         private readonly CouponAttemptRepositoryInterface $couponAttempts,
         private readonly ProviderDeletionService $providerDeletions,
+        private readonly SupportTicketRepositoryInterface $tickets,
+        private readonly BookingMessageRepositoryInterface $chat,
+        private readonly PrivateFileStorage $files,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
     ) {}
@@ -52,8 +58,9 @@ final class CustomerDeletionService
     public function approve(User $customer, string $requestUuid, string $reason, ?Authenticatable $actor): AccountDeletionRequest
     {
         $photoPath = null;
+        $supportFiles = [];
 
-        $request = $this->db->transaction(function () use ($customer, $requestUuid, $reason, $actor, &$photoPath): AccountDeletionRequest {
+        $request = $this->db->transaction(function () use ($customer, $requestUuid, $reason, $actor, &$photoPath, &$supportFiles): AccountDeletionRequest {
             $locked = $this->lock($customer);
             $request = $this->pendingRequest($locked, $requestUuid);
 
@@ -75,6 +82,11 @@ final class CustomerDeletionService
             $methodsPurged = $this->paymentMethods->purgeForCustomer($locked);
             // Coupon reservations and redemptions stay (they back ledger entries); the attempt log is unlinked from the person.
             $couponAttemptsScrubbed = $this->couponAttempts->anonymiseForUser($locked->id);
+            // Support: ticket subjects, the person's own messages and every evidence file go; ticket rows, status history and
+            // staff notes stay for dispute and finance records. Chat: what the person wrote, text and images, is removed.
+            $ticketFiles = $this->tickets->scrubOfUser($locked->id);
+            $chatFiles = $this->chat->scrubSentBy($locked->id);
+            $supportFiles = [...$ticketFiles, ...$chatFiles];
 
             $this->requests->update($request, [
                 'status' => DeletionRequestStatus::Completed,
@@ -90,11 +102,13 @@ final class CustomerDeletionService
                 before: ['status' => $previousStatus->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged, 'coupon_attempts_scrubbed' => $couponAttemptsScrubbed],
+                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged, 'coupon_attempts_scrubbed' => $couponAttemptsScrubbed, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles)],
             );
 
             return $request;
         });
+
+        $this->files->deleteMany($supportFiles);
 
         if ($photoPath !== null) {
             Storage::disk((string) config('identity.photo.disk', 'local'))->delete($photoPath);

@@ -52,6 +52,13 @@ interface AdminRepositoryInterface extends BaseRepositoryInterface
     public function findManyByIds(array $ids): Collection;
 
     /**
+     * Active admins that hold a permission, directly or through a role (Super Admins are not listed unless they hold it explicitly).
+     *
+     * @return Collection<int, Admin>
+     */
+    public function activeWithPermission(string $permission): Collection;
+
+    /**
      * Loads what the detail screens display (roles + permissions).
      */
     public function loadDisplayRelations(Admin $admin): Admin;

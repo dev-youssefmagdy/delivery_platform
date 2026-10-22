@@ -9,7 +9,7 @@ use App\Models\BookingProof;
 use App\Models\BookingRating;
 use App\Models\BookingStatusEvent;
 use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
-use App\Repositories\Contracts\Booking\BookingReportRepositoryInterface;
+use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
 use App\Services\Settings\SettingsService;
@@ -25,7 +25,7 @@ final class BookingDetailTabsService
     public function __construct(
         private readonly BookingStatusEventRepositoryInterface $events,
         private readonly BookingProofRepositoryInterface $proofs,
-        private readonly BookingReportRepositoryInterface $reports,
+        private readonly SupportTicketRepositoryInterface $tickets,
         private readonly RatingRepositoryInterface $ratings,
         private readonly SettingsService $settings,
     ) {}
@@ -97,11 +97,11 @@ final class BookingDetailTabsService
                 'actor' => ActorType::tryFrom($proof->actor_type)?->label() ?? $proof->actor_type,
                 'time' => $this->time($proof->created_at),
             ])->values()->all(),
-            'reports' => $this->reports->forBooking($booking->id)->map(fn ($report): array => [
-                'category' => $report->category->label(),
-                'status' => $report->status->label(),
-                'reporter' => ActorType::tryFrom($report->reporter_type)?->label() ?? $report->reporter_type,
-                'time' => $this->time($report->created_at),
+            'reports' => $this->tickets->forBooking($booking->id)->map(fn ($ticket): array => [
+                'category' => $ticket->number.' · '.$ticket->category->label(),
+                'status' => $ticket->status->label(),
+                'reporter' => ActorType::tryFrom($ticket->app->value)?->label() ?? $ticket->app->value,
+                'time' => $this->time($ticket->created_at),
             ])->values()->all(),
             'flag' => $booking->support_flagged_at === null ? null : [
                 'at' => $this->time($booking->support_flagged_at),

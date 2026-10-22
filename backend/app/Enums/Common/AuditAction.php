@@ -46,6 +46,11 @@ enum AuditAction: string implements HasColor, HasLabel
     case Requested = 'requested';
     case Reprocessed = 'reprocessed';
     case CashCollected = 'cash_collected';
+    case Assigned = 'assigned';
+    case Escalated = 'escalated';
+    case Resolved = 'resolved';
+    case Reopened = 'reopened';
+    case Linked = 'linked';
 
     public function label(): string
     {
@@ -55,10 +60,10 @@ enum AuditAction: string implements HasColor, HasLabel
     public function color(): BadgeColor
     {
         return match ($this) {
-            self::Created, self::Approved, self::Reactivated, self::Restored, self::Published, self::LoggedIn => BadgeColor::Success,
+            self::Created, self::Approved, self::Reactivated, self::Restored, self::Published, self::LoggedIn, self::Resolved => BadgeColor::Success,
             self::Deleted, self::Rejected, self::Suspended, self::LoginFailed, self::Anonymised => BadgeColor::Danger,
-            self::Overridden, self::StatusChanged, self::MoreInfoRequested, self::MfaReset, self::MfaDisabled, self::Restricted, self::PhoneRevealed, self::Reversed => BadgeColor::Warning,
-            self::Updated, self::Exported, self::Downloaded, self::MfaEnabled, self::PasswordChanged, self::SessionRevoked, self::MessageSent, self::Reconciled, self::Requested, self::Reprocessed, self::CashCollected => BadgeColor::Info,
+            self::Overridden, self::Escalated, self::StatusChanged, self::MoreInfoRequested, self::MfaReset, self::MfaDisabled, self::Restricted, self::PhoneRevealed, self::Reversed => BadgeColor::Warning,
+            self::Updated, self::Exported, self::Downloaded, self::MfaEnabled, self::PasswordChanged, self::SessionRevoked, self::MessageSent, self::Reconciled, self::Requested, self::Reprocessed, self::CashCollected, self::Assigned, self::Reopened, self::Linked => BadgeColor::Info,
             default => BadgeColor::Neutral,
         };
     }

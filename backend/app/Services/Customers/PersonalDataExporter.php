@@ -4,7 +4,9 @@ namespace App\Services\Customers;
 
 use App\Models\AccountDeletionRequest;
 use App\Models\Booking;
-use App\Models\BookingReport;
+use App\Models\BookingMessage;
+use App\Models\SupportTicket;
+use App\Models\TicketMessage;
 use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
 use App\DTOs\Coupon\CouponActivityFilterData;
@@ -22,7 +24,8 @@ use App\Repositories\Contracts\Payments\PaymentMethodRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
 use App\Models\UserConsent;
 use App\Models\UserDevice;
-use App\Repositories\Contracts\Booking\BookingReportRepositoryInterface;
+use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
+use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
@@ -51,7 +54,8 @@ final class PersonalDataExporter
         private readonly CustomerMessageRepositoryInterface $messages,
         private readonly BookingRepositoryInterface $bookings,
         private readonly RatingRepositoryInterface $ratings,
-        private readonly BookingReportRepositoryInterface $reports,
+        private readonly SupportTicketRepositoryInterface $tickets,
+        private readonly BookingMessageRepositoryInterface $chat,
         private readonly BookingStatusEventRepositoryInterface $bookingEvents,
         private readonly PaymentMethodRepositoryInterface $paymentMethods,
         private readonly PaymentRepositoryInterface $payments,
@@ -161,7 +165,31 @@ final class PersonalDataExporter
             ])->all(),
             // The customer wallet: balances and every ledger line of it (credits from refunds / approved adjustments, wallet payments).
             'wallet' => $this->walletSection($customer),
-            'sections_pending' => ['support_tickets', 'ratings'],
+            // Support tickets (reports and appeals included): the person's own messages and the public replies; internal notes are never exported.
+            'support_tickets' => $this->tickets->allOfUser($customer->id)->map(static fn (SupportTicket $ticket): array => [
+                'number' => $ticket->number,
+                'app' => $ticket->app->value,
+                'category' => $ticket->category->value,
+                'status' => $ticket->status->value,
+                'source' => $ticket->source->value,
+                'subject' => $ticket->subject,
+                'booking' => $ticket->booking?->code,
+                'resolution' => $ticket->resolution_reason,
+                'created_at' => $ticket->created_at->toIso8601String(),
+                'messages' => $ticket->messages->map(static fn (TicketMessage $message): array => [
+                    'from' => $message->author_type->value,
+                    'body' => $message->body,
+                    'at' => $message->created_at->toIso8601String(),
+                ])->all(),
+            ])->all(),
+            // What the person wrote in booking chats (the other side's messages belong to the other person).
+            'chat_messages' => $this->chat->sentBy($customer->id)->map(static fn (BookingMessage $message): array => [
+                'booking' => $message->booking->code,
+                'body' => $message->body,
+                'has_image' => $message->attachment_path !== null,
+                'at' => $message->created_at->toIso8601String(),
+            ])->all(),
+            'sections_pending' => ['ratings'],
         ];
     }
 
@@ -192,11 +220,8 @@ final class PersonalDataExporter
     private function feedback(Booking $booking): array
     {
         $rating = $this->ratings->findForSide($booking->id, 'customer');
-        $reports = $this->reports->forReporterType($booking->id, 'customer');
-
         return [
             'rating' => $rating === null ? null : ['stars' => $rating->stars, 'tags' => $rating->tags, 'comment' => $rating->comment],
-            'reports' => $reports->map(static fn (BookingReport $report): array => ['category' => $report->category->value, 'description' => $report->description, 'at' => $report->created_at->toIso8601String()])->all(),
         ];
     }
 

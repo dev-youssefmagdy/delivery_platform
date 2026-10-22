@@ -74,7 +74,7 @@ final class PushChannelSender implements ChannelSender
                     title: (string) $delivery->title,
                     body: $delivery->body,
                     data: $data,
-                    collapseKey: $notification->dedupe_key === null ? null : substr(sha1($notification->dedupe_key), 0, 16),
+                    collapseKey: isset($notification->data['collapse_key']) ? substr(sha1((string) $notification->data['collapse_key']), 0, 16) : ($notification->dedupe_key === null ? null : substr(sha1($notification->dedupe_key), 0, 16)),
                 ));
                 $accepted ??= $messageId;
             } catch (PushDeliveryException $e) {

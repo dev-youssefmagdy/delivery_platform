@@ -19,6 +19,7 @@ enum NotificationLinkType: string
     case Wallet = 'wallet';
     case Support = 'support';
     case Message = 'message';
+    case Chat = 'chat';
     case Export = 'export';
     case Inbox = 'inbox';
 }

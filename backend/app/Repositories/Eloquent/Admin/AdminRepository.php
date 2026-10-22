@@ -84,6 +84,15 @@ final class AdminRepository extends BaseRepository implements AdminRepositoryInt
             ->get(['id', 'name']);
     }
 
+    public function activeWithPermission(string $permission): Collection
+    {
+        return $this->query()
+            ->where('status', AdminStatus::Active->value)
+            ->permission($permission)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+    }
+
     public function findManyByIds(array $ids): Collection
     {
         return $this->query()->whereKey($ids)->get(['id', 'name']);

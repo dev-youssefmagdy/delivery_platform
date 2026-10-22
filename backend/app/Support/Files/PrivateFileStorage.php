@@ -45,6 +45,28 @@ final class PrivateFileStorage
         return $path;
     }
 
+    /**
+     * One image of a booking chat message: `chat/{bookingUuid}/{random}.jpg`.
+     */
+    public function putChatAttachment(string $bookingUuid, InspectedUpload $upload): string
+    {
+        $path = 'chat/'.$bookingUuid.'/'.Str::uuid().'.'.$upload->extension;
+        $this->disk()->put($path, $upload->bytes);
+
+        return $path;
+    }
+
+    /**
+     * Evidence on a support ticket: `support/{ticketUuid}/{random}.{ext}`.
+     */
+    public function putTicketAttachment(string $ticketUuid, InspectedUpload $upload): string
+    {
+        $path = 'support/'.$ticketUuid.'/'.Str::uuid().'.'.$upload->extension;
+        $this->disk()->put($path, $upload->bytes);
+
+        return $path;
+    }
+
     public function delete(?string $path): void
     {
         if ($path !== null && $path !== '') {

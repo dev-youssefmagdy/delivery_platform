@@ -169,7 +169,7 @@ final class PaymentTransitionService
         $this->notifyCustomer($payment, $booking, $status);
         PaymentStatusChanged::toCustomer($booking->customer->uuid, $booking->uuid, $sequence, $payload);
 
-        if ($booking->provider_id !== null) {
+        if ($booking->provider_id !== null && $payment->kind !== PaymentKind::Debt) {
             $provider = $this->providers->find($booking->provider_id);
 
             if ($provider instanceof ProviderProfile) {

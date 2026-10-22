@@ -3,6 +3,8 @@
 namespace App\Services\Payments;
 
 use App\DTOs\Finance\JournalEntryData;
+use App\DTOs\Finance\JournalLineData;
+use App\Enums\Finance\LedgerAccountType;
 use App\DTOs\Finance\PriceBreakdown;
 use App\DTOs\Payments\PaymentActor;
 use App\Enums\Common\ActorType;
@@ -46,6 +48,33 @@ final class PaymentSettlementService
         private readonly CouponReservationService $coupons,
     ) {}
 
+    /**
+     * Dr gateway_clearing / Cr the customer's wallet: the paid amount cancels the debt.
+     */
+    private function settleDebt(Payment $payment, Booking $booking): Payment
+    {
+        $booking->loadMissing('customer');
+        $currency = $this->currencies->get($payment->currency);
+        $amount = Money::of($payment->amount_minor, $currency);
+        $result = $this->ledger->post(new JournalEntryData(
+            type: JournalEntryType::DebtSettlement,
+            idempotencyKey: 'payment-settlement:'.$payment->uuid,
+            descriptionKey: 'ledger.entry.debt_settlement',
+            lines: [
+                JournalLineData::debit($this->accounts->platform(LedgerAccountType::GatewayClearing, $payment->currency), $amount),
+                JournalLineData::credit($this->accounts->customerWallet($booking->customer, $payment->currency), $amount),
+            ],
+            referenceType: 'payment',
+            referenceId: $payment->id,
+            meta: ['payment' => $payment->uuid, 'booking' => $booking->code],
+            actorType: ActorType::System,
+        ));
+        $this->payments->update($payment, ['settled_at' => CarbonImmutable::now(), 'settlement_entry_id' => $result->entry->id]);
+        $this->transitions->note($payment, PaymentEventType::Settled, PaymentActor::system(), ['entry_id' => $result->entry->id]);
+
+        return $payment;
+    }
+
     public function settle(Payment $payment): Payment
     {
         if ($payment->settled_at !== null) {
@@ -56,6 +85,10 @@ final class PaymentSettlementService
 
         if (! $booking instanceof Booking) {
             throw new LogicException('A payment needs its booking to be settled.');
+        }
+
+        if ($payment->kind === PaymentKind::Debt) {
+            return $this->settleDebt($payment, $booking);
         }
 
         $booking->loadMissing('provider');

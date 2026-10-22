@@ -130,6 +130,8 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
         // The customer wallet (P3.4): balance and statement, read-only and scoped to the owner.
         Route::get('wallet', [WalletController::class, 'show'])->name('wallet.show');
         Route::get('wallet/transactions', [WalletController::class, 'transactions'])->name('wallet.transactions');
+        // Settle the wallet debt (unpaid cancellation fees) through the payment flow (P3.8, ADR-143).
+        Route::post('wallet/settle-debt', [WalletController::class, 'settleDebt'])->middleware('idempotent')->name('wallet.settle-debt');
     });
     Route::delete('account-deletion-requests/{deletionRequest}', [AccountDeletionController::class, 'destroy'])
         ->whereUuid('deletionRequest')->name('account-deletion-requests.destroy');

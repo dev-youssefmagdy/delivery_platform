@@ -2106,6 +2106,7 @@ return [
             'refund' => 'استرداد',
             'payout_reserve' => 'حجز مبلغ للسحب',
             'cash_settlement' => 'تسوية عمولة نقدية',
+            'debt_settlement' => 'تسديد دين المحفظة',
             'payout_paid' => 'سحب مدفوع',
             'adjustment' => 'تعديل يدوي',
             'cancellation_fee' => 'رسوم إلغاء',

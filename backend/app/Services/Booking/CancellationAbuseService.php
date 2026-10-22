@@ -63,6 +63,16 @@ final class CancellationAbuseService
     }
 
     /**
+     * The wallet that is in debt (the most negative one), or null when the customer owes nothing.
+     */
+    public function debtAccount(User $customer): ?LedgerAccount
+    {
+        return $this->accounts->forOwner(LedgerAccountType::CustomerWallet, $customer->id)
+            ->filter(static fn (LedgerAccount $account): bool => $account->balance_minor < 0)
+            ->sortBy('balance_minor')->first();
+    }
+
+    /**
      * @throws BusinessRuleViolation `cancellation_cooldown_active`, `customer_fee_debt_outstanding`
      */
     public function assertCustomerMayBook(User $customer): void

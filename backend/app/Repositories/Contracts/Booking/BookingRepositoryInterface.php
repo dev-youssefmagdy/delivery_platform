@@ -37,6 +37,11 @@ interface BookingRepositoryInterface extends BaseRepositoryInterface
 
     public function codeExists(string $code): bool;
 
+    /**
+     * The customer's latest booking that carried a cancellation fee (anchor of a wallet debt payment), else their latest booking.
+     */
+    public function latestFeeBookingOfCustomer(int $customerId): ?Booking;
+
     public function findOfCustomer(string $uuid, int $customerId): ?Booking;
 
     public function findByUuidForUpdate(string $uuid): ?Booking;

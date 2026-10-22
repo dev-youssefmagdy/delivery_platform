@@ -614,6 +614,7 @@ return [
     'payment_kind' => [
         'trip' => 'الرحلة',
         'tip' => 'إكرامية',
+        'debt' => 'دين المحفظة',
     ],
 
     'payment_event_type' => [
@@ -714,6 +715,7 @@ return [
         'adjustment' => 'تعديل',
         'cash_settlement' => 'تسوية عمولة نقدية',
         'cancellation_fee' => 'رسوم إلغاء',
+        'debt_settlement' => 'تسديد دين المحفظة',
         'reversal' => 'عكس قيد',
     ],
     'payout_status' => [

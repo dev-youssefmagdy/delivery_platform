@@ -14,6 +14,8 @@ enum PaymentKind: string implements HasLabel
 
     case Trip = 'trip';
     case Tip = 'tip';
+    /** The customer settling their wallet debt (unpaid cancellation fees); anchored to the booking that created the debt. */
+    case Debt = 'debt';
 
     public function label(): string
     {

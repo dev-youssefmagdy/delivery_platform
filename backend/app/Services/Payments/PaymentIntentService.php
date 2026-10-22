@@ -24,6 +24,7 @@ use App\Models\PaymentMethod;
 use App\Models\User;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
+use App\Services\Booking\CancellationAbuseService;
 use App\Services\Settings\SettingsService;
 use App\Support\Money\CurrencyRegistry;
 use App\Support\Money\Money;
@@ -57,6 +58,7 @@ final class PaymentIntentService
         private readonly SettingsService $settings,
         private readonly CurrencyRegistry $currencies,
         private readonly DatabaseManager $db,
+        private readonly CancellationAbuseService $abuse,
     ) {}
 
     public function payTrip(User $customer, string $bookingUuid, StartPaymentData $data): PaymentIntentResult
@@ -133,6 +135,35 @@ final class PaymentIntentService
             }
 
             return $this->start($customer, $locked, $gateway, PaymentKind::Tip, Money::of($minor, $currency), $data, PaymentMethodType::Card, 'Tip '.$locked->code);
+        });
+    }
+
+    /**
+     * Settles the customer's wallet debt (unpaid cancellation fees) through the normal payment flow (ADR-143): the amount is
+     * the debt the server sees now, never the client's; paid only by the gateway's verified answer, which credits the wallet.
+     */
+    public function settleDebt(User $customer, StartPaymentData $data): PaymentIntentResult
+    {
+        $gateway = $this->gateways->default();
+
+        return $this->db->transaction(function () use ($customer, $data, $gateway): PaymentIntentResult {
+            $account = $this->abuse->debtAccount($customer);
+
+            if ($account === null) {
+                throw BusinessRuleViolation::make('payment_nothing_to_pay');
+            }
+
+            $anchor = $this->bookings->latestFeeBookingOfCustomer($customer->id) ?? throw BusinessRuleViolation::make('payment_nothing_to_pay');
+            $locked = $this->bookings->lockById($anchor->id) ?? throw BusinessRuleViolation::make('payment_nothing_to_pay');
+            $open = $this->openAttempt($locked, PaymentKind::Debt);
+
+            if ($open instanceof PaymentIntentResult) {
+                return $open;
+            }
+
+            $amount = Money::of(-$account->balance_minor, $this->currencies->get($account->currency));
+
+            return $this->start($customer, $locked, $gateway, PaymentKind::Debt, $amount, $data, PaymentMethodType::Card, 'Wallet debt');
         });
     }
 
@@ -221,7 +252,7 @@ final class PaymentIntentService
             'uuid' => (string) Str::uuid(),
             'booking_id' => $booking->id,
             'user_id' => $customer->id,
-            'provider_id' => $booking->provider_id,
+            'provider_id' => $kind === PaymentKind::Debt ? null : $booking->provider_id,
             'kind' => $kind,
             'method_type' => $type,
             'payment_method_id' => $saved?->id,

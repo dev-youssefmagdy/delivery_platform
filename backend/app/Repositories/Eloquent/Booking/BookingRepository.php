@@ -57,6 +57,12 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
         return is_string($uuid) ? $uuid : null;
     }
 
+    public function latestFeeBookingOfCustomer(int $customerId): ?Booking
+    {
+        return $this->query()->where('customer_id', $customerId)->whereNotNull('cancellation_fee_posted_at')->latest('cancellation_fee_posted_at')->first()
+            ?? $this->query()->where('customer_id', $customerId)->latest('id')->first();
+    }
+
     public function codeExists(string $code): bool
     {
         return $this->query()->where('code', $code)->exists();

@@ -2109,6 +2109,7 @@ return [
             'refund' => 'Refund',
             'payout_reserve' => 'Payout reserved',
             'cash_settlement' => 'Cash commission settled',
+            'debt_settlement' => 'Wallet debt paid',
             'payout_paid' => 'Payout paid',
             'adjustment' => 'Manual adjustment',
             'cancellation_fee' => 'Cancellation fee',

@@ -614,6 +614,7 @@ return [
     'payment_kind' => [
         'trip' => 'Trip',
         'tip' => 'Tip',
+        'debt' => 'Wallet debt',
     ],
 
     'payment_event_type' => [
@@ -714,6 +715,7 @@ return [
         'adjustment' => 'Adjustment',
         'cash_settlement' => 'Cash commission settlement',
         'cancellation_fee' => 'Cancellation fee',
+        'debt_settlement' => 'Wallet debt settled',
         'reversal' => 'Reversal',
     ],
     'payout_status' => [

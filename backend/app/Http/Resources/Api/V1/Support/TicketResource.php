@@ -17,11 +17,21 @@ use Illuminate\Support\Facades\URL;
 class TicketResource extends JsonResource
 {
     /**
-     * @param iterable<TicketMessage>|null $thread public messages only
+     * @var iterable<TicketMessage>|null public messages only
      */
-    public function __construct(SupportTicket $resource, private readonly ?iterable $thread = null)
+    private ?iterable $thread = null;
+
+    /**
+     * The ticket with its public thread (the detail screen); plain `new` gives the list shape.
+     *
+     * @param iterable<TicketMessage> $thread public messages only
+     */
+    public static function detailed(SupportTicket $ticket, iterable $thread): static
     {
-        parent::__construct($resource);
+        $resource = new static($ticket);
+        $resource->thread = $thread;
+
+        return $resource;
     }
 
     /**

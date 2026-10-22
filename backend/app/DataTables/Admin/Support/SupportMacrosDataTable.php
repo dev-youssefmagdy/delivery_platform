@@ -22,7 +22,7 @@ final class SupportMacrosDataTable extends AdminDataTable
 
     protected bool $globalSearch = false;
 
-    public function __construct(private readonly SupportMacroRepositoryInterface $macros)
+    public function __construct(private readonly SupportMacroRepositoryInterface $macroRepository)
     {
         parent::__construct();
     }
@@ -37,7 +37,7 @@ final class SupportMacrosDataTable extends AdminDataTable
      */
     public function query(): Builder
     {
-        return $this->macros->datatableQuery(MacroFilterData::fromRequest($this->filterRequest()));
+        return $this->macroRepository->datatableQuery(MacroFilterData::fromRequest($this->filterRequest()));
     }
 
     protected function columns(): array

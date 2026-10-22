@@ -44,14 +44,14 @@ final class SupportTicketController extends Controller
     {
         $ticket = $this->tickets->open($this->authenticatedUser($request), $this->clientApp($request), $request->toDto());
 
-        return ApiResponse::created(__('api.support.ticket_created'), new TicketResource($ticket->load('booking:id,uuid,code'), $this->tickets->publicThread($ticket)));
+        return ApiResponse::created(__('api.support.ticket_created'), TicketResource::detailed($ticket->load('booking:id,uuid,code'), $this->tickets->publicThread($ticket)));
     }
 
     public function show(Request $request, string $ticket): JsonResponse
     {
         $found = $this->tickets->findFor($this->authenticatedUser($request), $this->clientApp($request), $ticket)->load('booking:id,uuid,code');
 
-        return ApiResponse::success(data: new TicketResource($found, $this->tickets->publicThread($found)));
+        return ApiResponse::success(data: TicketResource::detailed($found, $this->tickets->publicThread($found)));
     }
 
     public function reply(ReplyTicketRequest $request, string $ticket): JsonResponse
@@ -61,7 +61,7 @@ final class SupportTicketController extends Controller
         $this->tickets->reply($user, $app, $ticket, $request->toDto());
         $found = $this->tickets->findFor($user, $app, $ticket)->load('booking:id,uuid,code');
 
-        return ApiResponse::created(__('api.support.reply_sent'), new TicketResource($found, $this->tickets->publicThread($found)));
+        return ApiResponse::created(__('api.support.reply_sent'), TicketResource::detailed($found, $this->tickets->publicThread($found)));
     }
 
     public function attachment(Request $request, string $ticket, string $attachment): StreamedResponse
@@ -73,6 +73,6 @@ final class SupportTicketController extends Controller
     {
         $ticket = $this->tickets->openAppeal($this->authenticatedUser($request), $this->clientApp($request), $booking, (string) $request->input('reason'));
 
-        return ApiResponse::created(__('api.support.appeal_created'), new TicketResource($ticket->load('booking:id,uuid,code'), $this->tickets->publicThread($ticket)));
+        return ApiResponse::created(__('api.support.appeal_created'), TicketResource::detailed($ticket->load('booking:id,uuid,code'), $this->tickets->publicThread($ticket)));
     }
 }

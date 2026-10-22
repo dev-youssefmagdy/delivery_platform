@@ -7,6 +7,9 @@ use App\Models\Booking;
 use App\Models\BookingReport;
 use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
+use App\DTOs\Coupon\CouponActivityFilterData;
+use App\Models\CouponAttempt;
+use App\Models\CouponReservation;
 use App\Models\CustomerMessage;
 use App\Models\SavedPlace;
 use App\Models\Payment;
@@ -20,6 +23,8 @@ use App\Repositories\Contracts\Booking\BookingReportRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
+use App\Repositories\Contracts\Coupon\CouponAttemptRepositoryInterface;
+use App\Repositories\Contracts\Coupon\CouponReservationRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerMessageRepositoryInterface;
 use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
@@ -47,6 +52,8 @@ final class PersonalDataExporter
         private readonly BookingStatusEventRepositoryInterface $bookingEvents,
         private readonly PaymentMethodRepositoryInterface $paymentMethods,
         private readonly PaymentRepositoryInterface $payments,
+        private readonly CouponReservationRepositoryInterface $couponReservations,
+        private readonly CouponAttemptRepositoryInterface $couponAttempts,
     ) {}
 
     /**
@@ -130,7 +137,25 @@ final class PersonalDataExporter
                 'currency' => $payment->currency,
                 'created_at' => $payment->created_at->toIso8601String(),
             ])->all(),
-            'sections_pending' => ['coupon_usage', 'support_tickets', 'ratings'],
+            // Coupon uses (reserved, committed, released, reversed) and every attempt the customer made, newest first.
+            'coupon_usage' => $this->couponReservations->reservationsQuery((new CouponActivityFilterData)->forUser($customer->id))->latest('coupon_reservations.id')->get()->map(static fn (CouponReservation $reservation): array => [
+                'coupon' => $reservation->coupon->code ?? $reservation->coupon->name,
+                'booking' => $reservation->booking?->code,
+                'status' => $reservation->status->value,
+                'discount_minor' => $reservation->redemption?->discount_minor ?? $reservation->hold_minor,
+                'final' => $reservation->redemption !== null,
+                'currency' => $reservation->currency,
+                'reserved_at' => $reservation->reserved_at->toIso8601String(),
+            ])->all(),
+            'coupon_attempts' => $this->couponAttempts->forUser($customer->id)->map(static fn (CouponAttempt $attempt): array => [
+                'coupon' => $attempt->coupon?->code,
+                'code_entered' => $attempt->code_entered,
+                'context' => $attempt->context->value,
+                'result' => $attempt->result->value,
+                'reason' => $attempt->reason_code,
+                'at' => $attempt->created_at->toIso8601String(),
+            ])->all(),
+            'sections_pending' => ['support_tickets', 'ratings'],
         ];
     }
 

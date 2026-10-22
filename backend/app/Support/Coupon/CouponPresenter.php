@@ -127,6 +127,29 @@ final class CouponPresenter
         return $lines;
     }
 
+    /**
+     * The currently selected scope and exclusion options of a coupon for the remote selects of the form: field => [id => label].
+     *
+     * @return array<string, array<int, string>>
+     */
+    public function selectedOptions(Coupon $coupon): array
+    {
+        $definition = $this->definitions->make($coupon);
+        $options = static function (string $model, array $ids): array {
+            return $ids === [] ? [] : $model::query()->whereKey($ids)->get()->mapWithKeys(static fn ($row): array => [(int) $row->getKey() => (string) $row->getAttribute('name')])->all();
+        };
+
+        return [
+            'family_ids' => $options(ServiceFamily::class, $definition->scope(CouponScopeType::ServiceFamily)),
+            'category_ids' => $options(ServiceCategory::class, $definition->scope(CouponScopeType::ServiceCategory)),
+            'vehicle_category_ids' => $options(VehicleCategory::class, $definition->scope(CouponScopeType::VehicleCategory)),
+            'city_ids' => $options(City::class, $definition->scope(CouponScopeType::City)),
+            'zone_ids' => $options(ServiceZone::class, $definition->scope(CouponScopeType::Zone)),
+            'excluded_category_ids' => $options(ServiceCategory::class, $definition->exclusions['service_category_ids'] ?? []),
+            'excluded_vehicle_category_ids' => $options(VehicleCategory::class, $definition->exclusions['vehicle_category_ids'] ?? []),
+        ];
+    }
+
     public function money(int $minor, string $currency): string
     {
         return $this->formatter->format(Money::of($minor, $this->currencies->get($currency)));

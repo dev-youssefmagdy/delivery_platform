@@ -351,6 +351,15 @@ return [
             'icon' => 'shield',
             'permission' => App\Enums\Admin\AdminPermission::FinanceView,
         ],
+        [
+            'key' => 'coupons',
+            'group' => 'marketing',
+            'label' => 'admin.coupons.menu',
+            'route' => 'admin.coupons.index',
+            'active' => 'admin.coupons.*',
+            'icon' => 'tag',
+            'permission' => App\Enums\Admin\AdminPermission::CouponsView,
+        ],
         // @admin-module:menu
     ],
 ];

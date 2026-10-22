@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Common\HealthController;
 use App\Http\Controllers\Api\V1\Common\MediaController;
 use App\Http\Controllers\Api\V1\Common\PolicyController;
 use App\Http\Controllers\Api\V1\Customer\BookingController;
+use App\Http\Controllers\Api\V1\Customer\CouponController;
 use App\Http\Controllers\Api\V1\Customer\BookingCancellationController;
 use App\Http\Controllers\Api\V1\Customer\BookingFeedbackController;
 use App\Http\Controllers\Api\V1\Customer\BookingOfferController;
@@ -159,6 +160,13 @@ Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bo
         Route::post('{booking}/offers/{offer}/accept', [BookingOfferController::class, 'accept'])->whereUuid(['booking', 'offer'])->middleware('idempotent')->name('offers.accept');
         Route::post('{booking}/offers/{offer}/reject', [BookingOfferController::class, 'reject'])->whereUuid(['booking', 'offer'])->middleware('idempotent')->name('offers.reject');
     });
+});
+
+// Coupons (P3.3, SRS §20.5): a quote for a prospective booking (limited per user) and the customer's own coupon overview. The
+// reservation itself happens at booking creation (`coupon_code` on POST /bookings); a client discount is never read.
+Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->group(function (): void {
+    Route::post('coupons/validate', [CouponController::class, 'validateCoupon'])->middleware('throttle:30,1')->name('coupons.validate');
+    Route::get('me/coupons', [CouponController::class, 'index'])->name('me.coupons.index');
 });
 
 // Re-check one of the customer's own payments with the gateway after returning from the payment page (P3.2). Read-only for the

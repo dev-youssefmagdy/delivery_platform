@@ -846,4 +846,92 @@ return [
         'very_low' => 'Very low',
         'very_high' => 'Very high',
     ],
+
+    'coupon_status' => [
+        'draft' => 'Draft',
+        'scheduled' => 'Scheduled',
+        'active' => 'Active',
+        'paused' => 'Paused',
+        'exhausted' => 'Exhausted',
+        'expired' => 'Expired',
+        'archived' => 'Archived',
+    ],
+
+    'discount_type' => [
+        'fixed' => 'Fixed amount',
+        'percentage' => 'Percentage',
+    ],
+
+    'funding_source' => [
+        'platform' => 'Platform',
+        'provider' => 'Provider',
+        'partner' => 'Partner',
+        'split' => 'Split',
+    ],
+
+    'coupon_reservation_status' => [
+        'reserved' => 'Reserved',
+        'released' => 'Released',
+        'committed' => 'Committed',
+        'reversed' => 'Reversed',
+    ],
+
+    'coupon_redemption_status' => [
+        'committed' => 'Committed',
+        'reversed' => 'Reversed',
+    ],
+
+    'coupon_attempt_result' => [
+        'eligible' => 'Eligible',
+        'rejected' => 'Rejected',
+        'reserved' => 'Reserved',
+        'reservation_failed' => 'Reservation failed',
+    ],
+
+    'coupon_attempt_context' => [
+        'validate' => 'Validation',
+        'booking' => 'Booking',
+        'automatic' => 'Automatic',
+        'admin_test' => 'Admin test',
+    ],
+
+    'coupon_scope_type' => [
+        'service_family' => 'Service family',
+        'service_category' => 'Service',
+        'vehicle_category' => 'Vehicle category',
+        'city' => 'City',
+        'zone' => 'Zone',
+    ],
+
+    'coupon_segment' => [
+        'new' => 'New customers',
+        'returning' => 'Returning customers',
+    ],
+
+    'coupon_reason' => [
+        'eligible' => 'Eligible',
+        'not_found' => 'Coupon not found',
+        'not_active' => 'Coupon not active',
+        'not_started' => 'Coupon not started',
+        'expired' => 'Coupon expired',
+        'exhausted' => 'Coupon exhausted',
+        'category_not_eligible' => 'Service not eligible',
+        'service_family_not_covered' => 'Service family not covered',
+        'service_category_not_covered' => 'Service not covered',
+        'service_excluded' => 'Service excluded',
+        'vehicle_not_covered' => 'Vehicle not covered',
+        'city_not_covered' => 'City not covered',
+        'zone_not_covered' => 'Zone not covered',
+        'payment_method_not_covered' => 'Payment method not covered',
+        'new_customers_only' => 'New customers only',
+        'returning_customers_only' => 'Returning customers only',
+        'outside_schedule' => 'Outside the schedule',
+        'below_minimum_fare' => 'Below the minimum fare',
+        'customer_limit_reached' => 'Customer limit reached',
+        'global_limit_reached' => 'Usage limit reached',
+        'budget_exhausted' => 'Budget exhausted',
+        'stacking_not_allowed' => 'Cannot be combined',
+        'currency_mismatch' => 'Currency mismatch',
+        'no_discount' => 'No discount',
+    ],
 ];

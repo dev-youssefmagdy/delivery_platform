@@ -70,7 +70,9 @@ final readonly class CouponData
         $timezone = (string) ($d['timezone'] ?? config('admin.display_timezone', 'UTC'));
         $optional = static fn (mixed $value): ?int => is_numeric($value) && $value !== '' ? (int) $value : null;
         $ids = static fn (mixed $value): array => array_values(array_unique(array_map('intval', array_filter((array) $value, 'is_numeric'))));
-        $local = static fn (mixed $value): ?CarbonImmutable => is_string($value) && $value !== '' ? CarbonImmutable::createFromFormat('!Y-m-d H:i', $value, $timezone)->utc() : null;
+        // Start and end are typed in the admin display timezone (like every date in the panel); the coupon's own timezone governs its weekly schedule.
+        $display = (string) config('admin.display_timezone', 'UTC');
+        $local = static fn (mixed $value): ?CarbonImmutable => is_string($value) && $value !== '' ? CarbonImmutable::createFromFormat('!Y-m-d H:i', $value, $display)->utc() : null;
 
         [$platform, $provider, $partner] = CouponTerms::splitFor(
             $source,

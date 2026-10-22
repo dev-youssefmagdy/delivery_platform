@@ -846,4 +846,92 @@ return [
         'very_low' => 'منخفض جدًا',
         'very_high' => 'مرتفع جدًا',
     ],
+
+    'coupon_status' => [
+        'draft' => 'مسودة',
+        'scheduled' => 'مجدول',
+        'active' => 'فعّال',
+        'paused' => 'موقوف مؤقتًا',
+        'exhausted' => 'مستنفد',
+        'expired' => 'منتهي',
+        'archived' => 'مؤرشف',
+    ],
+
+    'discount_type' => [
+        'fixed' => 'مبلغ ثابت',
+        'percentage' => 'نسبة مئوية',
+    ],
+
+    'funding_source' => [
+        'platform' => 'المنصة',
+        'provider' => 'مقدم الخدمة',
+        'partner' => 'الشريك',
+        'split' => 'مقسّم',
+    ],
+
+    'coupon_reservation_status' => [
+        'reserved' => 'محجوز',
+        'released' => 'مُفرج عنه',
+        'committed' => 'مؤكد',
+        'reversed' => 'معكوس',
+    ],
+
+    'coupon_redemption_status' => [
+        'committed' => 'مؤكد',
+        'reversed' => 'معكوس',
+    ],
+
+    'coupon_attempt_result' => [
+        'eligible' => 'مؤهل',
+        'rejected' => 'مرفوض',
+        'reserved' => 'محجوز',
+        'reservation_failed' => 'فشل الحجز',
+    ],
+
+    'coupon_attempt_context' => [
+        'validate' => 'تحقق',
+        'booking' => 'حجز',
+        'automatic' => 'تلقائي',
+        'admin_test' => 'اختبار مشرف',
+    ],
+
+    'coupon_scope_type' => [
+        'service_family' => 'فئة خدمة',
+        'service_category' => 'خدمة',
+        'vehicle_category' => 'فئة مركبة',
+        'city' => 'مدينة',
+        'zone' => 'منطقة',
+    ],
+
+    'coupon_segment' => [
+        'new' => 'عملاء جدد',
+        'returning' => 'عملاء حاليون',
+    ],
+
+    'coupon_reason' => [
+        'eligible' => 'مؤهل',
+        'not_found' => 'الكوبون غير موجود',
+        'not_active' => 'الكوبون غير مفعّل',
+        'not_started' => 'الكوبون لم يبدأ بعد',
+        'expired' => 'الكوبون منتهي',
+        'exhausted' => 'الكوبون استُنفد',
+        'category_not_eligible' => 'الخدمة غير مؤهلة',
+        'service_family_not_covered' => 'فئة الخدمة غير مشمولة',
+        'service_category_not_covered' => 'الخدمة غير مشمولة',
+        'service_excluded' => 'الخدمة مستثناة',
+        'vehicle_not_covered' => 'المركبة غير مشمولة',
+        'city_not_covered' => 'المدينة غير مشمولة',
+        'zone_not_covered' => 'المنطقة غير مشمولة',
+        'payment_method_not_covered' => 'طريقة الدفع غير مشمولة',
+        'new_customers_only' => 'للعملاء الجدد فقط',
+        'returning_customers_only' => 'للعملاء الحاليين فقط',
+        'outside_schedule' => 'خارج الجدول الزمني',
+        'below_minimum_fare' => 'أقل من الحد الأدنى للأجرة',
+        'customer_limit_reached' => 'تم بلوغ حد العميل',
+        'global_limit_reached' => 'تم بلوغ حد الاستخدام',
+        'budget_exhausted' => 'الميزانية استُنفدت',
+        'stacking_not_allowed' => 'لا يمكن دمجه',
+        'currency_mismatch' => 'عملة غير متطابقة',
+        'no_discount' => 'لا يوجد خصم',
+    ],
 ];

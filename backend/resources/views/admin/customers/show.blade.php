@@ -66,12 +66,13 @@
     @php
         $showWallet = \Illuminate\Support\Facades\Gate::allows('viewWallets', \App\Models\LedgerAccount::class);
         $showPayments = \Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\Payment::class);
+        $showCoupons = \Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\Coupon::class);
         $tabs = [
             'profile' => ['label' => __('admin.customers.tabs.profile'), 'icon' => 'user'],
             'bookings' => ['label' => __('admin.customers.tabs.bookings'), 'icon' => 'clipboard'],
             ...($showWallet ? ['wallet' => ['label' => __('admin.customers.tabs.wallet'), 'icon' => 'banknotes']] : []),
             ...($showPayments ? ['payments' => ['label' => __('admin.customers.tabs.payments'), 'icon' => 'banknotes']] : []),
-            'coupons' => ['label' => __('admin.customers.tabs.coupons'), 'icon' => 'tag'],
+            ...($showCoupons ? ['coupons' => ['label' => __('admin.customers.tabs.coupons'), 'icon' => 'tag']] : []),
             'tickets' => ['label' => __('admin.customers.tabs.tickets'), 'icon' => 'lifebuoy'],
             'ratings' => ['label' => __('admin.customers.tabs.ratings'), 'icon' => 'star'],
             'consents' => ['label' => __('admin.customers.tabs.consents'), 'icon' => 'document'],
@@ -106,7 +107,9 @@
             @if ($showPayments)
                 <x-admin.tabs.panel id="payments" :url="route('admin.customers.tabs.payments', $customer)" />
             @endif
-            <x-admin.tabs.panel id="coupons"><x-admin.available-after :title="__('admin.customers.tabs.coupons')" milestone="P3.3" :module="__('admin.customers.modules.coupons')" /></x-admin.tabs.panel>
+            @if ($showCoupons)
+                <x-admin.tabs.panel id="coupons" :url="route('admin.customers.tabs.coupons', $customer)" />
+            @endif
             <x-admin.tabs.panel id="tickets"><x-admin.available-after :title="__('admin.customers.tabs.tickets')" milestone="P3.7" :module="__('admin.customers.modules.tickets')" /></x-admin.tabs.panel>
             <x-admin.tabs.panel id="ratings" :url="route('admin.customers.tabs.ratings', $customer)" />
 

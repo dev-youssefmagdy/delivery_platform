@@ -14,6 +14,7 @@ use App\Repositories\Contracts\Customers\CustomerActivityRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Repositories\Contracts\Coupon\CouponAttemptRepositoryInterface;
 use App\Services\Payments\PaymentMethodService;
 use App\Services\Identity\AccountScrubber;
 use App\Services\Provider\ProviderDeletionService;
@@ -38,6 +39,7 @@ final class CustomerDeletionService
         private readonly AccountScrubber $scrubber,
         private readonly BookingRepositoryInterface $bookings,
         private readonly PaymentMethodService $paymentMethods,
+        private readonly CouponAttemptRepositoryInterface $couponAttempts,
         private readonly ProviderDeletionService $providerDeletions,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -71,6 +73,8 @@ final class CustomerDeletionService
             $scrubbedBookings = $this->bookings->scrubPersonalDataForCustomer($locked->id);
             $photoPath = $this->scrubber->scrub($locked);
             $methodsPurged = $this->paymentMethods->purgeForCustomer($locked);
+            // Coupon reservations and redemptions stay (they back ledger entries); the attempt log is unlinked from the person.
+            $couponAttemptsScrubbed = $this->couponAttempts->anonymiseForUser($locked->id);
 
             $this->requests->update($request, [
                 'status' => DeletionRequestStatus::Completed,
@@ -86,7 +90,7 @@ final class CustomerDeletionService
                 before: ['status' => $previousStatus->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged],
+                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged, 'coupon_attempts_scrubbed' => $couponAttemptsScrubbed],
             );
 
             return $request;

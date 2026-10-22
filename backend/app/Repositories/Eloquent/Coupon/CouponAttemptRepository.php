@@ -8,6 +8,7 @@ use App\Models\CouponAttempt;
 use App\Repositories\Contracts\Coupon\CouponAttemptRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -34,6 +35,17 @@ final class CouponAttemptRepository extends BaseRepository implements CouponAtte
             ->when($filters->attemptResults !== [], static fn (Builder $query) => $query->whereIn('coupon_attempts.result', array_map(static fn (CouponAttemptResult $result): string => $result->value, $filters->attemptResults)))
             ->when($filters->from !== null, static fn (Builder $query) => $query->where('coupon_attempts.created_at', '>=', $filters->from?->startOfDay()))
             ->when($filters->to !== null, static fn (Builder $query) => $query->where('coupon_attempts.created_at', '<=', $filters->to?->endOfDay()));
+    }
+
+    public function anonymiseForUser(int $userId): int
+    {
+        // A bulk write on purpose: the model forbids single-row updates (the log is append-only), but account deletion must unlink.
+        return DB::table('coupon_attempts')->where('user_id', $userId)->update(['user_id' => null, 'code_entered' => null, 'meta' => null]);
+    }
+
+    public function forUser(int $userId, int $limit = 500): Collection
+    {
+        return $this->query()->with('coupon:id,code')->where('user_id', $userId)->latest('id')->limit($limit)->get();
     }
 
     public function counts(int $couponId): array

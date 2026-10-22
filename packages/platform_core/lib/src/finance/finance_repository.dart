@@ -219,7 +219,18 @@ class ApiAdjustmentsRepository implements AdjustmentsRepository {
           'type': input.type.value,
           'amount_minor': ?input.amountMinor,
           'reason': input.reason,
-          if (input.note != null && input.note!.isNotEmpty) 'evidence': {'reference': 'app', 'note': input.note},
+          if (input.scopeItem != null || input.helpers != null || input.floors != null)
+            'details': {
+              'scope_item': ?input.scopeItem,
+              'helpers': ?input.helpers,
+              'floors': ?input.floors,
+            },
+          if ((input.evidenceReference != null && input.evidenceReference!.isNotEmpty) ||
+              (input.note != null && input.note!.isNotEmpty))
+            'evidence': {
+              'reference': (input.evidenceReference != null && input.evidenceReference!.isNotEmpty) ? input.evidenceReference : 'app',
+              if (input.note != null && input.note!.isNotEmpty) 'note': input.note,
+            },
         },
       ),
     ),

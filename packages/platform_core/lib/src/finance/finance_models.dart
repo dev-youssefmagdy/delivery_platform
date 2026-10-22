@@ -365,6 +365,8 @@ enum AdjustmentType {
   waiting('waiting'),
   tollParking('toll_parking'),
   scopeChange('scope_change'),
+  extraHelper('extra_helper'),
+  stairs('stairs'),
   unknown('');
 
   const AdjustmentType(this.value);
@@ -374,6 +376,14 @@ enum AdjustmentType {
 
   /// The types a person can ask for.
   static const choices = [extraStop, waiting, tollParking, scopeChange];
+
+  /// Moving / freight bookings add two scope-bound types (P4.2).
+  static const scopedChoices = [extraHelper, stairs, extraStop, waiting, tollParking, scopeChange];
+}
+
+int? _detailInt(Object? details, String key) {
+  final v = details is Map ? details[key] : null;
+  return v is num ? v.toInt() : null;
 }
 
 class Adjustment {
@@ -393,6 +403,9 @@ class Adjustment {
     this.expiresAt,
     this.decisionNote,
     this.createdAt,
+    this.scopeItem,
+    this.helpers,
+    this.floors,
   });
 
   factory Adjustment.fromJson(Map<String, dynamic> json) => Adjustment(
@@ -411,6 +424,9 @@ class Adjustment {
     expiresAt: asTime(json['expires_at']),
     decisionNote: json['decision_note'] as String?,
     createdAt: asTime(json['created_at']),
+    scopeItem: (json['details'] is Map ? (json['details'] as Map)['scope_item'] : null) as String?,
+    helpers: _detailInt(json['details'], 'helpers'),
+    floors: _detailInt(json['details'], 'floors'),
   );
 
   final String id;
@@ -429,14 +445,42 @@ class Adjustment {
   final String? decisionNote;
   final DateTime? createdAt;
 
+  /// The scope item of the agreed scope the change refers to (moving /
+  /// freight): `helpers`, `stairs`, `extra_stops`, `waiting_allowance`,
+  /// `tolls`, `parking`, ...
+  final String? scopeItem;
+  final int? helpers;
+  final int? floors;
+
   bool get isPending => status == 'pending';
 }
 
 class NewAdjustmentInput {
-  const NewAdjustmentInput({required this.type, required this.reason, this.amountMinor, this.note});
+  const NewAdjustmentInput({
+    required this.type,
+    required this.reason,
+    this.amountMinor,
+    this.note,
+    this.scopeItem,
+    this.helpers,
+    this.floors,
+    this.evidenceReference,
+  });
 
   final AdjustmentType type;
   final String reason;
+
+  /// Scoped bookings need the item of the agreed scope (`details.scope_item`).
+  final String? scopeItem;
+
+  /// `extra_helper`: how many (1-5).
+  final int? helpers;
+
+  /// `stairs`: how many floors.
+  final int? floors;
+
+  /// Receipt number; required by the server for `toll_parking`.
+  final String? evidenceReference;
 
   /// Null for `waiting` when the policy prices it per minute.
   final int? amountMinor;

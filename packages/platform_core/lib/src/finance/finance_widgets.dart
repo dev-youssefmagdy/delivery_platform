@@ -82,7 +82,12 @@ class AdjustmentCard extends StatelessWidget {
     this.onApprove,
     this.onReject,
     this.onWithdraw,
+    this.detail,
   });
+
+  /// The scope item this change refers to, already translated by the app
+  /// (moving / freight bookings); null for other bookings.
+  final String? detail;
 
   final Adjustment adjustment;
   final MoneyFormatter formatter;
@@ -121,6 +126,10 @@ class AdjustmentCard extends StatelessWidget {
               textDirection: TextDirection.ltr,
               style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
+            if (detail != null && detail!.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Text(detail!, key: Key('adjustment-detail-${adjustment.id}'), style: theme.textTheme.labelLarge),
+            ],
             if (adjustment.reason.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(adjustment.reason),

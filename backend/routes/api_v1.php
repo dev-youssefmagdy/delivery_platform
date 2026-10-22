@@ -48,6 +48,7 @@ use App\Http\Controllers\Api\V1\Provider\EligibilityController;
 use App\Http\Controllers\Api\V1\Provider\JobHistoryController;
 use App\Http\Controllers\Api\V1\Provider\LocationController;
 use App\Http\Controllers\Api\V1\Provider\OfferController;
+use App\Http\Controllers\Api\V1\Provider\OfferScopeController;
 use App\Http\Controllers\Api\V1\Provider\PayoutController;
 use App\Http\Controllers\Api\V1\Provider\PayoutMethodController;
 use App\Http\Controllers\Api\V1\Provider\TripController;
@@ -248,6 +249,8 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     // Negotiation (P2.4): masked request cards, own offers, and the full booking only once selected (Plan I10).
     Route::get('requests/available', [RequestController::class, 'available'])->name('requests.available');
     Route::get('offers', [OfferController::class, 'index'])->name('offers.index');
+    // Scope builder inputs (P4.3): the offer scope JSON Schema and the vehicle class the provider offers with.
+    Route::get('offer-scope', [OfferScopeController::class, 'show'])->name('offer-scope.show');
     // Job history (P2.8): the driver's own bookings, newest first, paginated.
     Route::get('bookings', [JobHistoryController::class, 'index'])->name('bookings.index');
     Route::get('bookings/active', [TripController::class, 'active'])->name('bookings.active');

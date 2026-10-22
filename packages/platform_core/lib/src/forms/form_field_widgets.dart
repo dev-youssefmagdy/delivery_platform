@@ -522,7 +522,7 @@ class _PhotoAnswer extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   child: Image.file(
-                    File(ref),
+                    File((handler is PhotoPreviewSource ? (handler! as PhotoPreviewSource).localPathOf(ref) : null) ?? ref),
                     width: 72,
                     height: 72,
                     fit: BoxFit.cover,

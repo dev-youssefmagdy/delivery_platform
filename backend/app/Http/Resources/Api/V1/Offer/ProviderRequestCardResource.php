@@ -5,6 +5,7 @@ namespace App\Http\Resources\Api\V1\Offer;
 use App\Http\Resources\Api\V1\Booking\BookingResource;
 use App\Models\Booking;
 use App\Models\BookingOffer;
+use App\Services\Scope\OfferScopeService;
 use App\Support\Booking\CounterOfferBounds;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -73,6 +74,16 @@ class ProviderRequestCardResource extends JsonResource
                 'scheduled_at' => $booking->scheduled_at?->toIso8601ZuluString(),
                 'payment_method' => $booking->payment_method->value,
                 'restricted_pickup' => (bool) ($booking->policy_snapshot['zone']['restricted_pickup'] ?? false),
+                // Moving / freight (P4.3): load size, pickup window and the scope the customer asked for are not personal data
+                // (the dispatch payload carries the same); `scope_required` tells the app to open the scope builder.
+                'scope_required' => app(OfferScopeService::class)->requiredFor($booking),
+                'load' => $booking->cargo_weight_kg === null && $booking->cargo_volume_m3 === null ? null : [
+                    'weight_kg' => $booking->cargo_weight_kg === null ? null : (float) $booking->cargo_weight_kg,
+                    'volume_m3' => $booking->cargo_volume_m3 === null ? null : (float) $booking->cargo_volume_m3,
+                ],
+                'pickup_window' => $booking->pickup_window_start === null ? null : ['start' => $booking->pickup_window_start->toIso8601ZuluString(), 'end' => $booking->pickup_window_end?->toIso8601ZuluString()],
+                'requested_scope' => ($booking->requested_scope ?? []) === [] ? new \stdClass : $booking->requested_scope,
+                'requested_scope_summary' => app(OfferScopeService::class)->summary($booking->requested_scope),
             ],
             'expires_at' => $booking->search_expires_at?->toIso8601ZuluString(),
             'my_offer' => $this->myOffer === null ? null : (new ProviderOfferResource($this->myOffer))->resolve(),

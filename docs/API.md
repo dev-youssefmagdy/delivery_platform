@@ -804,3 +804,8 @@ New `type` values `extra_helper` (`details.helpers` 1-5), `stairs` (`details.flo
 `GET /provider/requests/available` cards: `details` now also carries `scope_required` (bool), `load {weight_kg, volume_m3}`, `pickup_window {start, end}`, `requested_scope` (object, `{}` when none) and `requested_scope_summary [{key, label, value}]`. They are not personal data (the dispatch payload already carried them); no contacts or addresses were added.
 
 Client notes: attachment ids of videos go into the same `photos` field of the form; `restricted_goods_policy_version` is the id from `GET /policies/restricted_goods`; stops send `contact {name, phone, note}`; adjustments of a scoped booking send `details {scope_item, helpers?, floors?}` and `evidence.reference` for `toll_parking`.
+
+
+## P4.4 — Contract addition (ADR-165)
+
+`delivery.proofs.checklist_items` (list of strings, e.g. `package_sealed`, `package_undamaged`, `label_matches`, `recipient_checked`) is now part of the `delivery` block of a booking in both apps: the codes a checklist proof may carry, read from `config/courier.php`. Apps should render these instead of a hard-coded list; unknown codes keep being refused with the existing proof validation error. No other API change: the admin screens (contacts reveal, proof and attachment streams, attempt resolution) are admin routes, not API.

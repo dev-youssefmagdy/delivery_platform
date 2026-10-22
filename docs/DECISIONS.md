@@ -909,3 +909,23 @@ Discovered while wiring this: the framework's default middleware priority list n
 
 **Decision.** `delivery_attempt_failed` is a finished state only when nothing is awaiting a decision: while `awaiting_resolution` or `resolve_delivery_attempt` is allowed, the driver job stays active (not dropped from the active banner) and the customer booking stays in the live view. Retry is offered only while `attempts.retry_available`; otherwise return to sender or operations. All buttons come from `allowed_actions`.
 **Why.** The attempt flow is a negotiation between two apps; hiding the job after the failure would strand the decision.
+
+## ADR-163 — Personal data of non-ride bookings is revealed, never rendered · 2026-11-09 · Accepted
+
+**Decision.** The booking "Delivery and load" tab shows sender / recipient / stop contacts masked. `POST admin/bookings/{b}/contacts/reveal` (`bookings.view_pii`) returns every field of the contacts and writes one `phone_revealed` audit entry per call (fields, never values). Proof pictures and request attachments are served only by signed (5 min) admin routes behind `bookings.view_pii`; every stream writes a `viewed` audit entry (proof / attachment uuid, type). Without the permission the tab shows structure only (types, times, actors), no free text, no pictures.
+**Why.** Pictures show people and homes; the audit trail must say who looked, and an expired link must not become a standing access path.
+
+## ADR-164 — Operations resolves a failed delivery as an override action · 2026-11-09 · Accepted
+
+**Decision.** `BookingOverrideAction::ResolveDeliveryAttempt` (`bookings.manage`, mandatory reason, audit, notices) calls `DeliveryAttemptService::resolveByOperator` for the pending attempt: retry (only while attempts are left), return to sender, or escalate (booking stays `delivery_attempt_failed`, flagged). Actor type `admin`; the generic operations notice replaces the per-party attempt notice.
+**Why.** One audited path for every operator intervention; the service keeps owning the custody and status rules.
+
+## ADR-165 — Checklist proof codes come from the server; moving gets an optional pickup window (schema v3) · 2026-11-09 · Accepted
+
+**Decision.** `delivery.proofs.checklist_items` exposes the configured codes (minimal API addition). The moving schemas (furniture truck, pickup truck) are re-published as v3 with optional `pickup_window_start/_end` (both or none, the existing booking rule); v1 and v2 stay untouched. Cargo filters of the bookings listing: cargo type (`service_details.cargo_type` or `parcel_category`), vehicle class (requested or accepted scope), weight range.
+**Why.** Hard-coded codes in two apps drift; moving needed the same window freight has without changing history.
+
+## ADR-166 — Provider account deletion scrubs support and chat · 2026-11-09 · Accepted
+
+**Decision.** `ProviderDeletionService::approve` calls the same `SupportTicketRepository::scrubOfUser` and `BookingMessageRepository::scrubSentBy` the customer path uses and deletes their files after commit; the audit meta counts removed files.
+**Why.** Closes the P3.7 gap: a deleted driver left ticket subjects, messages and chat images behind.

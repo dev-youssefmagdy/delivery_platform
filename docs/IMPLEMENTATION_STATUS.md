@@ -37,7 +37,7 @@
 | P4.1 | Courier/parcel backend | P1 | 🟡 | 2026-11-07 |
 | P4.2 | Furniture moving & freight backend (scoped offers) | P1 | 🟡 | 2026-11-07 |
 | P4.3 | Flutter courier/moving/freight flows | P1 | 🟡 | 2026-11-08 |
-| P4.4 | Admin & E2E for non-ride services | P1 | ❌ | — |
+| P4.4 | Admin & E2E for non-ride services | P1 | 🟡 | 2026-11-09 |
 | P5.1 | Safety center, SOS, trusted contacts | P1 | ❌ | — |
 | P5.2 | Reviews moderation & risk signals | P1 | ❌ | — |
 | P5.3 | Operations dashboard, reports, exports | P1 | ❌ | — |
@@ -1017,3 +1017,26 @@ No device or real-backend run: camera, signature export, SMS code, signed URLs, 
 
 ### Next (P4.4)
 Admin: parcel safety / custody tab already exists; add listing filters for scope items, a proofs viewer, attempt resolution by operations, load files. E2E: two phones (courier OTP, moving scope, freight proof with signature), weak-network proof retry with the same key, `offer_scope_invalid` and `offer_vehicle_capacity_insufficient` paths, stale restricted-goods policy.
+
+
+---
+
+## P4.4 — Admin & E2E for non-ride services · 🟡 2026-11-09 (gate NOT run)
+
+Committed directly on `main`. ADR-163..166. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test, including the two end-to-end scenarios (parcel with recipient code, photo and one failed attempt; furniture moving with scoped counter-offer and extra-stop adjustment), is in `MISSED_TESTS.md` (P4.4).
+
+### Built
+- **Booking show, new "Delivery and load" tab** (`BookingDeliveryController`, `BookingDeliveryAdminService`; shown for parcel / freight or any booking with contacts, load or scope): contacts masked with an audited reveal (`bookings.view_pii`), load and items, requested vs accepted scope (same summary lines as the apps, changed lines highlighted), custody status and timeline, proofs gallery and customer attachments through signed, audited admin routes (`view_pii`), failed attempts with the resolution action (retry / return to sender / escalate, mandatory reason, audit, through `DeliveryAttemptService::resolveByOperator` as a new `BookingOverrideAction`).
+- **Listing**: filters for cargo type, vehicle class and weight range join package size and fragile in the collapsed card.
+- **Catalog**: schema preview shows the v2 item checklist (quantity, weight, note), kg suffix and ranges; moving schemas re-published as v3 with an optional pickup window.
+- **Backend notes from P4.3**: `delivery.proofs.checklist_items` in the API; provider account deletion now scrubs tickets and chat (P3.7 gap).
+- ar + en for every text; no JS or CSS changed (no build run).
+
+### Checks run (no suites, no linters)
+`php -l` on changed files; `route:list`; `view:cache`; container resolution of the touched services; `CatalogSeeder` re-run (moving v3 published, v2 untouched); in-process authenticated HTTP calls (rolled back) for the delivery tab, booking show, resolve-attempt form, bookings page and DataTable JSON with the new filters (all 200); service-level check of masked contacts, scope diff and the `phone_revealed` audit entry.
+
+### Known gaps
+No real attempt-resolution, proof-picture or attachment stream was exercised (no fixtures with files); the old Safety tab still repeats the delivery summary; vehicle-class filter reads the scope JSON (no index); attempt reason and evidence of a deleted driver are not scrubbed (customer path only); no browser pass.
+
+### Next (P5)
+The safety center can link its cases to this tab; reuse the signed-and-audited stream pattern for SOS evidence. Run the deferred test backlog before Phase 5 closes.

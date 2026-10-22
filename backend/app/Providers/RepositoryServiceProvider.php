@@ -251,6 +251,8 @@ class RepositoryServiceProvider extends ServiceProvider
         GatewayWebhookEventRepositoryInterface::class => GatewayWebhookEventRepository::class,
         PaymentRefundRepositoryInterface::class => PaymentRefundRepository::class,
         FinancialAdjustmentRepositoryInterface::class => FinancialAdjustmentRepository::class,
+        \App\Repositories\Contracts\Booking\BookingAdjustmentRepositoryInterface::class => \App\Repositories\Eloquent\Booking\BookingAdjustmentRepository::class,
+        \App\Repositories\Contracts\Booking\BookingReceiptRepositoryInterface::class => \App\Repositories\Eloquent\Booking\BookingReceiptRepository::class,
         CashReconciliationRepositoryInterface::class => CashReconciliationRepository::class,
         ProviderEarningsRepositoryInterface::class => ProviderEarningsRepository::class,
         ProviderPayoutMethodRepositoryInterface::class => ProviderPayoutMethodRepository::class,

@@ -64,4 +64,13 @@ class BookingNotifier
     {
         Log::info('booking.operations_contact_customer (notification stub, nothing sent)', ['booking' => $booking->uuid, 'customer' => $booking->customer_id, 'channel' => $channelHint]);
     }
+
+    /**
+     * A fare adjustment was requested or answered (P3.5). The other party is asked in the app through the realtime event;
+     * push arrives with the notification platform (P3.6), so until then this is a log line that says nothing was sent.
+     */
+    public function adjustmentChanged(Booking $booking, \App\Models\BookingAdjustmentRequest $adjustment, string $event): void
+    {
+        Log::info('booking.adjustment (notification stub, nothing sent)', ['booking' => $booking->uuid, 'adjustment' => $adjustment->uuid, 'event' => $event, 'status' => $adjustment->status->value]);
+    }
 }

@@ -13,11 +13,9 @@ use App\Models\Booking;
 use App\Models\ProviderProfile;
 use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
-use App\Repositories\Contracts\Location\ProviderLastLocationRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Services\Finance\BookingSettlementService;
 use App\Services\Payments\FreeBookingCompletionService;
-use App\Support\Geo\GeoPoint;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -38,12 +36,12 @@ final class TripLifecycleService
     public function __construct(
         private readonly BookingRepositoryInterface $bookings,
         private readonly BookingProofRepositoryInterface $proofs,
-        private readonly ProviderLastLocationRepositoryInterface $locations,
         private readonly ProviderProfileRepositoryInterface $providers,
         private readonly BookingTransitionService $transitions,
         private readonly BookingNotifier $notifier,
         private readonly BookingSettlementService $settlement,
         private readonly FreeBookingCompletionService $freeCompletion,
+        private readonly ArrivalEvidenceBuilder $evidence,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -59,7 +57,7 @@ final class TripLifecycleService
     public function arrived(ProviderProfile $provider, string $bookingUuid, ArrivalData $arrival): TripActionResult
     {
         return $this->run($provider, $bookingUuid, BookingStatus::ProviderArrived, function (Booking $booking) use ($provider, $arrival): TransitionContext {
-            $evidence = $this->arrivalEvidence($booking, $provider, $arrival, CarbonImmutable::now());
+            $evidence = $this->evidence->build($booking, $provider, $arrival, CarbonImmutable::now());
 
             return new TransitionContext(ActorType::Provider, $provider->id, 'provider_arrived', ['arrival_verified' => $evidence['verified']], evidence: $evidence);
         });
@@ -136,61 +134,6 @@ final class TripLifecycleService
     private function find(ProviderProfile $provider, string $bookingUuid): Booking
     {
         return $this->bookings->findAssignedToProvider($bookingUuid, $provider->id) ?? throw (new ModelNotFoundException)->setModel(Booking::class);
-    }
-
-    /**
-     * GPS evidence of an arrival: the fix the app sent, or the last known position when it sent none. `verified` means a
-     * recent, accurate fix within the arrival radius of the pickup; anything else is stored as unverified and the
-     * cancellation rules then treat the provider as "on the way" (SRS §8.4).
-     *
-     * @return array<string, mixed>
-     */
-    private function arrivalEvidence(Booking $booking, ProviderProfile $provider, ArrivalData $arrival, CarbonImmutable $now): array
-    {
-        $point = null;
-        $accuracy = null;
-        $capturedAt = null;
-        $source = 'none';
-
-        if ($arrival->hasFix()) {
-            $point = GeoPoint::tryMake($arrival->lat, $arrival->lng);
-            $accuracy = $arrival->accuracyMeters;
-            $capturedAt = $arrival->recordedAt ?? $now;
-            $source = 'app';
-        }
-
-        $maxAge = (int) config('booking.trip.evidence_max_age_seconds', 120);
-
-        if ($point === null) {
-            $last = $this->locations->findFor($provider);
-
-            if ($last !== null && $last->recorded_at->greaterThanOrEqualTo($now->subSeconds($maxAge))) {
-                $point = $last->point;
-                $accuracy = $last->accuracy_m;
-                $capturedAt = CarbonImmutable::instance($last->recorded_at);
-                $source = 'last_known';
-            }
-        }
-
-        if ($point === null || $capturedAt === null) {
-            return ['source' => 'none', 'verified' => false, 'recorded_at' => $now->toIso8601ZuluString()];
-        }
-
-        $distance = (int) round($booking->pickup_point->distanceTo($point));
-        $radius = (int) config('booking.trip.arrival_radius_m', 300);
-        $fresh = $capturedAt->greaterThanOrEqualTo($now->subSeconds($maxAge)) && $capturedAt->lessThanOrEqualTo($now->addSeconds(60));
-
-        return [
-            'source' => $source,
-            'lat' => round($point->lat, 6),
-            'lng' => round($point->lng, 6),
-            'accuracy_m' => $accuracy,
-            'captured_at' => $capturedAt->toIso8601ZuluString(),
-            'recorded_at' => $now->toIso8601ZuluString(),
-            'distance_to_pickup_m' => $distance,
-            'radius_m' => $radius,
-            'verified' => $fresh && $distance <= $radius && ($accuracy === null || $accuracy <= max($radius, 100)),
-        ];
     }
 
     /**

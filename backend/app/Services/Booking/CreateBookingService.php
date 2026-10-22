@@ -45,6 +45,7 @@ final class CreateBookingService
         private readonly BookingTransitionService $transitions,
         private readonly SettingsService $settings,
         private readonly CouponBookingService $coupons,
+        private readonly CancellationAbuseService $abuse,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -120,6 +121,8 @@ final class CreateBookingService
 
     private function assertMayBook(User $customer): void
     {
+        $this->abuse->assertCustomerMayBook($customer);
+
         $code = $customer->status->blockCode(strict: true);
 
         if ($code !== null) {

@@ -76,6 +76,8 @@ return [
             'no_rule' => 'No cancellation fee applies.',
             'rule' => 'No cancellation fee applies.',
             'arrival_unverified' => 'No cancellation fee applies.',
+            'provider_no_show' => 'Free: the driver did not arrive.',
+            'no_show_no_evidence' => 'No fee: the no-show could not be confirmed.',
         ],
     ],
 

@@ -73,6 +73,9 @@ use LogicException;
  * @property Carbon|null $free_wait_ends_at
  * @property Carbon|null $started_at
  * @property int|null $final_fare_minor
+ * @property int $adjustments_total_minor
+ * @property int|null $cancellation_fee_entry_id
+ * @property Carbon|null $cancellation_fee_posted_at
  * @property int|null $cancellation_policy_id
  * @property string|null $cancellation_reason_code
  * @property int|null $cancellation_fee_minor
@@ -123,13 +126,13 @@ class Booking extends Model
         'cancelled_by_id', 'cancellation_reason', 'completed_at', 'idempotency_key', 'lock_version',
         'heading_at', 'arrived_at', 'arrival_evidence', 'free_wait_ends_at', 'started_at', 'final_fare_minor', 'cancellation_policy_id',
         'cancellation_reason_code', 'cancellation_fee_minor', 'cancellation_decision', 'pin_attempts', 'pin_verified_at', 'pin_locked_at',
-        'support_flagged_at', 'support_flag_reason',
+        'support_flagged_at', 'support_flag_reason', 'adjustments_total_minor', 'cancellation_fee_entry_id', 'cancellation_fee_posted_at',
     ];
 
     /**
      * @var array<string, mixed>
      */
-    protected $attributes = ['sequence' => 0, 'request_version' => 1, 'lock_version' => 0, 'service_details' => '[]', 'pin_attempts' => 0];
+    protected $attributes = ['sequence' => 0, 'request_version' => 1, 'lock_version' => 0, 'service_details' => '[]', 'pin_attempts' => 0, 'adjustments_total_minor' => 0];
 
     /**
      * @var list<string>
@@ -266,6 +269,9 @@ class Booking extends Model
             'free_wait_ends_at' => 'datetime',
             'started_at' => 'datetime',
             'final_fare_minor' => 'integer',
+            'adjustments_total_minor' => 'integer',
+            'cancellation_fee_entry_id' => 'integer',
+            'cancellation_fee_posted_at' => 'datetime',
             'cancellation_fee_minor' => 'integer',
             'cancellation_decision' => 'array',
             'pin_attempts' => 'integer',

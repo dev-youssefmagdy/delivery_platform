@@ -311,4 +311,27 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
     {
         return array_map(static fn (BookingStatus $status): string => $status->value, BookingStatus::assigned());
     }
+
+    public function abuseSignalTimes(\App\Enums\Common\ActorType $party, int $partyId, CarbonInterface $since): array
+    {
+        $justified = array_map(static fn (\App\Enums\Booking\CancellationReason $reason): string => $reason->value, \App\Services\Booking\CancellationFeeCalculator::justifiedForProvider());
+        $driverFault = [\App\Enums\Booking\CancellationReason::DriverAskedToCancel->value, \App\Enums\Booking\CancellationReason::DriverNoShow->value];
+
+        $query = $this->query()->whereNotNull('cancelled_at')->where('cancelled_at', '>=', $since);
+
+        if ($party === \App\Enums\Common\ActorType::Customer) {
+            $query->where('customer_id', $partyId)->whereNotNull('provider_id')->where(static fn (Builder $inner) => $inner
+                ->where(static fn (Builder $own) => $own->where('cancelled_by_type', \App\Enums\Common\ActorType::Customer->value)->whereNotIn('cancellation_reason_code', $driverFault))
+                ->orWhere('cancellation_reason_code', \App\Enums\Booking\CancellationReason::CustomerNoShow->value));
+        } else {
+            $query->where('provider_id', $partyId)->where(static fn (Builder $inner) => $inner
+                ->where(static fn (Builder $own) => $own->where('cancelled_by_type', \App\Enums\Common\ActorType::Provider->value)->where('cancelled_by_id', $partyId)->whereNotIn('cancellation_reason_code', $justified))
+                ->orWhere('cancellation_reason_code', \App\Enums\Booking\CancellationReason::DriverNoShow->value));
+        }
+
+        return $query->orderBy('cancelled_at')->pluck('cancelled_at')
+            ->map(static fn (mixed $at): \Carbon\CarbonImmutable => \Carbon\CarbonImmutable::parse((string) $at, 'UTC'))
+            ->values()
+            ->all();
+    }
 }

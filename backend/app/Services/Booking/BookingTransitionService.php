@@ -23,6 +23,7 @@ use App\Repositories\Contracts\Booking\ShareLinkRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Services\Coupon\CouponReservationService;
 use App\Services\Dispatch\EventSequencer;
+use App\Services\Finance\CancellationFeePostingService;
 use App\Services\Provider\ProviderEligibilityService;
 use App\Support\Booking\BookingStatusGate;
 use Illuminate\Database\DatabaseManager;
@@ -48,6 +49,7 @@ final class BookingTransitionService
         private readonly EventSequencer $sequencer,
         private readonly ShareLinkRepositoryInterface $shareLinks,
         private readonly CouponReservationService $coupons,
+        private readonly CancellationFeePostingService $feePostings,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -130,9 +132,18 @@ final class BookingTransitionService
 
             $locked->refresh();
 
-            // ADR-17: a booking that ends without a trip gives its coupon use and held budget back.
-            if ($to === BookingStatus::ExpiredNoProvider || $to->isCancellation()) {
-                $this->coupons->release($locked, $to === BookingStatus::ExpiredNoProvider ? 'booking_expired' : 'booking_cancelled');
+            // P3.5: the fee decision of a cancellation (or of a provider cancel that sends the booking back to search) is
+            // posted to the ledger in this very transaction; a failed posting rolls the whole transition back.
+            if ($context->feeDecision !== null && ($to->isCancellation() || ($to === BookingStatus::SearchingOffers && $from->isAssigned()))) {
+                $this->feePostings->post($locked, $context->feeDecision, $previousProviderId, $sequence);
+            }
+
+            // ADR-17: a booking that ends without a trip gives its coupon use and held budget back (P3.5: unless a fee keeps it).
+            if ($to === BookingStatus::ExpiredNoProvider) {
+                $this->coupons->release($locked, 'booking_expired');
+            } elseif ($to->isCancellation()) {
+                // P3.5: a late cancellation fee keeps the coupon use when the coupon's policy says so.
+                $this->coupons->settleCancelled($locked, $this->customerFeeMinor($context), 'booking_cancelled');
             }
 
             if (in_array($to, [BookingStatus::Completed, BookingStatus::CompletedPendingPayment, BookingStatus::ExpiredNoProvider], true) || $to->isCancellation()) {
@@ -349,6 +360,8 @@ final class BookingTransitionService
                 'agreed_fare_minor' => null,
                 'agreed_offer_version_id' => null,
                 'agreed_scope' => null,
+                // Adjustments belonged to the previous agreement (P3.5): the service closes them and the total starts again.
+                'adjustments_total_minor' => 0,
                 // The commission is bound at selection (P3.1): a new selection binds it again.
                 'commission_snapshot' => null,
                 'commission_rule_id' => null,
@@ -385,14 +398,24 @@ final class BookingTransitionService
             ],
             $from === BookingStatus::InProgress && ($to === BookingStatus::Completed || $to === BookingStatus::CompletedPendingPayment) => [
                 'completed_at' => $now,
-                // Server-computed total: the agreed fare plus approved adjustments (none exist until P4).
-                'final_fare_minor' => $booking->agreed_fare_minor,
+                // Server-computed total: the agreed fare plus the approved booking adjustments (P3.5), never a client figure.
+                'final_fare_minor' => max(0, (int) $booking->agreed_fare_minor + $booking->adjustments_total_minor),
                 'payment_status' => $booking->payment_method === PaymentMethodType::Cash ? PaymentStatus::CashDue : PaymentStatus::Pending,
             ],
             $to === BookingStatus::Completed && $booking->completed_at === null => ['completed_at' => $now],
             $to === BookingStatus::CompletedPendingPayment && $booking->completed_at === null => ['completed_at' => $now],
             default => [],
         };
+    }
+
+    /**
+     * What the customer owes for this cancellation (zero when the provider is the payer or nothing is due).
+     */
+    private function customerFeeMinor(TransitionContext $context): int
+    {
+        $decision = $context->feeDecision;
+
+        return $decision !== null && $decision->payer() !== ActorType::Provider ? $decision->feeMinor : 0;
     }
 
     private function searchTtlSeconds(Booking $booking): int

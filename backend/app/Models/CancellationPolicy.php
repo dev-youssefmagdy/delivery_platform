@@ -19,7 +19,10 @@ use Illuminate\Support\Carbon;
  * @property int|null $service_zone_id
  * @property int $free_grace_seconds
  * @property int $free_wait_seconds
- * @property list<array{actor: string, stage: string, fee_type: string, value: int, cap_minor: int|null, recipient: string}> $rules
+ * @property int $waiting_rate_minor
+ * @property bool $require_no_show_evidence
+ * @property int $provider_no_show_after_seconds
+ * @property list<array{actor: string, stage: string, fee_type: string, value: int, cap_minor: int|null, recipient: string, after_seconds?: int, provider_share_bp?: int|null}> $rules
  * @property list<string> $customer_reasons
  * @property list<string> $provider_reasons
  * @property bool $active
@@ -37,14 +40,15 @@ class CancellationPolicy extends Model
     use Auditable;
 
     protected $fillable = [
-        'name', 'service_category_id', 'service_zone_id', 'free_grace_seconds', 'free_wait_seconds', 'rules', 'customer_reasons',
+        'name', 'service_category_id', 'service_zone_id', 'free_grace_seconds', 'free_wait_seconds', 'waiting_rate_minor', 'require_no_show_evidence',
+        'provider_no_show_after_seconds', 'rules', 'customer_reasons',
         'provider_reasons', 'active', 'effective_from', 'effective_to', 'notes', 'lock_version',
     ];
 
     /**
      * @var array<string, mixed>
      */
-    protected $attributes = ['free_grace_seconds' => 120, 'free_wait_seconds' => 300, 'active' => true, 'lock_version' => 0];
+    protected $attributes = ['free_grace_seconds' => 120, 'free_wait_seconds' => 300, 'waiting_rate_minor' => 0, 'require_no_show_evidence' => true, 'provider_no_show_after_seconds' => 600, 'active' => true, 'lock_version' => 0];
 
     /**
      * @return BelongsTo<ServiceCategory, $this>
@@ -80,6 +84,9 @@ class CancellationPolicy extends Model
             'name' => $this->name,
             'free_grace_seconds' => $this->free_grace_seconds,
             'free_wait_seconds' => $this->free_wait_seconds,
+            'waiting_rate_minor' => $this->waiting_rate_minor,
+            'require_no_show_evidence' => $this->require_no_show_evidence,
+            'provider_no_show_after_seconds' => $this->provider_no_show_after_seconds,
             'rules' => $this->rules,
             'customer_reasons' => $this->customer_reasons,
             'provider_reasons' => $this->provider_reasons,
@@ -94,6 +101,9 @@ class CancellationPolicy extends Model
         return [
             'free_grace_seconds' => 'integer',
             'free_wait_seconds' => 'integer',
+            'waiting_rate_minor' => 'integer',
+            'require_no_show_evidence' => 'boolean',
+            'provider_no_show_after_seconds' => 'integer',
             'rules' => 'array',
             'customer_reasons' => 'array',
             'provider_reasons' => 'array',

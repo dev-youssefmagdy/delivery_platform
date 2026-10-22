@@ -51,6 +51,9 @@ enum SettingKey: string implements HasLabel
     case RatingCustomerByProviderEnabled = 'rating_customer_by_provider_enabled';
     case RatingWindowHours = 'rating_window_hours';
     case RatingMinSample = 'rating_min_sample';
+    case CancellationAbuseThreshold = 'cancellation_abuse_threshold';
+    case CancellationAbuseWindowHours = 'cancellation_abuse_window_hours';
+    case CancellationCooldownMinutes = 'cancellation_cooldown_minutes';
 
     // Dispatch
     case DispatchRadiusStepsKm = 'dispatch_radius_steps_km';
@@ -80,6 +83,7 @@ enum SettingKey: string implements HasLabel
     case PayoutFeeFixedMinor = 'payout_fee_fixed_minor';
     case PayoutFeeBasisPoints = 'payout_fee_basis_points';
     case PayoutDualApprovalThresholdMinor = 'payout_dual_approval_threshold_minor';
+    case CustomerFeeDebtLimitMinor = 'customer_fee_debt_limit_minor';
 
     // Safety & privacy
     case RidePinRequired = 'ride_pin_required';
@@ -164,7 +168,8 @@ enum SettingKey: string implements HasLabel
             self::OtpLength, self::OtpTtlSeconds, self::OtpResendCooldownSeconds, self::OtpMaxAttempts => SettingGroup::Otp,
             self::BookingSearchTtlSeconds, self::OfferTtlSeconds, self::MaxOffersPerProviderPerBooking, self::MaxOfferRevisions,
             self::MaxActiveOnDemandBookings, self::ScheduledBookingMinLeadMinutes, self::ScheduledBookingMaxDays, self::ScheduledSearchLeadMinutes,
-            self::RatingCustomerByProviderEnabled, self::RatingWindowHours, self::RatingMinSample => SettingGroup::Booking,
+            self::RatingCustomerByProviderEnabled, self::RatingWindowHours, self::RatingMinSample, self::CancellationAbuseThreshold,
+            self::CancellationAbuseWindowHours, self::CancellationCooldownMinutes => SettingGroup::Booking,
             self::DispatchRadiusStepsKm, self::DispatchBatchSize, self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds,
             self::LocationMaxSpeedKmh, self::LocationHistoryIntervalSeconds,
             self::AutoRedispatchOnProviderCancel => SettingGroup::Dispatch,
@@ -172,7 +177,8 @@ enum SettingKey: string implements HasLabel
             self::ProviderDocumentExpiryWarningDays => SettingGroup::Providers,
             self::DefaultCommissionBasisPoints, self::TaxRateBasisPoints, self::CustomerServiceFeeMinor, self::PaymentIntentTimeoutMinutes,
             self::TipsEnabled, self::TipMaxBasisPoints, self::RefundDualApprovalThresholdMinor, self::PayoutMinAmountMinor,
-            self::PayoutMaxAmountMinor, self::PayoutFeeFixedMinor, self::PayoutFeeBasisPoints, self::PayoutDualApprovalThresholdMinor => SettingGroup::Finance,
+            self::PayoutMaxAmountMinor, self::PayoutFeeFixedMinor, self::PayoutFeeBasisPoints, self::PayoutDualApprovalThresholdMinor,
+            self::CustomerFeeDebtLimitMinor => SettingGroup::Finance,
             self::RidePinRequired, self::ShareLinkTtlMinutes, self::RidePinMaxAttempts, self::DirectPhoneExposure => SettingGroup::Safety,
             self::MinAppVersionCustomer, self::MinAppVersionDriver, self::ForceUpdateCustomer, self::ForceUpdateDriver,
             self::MaintenanceModeApps => SettingGroup::Apps,
@@ -190,7 +196,7 @@ enum SettingKey: string implements HasLabel
             self::SupportEmail => SettingInput::Email,
             self::DispatchRadiusStepsKm => SettingInput::NumberList,
             self::ProviderCashDebtLimitMinor, self::CustomerServiceFeeMinor, self::RefundDualApprovalThresholdMinor, self::PayoutMinAmountMinor,
-            self::PayoutMaxAmountMinor, self::PayoutFeeFixedMinor, self::PayoutDualApprovalThresholdMinor => SettingInput::Money,
+            self::PayoutMaxAmountMinor, self::PayoutFeeFixedMinor, self::PayoutDualApprovalThresholdMinor, self::CustomerFeeDebtLimitMinor => SettingInput::Money,
             self::MinAppVersionCustomer, self::MinAppVersionDriver => SettingInput::Text,
             default => $this->type() === SettingType::Boolean ? SettingInput::Toggle : SettingInput::Number,
         };
@@ -212,9 +218,10 @@ enum SettingKey: string implements HasLabel
         return match ($this) {
             self::OtpTtlSeconds, self::OtpResendCooldownSeconds, self::BookingSearchTtlSeconds, self::OfferTtlSeconds,
             self::DispatchWaveIntervalSeconds, self::LocationStaleAfterSeconds, self::LocationHistoryIntervalSeconds, self::AdminLoginLockoutSeconds => 'seconds',
-            self::ShareLinkTtlMinutes, self::ScheduledBookingMinLeadMinutes, self::ScheduledSearchLeadMinutes, self::PaymentIntentTimeoutMinutes => 'minutes',
+            self::ShareLinkTtlMinutes, self::ScheduledBookingMinLeadMinutes, self::ScheduledSearchLeadMinutes, self::PaymentIntentTimeoutMinutes,
+            self::CancellationCooldownMinutes => 'minutes',
             self::ScheduledBookingMaxDays => 'days',
-            self::ProviderVerificationSlaHours, self::RatingWindowHours => 'hours',
+            self::ProviderVerificationSlaHours, self::RatingWindowHours, self::CancellationAbuseWindowHours => 'hours',
             self::ProviderDocumentExpiryWarningDays => 'days',
             self::DefaultCommissionBasisPoints, self::TaxRateBasisPoints, self::TipMaxBasisPoints, self::PayoutFeeBasisPoints => 'basis_points',
             self::DispatchRadiusStepsKm => 'km',
@@ -253,7 +260,7 @@ enum SettingKey: string implements HasLabel
             self::LocationMaxSpeedKmh => [30, 1000],
             self::LocationHistoryIntervalSeconds => [1, 600],
             self::ProviderCashDebtLimitMinor, self::CustomerServiceFeeMinor, self::RefundDualApprovalThresholdMinor, self::PayoutMinAmountMinor,
-            self::PayoutMaxAmountMinor, self::PayoutFeeFixedMinor, self::PayoutDualApprovalThresholdMinor => [0, 100_000_000],
+            self::PayoutMaxAmountMinor, self::PayoutFeeFixedMinor, self::PayoutDualApprovalThresholdMinor, self::CustomerFeeDebtLimitMinor => [0, 100_000_000],
             self::PayoutFeeBasisPoints => [0, 5_000],
             self::PaymentIntentTimeoutMinutes => [5, 1440],
             self::TipMaxBasisPoints => [100, 100_000],
@@ -263,6 +270,9 @@ enum SettingKey: string implements HasLabel
             self::RidePinMaxAttempts => [1, 10],
             self::RatingWindowHours => [1, 720],
             self::RatingMinSample => [1, 100],
+            self::CancellationAbuseThreshold => [1, 50],
+            self::CancellationAbuseWindowHours => [1, 720],
+            self::CancellationCooldownMinutes => [1, 10_080],
             self::ProviderVerificationSlaHours => [1, 720],
             self::ProviderDocumentExpiryWarningDays => [1, 365],
             self::AdminLoginLockoutSeconds => [60, 86_400],
@@ -326,6 +336,10 @@ enum SettingKey: string implements HasLabel
             self::RidePinMaxAttempts => 5,
             self::RatingWindowHours => 72,
             self::RatingMinSample => 5,
+            self::CancellationAbuseThreshold => 3,
+            self::CancellationAbuseWindowHours => 24,
+            self::CancellationCooldownMinutes => 60,
+            self::CustomerFeeDebtLimitMinor => 0,
             self::DirectPhoneExposure => false,
             self::MinAppVersionCustomer, self::MinAppVersionDriver => '1.0.0',
             self::ForceUpdateCustomer, self::ForceUpdateDriver, self::MaintenanceModeApps => false,

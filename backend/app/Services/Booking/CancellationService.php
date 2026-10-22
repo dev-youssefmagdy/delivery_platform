@@ -2,6 +2,7 @@
 
 namespace App\Services\Booking;
 
+use App\DTOs\Booking\ArrivalData;
 use App\DTOs\Booking\CancelBookingData;
 use App\DTOs\Booking\CancellationDecision;
 use App\DTOs\Booking\CancellationResult;
@@ -37,7 +38,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  *   booking returns to `searching_offers`: assignment, agreed fare, PIN, arrival data and the winner slot are cleared,
  *   the history stays in the events and the closed offer, and the provider is not asked again for this booking.
  *   Otherwise the booking ends as `cancelled_by_provider`.
- * The fee is computed and snapshotted on the booking; posting it to the ledger arrives with P3.5.
+ * The fee is computed and snapshotted on the booking, and posted to the ledger by BookingTransitionService in the same
+ * transaction (P3.5, CancellationFeePostingService). Two no-show flows ride on the same endpoints: the provider's
+ * `customer_no_show` (the customer is charged the policy's no-show fee on GPS + time evidence) and the customer's
+ * `driver_no_show` (free for the customer, a penalty for the provider).
+ * Appeals: a disputed fee will open a support ticket from the booking (P3.7); `meta.appeal` of the decision is the hook.
  */
 final class CancellationService
 {
@@ -48,6 +53,8 @@ final class CancellationService
         private readonly BookingTransitionService $transitions,
         private readonly CancellationFeeCalculator $calculator,
         private readonly BookingNotifier $notifier,
+        private readonly ArrivalEvidenceBuilder $evidence,
+        private readonly BookingAdjustmentService $adjustments,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -109,9 +116,10 @@ final class CancellationService
 
         if ($data->preview) {
             $this->assertReason($booking, ActorType::Provider, $data);
-            $this->assertNoShowAllowed($booking, $data, CarbonImmutable::now());
+            $now = CarbonImmutable::now();
+            $this->assertNoShowAllowed($booking, $data, $now);
 
-            return new CancellationResult($booking, $this->calculator->decide($booking, ActorType::Provider, CarbonImmutable::now(), $data->reason), false);
+            return new CancellationResult($booking, $this->calculator->decide($booking, ActorType::Provider, $now, $data->reason, $this->noShowEvidence($booking, $provider, $data, $now)), false);
         }
 
         return $this->db->transaction(function () use ($provider, $booking, $data): CancellationResult {
@@ -130,7 +138,7 @@ final class CancellationService
 
             $now = CarbonImmutable::now();
             $this->assertNoShowAllowed($locked, $data, $now);
-            $decision = $this->calculator->decide($locked, ActorType::Provider, $now, $data->reason);
+            $decision = $this->calculator->decide($locked, ActorType::Provider, $now, $data->reason, $this->noShowEvidence($locked, $provider, $data, $now));
             $redispatch = (bool) ($locked->policy_snapshot['dispatch']['auto_redispatch'] ?? false);
 
             $context = new TransitionContext(
@@ -145,6 +153,7 @@ final class CancellationService
 
             if ($redispatch) {
                 $back = $this->transitions->transition($locked, BookingStatus::SearchingOffers, $context);
+                $this->adjustments->closeAll($back, 'provider_changed', $now);
                 $this->offers->releaseWinner($back->id, $now);
                 $this->notifier->providerCancelledRedispatch($back);
 
@@ -183,7 +192,10 @@ final class CancellationService
         $key = $actor === ActorType::Customer ? 'customer_reasons' : 'provider_reasons';
         $allowed = (array) ($policy[$key] ?? CancellationReason::valuesForActor($actor));
 
-        if (! in_array($data->reason->value, CancellationReason::valuesForActor($actor), true) || ! in_array($data->reason->value, $allowed, true)) {
+        // Reporting a driver who never came cannot be switched off by a policy: it protects the customer.
+        $alwaysAllowed = $actor === ActorType::Customer && $data->reason === CancellationReason::DriverNoShow;
+
+        if (! in_array($data->reason->value, CancellationReason::valuesForActor($actor), true) || (! $alwaysAllowed && ! in_array($data->reason->value, $allowed, true))) {
             throw BusinessRuleViolation::make('cancellation_reason_not_allowed', 'reason_code');
         }
 
@@ -203,6 +215,18 @@ final class CancellationService
         }
     }
 
+    /**
+     * GPS + time evidence of a customer no-show report, from the fix the provider app sent (or its last known position).
+     *
+     * @return array<string, mixed>|null
+     */
+    private function noShowEvidence(Booking $booking, ProviderProfile $provider, CancelBookingData $data, CarbonImmutable $now): ?array
+    {
+        return $data->reason === CancellationReason::CustomerNoShow
+            ? $this->evidence->build($booking, $provider, $data->fix ?? new ArrivalData, $now)
+            : null;
+    }
+
     private function reasonText(CancelBookingData $data): string
     {
         $note = trim((string) $data->note);
@@ -215,7 +239,7 @@ final class CancellationService
         $stored = (array) ($booking->cancellation_decision ?? []);
 
         return new CancellationDecision(
-            $actor,
+            ActorType::tryFrom((string) ($stored['actor'] ?? '')) ?? $actor,
             CancellationStage::tryFrom((string) ($stored['stage'] ?? '')) ?? CancellationStage::Searching,
             (int) ($booking->cancellation_fee_minor ?? 0),
             $booking->currency,
@@ -226,6 +250,10 @@ final class CancellationService
             isset($stored['decided_at']) ? CarbonImmutable::parse((string) $stored['decided_at']) : CarbonImmutable::now(),
             $stored['rule']['type'] ?? null,
             isset($stored['rule']['value']) ? (int) $stored['rule']['value'] : null,
+            ActorType::tryFrom((string) ($stored['payer'] ?? '')),
+            isset($stored['provider_share_bp']) ? (int) $stored['provider_share_bp'] : null,
+            isset($stored['penalty']) && is_array($stored['penalty']) ? $stored['penalty'] : null,
+            isset($stored['evidence']) && is_array($stored['evidence']) ? $stored['evidence'] : null,
         );
     }
 }

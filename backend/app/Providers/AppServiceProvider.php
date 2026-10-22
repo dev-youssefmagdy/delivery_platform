@@ -173,6 +173,8 @@ class AppServiceProvider extends ServiceProvider
             'payout_request' => \App\Models\PayoutRequest::class,
             'payout_batch' => \App\Models\PayoutBatch::class,
             'financial_adjustment_request' => \App\Models\FinancialAdjustmentRequest::class,
+            'booking_adjustment_request' => \App\Models\BookingAdjustmentRequest::class,
+            'booking_receipt' => \App\Models\BookingReceipt::class,
             'cash_reconciliation' => \App\Models\CashReconciliation::class,
             // @admin-module:morph-map
         ]);

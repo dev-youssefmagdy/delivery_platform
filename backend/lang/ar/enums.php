@@ -430,6 +430,7 @@ return [
         'location_stale' => 'موقعك غير متاح أو قديم.',
         'active_job_exists' => 'لديك مهمة نشطة بالفعل.',
         'cash_debt_limit_exceeded' => 'العمولة غير المسددة تجاوزت الحد المسموح.',
+        'cancellation_cooldown' => 'تم إيقافك مؤقتاً بعد تكرار الإلغاءات أو عدم الحضور.',
     ],
 
     'tracking_state' => [
@@ -726,6 +727,20 @@ return [
         'exported' => 'تم التصدير',
         'completed' => 'مكتملة',
     ],
+    'booking_adjustment_type' => [
+        'extra_stop' => 'محطة إضافية',
+        'waiting' => 'وقت الانتظار',
+        'toll_parking' => 'رسوم طريق أو انتظار سيارات (بالتكلفة)',
+        'scope_change' => 'تغيير نطاق الخدمة',
+    ],
+    'booking_adjustment_status' => [
+        'pending' => 'بانتظار الطرف الآخر',
+        'approved' => 'تمت الموافقة',
+        'rejected' => 'مرفوض',
+        'withdrawn' => 'تم السحب',
+        'expired' => 'انتهت المهلة',
+        'voided' => 'ألغته العمليات',
+    ],
     'approval_status' => [
         'pending' => 'بانتظار الموافقة',
         'approved' => 'تمت الموافقة',
@@ -780,6 +795,7 @@ return [
         'provider_selected' => 'تم اختيار السائق',
         'heading_to_pickup' => 'السائق في الطريق',
         'arrived' => 'وصل السائق',
+        'no_show' => 'عدم الحضور',
     ],
 
     'cancellation_fee_type' => [
@@ -800,6 +816,7 @@ return [
         'driver_too_far' => 'السائق بعيد جداً',
         'driver_asked_to_cancel' => 'طلب مني السائق الإلغاء',
         'waited_too_long' => 'انتظرت طويلاً',
+        'driver_no_show' => 'السائق لم يصل',
         'customer_no_show' => 'لم يحضر العميل',
         'customer_unreachable' => 'لا يمكن الوصول إلى العميل',
         'vehicle_problem' => 'مشكلة في المركبة',

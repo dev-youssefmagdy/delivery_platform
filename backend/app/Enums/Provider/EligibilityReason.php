@@ -27,6 +27,7 @@ enum EligibilityReason: string implements HasLabel
     case LocationStale = 'location_stale';
     case ActiveJobExists = 'active_job_exists';
     case CashDebtLimitExceeded = 'cash_debt_limit_exceeded';
+    case CancellationCooldown = 'cancellation_cooldown';
 
     public function label(): string
     {

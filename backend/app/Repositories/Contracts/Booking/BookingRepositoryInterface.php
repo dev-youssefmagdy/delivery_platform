@@ -160,4 +160,13 @@ interface BookingRepositoryInterface extends BaseRepositoryInterface
      * The booking with every relation the admin show page needs.
      */
     public function findForAdmin(string $uuid): ?Booking;
+
+    /**
+     * Moments (UTC) since `$since` at which a party's cancellations count towards the abuse cooldown (P3.5): a customer's
+     * cancellations after a provider was chosen (except when the driver caused them) and bookings a provider reported as
+     * a customer no-show; a provider's unjustified cancellations and bookings the customer reported as a driver no-show.
+     *
+     * @return list<\Carbon\CarbonImmutable>
+     */
+    public function abuseSignalTimes(\App\Enums\Common\ActorType $party, int $partyId, CarbonInterface $since): array;
 }

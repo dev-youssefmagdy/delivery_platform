@@ -19,6 +19,7 @@ use App\Repositories\Contracts\Location\ProviderLastLocationRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderServiceRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderWorkloadRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
+use App\Services\Booking\CancellationAbuseService;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 
@@ -29,7 +30,8 @@ use Carbon\CarbonImmutable;
  *
  * Reasons come back as typed `EligibilityReason`s with a reference (document type code, vehicle uuid). With
  * `EligibilityScope::Working` (online toggle, dispatch, offer submission) the runtime conditions are added: a fresh
- * location, no conflicting active job (when the platform allows one job at a time) and the cash debt limit.
+ * location, no conflicting active job (when the platform allows one job at a time), the cash debt limit and no running
+ * cancellation cooldown (P3.5).
  */
 final class ProviderEligibilityService
 {
@@ -40,6 +42,7 @@ final class ProviderEligibilityService
         private readonly ProviderLastLocationRepositoryInterface $locations,
         private readonly ProviderWorkloadRepositoryInterface $workload,
         private readonly SettingsService $settings,
+        private readonly CancellationAbuseService $abuse,
     ) {}
 
     public function check(ProviderProfile $profile, ?ServiceCategory $category = null, EligibilityScope $scope = EligibilityScope::Onboarding): EligibilityResult
@@ -109,6 +112,12 @@ final class ProviderEligibilityService
 
         if ($this->workload->cashDebtMinor($profile) > $this->settings->int(SettingKey::ProviderCashDebtLimitMinor)) {
             $issues[] = new EligibilityIssue(EligibilityReason::CashDebtLimitExceeded);
+        }
+
+        $cooldownUntil = $this->abuse->providerCooldownUntil($profile);
+
+        if ($cooldownUntil !== null) {
+            $issues[] = new EligibilityIssue(EligibilityReason::CancellationCooldown, $cooldownUntil->toIso8601ZuluString());
         }
 
         return $issues;

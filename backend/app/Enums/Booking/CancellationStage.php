@@ -17,6 +17,8 @@ enum CancellationStage: string implements HasLabel
     case ProviderSelected = 'provider_selected';
     case HeadingToPickup = 'heading_to_pickup';
     case Arrived = 'arrived';
+    /** Not a trip stage: the fee rule of a reported no-show (customer after the free wait, provider after the report window). */
+    case NoShow = 'no_show';
 
     public static function of(BookingStatus $status): ?self
     {
@@ -36,7 +38,7 @@ enum CancellationStage: string implements HasLabel
      */
     public static function chargeable(): array
     {
-        return [self::ProviderSelected, self::HeadingToPickup, self::Arrived];
+        return [self::ProviderSelected, self::HeadingToPickup, self::Arrived, self::NoShow];
     }
 
     public function label(): string

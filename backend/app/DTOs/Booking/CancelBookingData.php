@@ -16,5 +16,7 @@ final readonly class CancelBookingData
         public bool $preview = false,
         public ?int $acknowledgedFeeMinor = null,
         public ?string $idempotencyKey = null,
+        /** The reporter's GPS fix: evidence of a no-show report (either side). */
+        public ?ArrivalData $fix = null,
     ) {}
 }

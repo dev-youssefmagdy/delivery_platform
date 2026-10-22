@@ -342,6 +342,7 @@ final class BookingOverrideService
         return new CancellationDecision(
             ActorType::Admin, $policy->stage, $policy->feeMinor, $policy->currency, CancellationDecision::BASIS_OPERATIONS_POLICY,
             $policy->recipient, $policy->policyId, $policy->graceEndsAt, $now, $policy->ruleType, $policy->ruleValue,
+            payer: ActorType::Customer, providerShareBp: $policy->providerShareBp,
         );
     }
 

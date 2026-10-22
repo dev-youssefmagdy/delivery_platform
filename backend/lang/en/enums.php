@@ -430,6 +430,7 @@ return [
         'location_stale' => 'Your location is missing or out of date.',
         'active_job_exists' => 'You already have an active job.',
         'cash_debt_limit_exceeded' => 'Your unsettled commission is over the allowed limit.',
+        'cancellation_cooldown' => 'You are paused for a while after repeated cancellations or no-shows.',
     ],
 
     'tracking_state' => [
@@ -726,6 +727,20 @@ return [
         'exported' => 'Exported',
         'completed' => 'Completed',
     ],
+    'booking_adjustment_type' => [
+        'extra_stop' => 'Extra stop',
+        'waiting' => 'Waiting time',
+        'toll_parking' => 'Toll or parking (at cost)',
+        'scope_change' => 'Change of scope',
+    ],
+    'booking_adjustment_status' => [
+        'pending' => 'Waiting for the other party',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+        'withdrawn' => 'Withdrawn',
+        'expired' => 'Expired',
+        'voided' => 'Voided by operations',
+    ],
     'approval_status' => [
         'pending' => 'Waiting for approval',
         'approved' => 'Approved',
@@ -780,6 +795,7 @@ return [
         'provider_selected' => 'Driver chosen',
         'heading_to_pickup' => 'Driver on the way',
         'arrived' => 'Driver arrived',
+        'no_show' => 'No-show',
     ],
 
     'cancellation_fee_type' => [
@@ -800,6 +816,7 @@ return [
         'driver_too_far' => 'The driver is too far',
         'driver_asked_to_cancel' => 'The driver asked me to cancel',
         'waited_too_long' => 'Waited too long',
+        'driver_no_show' => 'The driver did not arrive',
         'customer_no_show' => 'Customer did not show up',
         'customer_unreachable' => 'Customer is unreachable',
         'vehicle_problem' => 'Vehicle problem',

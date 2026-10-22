@@ -21,6 +21,7 @@ enum CancellationReason: string implements HasLabel
     case DriverTooFar = 'driver_too_far';
     case DriverAskedToCancel = 'driver_asked_to_cancel';
     case WaitedTooLong = 'waited_too_long';
+    case DriverNoShow = 'driver_no_show';
 
     // Provider side.
     case CustomerNoShow = 'customer_no_show';
@@ -38,7 +39,7 @@ enum CancellationReason: string implements HasLabel
     public static function forActor(ActorType $actor): array
     {
         return match ($actor) {
-            ActorType::Customer => [self::ChangedMind, self::WrongPickup, self::FoundAnotherRide, self::DriverTooFar, self::DriverAskedToCancel, self::WaitedTooLong, self::Other],
+            ActorType::Customer => [self::ChangedMind, self::WrongPickup, self::FoundAnotherRide, self::DriverTooFar, self::DriverAskedToCancel, self::WaitedTooLong, self::DriverNoShow, self::Other],
             ActorType::Provider => [self::CustomerNoShow, self::CustomerUnreachable, self::VehicleProblem, self::Emergency, self::WrongRequestDetails, self::UnsafePickup, self::Other],
             default => [],
         };

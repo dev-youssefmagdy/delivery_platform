@@ -62,6 +62,21 @@ return [
     'cancellation_defaults' => [
         'free_grace_seconds' => 120,
         'free_wait_seconds' => 300,
+        // A customer may report a driver who has not arrived this long after the selection (seconds).
+        'provider_no_show_after_seconds' => 600,
+        'waiting_rate_minor' => 0,
+        'require_no_show_evidence' => true,
+    ],
+
+    // Fare adjustments after selection (P3.5, SRS §9.4).
+    'adjustments' => [
+        // A pending request that the other party does not answer in this time expires (seconds).
+        'ttl_seconds' => (int) env('BOOKING_ADJUSTMENT_TTL', 600),
+        // Open requests per booking.
+        'max_open' => 3,
+        // The total may exceed the agreed fare by at most this many basis points (50%).
+        'max_increase_basis_points' => (int) env('BOOKING_ADJUSTMENT_MAX_INCREASE_BP', 5000),
+        'reason_max_chars' => 500,
     ],
 
     // Admin operations (P2.8): the no-offer queue, offer anomaly flags and the live map.

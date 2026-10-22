@@ -118,6 +118,41 @@ final class CouponReservationService
     }
 
     /**
+     * A cancelled booking gives its coupon back (ADR-17), except when a cancellation fee applies and the coupon's own
+     * policy says its use is not restored (`restore_on_refund` = false): the use then stays consumed (P3.5). No discount
+     * is granted and none is spent, the held budget is freed, and the reservation is closed as committed without a
+     * redemption (a refund cannot reverse it). Idempotent like `release`.
+     *
+     * @return bool true when the coupon was given back, false when it was kept or there was no open reservation
+     */
+    public function settleCancelled(Booking $booking, int $feeMinor, string $reason): bool
+    {
+        return $this->db->transaction(function () use ($booking, $feeMinor, $reason): bool {
+            $reservation = $this->reservations->lockForBooking($booking->id);
+
+            if (! $reservation instanceof CouponReservation || $reservation->status !== CouponReservationStatus::Reserved) {
+                return false;
+            }
+
+            $version = $this->coupons->version($reservation->coupon_version_id);
+
+            if ($feeMinor <= 0 || ! $version instanceof CouponVersion || $version->termsObject()->restoreOnRefund) {
+                return $this->release($booking, $reason);
+            }
+
+            $coupon = $this->lockCoupon($reservation->coupon_id);
+            $this->coupons->adjustCounters($coupon, usedCount: 1, reservedCount: -1, reservedMinor: -$reservation->hold_minor);
+            $this->reservations->update($reservation, [
+                'status' => CouponReservationStatus::Committed,
+                'committed_at' => CarbonImmutable::now(),
+                'released_reason' => 'late_cancellation_kept',
+            ]);
+
+            return false;
+        });
+    }
+
+    /**
      * Idempotent: a committed (or reversed) reservation is left alone. A reservation whose discount turned out to be zero is released.
      */
     public function commit(Booking $booking, PriceBreakdown $breakdown): bool

@@ -675,6 +675,22 @@ return [
                 'label' => 'Minimum ratings for a public score',
                 'description' => 'Below this number of ratings the average is shown as provisional.',
             ],
+            'cancellation_abuse_threshold' => [
+                'label' => 'Cancellations before a cooldown',
+                'description' => 'A customer or driver who reaches this many abusive cancellations or no-shows inside the window below is paused for the cooldown time.',
+            ],
+            'cancellation_abuse_window_hours' => [
+                'label' => 'Cancellation abuse window',
+                'description' => 'How far back cancellations and no-shows are counted.',
+            ],
+            'cancellation_cooldown_minutes' => [
+                'label' => 'Cooldown after cancellation abuse',
+                'description' => 'How long a customer cannot book, or a driver cannot go online, after reaching the limit. It starts at the last counted cancellation.',
+            ],
+            'customer_fee_debt_limit_minor' => [
+                'label' => 'Largest unpaid cancellation fee',
+                'description' => 'A customer whose unpaid cancellation fees are above this amount cannot request a new booking. 0 means any unpaid fee blocks new bookings.',
+            ],
             'dispatch_radius_steps_km' => [
                 'label' => 'Dispatch radius steps',
                 'description' => 'Search radius per wave, ascending and separated by commas (for example 2, 4, 7).',

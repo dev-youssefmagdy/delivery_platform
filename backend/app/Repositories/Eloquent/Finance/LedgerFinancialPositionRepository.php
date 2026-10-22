@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Repositories\Contracts\Finance\FinancialPositionRepositoryInterface;
 use App\Repositories\Contracts\Finance\LedgerAccountRepositoryInterface;
 use App\Repositories\Contracts\Finance\PaymentPositionRepositoryInterface;
+use App\Repositories\Contracts\Payout\PayoutRequestRepositoryInterface;
 
 /**
  * The real financial position, read from the ledger (replaces the neutral implementation of ADR-92).
@@ -16,13 +17,14 @@ use App\Repositories\Contracts\Finance\PaymentPositionRepositoryInterface;
  * - Open items = wallets with a non-zero balance (money owed either way) + open payments (payments seam, P3.2).
  * - Cash debt = how far the provider's wallets are below zero: commission owed on cash jobs (Plan §7.4), summed over the
  *   provider's wallets (one per currency; a market uses one currency today).
- * Payout requests (P3.4) will add to the provider's open items through their own seam.
+ * Open payout requests (P3.4) count as open items of the provider: money is reserved for them.
  */
 final class LedgerFinancialPositionRepository implements FinancialPositionRepositoryInterface
 {
     public function __construct(
         private readonly LedgerAccountRepositoryInterface $accounts,
         private readonly PaymentPositionRepositoryInterface $payments,
+        private readonly PayoutRequestRepositoryInterface $payouts,
     ) {}
 
     public function openItemsForCustomer(User $customer): int
@@ -32,7 +34,7 @@ final class LedgerFinancialPositionRepository implements FinancialPositionReposi
 
     public function openItemsForProvider(ProviderProfile $profile): int
     {
-        return $this->nonZero(LedgerAccountType::ProviderWallet, $profile->id) + $this->payments->openForProvider($profile);
+        return $this->nonZero(LedgerAccountType::ProviderWallet, $profile->id) + $this->payments->openForProvider($profile) + $this->payouts->openCount($profile->id);
     }
 
     public function cashDebtMinor(ProviderProfile $profile): int

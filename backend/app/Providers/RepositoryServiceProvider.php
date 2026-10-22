@@ -43,6 +43,20 @@ use App\Repositories\Contracts\Finance\JournalLineRepositoryInterface;
 use App\Repositories\Contracts\Finance\LedgerAccountRepositoryInterface;
 use App\Repositories\Contracts\Finance\LedgerReconciliationRunRepositoryInterface;
 use App\Repositories\Contracts\Finance\PaymentPositionRepositoryInterface;
+use App\Repositories\Contracts\Finance\FinancialAdjustmentRepositoryInterface;
+use App\Repositories\Eloquent\Finance\FinancialAdjustmentRepository;
+use App\Repositories\Contracts\Finance\CashReconciliationRepositoryInterface;
+use App\Repositories\Eloquent\Finance\CashReconciliationRepository;
+use App\Repositories\Contracts\Finance\ProviderEarningsRepositoryInterface;
+use App\Repositories\Eloquent\Finance\ProviderEarningsRepository;
+use App\Repositories\Contracts\Payout\ProviderPayoutMethodRepositoryInterface;
+use App\Repositories\Eloquent\Payout\ProviderPayoutMethodRepository;
+use App\Repositories\Contracts\Payout\PayoutRequestRepositoryInterface;
+use App\Repositories\Eloquent\Payout\PayoutRequestRepository;
+use App\Repositories\Contracts\Payout\PayoutEventRepositoryInterface;
+use App\Repositories\Eloquent\Payout\PayoutEventRepository;
+use App\Repositories\Contracts\Payout\PayoutBatchRepositoryInterface;
+use App\Repositories\Eloquent\Payout\PayoutBatchRepository;
 use App\Repositories\Contracts\Payments\GatewayWebhookEventRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentEventRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentMethodRepositoryInterface;
@@ -236,6 +250,13 @@ class RepositoryServiceProvider extends ServiceProvider
         PaymentEventRepositoryInterface::class => PaymentEventRepository::class,
         GatewayWebhookEventRepositoryInterface::class => GatewayWebhookEventRepository::class,
         PaymentRefundRepositoryInterface::class => PaymentRefundRepository::class,
+        FinancialAdjustmentRepositoryInterface::class => FinancialAdjustmentRepository::class,
+        CashReconciliationRepositoryInterface::class => CashReconciliationRepository::class,
+        ProviderEarningsRepositoryInterface::class => ProviderEarningsRepository::class,
+        ProviderPayoutMethodRepositoryInterface::class => ProviderPayoutMethodRepository::class,
+        PayoutRequestRepositoryInterface::class => PayoutRequestRepository::class,
+        PayoutEventRepositoryInterface::class => PayoutEventRepository::class,
+        PayoutBatchRepositoryInterface::class => PayoutBatchRepository::class,
         PaymentReconciliationRunRepositoryInterface::class => PaymentReconciliationRunRepository::class,
         LedgerAccountRepositoryInterface::class => LedgerAccountRepository::class,
         JournalEntryRepositoryInterface::class => JournalEntryRepository::class,

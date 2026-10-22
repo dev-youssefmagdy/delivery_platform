@@ -30,6 +30,34 @@ final class JournalLineRepository implements JournalLineRepositoryInterface
             ->whereIn('ledger_account_id', $accountIds === [] ? [0] : $accountIds);
     }
 
+    public function statementPage(array $accountIds, int $perPage): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return $this->statementQuery($accountIds)->orderByDesc('journal_lines.id')->paginate($perPage);
+    }
+
+    public function statementBetween(array $accountIds, ?\Carbon\CarbonInterface $from, ?\Carbon\CarbonInterface $to): Collection
+    {
+        return $this->statementQuery($accountIds)
+            ->whereHas('entry', static function ($query) use ($from, $to): void {
+                $query->when($from !== null, static fn ($inner) => $inner->where('posted_at', '>=', $from))
+                    ->when($to !== null, static fn ($inner) => $inner->where('posted_at', '<', $to));
+            })
+            ->orderBy('journal_lines.id')
+            ->get();
+    }
+
+    public function balanceBefore(int $accountId, \Carbon\CarbonInterface $at): int
+    {
+        $balance = DB::table('journal_lines')
+            ->join('journal_entries', 'journal_entries.id', '=', 'journal_lines.journal_entry_id')
+            ->where('journal_lines.ledger_account_id', $accountId)
+            ->where('journal_entries.posted_at', '<', $at)
+            ->orderByDesc('journal_lines.id')
+            ->value('journal_lines.balance_after_minor');
+
+        return $balance === null ? 0 : (int) $balance;
+    }
+
     public function totalsByAccount(): array
     {
         $totals = [];

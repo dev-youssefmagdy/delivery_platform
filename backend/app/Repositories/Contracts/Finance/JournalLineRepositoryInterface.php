@@ -33,6 +33,27 @@ interface JournalLineRepositoryInterface
     public function statementQuery(array $accountIds): Builder;
 
     /**
+     * A page of the statement, newest first.
+     *
+     * @param list<int> $accountIds
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, JournalLine>
+     */
+    public function statementPage(array $accountIds, int $perPage): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
+    /**
+     * Lines of the accounts posted in [from, to) (either bound may be null), oldest first, with entry and account.
+     *
+     * @param list<int> $accountIds
+     * @return Collection<int, JournalLine>
+     */
+    public function statementBetween(array $accountIds, ?\Carbon\CarbonInterface $from, ?\Carbon\CarbonInterface $to): Collection;
+
+    /**
+     * The balance of an account right before $at (0 when nothing was posted earlier): the opening balance of a statement.
+     */
+    public function balanceBefore(int $accountId, \Carbon\CarbonInterface $at): int;
+
+    /**
      * Per account and side the sum of its lines: `[account_id => ['debit' => int, 'credit' => int]]`.
      *
      * @return array<int, array{debit: int, credit: int}>

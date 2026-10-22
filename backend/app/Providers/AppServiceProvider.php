@@ -169,6 +169,11 @@ class AppServiceProvider extends ServiceProvider
             'payment_reconciliation_run' => PaymentReconciliationRun::class,
             'coupon' => \App\Models\Coupon::class,
             'coupon_reservation' => \App\Models\CouponReservation::class,
+            'provider_payout_method' => \App\Models\ProviderPayoutMethod::class,
+            'payout_request' => \App\Models\PayoutRequest::class,
+            'payout_batch' => \App\Models\PayoutBatch::class,
+            'financial_adjustment_request' => \App\Models\FinancialAdjustmentRequest::class,
+            'cash_reconciliation' => \App\Models\CashReconciliation::class,
             // @admin-module:morph-map
         ]);
 

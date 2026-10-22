@@ -9,7 +9,9 @@ use App\Enums\Payments\PaymentMethodType;
 use App\Enums\Settings\SettingKey;
 use App\Integrations\Payments\PaymentGatewayManager;
 use App\Models\Booking;
+use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
+use App\Services\Courier\DeliveryProofService;
 use App\Enums\Identity\ClientApp;
 use App\Enums\Support\TicketSource;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
@@ -30,6 +32,7 @@ final class BookingActionResolver
         private readonly SettingsService $settings,
         private readonly PaymentGatewayManager $gateways,
         private readonly SupportTicketRepositoryInterface $tickets,
+        private readonly DeliveryAttemptRepositoryInterface $attempts,
     ) {}
 
     /**
@@ -90,6 +93,16 @@ final class BookingActionResolver
         // Chat with the selected provider (reading stays possible after the window closes; the chat endpoint says whether sending is open).
         if (ChatWindow::hasConversation($booking)) {
             $actions[] = BookingAction::Chat;
+        }
+
+        // Parcels (P4.1): the customer can look at the proofs once the provider is on the job, and decides what happens after a
+        // failed delivery attempt.
+        if ($booking->provider_id !== null && DeliveryProofService::supported($booking)) {
+            $actions[] = BookingAction::ViewProofs;
+        }
+
+        if ($booking->status === BookingStatus::DeliveryAttemptFailed && $this->attempts->latestFor($booking->id)?->isPending() === true) {
+            $actions[] = BookingAction::ResolveDeliveryAttempt;
         }
 
         if (AppealEligibility::allowed($booking, ClientApp::Customer) && $this->tickets->findForBookingAndSource($booking->id, $booking->customer_id, TicketSource::Appeal->value) === null) {

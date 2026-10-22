@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\V1\Common\MediaController;
 use App\Http\Controllers\Api\V1\Common\PolicyController;
 use App\Http\Controllers\Api\V1\Customer\BookingAdjustmentController;
 use App\Http\Controllers\Api\V1\Customer\BookingController;
+use App\Http\Controllers\Api\V1\Customer\BookingDeliveryController;
+use App\Http\Controllers\Api\V1\Provider\DeliveryController;
 use App\Http\Controllers\Api\V1\Customer\BookingReceiptController;
 use App\Http\Controllers\Api\V1\Provider\TripAdjustmentController;
 use App\Http\Controllers\Api\V1\Provider\TripReceiptController;
@@ -188,6 +190,10 @@ Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bo
     Route::post('{booking}/messages/read', [BookingChatController::class, 'read'])->whereUuid('booking')->name('messages.read');
     Route::get('{booking}/messages/{message}/attachment', [BookingChatController::class, 'attachment'])->whereUuid(['booking', 'message'])->middleware('signed')->name('messages.attachment');
     Route::post('{booking}/messages', [BookingChatController::class, 'store'])->whereUuid('booking')->middleware(['account.active', 'throttle:'.(int) config('support.chat.per_minute', 30).',1', 'idempotent'])->name('messages.store');
+    // Parcel proofs and the decision after a failed delivery attempt (P4.1, SRS §7.5, §20.4). Pictures only via the signed route.
+    Route::get('{booking}/proofs', [BookingDeliveryController::class, 'proofs'])->whereUuid('booking')->name('proofs.index');
+    Route::get('{booking}/proofs/{proof}/file', [BookingDeliveryController::class, 'proofFile'])->whereUuid(['booking', 'proof'])->middleware('signed')->name('proofs.file');
+    Route::post('{booking}/delivery-attempts/{attempt}/resolve', [BookingDeliveryController::class, 'resolveAttempt'])->whereUuid(['booking', 'attempt'])->middleware('idempotent')->name('delivery-attempts.resolve');
     // A disputed cancellation fee opens a support ticket carrying the fee decision snapshot.
     Route::post('{booking}/cancellation-appeal', [SupportTicketController::class, 'appeal'])->whereUuid('booking')->middleware('idempotent')->name('cancellation-appeal');
 
@@ -241,6 +247,9 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     Route::get('bookings/{booking}', [RequestController::class, 'show'])->whereUuid('booking')->name('bookings.show');
     Route::get('bookings/{booking}/adjustments', [TripAdjustmentController::class, 'index'])->whereUuid('booking')->name('adjustments.index');
     Route::get('bookings/{booking}/receipt', [TripReceiptController::class, 'show'])->whereUuid('booking')->name('receipt');
+    // Proofs of the provider's own job (P4.1); pictures only via the signed route.
+    Route::get('bookings/{booking}/proofs', [DeliveryController::class, 'proofs'])->whereUuid('booking')->name('bookings.proofs.index');
+    Route::get('bookings/{booking}/proofs/{proof}/file', [DeliveryController::class, 'proofFile'])->whereUuid(['booking', 'proof'])->middleware('signed')->name('bookings.proofs.file');
     // Booking chat with the customer (P3.7): same rules as the customer side, decided by the service.
     Route::get('bookings/{booking}/messages', [BookingChatController::class, 'index'])->whereUuid('booking')->name('bookings.messages.index');
     Route::post('bookings/{booking}/messages/read', [BookingChatController::class, 'read'])->whereUuid('booking')->name('bookings.messages.read');
@@ -269,6 +278,13 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::post('bookings/{booking}/arrived', [TripController::class, 'arrived'])->whereUuid('booking')->middleware('idempotent')->name('trip.arrived');
         Route::post('bookings/{booking}/verify-start-pin', [TripController::class, 'verifyStartPin'])->whereUuid('booking')->middleware('idempotent')->name('trip.verify-start-pin');
         Route::post('bookings/{booking}/start', [TripController::class, 'start'])->whereUuid('booking')->middleware('idempotent')->name('trip.start');
+        // Parcel jobs (P4.1): proofs, custody steps, the recipient code, failed attempts and what happens after them.
+        Route::post('bookings/{booking}/proofs', [DeliveryController::class, 'storeProof'])->whereUuid('booking')->middleware(['throttle:'.(int) config('courier.proofs.per_minute', 20).',1', 'idempotent'])->name('bookings.proofs.store');
+        Route::post('bookings/{booking}/custody', [DeliveryController::class, 'custody'])->whereUuid('booking')->middleware('idempotent')->name('bookings.custody');
+        Route::post('bookings/{booking}/verify-recipient-otp', [DeliveryController::class, 'verifyRecipientOtp'])->whereUuid('booking')->middleware(['throttle:'.(int) config('courier.proofs.per_minute', 20).',1', 'idempotent'])->name('bookings.recipient-otp.verify');
+        Route::post('bookings/{booking}/recipient-otp/resend', [DeliveryController::class, 'resendRecipientOtp'])->whereUuid('booking')->middleware('idempotent')->name('bookings.recipient-otp.resend');
+        Route::post('bookings/{booking}/delivery-attempts', [DeliveryController::class, 'storeAttempt'])->whereUuid('booking')->middleware(['throttle:'.(int) config('courier.proofs.per_minute', 20).',1', 'idempotent'])->name('bookings.delivery-attempts.store');
+        Route::post('bookings/{booking}/delivery-attempts/{attempt}/resolve', [DeliveryController::class, 'resolveAttempt'])->whereUuid(['booking', 'attempt'])->middleware('idempotent')->name('bookings.delivery-attempts.resolve');
         Route::post('bookings/{booking}/complete', [TripController::class, 'complete'])->whereUuid('booking')->middleware('idempotent')->name('trip.complete');
         // The provider confirms the cash was collected (P3.2): cash_due -> cash_collected.
         Route::post('bookings/{booking}/cash-collected', [CashCollectionController::class, 'collected'])->whereUuid('booking')->middleware('idempotent')->name('trip.cash-collected');

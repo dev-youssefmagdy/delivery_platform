@@ -326,6 +326,49 @@ return [
         'hourly' => 'Hourly',
     ],
 
+    'contact_role' => [
+        'sender' => 'Sender',
+        'recipient' => 'Recipient',
+    ],
+
+    'custody_status' => [
+        'picked_up' => 'Picked up',
+        'in_transit' => 'In transit',
+        'arrived_dropoff' => 'Arrived at drop-off',
+        'attempt_failed' => 'Delivery attempt failed',
+        'returning' => 'Returning to sender',
+        'delivered' => 'Delivered',
+        'returned' => 'Returned to sender',
+    ],
+
+    'delivery_attempt_outcome' => [
+        'recipient_unavailable' => 'Recipient not available',
+        'recipient_refused' => 'Recipient refused the parcel',
+        'wrong_address' => 'Wrong or unreachable address',
+        'otp_failed' => 'Recipient could not give the code',
+        'restricted_item' => 'Restricted item found',
+        'other' => 'Other',
+    ],
+
+    'delivery_attempt_resolution' => [
+        'retry' => 'Try again',
+        'return_to_sender' => 'Return to sender',
+        'operations' => 'Hand over to support',
+    ],
+
+    'proof_stage' => [
+        'pickup' => 'Pickup',
+        'delivery' => 'Delivery',
+        'return' => 'Return',
+    ],
+
+    'recipient_otp_delivery' => [
+        'pending' => 'Sending',
+        'sent' => 'Sent',
+        'failed' => 'Failed',
+        'skipped' => 'Test number (not sent)',
+    ],
+
     'proof_type' => [
         'photo' => 'Photo',
         'signature' => 'Signature',
@@ -547,6 +590,8 @@ return [
     ],
 
     'booking_action' => [
+        'view_proofs' => 'View proofs',
+        'resolve_delivery_attempt' => 'Decide after failed delivery',
         'chat' => 'Chat',
         'appeal' => 'Appeal fee',
         'pay' => 'Pay online',
@@ -959,6 +1004,8 @@ return [
     ],
 
     'support_flag_reason' => [
+        'recipient_otp_attempts_exceeded' => 'Too many wrong recipient codes',
+        'delivery_attempt_escalated' => 'Failed delivery needs support',
         'pin_attempts_exceeded' => 'Too many wrong PIN attempts',
     ],
 
@@ -1001,6 +1048,13 @@ return [
     ],
 
     'provider_booking_action' => [
+        'upload_proof' => 'Add proof',
+        'mark_in_transit' => 'On the way to the recipient',
+        'arrived_dropoff' => 'Arrived at drop-off',
+        'verify_recipient_otp' => 'Enter recipient code',
+        'resend_recipient_otp' => 'Send the code again',
+        'report_delivery_attempt' => 'Report failed delivery',
+        'resolve_delivery_attempt' => 'Decide after failed delivery',
         'chat' => 'Chat',
         'appeal' => 'Appeal fee',
         'confirm_cash_collected' => 'Confirm cash collected',

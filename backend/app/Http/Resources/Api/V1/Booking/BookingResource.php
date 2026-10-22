@@ -14,6 +14,8 @@ use App\Models\Booking;
 use App\Models\BookingOffer;
 use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
+use App\Services\Courier\BookingContactService;
+use App\Services\Courier\DeliveryStateService;
 use App\Services\Settings\SettingsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -66,6 +68,9 @@ class BookingResource extends JsonResource
             'agreed_scope' => ($booking->agreed_scope ?? []) === [] ? new stdClass : $booking->agreed_scope,
             'trip_pin' => $this->tripPin($booking),
             'trip' => $this->trip($booking),
+            // Parcel contacts the customer typed (phone masked) and the custody / proof / attempt state (P4.1); null for rides.
+            'contacts' => app(BookingContactService::class)->forCustomer($booking),
+            'delivery' => app(DeliveryStateService::class)->build($booking),
             'cancellation' => $this->cancellation($booking),
             'final_fare' => $booking->final_fare_minor === null ? null : ['amount_minor' => $booking->final_fare_minor, 'currency' => $booking->currency],
             // Approved fare adjustments (P3.5) so far, signed; the running total is the agreed fare plus this.
@@ -225,6 +230,8 @@ class BookingResource extends JsonResource
 
         return [
             'type' => $event->from_status === $event->to_status ? 'note' : 'status',
+            // Custody steps of a parcel (picked_up, in_transit, arrived_dropoff, attempt_failed, returning, delivered, returned).
+            'custody' => $event->from_status === $event->to_status && str_starts_with((string) $event->reason, 'custody_') ? substr((string) $event->reason, 8) : null,
             'status' => $event->to_status->value,
             'previous_status' => $event->from_status?->value,
             'reason' => $visibleReason,

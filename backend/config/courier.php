@@ -16,6 +16,8 @@ return [
     'proofs' => [
         // Pictures per proof type and stage.
         'max_photos_per_stage' => 5,
+        // Upload and verification calls per minute and account (the attempt limit of the recipient code still applies).
+        'per_minute' => 20,
         'max_kilobytes' => 5120,
         'max_edge' => 1600,
         // Declared and measured weight may differ by this share before the proof is flagged for review (never blocks).

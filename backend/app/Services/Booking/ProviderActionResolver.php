@@ -10,7 +10,12 @@ use App\Enums\Payments\PaymentStatus;
 use App\Enums\Identity\ClientApp;
 use App\Enums\Support\TicketSource;
 use App\Models\Booking;
+use App\Enums\Booking\CustodyStatus;
+use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
+use App\Services\Courier\CustodyService;
+use App\Services\Courier\DeliveryProofService;
+use App\Services\Courier\RecipientOtpService;
 use App\Support\Chat\AppealEligibility;
 use App\Support\Chat\ChatWindow;
 
@@ -23,6 +28,8 @@ final class ProviderActionResolver
     public function __construct(
         private readonly RatingService $ratings,
         private readonly SupportTicketRepositoryInterface $tickets,
+        private readonly DeliveryAttemptRepositoryInterface $attempts,
+        private readonly RecipientOtpService $recipientOtps,
     ) {}
 
     /**
@@ -53,9 +60,25 @@ final class ProviderActionResolver
 
                 $actions[] = ProviderBookingAction::Cancel;
 
+                if (DeliveryProofService::supported($booking)) {
+                    $actions[] = ProviderBookingAction::UploadProof;
+                }
+
                 break;
             case BookingStatus::InProgress:
                 $actions = [ProviderBookingAction::Complete];
+
+                if (DeliveryProofService::supported($booking)) {
+                    $actions[] = ProviderBookingAction::UploadProof;
+                }
+
+                $actions = [...$actions, ...$this->parcelActions($booking)];
+
+                break;
+            case BookingStatus::DeliveryAttemptFailed:
+                if ($this->attempts->latestFor($booking->id)?->isPending() === true) {
+                    $actions[] = ProviderBookingAction::ResolveDeliveryAttempt;
+                }
 
                 break;
             default:
@@ -91,6 +114,42 @@ final class ProviderActionResolver
 
         if ($providerUserId !== null && AppealEligibility::allowed($booking, ClientApp::Provider) && $this->tickets->findForBookingAndSource($booking->id, $providerUserId, TicketSource::Appeal->value) === null) {
             $actions[] = ProviderBookingAction::Appeal;
+        }
+
+        return $actions;
+    }
+
+    /**
+     * Custody steps, the recipient code and the failed-attempt report of a parcel that is on its way (never on the way back to
+     * the sender, which needs only the return photo and the completion).
+     *
+     * @return list<ProviderBookingAction>
+     */
+    private function parcelActions(Booking $booking): array
+    {
+        if (! CustodyService::applies($booking) || $booking->custody_status === null || $booking->custody_status === CustodyStatus::Returning) {
+            return [];
+        }
+
+        $actions = [];
+
+        if ($booking->custody_status === CustodyStatus::PickedUp) {
+            $actions[] = ProviderBookingAction::MarkInTransit;
+        }
+
+        if (in_array($booking->custody_status, [CustodyStatus::PickedUp, CustodyStatus::InTransit], true)) {
+            $actions[] = ProviderBookingAction::ArrivedDropoff;
+        }
+
+        $otp = $this->recipientOtps->state($booking);
+
+        if ($otp !== null && $otp['issued'] === true && $otp['verified'] === false && $otp['locked'] === false) {
+            $actions[] = ProviderBookingAction::VerifyRecipientOtp;
+            $actions[] = ProviderBookingAction::ResendRecipientOtp;
+        }
+
+        if ($booking->custody_status === CustodyStatus::ArrivedDropoff) {
+            $actions[] = ProviderBookingAction::ReportDeliveryAttempt;
         }
 
         return $actions;

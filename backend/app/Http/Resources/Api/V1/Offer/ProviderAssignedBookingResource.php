@@ -9,6 +9,8 @@ use App\Http\Resources\Api\V1\Booking\BookingResource;
 use App\Models\Booking;
 use App\Models\BookingStop;
 use App\Services\Booking\CancellationPolicyResolver;
+use App\Services\Courier\BookingContactService;
+use App\Services\Courier\DeliveryStateService;
 use App\Services\Settings\SettingsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -52,6 +54,9 @@ class ProviderAssignedBookingResource extends JsonResource
                 'name' => BookingResource::names((array) ($category['name'] ?? [])),
             ],
             'customer' => $this->customer($booking),
+            // Parcel sender / recipient: only here, only for the selected provider; the phone only while the job is in flight (P4.1).
+            'contacts' => app(BookingContactService::class)->forProvider($booking),
+            'delivery' => app(DeliveryStateService::class)->build($booking),
             'pickup' => $this->place($booking->pickup_point->lat, $booking->pickup_point->lng, $booking->pickup_address),
             'dropoff' => $booking->dropoff_point === null ? null : $this->place($booking->dropoff_point->lat, $booking->dropoff_point->lng, $booking->dropoff_address),
             'stops' => $booking->stops->map(fn (BookingStop $stop): array => ['position' => $stop->position] + $this->place($stop->point->lat, $stop->point->lng, $stop->address))->values()->all(),

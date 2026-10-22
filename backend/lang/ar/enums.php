@@ -326,6 +326,49 @@ return [
         'hourly' => 'بالساعة',
     ],
 
+    'contact_role' => [
+        'sender' => 'المرسل',
+        'recipient' => 'المستلم',
+    ],
+
+    'custody_status' => [
+        'picked_up' => 'تم الاستلام',
+        'in_transit' => 'في الطريق',
+        'arrived_dropoff' => 'وصل إلى وجهة التسليم',
+        'attempt_failed' => 'فشلت محاولة التسليم',
+        'returning' => 'في طريق العودة إلى المرسل',
+        'delivered' => 'تم التسليم',
+        'returned' => 'أُعيد إلى المرسل',
+    ],
+
+    'delivery_attempt_outcome' => [
+        'recipient_unavailable' => 'المستلم غير متاح',
+        'recipient_refused' => 'رفض المستلم الطرد',
+        'wrong_address' => 'عنوان خاطئ أو يتعذر الوصول إليه',
+        'otp_failed' => 'تعذّر على المستلم إعطاء الرمز',
+        'restricted_item' => 'تم العثور على بضاعة محظورة',
+        'other' => 'أخرى',
+    ],
+
+    'delivery_attempt_resolution' => [
+        'retry' => 'إعادة المحاولة',
+        'return_to_sender' => 'إعادة الطرد إلى المرسل',
+        'operations' => 'تحويل إلى الدعم',
+    ],
+
+    'proof_stage' => [
+        'pickup' => 'الاستلام',
+        'delivery' => 'التسليم',
+        'return' => 'الإعادة',
+    ],
+
+    'recipient_otp_delivery' => [
+        'pending' => 'جارٍ الإرسال',
+        'sent' => 'تم الإرسال',
+        'failed' => 'فشل',
+        'skipped' => 'رقم تجريبي (لم يُرسل)',
+    ],
+
     'proof_type' => [
         'photo' => 'صورة',
         'signature' => 'توقيع',
@@ -547,6 +590,8 @@ return [
     ],
 
     'booking_action' => [
+        'view_proofs' => 'عرض الإثباتات',
+        'resolve_delivery_attempt' => 'القرار بعد فشل التسليم',
         'chat' => 'محادثة',
         'appeal' => 'اعتراض على الرسوم',
         'pay' => 'الدفع إلكترونياً',
@@ -959,6 +1004,8 @@ return [
     ],
 
     'support_flag_reason' => [
+        'recipient_otp_attempts_exceeded' => 'محاولات خاطئة كثيرة لرمز المستلم',
+        'delivery_attempt_escalated' => 'فشل التسليم يحتاج إلى الدعم',
         'pin_attempts_exceeded' => 'محاولات خاطئة كثيرة لرمز PIN',
     ],
 
@@ -1001,6 +1048,13 @@ return [
     ],
 
     'provider_booking_action' => [
+        'upload_proof' => 'إضافة إثبات',
+        'mark_in_transit' => 'في الطريق إلى المستلم',
+        'arrived_dropoff' => 'وصلت إلى وجهة التسليم',
+        'verify_recipient_otp' => 'إدخال رمز المستلم',
+        'resend_recipient_otp' => 'إعادة إرسال الرمز',
+        'report_delivery_attempt' => 'الإبلاغ عن فشل التسليم',
+        'resolve_delivery_attempt' => 'القرار بعد فشل التسليم',
         'chat' => 'محادثة',
         'appeal' => 'اعتراض على الرسوم',
         'confirm_cash_collected' => 'تأكيد تحصيل النقد',

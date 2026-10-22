@@ -1156,5 +1156,244 @@
   "adjNoteOptional": "Note (optional)",
   "adjDecideLater": "Decide later",
   "adjErrNotPending": "This request was already answered or has expired.",
-  "adjErrCounterpart": "Only the other side can answer this request."
+  "adjErrCounterpart": "Only the other side can answer this request.",
+  "scHelpers": "Helpers",
+  "scPacking": "Packing",
+  "scStairs": "Stairs",
+  "scAssembly": "Assembly",
+  "scEquipment": "Loading equipment",
+  "scWaiting": "Free waiting time",
+  "scExtraStops": "Extra stops included",
+  "scTolls": "Road tolls",
+  "scParking": "Parking",
+  "scLegendIncluded": "Included",
+  "scLegendExcluded": "Not included",
+  "scLegendAtCost": "At cost",
+  "scSummaryTitle": "What is included",
+  "scAgreedTitle": "What was agreed",
+  "scRequestedTitle": "What you asked for",
+  "adjAmountLabel": "Proposed amount",
+  "adjErrAmount": "Enter a valid amount above zero.",
+  "adjErrFloors": "Enter the number of extra floors.",
+  "adjErrHelpers": "That number of extra helpers is not allowed.",
+  "adjErrNotNow": "A change cannot be requested now.",
+  "adjErrReason": "Write the reason (at least 3 characters).",
+  "adjErrScopeItem": "Choose the item of the agreement.",
+  "adjErrWithinScope": "This item is covered by the agreement and cannot be charged extra.",
+  "adjScopeItemLine": "Agreement item: {item}",
+  "@adjScopeItemLine": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "adjHelpersLine": "{count} helpers",
+  "@adjHelpersLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adjFloorsLine": "{count} floors",
+  "@adjFloorsLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adjHelpersCount": "Number of helpers",
+  "adjPickItem": "Item of the agreement",
+  "adjReasonLabel": "Reason",
+  "adjRequestButton": "Request a change to the agreement",
+  "adjRequestSent": "Your request was sent to the driver.",
+  "adjSend": "Send request",
+  "adjTypeHelper": "Extra helper",
+  "adjTypeScope": "Agreement change",
+  "dcCustodyTitle": "Parcel journey",
+  "dcCustodyNotStarted": "The parcel has not been picked up yet.",
+  "dcCustodyPickedUp": "Picked up",
+  "dcCustodyInTransit": "On the way",
+  "dcCustodyArrived": "Arrived at drop-off",
+  "dcCustodyFailed": "Delivery failed",
+  "dcCustodyReturning": "Returning to sender",
+  "dcCustodyDelivered": "Delivered",
+  "dcCustodyReturned": "Returned to sender",
+  "dcCustodyUnknown": "Unknown status",
+  "dcOtpTitle": "Recipient code",
+  "dcOtpWaiting": "Code not sent yet",
+  "dcOtpSent": "Code sent to the recipient",
+  "dcOtpSmsFailed": "The message could not be sent",
+  "dcOtpVerified": "Verified",
+  "dcOtpLocked": "Code locked",
+  "dcOtpAttemptsLeft": "Attempts left: {left}",
+  "@dcOtpAttemptsLeft": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "dcOtpShareHint": "We text a code to the recipient, who reads it to the courier on receiving the parcel. Do not send it to anyone else.",
+  "dcProofsTitle": "Pickup and delivery proofs",
+  "dcNoProofs": "No proofs yet.",
+  "dcProofLoadError": "The picture could not load. Tap to retry.",
+  "dcProofPhoto": "Photo",
+  "dcProofSignature": "Signature",
+  "dcProofOtp": "Recipient code",
+  "dcProofPin": "Start PIN",
+  "dcProofChecklist": "Checklist",
+  "dcProofWeight": "Weight",
+  "dcProofOther": "Proof",
+  "dcStagePickup": "At pickup",
+  "dcStageDelivery": "At delivery",
+  "dcStageReturn": "On return",
+  "dcChkSealed": "Package is sealed",
+  "dcChkUndamaged": "Package is undamaged",
+  "dcChkLabel": "Label matches the order",
+  "dcChkRecipient": "Recipient was checked",
+  "dcWeightValue": "Measured weight: {kg} kg",
+  "@dcWeightValue": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "dcAttemptsTitle": "Delivery attempts",
+  "dcAttemptNumber": "Attempt {number}",
+  "@dcAttemptNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "dcAttemptEvidence": "Picture attached",
+  "dcPending": "Waiting for your decision",
+  "dcOutUnavailable": "Recipient not available",
+  "dcOutRefused": "Recipient refused",
+  "dcOutWrongAddress": "Wrong address",
+  "dcOutOtpFailed": "Code could not be verified",
+  "dcOutRestricted": "The parcel holds restricted items",
+  "dcOutOther": "Other reason",
+  "dcResRetry": "Try delivering again",
+  "dcResReturn": "Return to sender",
+  "dcResOperations": "Hand to operations",
+  "dcResUnknown": "Unknown decision",
+  "dcRoleSender": "Sender",
+  "dcRoleRecipient": "Recipient",
+  "dcRolePickup": "Pickup contact",
+  "dcRoleDropoff": "Drop-off contact",
+  "dcContactsTitle": "Contacts",
+  "dcFailedTitle": "Your parcel could not be delivered",
+  "dcFailedChoose": "Choose what happens to the parcel now.",
+  "dcShowProofs": "Show proof pictures",
+  "dcHideProofs": "Hide proof pictures",
+  "dcErrAttemptDone": "This attempt has already been decided.",
+  "dcErrAttemptsExhausted": "Delivery attempts are used up. Choose return or operations.",
+  "dcErrScopeMissing": "There is no moving agreement for this request yet.",
+  "rgTitle": "Restricted goods acknowledgement",
+  "rgIntro": "Read the restricted goods policy before sending the parcel.",
+  "rgReadPolicy": "Read the policy",
+  "rgAcknowledge": "I confirm my parcel holds no restricted goods (version {version})",
+  "@rgAcknowledge": {
+    "placeholders": {
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "rgErrRequired": "You must acknowledge the restricted goods policy.",
+  "rgErrStale": "The policy changed. Read it and acknowledge it again.",
+  "rgErrUnavailable": "The restricted goods policy could not load.",
+  "lfLoadTitle": "Load",
+  "lfLoadWeight": "Weight: {kg} kg",
+  "@lfLoadWeight": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "lfLoadVolume": "Volume: {volume} m³",
+  "@lfLoadVolume": {
+    "placeholders": {
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+  "lfLoadValue": "Goods value: {value}",
+  "@lfLoadValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "lfLoadWindow": "Loading between {start} and {end}",
+  "@lfLoadWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "lfFileVideo": "Video",
+  "lfFileDocument": "Document",
+  "lfItemNote": "Note about this item",
+  "lfItemWeight": "Weight",
+  "lfItemDimensionsUnit": "cm",
+  "lfPickVideo": "Video from gallery",
+  "lfUploading": "Uploading the file…",
+  "lfErrVolume": "The load volume is above what this service allows.",
+  "lfErrWindowIncomplete": "Set both the start and the end of the loading window.",
+  "lfErrWindowPast": "The loading window is in the past.",
+  "lfErrWindowInvalid": "The window must end after it starts.",
+  "lfErrWindowLong": "The loading window is too long.",
+  "lfErrAttachmentInvalid": "One of the attached files is not valid. Upload it again.",
+  "lfErrAttachmentLimit": "You passed the limit of photos, videos or documents.",
+  "lfErrPendingLimit": "You have many uploads not used yet. Remove some or finish the booking.",
+  "lfErrInUse": "This file belongs to a booking and cannot be removed.",
+  "lfErrInfected": "The file was refused for security reasons.",
+  "lfErrTooLarge": "The file is too large.",
+  "lfErrTooSmall": "The picture is too small.",
+  "lfErrFileType": "This file type is not supported.",
+  "lfErrScanner": "File checking is unavailable. Try again shortly.",
+  "lfErrUploadFailed": "The file could not be uploaded. Try again.",
+  "stpTitle": "Extra stops",
+  "stpIntro": "Add stops on the way with the name and phone of the person the driver meets at each.",
+  "stpAdd": "Add a stop",
+  "stpMax": "You reached the stop limit ({max}).",
+  "@stpMax": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "stpNumbered": "Stop {number}: {place}",
+  "@stpNumbered": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "stpMoveUp": "Move up",
+  "stpMoveDown": "Move down",
+  "stpRemove": "Remove the stop",
+  "stpContactName": "Contact name",
+  "stpContactPhone": "Contact phone",
+  "stpNote": "Note for the driver",
+  "stpErrName": "Enter the contact name."
 }

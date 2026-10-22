@@ -17,6 +17,9 @@ import '../../domain/entities/booking_entities.dart';
 import '../../domain/logic/fare_input.dart';
 import '../../domain/logic/polyline.dart';
 import '../providers/booking_providers.dart';
+import '../providers/delivery_providers.dart';
+import '../providers/load_form_providers.dart';
+import '../widgets/load_form_widgets.dart';
 import '../widgets/booking_texts.dart';
 import '../widgets/payment_coupon_section.dart';
 import '../../../payments/presentation/providers/payments_providers.dart' show couponCheckProvider;
@@ -44,6 +47,8 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
   int? _formCategoryId;
   FareCheck? _fareError;
   bool _prefilledFare = false;
+  bool _showLoadErrors = false;
+  AttachmentPhotoHandler? _uploadHandler;
 
   @override
   void initState() {
@@ -64,6 +69,21 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
 
   int _exponent() =>
       ref.read(appConfigProvider).value?.currencyExponent ?? 2;
+
+  /// Photos and videos of a load are uploaded as soon as they are picked
+  /// (`POST /bookings/attachments`); the form keeps the attachment ids.
+  AttachmentPhotoHandler _handlerFor(AppLocalizations l10n) => _uploadHandler ??= AttachmentPhotoHandler(
+    repository: ref.read(bookingAttachmentRepositoryProvider),
+    newKey: newIdempotencyKey,
+    cameraLabel: l10n.formPhotoCamera,
+    galleryLabel: l10n.formPhotoGallery,
+    videoLabel: l10n.lfPickVideo,
+    uploadingLabel: l10n.lfUploading,
+    allowVideo: true,
+    onError: (context, error) => ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(bookingErrorText(l10n, error)))),
+  );
 
   DynamicFormController _formFor(ServiceCategoryInfo category) {
     if (_formCategoryId != category.id) {
@@ -118,7 +138,17 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
     if (check != FareCheck.ok) {
       setState(() => _fareError = check);
     }
-    if (check != FareCheck.ok || !formOk) return;
+
+    // Courier: the restricted-goods policy shown must be acknowledged.
+    final courier = category.familyKind == ServiceFamilyKind.courier;
+    final policy = courier ? ref.read(restrictedGoodsPolicyProvider).value : null;
+    final acknowledged = ref.read(restrictedGoodsAckProvider);
+    final ackOk = !courier || (policy != null && acknowledged == policy.id);
+    // Stops with a half-typed contact are not sent.
+    final stops = category.supportsStops && usesLoadUploads(category) ? ref.read(bookingStopsProvider) : const <StopDraft>[];
+    final stopsOk = stops.every((s) => s.issue == null);
+    setState(() => _showLoadErrors = true);
+    if (check != FareCheck.ok || !formOk || !ackOk || !stopsOk) return;
 
     final details = form.payload;
     ref.read(serviceDetailsProvider.notifier).save(category.id, details);
@@ -130,6 +160,9 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
             pickup: placeInfoOf(pickup),
             dropoff: placeInfoOf(destination),
             serviceDetails: details,
+            bookingType: bookingTypeFor(category),
+            stops: [for (final s in stops) s.toInput()],
+            restrictedGoodsPolicyVersion: courier ? policy?.id : null,
             passengers: category.maxPassengers == null ? null : draft.passengers,
             proposedFareMinor: draft.fareMinor!,
             currency: currency,
@@ -138,7 +171,16 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
           ),
         );
     if (booking != null && mounted) {
+      ref.read(bookingStopsProvider.notifier).clear();
+      ref.read(restrictedGoodsAckProvider.notifier).clear();
       context.pushReplacement(Routes.booking(booking.id));
+    } else if (mounted) {
+      // A newer policy than the one acknowledged: read it again, tick again.
+      final error = ref.read(bookingDraftProvider).error;
+      if (error?.code == 'restricted_goods_ack_stale' || error?.code == 'restricted_goods_policy_unavailable') {
+        ref.read(restrictedGoodsAckProvider.notifier).clear();
+        ref.invalidate(restrictedGoodsPolicyProvider);
+      }
     }
   }
 
@@ -253,11 +295,21 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
                 controller: form,
                 languageCode: language,
                 strings: dynamicFormStrings(l10n),
-                photoHandler: ImagePickerPhotoHandler(
-                  cameraLabel: l10n.formPhotoCamera,
-                  galleryLabel: l10n.formPhotoGallery,
-                ),
+                photoHandler: usesLoadUploads(category)
+                    ? _handlerFor(l10n)
+                    : ImagePickerPhotoHandler(
+                        cameraLabel: l10n.formPhotoCamera,
+                        galleryLabel: l10n.formPhotoGallery,
+                      ),
               ),
+            ],
+            if (category.familyKind == ServiceFamilyKind.courier) ...[
+              const SizedBox(height: AppSpacing.md),
+              RestrictedGoodsSection(showError: _showLoadErrors),
+            ],
+            if (category.supportsStops && usesLoadUploads(category)) ...[
+              const SizedBox(height: AppSpacing.md),
+              StopsSection(maxStops: category.maxStops, showErrors: _showLoadErrors),
             ],
             if (category.maxPassengers != null) ...[
               const SizedBox(height: AppSpacing.md),

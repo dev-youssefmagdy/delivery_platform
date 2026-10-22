@@ -14,6 +14,7 @@ import '../../domain/logic/polyline.dart';
 import '../providers/booking_providers.dart';
 import 'booking_sections.dart';
 import 'booking_texts.dart';
+import 'delivery_cards.dart';
 import 'safety_sheet.dart';
 
 /// Seconds after which a location fix is shown as stale.
@@ -132,9 +133,21 @@ class _LiveTripViewState extends ConsumerState<LiveTripView> {
             ),
           ),
         ],
+        if (booking.scope.isEmpty == false) ...[
+          const SizedBox(height: AppSpacing.md),
+          BookingScopeCard(booking: booking),
+        ],
+        if (booking.load != null) ...[
+          const SizedBox(height: AppSpacing.md),
+          BookingLoadCard(booking: booking),
+        ],
+        if (booking.delivery != null) ...[
+          const SizedBox(height: AppSpacing.md),
+          DeliveryPanel(booking: booking),
+        ],
         if (booking.isAssigned) ...[
           const SizedBox(height: AppSpacing.md),
-          AdjustmentsSection(bookingId: booking.id),
+          AdjustmentsSection(bookingId: booking.id, scoped: booking.scope.agreed != null, canRequest: booking.can(BookingAction.requestAdjustment)),
         ],
         const SizedBox(height: AppSpacing.md),
         _StatusTimeline(booking: booking),

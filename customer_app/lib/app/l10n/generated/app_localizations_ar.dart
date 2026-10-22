@@ -2281,4 +2281,463 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adjErrCounterpart => 'يمكن للطرف الآخر فقط الإجابة عن هذا الطلب.';
+
+  @override
+  String get scHelpers => 'عدد العمال';
+
+  @override
+  String get scPacking => 'التغليف';
+
+  @override
+  String get scStairs => 'السلالم';
+
+  @override
+  String get scAssembly => 'فك وتركيب الأثاث';
+
+  @override
+  String get scEquipment => 'معدات التحميل';
+
+  @override
+  String get scWaiting => 'مدة الانتظار المجانية';
+
+  @override
+  String get scExtraStops => 'محطات إضافية مشمولة';
+
+  @override
+  String get scTolls => 'رسوم الطرق';
+
+  @override
+  String get scParking => 'الانتظار والركن';
+
+  @override
+  String get scLegendIncluded => 'مشمول';
+
+  @override
+  String get scLegendExcluded => 'غير مشمول';
+
+  @override
+  String get scLegendAtCost => 'بالتكلفة';
+
+  @override
+  String get scSummaryTitle => 'ما يشمله العرض';
+
+  @override
+  String get scAgreedTitle => 'ما تم الاتفاق عليه';
+
+  @override
+  String get scRequestedTitle => 'ما طلبته';
+
+  @override
+  String get adjAmountLabel => 'المبلغ المقترح';
+
+  @override
+  String get adjErrAmount => 'أدخل مبلغاً صحيحاً أكبر من الصفر.';
+
+  @override
+  String get adjErrFloors => 'أدخل عدد الأدوار الإضافية.';
+
+  @override
+  String get adjErrHelpers => 'عدد العمال الإضافيين غير مسموح.';
+
+  @override
+  String get adjErrNotNow => 'لا يمكن طلب تغيير الآن.';
+
+  @override
+  String get adjErrReason => 'اكتب السبب (3 أحرف على الأقل).';
+
+  @override
+  String get adjErrScopeItem => 'اختر البند المعني من الاتفاق.';
+
+  @override
+  String get adjErrWithinScope =>
+      'هذا البند مشمول في الاتفاق ولا يمكن تحميل مبلغ إضافي عنه.';
+
+  @override
+  String adjScopeItemLine(String item) {
+    return 'بند الاتفاق: $item';
+  }
+
+  @override
+  String adjHelpersLine(int count) {
+    return '$count عمال';
+  }
+
+  @override
+  String adjFloorsLine(int count) {
+    return '$count أدوار';
+  }
+
+  @override
+  String get adjHelpersCount => 'عدد العمال';
+
+  @override
+  String get adjPickItem => 'البند المعني من الاتفاق';
+
+  @override
+  String get adjReasonLabel => 'السبب';
+
+  @override
+  String get adjRequestButton => 'طلب تغيير في الاتفاق';
+
+  @override
+  String get adjRequestSent => 'تم إرسال طلبك للسائق.';
+
+  @override
+  String get adjSend => 'إرسال الطلب';
+
+  @override
+  String get adjTypeHelper => 'عامل إضافي';
+
+  @override
+  String get adjTypeScope => 'تغيير في الاتفاق';
+
+  @override
+  String get dcCustodyTitle => 'مسار الشحنة';
+
+  @override
+  String get dcCustodyNotStarted => 'لم يتم استلام الشحنة بعد.';
+
+  @override
+  String get dcCustodyPickedUp => 'تم الاستلام من المرسل';
+
+  @override
+  String get dcCustodyInTransit => 'في الطريق';
+
+  @override
+  String get dcCustodyArrived => 'وصلت إلى نقطة التسليم';
+
+  @override
+  String get dcCustodyFailed => 'تعذر التسليم';
+
+  @override
+  String get dcCustodyReturning => 'في طريق العودة للمرسل';
+
+  @override
+  String get dcCustodyDelivered => 'تم التسليم';
+
+  @override
+  String get dcCustodyReturned => 'تم الإرجاع للمرسل';
+
+  @override
+  String get dcCustodyUnknown => 'حالة غير معروفة';
+
+  @override
+  String get dcOtpTitle => 'رمز المستلم';
+
+  @override
+  String get dcOtpWaiting => 'لم يُرسل الرمز بعد';
+
+  @override
+  String get dcOtpSent => 'أُرسل الرمز للمستلم';
+
+  @override
+  String get dcOtpSmsFailed => 'تعذر إرسال الرسالة';
+
+  @override
+  String get dcOtpVerified => 'تم التحقق';
+
+  @override
+  String get dcOtpLocked => 'الرمز موقوف';
+
+  @override
+  String dcOtpAttemptsLeft(int left) {
+    return 'المحاولات المتبقية: $left';
+  }
+
+  @override
+  String get dcOtpShareHint =>
+      'نرسل رمزاً برسالة نصية إلى المستلم، ويقوله للمندوب عند استلام الشحنة. لا ترسله لأي شخص آخر.';
+
+  @override
+  String get dcProofsTitle => 'إثباتات الاستلام والتسليم';
+
+  @override
+  String get dcNoProofs => 'لا توجد إثباتات بعد.';
+
+  @override
+  String get dcProofLoadError => 'تعذر تحميل الصورة. اضغط للمحاولة.';
+
+  @override
+  String get dcProofPhoto => 'صورة';
+
+  @override
+  String get dcProofSignature => 'توقيع';
+
+  @override
+  String get dcProofOtp => 'رمز المستلم';
+
+  @override
+  String get dcProofPin => 'رمز البدء';
+
+  @override
+  String get dcProofChecklist => 'قائمة فحص';
+
+  @override
+  String get dcProofWeight => 'الوزن';
+
+  @override
+  String get dcProofOther => 'إثبات';
+
+  @override
+  String get dcStagePickup => 'عند الاستلام';
+
+  @override
+  String get dcStageDelivery => 'عند التسليم';
+
+  @override
+  String get dcStageReturn => 'عند الإرجاع';
+
+  @override
+  String get dcChkSealed => 'الطرد مغلق';
+
+  @override
+  String get dcChkUndamaged => 'الطرد سليم بلا أضرار';
+
+  @override
+  String get dcChkLabel => 'البيانات مطابقة للملصق';
+
+  @override
+  String get dcChkRecipient => 'تم التأكد من هوية المستلم';
+
+  @override
+  String dcWeightValue(String kg) {
+    return 'الوزن المقاس: $kg كجم';
+  }
+
+  @override
+  String get dcAttemptsTitle => 'محاولات التسليم';
+
+  @override
+  String dcAttemptNumber(int number) {
+    return 'المحاولة $number';
+  }
+
+  @override
+  String get dcAttemptEvidence => 'مرفق صورة';
+
+  @override
+  String get dcPending => 'بانتظار قرارك';
+
+  @override
+  String get dcOutUnavailable => 'المستلم غير متاح';
+
+  @override
+  String get dcOutRefused => 'المستلم رفض الاستلام';
+
+  @override
+  String get dcOutWrongAddress => 'العنوان خاطئ';
+
+  @override
+  String get dcOutOtpFailed => 'تعذر التحقق من الرمز';
+
+  @override
+  String get dcOutRestricted => 'الشحنة تحتوي على مواد ممنوعة';
+
+  @override
+  String get dcOutOther => 'سبب آخر';
+
+  @override
+  String get dcResRetry => 'إعادة محاولة التسليم';
+
+  @override
+  String get dcResReturn => 'إرجاع للمرسل';
+
+  @override
+  String get dcResOperations => 'تحويل لفريق العمليات';
+
+  @override
+  String get dcResUnknown => 'قرار غير معروف';
+
+  @override
+  String get dcRoleSender => 'المرسل';
+
+  @override
+  String get dcRoleRecipient => 'المستلم';
+
+  @override
+  String get dcRolePickup => 'جهة الاتصال عند التحميل';
+
+  @override
+  String get dcRoleDropoff => 'جهة الاتصال عند التسليم';
+
+  @override
+  String get dcContactsTitle => 'جهات الاتصال';
+
+  @override
+  String get dcFailedTitle => 'تعذر تسليم شحنتك';
+
+  @override
+  String get dcFailedChoose => 'اختر ما يحدث للشحنة الآن.';
+
+  @override
+  String get dcShowProofs => 'عرض صور الإثبات';
+
+  @override
+  String get dcHideProofs => 'إخفاء صور الإثبات';
+
+  @override
+  String get dcErrAttemptDone => 'تم اتخاذ قرار بشأن هذه المحاولة بالفعل.';
+
+  @override
+  String get dcErrAttemptsExhausted =>
+      'استُنفدت محاولات التسليم. اختر الإرجاع أو العمليات.';
+
+  @override
+  String get dcErrScopeMissing => 'لا يوجد اتفاق نقل لهذا الطلب بعد.';
+
+  @override
+  String get rgTitle => 'إقرار بالمواد الممنوعة';
+
+  @override
+  String get rgIntro => 'اقرأ سياسة المواد الممنوعة قبل إرسال الطرد.';
+
+  @override
+  String get rgReadPolicy => 'قراءة السياسة';
+
+  @override
+  String rgAcknowledge(int version) {
+    return 'أقر بأن طردي لا يحتوي على مواد ممنوعة (النسخة $version)';
+  }
+
+  @override
+  String get rgErrRequired => 'يجب الإقرار بسياسة المواد الممنوعة.';
+
+  @override
+  String get rgErrStale => 'تغيرت السياسة. اقرأها وأقر بها من جديد.';
+
+  @override
+  String get rgErrUnavailable => 'تعذر تحميل سياسة المواد الممنوعة الآن.';
+
+  @override
+  String get lfLoadTitle => 'الحمولة';
+
+  @override
+  String lfLoadWeight(String kg) {
+    return 'الوزن: $kg كجم';
+  }
+
+  @override
+  String lfLoadVolume(String volume) {
+    return 'الحجم: $volume م³';
+  }
+
+  @override
+  String lfLoadValue(String value) {
+    return 'قيمة البضاعة: $value';
+  }
+
+  @override
+  String lfLoadWindow(String start, String end) {
+    return 'التحميل من $start إلى $end';
+  }
+
+  @override
+  String get lfFileVideo => 'فيديو';
+
+  @override
+  String get lfFileDocument => 'مستند';
+
+  @override
+  String get lfItemNote => 'ملاحظة عن هذا الغرض';
+
+  @override
+  String get lfItemWeight => 'الوزن';
+
+  @override
+  String get lfItemDimensionsUnit => 'سم';
+
+  @override
+  String get lfPickVideo => 'فيديو من المعرض';
+
+  @override
+  String get lfUploading => 'جارٍ رفع الملف…';
+
+  @override
+  String get lfErrVolume => 'حجم الحمولة أكبر من الحد المسموح لهذه الخدمة.';
+
+  @override
+  String get lfErrWindowIncomplete => 'حدد بداية ونهاية موعد التحميل.';
+
+  @override
+  String get lfErrWindowPast => 'موعد التحميل في الماضي.';
+
+  @override
+  String get lfErrWindowInvalid => 'نهاية موعد التحميل يجب أن تكون بعد بدايته.';
+
+  @override
+  String get lfErrWindowLong => 'موعد التحميل طويل جداً.';
+
+  @override
+  String get lfErrAttachmentInvalid =>
+      'أحد الملفات المرفقة غير صالح. أعد رفعه.';
+
+  @override
+  String get lfErrAttachmentLimit =>
+      'تجاوزت الحد المسموح من الصور أو الفيديوهات أو المستندات.';
+
+  @override
+  String get lfErrPendingLimit =>
+      'لديك ملفات مرفوعة كثيرة لم تُستخدم. احذف بعضها أو أكمل الحجز.';
+
+  @override
+  String get lfErrInUse => 'هذا الملف مرتبط بحجز ولا يمكن حذفه.';
+
+  @override
+  String get lfErrInfected => 'رُفض الملف لأسباب أمنية.';
+
+  @override
+  String get lfErrTooLarge => 'حجم الملف أكبر من المسموح.';
+
+  @override
+  String get lfErrTooSmall => 'الصورة صغيرة جداً.';
+
+  @override
+  String get lfErrFileType => 'نوع الملف غير مدعوم.';
+
+  @override
+  String get lfErrScanner => 'فحص الملفات غير متاح الآن. حاول بعد قليل.';
+
+  @override
+  String get lfErrUploadFailed => 'تعذر رفع الملف. حاول مرة أخرى.';
+
+  @override
+  String get stpTitle => 'محطات إضافية';
+
+  @override
+  String get stpIntro =>
+      'أضف محطات في الطريق مع اسم وهاتف من سيقابل السائق في كل محطة.';
+
+  @override
+  String get stpAdd => 'إضافة محطة';
+
+  @override
+  String stpMax(int max) {
+    return 'وصلت إلى الحد الأقصى للمحطات ($max).';
+  }
+
+  @override
+  String stpNumbered(int number, String place) {
+    return 'المحطة $number: $place';
+  }
+
+  @override
+  String get stpMoveUp => 'تحريك لأعلى';
+
+  @override
+  String get stpMoveDown => 'تحريك لأسفل';
+
+  @override
+  String get stpRemove => 'حذف المحطة';
+
+  @override
+  String get stpContactName => 'اسم جهة الاتصال';
+
+  @override
+  String get stpContactPhone => 'هاتف جهة الاتصال';
+
+  @override
+  String get stpNote => 'ملاحظة للسائق';
+
+  @override
+  String get stpErrName => 'اكتب اسم جهة الاتصال.';
 }

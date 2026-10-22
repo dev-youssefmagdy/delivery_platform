@@ -11,6 +11,7 @@ import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../availability/presentation/providers/availability_providers.dart';
 import '../../../notifications/presentation/providers/notification_providers.dart';
 import '../../domain/entities/job_entities.dart';
+import '../providers/delivery_providers.dart';
 import '../providers/job_providers.dart';
 import '../../../earnings/presentation/widgets/earnings_tab.dart';
 import '../widgets/active_job_banner.dart';
@@ -74,6 +75,8 @@ class _DriverShellState extends ConsumerState<DriverShell>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     ref.listen(activeJobProvider, (_, next) => _maybeOpen(next.value));
+    // Keeps the offline proof queue alive: proofs captured earlier are sent as soon as the app runs.
+    ref.watch(proofQueueProvider);
     final current = ref.read(activeJobProvider).value;
     if (current != null) _maybeOpen(current);
     final requestCount =

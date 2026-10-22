@@ -73,6 +73,21 @@ String paymentErrorText(AppLocalizations l10n, Object error) {
       return l10n.tipErrTooLarge;
     case 'tip_already_given':
       return l10n.tipErrAlreadyGiven;
+    case 'adjustment_scope_item_required':
+    case 'adjustment_scope_item_invalid':
+      return l10n.adjErrScopeItem;
+    case 'adjustment_within_scope':
+      return l10n.adjErrWithinScope;
+    case 'adjustment_floors_required':
+      return l10n.adjErrFloors;
+    case 'adjustment_helpers_invalid':
+      return l10n.adjErrHelpers;
+    case 'adjustment_amount_invalid':
+      return l10n.adjErrAmount;
+    case 'adjustment_not_allowed_now':
+    case 'adjustment_open_limit':
+    case 'adjustment_type_not_allowed':
+      return l10n.adjErrNotNow;
     case 'adjustment_not_pending':
     case 'adjustment_expired':
       return l10n.adjErrNotPending;
@@ -580,6 +595,26 @@ class AdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
       state = AsyncData(await ref.read(adjustmentsRepositoryProvider).list(bookingId));
     } on Object {
       // Keep what is shown.
+    }
+  }
+
+  /// Asks for a change (moving / freight: extra helper, scope change). One key
+  /// per identical request, reused on retry until it succeeds or is refused.
+  Future<Adjustment> request(NewAdjustmentInput input) async {
+    final intent =
+        'new:${input.type.value}:${input.scopeItem}:${input.helpers}:${input.floors}:${input.amountMinor}:${input.reason}';
+    final key = _keys.putIfAbsent(intent, newIdempotencyKey);
+    try {
+      final saved = await ref.read(adjustmentsRepositoryProvider).create(bookingId, input, key: key);
+      _keys.remove(intent);
+      final current = state.value ?? const <Adjustment>[];
+      state = AsyncData([saved, ...current]);
+      return saved;
+    } on ApiException catch (e) {
+      if (!(e.isOffline || e.kind == ApiFailureKind.server || e.kind == ApiFailureKind.rateLimited)) {
+        _keys.remove(intent);
+      }
+      rethrow;
     }
   }
 

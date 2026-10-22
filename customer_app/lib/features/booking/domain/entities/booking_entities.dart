@@ -15,6 +15,8 @@ enum BookingAction implements ApiEnum {
   tip('tip'),
   requestAdjustment('request_adjustment'),
   viewReceipt('view_receipt'),
+  viewProofs('view_proofs'),
+  resolveDeliveryAttempt('resolve_delivery_attempt'),
   unknown('');
 
   const BookingAction(this.value);
@@ -101,12 +103,17 @@ class PlaceInfo {
     required this.lng,
     this.title,
     this.line,
+    this.contact,
   });
 
   final double lat;
   final double lng;
   final String? title;
   final String? line;
+
+  /// Contact of an intermediate stop (name, masked phone, note); the phone
+  /// itself never reaches the customer app.
+  final StopContact? contact;
 
   String? get label => (title != null && title!.isNotEmpty) ? title : line;
 }
@@ -219,6 +226,8 @@ class Offer {
     this.distanceMeters,
     this.provider,
     this.vehicle,
+    this.scope,
+    this.scopeSummary = const [],
   });
 
   final String id;
@@ -233,6 +242,11 @@ class Offer {
   final int? distanceMeters;
   final ProviderCard? provider;
   final VehicleCard? vehicle;
+
+  /// Moving / freight: what the offer includes, with the server's summary
+  /// lines (never built on the device).
+  final Map<String, Object?>? scope;
+  final List<ScopeLine> scopeSummary;
 
   bool get isCounterOffer => kind == OfferKind.counterOffer;
 }
@@ -322,6 +336,7 @@ class TimelineEntry {
     required this.at,
     required this.sequence,
     this.reason,
+    this.custody,
   });
 
   final BookingStatus status;
@@ -329,6 +344,9 @@ class TimelineEntry {
   final DateTime? at;
   final int sequence;
   final String? reason;
+
+  /// The custody step of a parcel note (`picked_up` ... `returned`).
+  final CustodyStatus? custody;
 }
 
 /// One row of the history list.
@@ -387,6 +405,11 @@ class Booking {
     this.cancellation,
     this.finalFare,
     this.receipt,
+    this.bookingType = BookingType.unknown,
+    this.contacts = const [],
+    this.delivery,
+    this.load,
+    this.scope = const ScopeBlocks(),
   });
 
   final String id;
@@ -421,6 +444,19 @@ class Booking {
   final Receipt? receipt;
   final List<BookingAction> allowedActions;
   final List<TimelineEntry> timeline;
+  final BookingType bookingType;
+
+  /// Sender / recipient / freight contacts (phones masked).
+  final List<BookingContact> contacts;
+
+  /// Custody, proofs, recipient code and failed attempts; null for rides.
+  final DeliveryState? delivery;
+
+  /// Items, weight, volume, pickup window (moving / freight).
+  final LoadInfo? load;
+
+  /// Requested and agreed scope with the server's summaries.
+  final ScopeBlocks scope;
 
   bool can(BookingAction action) => allowedActions.contains(action);
 
@@ -442,6 +478,7 @@ class Booking {
     BookingStatus.providerHeadingToPickup,
     BookingStatus.providerArrived,
     BookingStatus.inProgress,
+    BookingStatus.deliveryAttemptFailed,
   }.contains(status);
 
   bool get isFinished => const {
@@ -530,16 +567,37 @@ class BookingRequest {
     this.currency,
     this.paymentMethod = PaymentMethodType.cash,
     this.couponCode,
+    this.bookingType = BookingType.onDemand,
+    this.restrictedGoodsPolicyVersion,
   });
 
+  /// `parcel`, `freight` or `on_demand`, from the category's allowed types.
+  final BookingType bookingType;
+
+  /// Id of the current restricted-goods policy the customer acknowledged
+  /// (courier only).
+  final String? restrictedGoodsPolicyVersion;
   final String? couponCode;
   final int serviceCategoryId;
   final PlaceInfo pickup;
   final PlaceInfo? dropoff;
-  final List<PlaceInfo> stops;
+  final List<StopInput> stops;
   final Map<String, Object?> serviceDetails;
   final int? passengers;
   final int proposedFareMinor;
   final String? currency;
   final PaymentMethodType paymentMethod;
+}
+
+/// An intermediate stop with the person to meet there (moving / freight).
+/// The contact is stored encrypted and shown to the selected provider only.
+class StopInput {
+  const StopInput({required this.place, this.contactName, this.contactPhone, this.contactNote});
+
+  final PlaceInfo place;
+  final String? contactName;
+  final String? contactPhone;
+  final String? contactNote;
+
+  bool get hasContact => (contactName ?? '').trim().isNotEmpty || (contactPhone ?? '').trim().isNotEmpty;
 }

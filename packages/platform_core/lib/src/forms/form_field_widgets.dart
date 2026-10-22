@@ -584,28 +584,38 @@ class _ChecklistAnswer extends StatelessWidget {
   final String languageCode;
   final ValueChanged<Object?> onChanged;
 
-  Map<String, int> get _quantities => {
+  /// item code -> the row as typed (quantity plus optional note, weight and
+  /// dimensions).
+  Map<String, Map<String, Object?>> get _rows => {
     for (final e in value)
       if (e is Map)
-        '${e['item']}': e['quantity'] is int
-            ? e['quantity'] as int
-            : (FormLogic.parseNumber('${e['quantity']}')?.toInt() ?? 1),
+        '${e['item']}': {
+          for (final entry in e.entries) '${entry.key}': entry.value,
+          'quantity': e['quantity'] is int
+              ? e['quantity'] as int
+              : (FormLogic.parseNumber('${e['quantity']}')?.toInt() ?? 1),
+        },
   };
 
-  void _emit(Map<String, int> quantities) => onChanged([
+  void _emit(Map<String, Map<String, Object?>> rows) => onChanged([
     for (final o in field.options)
-      if (quantities.containsKey(o.value))
-        {'item': o.value, 'quantity': quantities[o.value]},
+      if (rows.containsKey(o.value)) {...rows[o.value]!, 'item': o.value},
   ]);
+
+  bool get _hasDetails =>
+      strings.itemNote != null &&
+      strings.itemWeight != null &&
+      strings.itemDimensions != null;
 
   @override
   Widget build(BuildContext context) {
-    final quantities = _quantities;
+    final rows = _rows;
+    int quantityOf(String code) => rows[code]!['quantity']! as int;
     return InputDecorator(
       decoration: decoration,
       child: Column(
         children: [
-          for (final o in field.options)
+          for (final o in field.options) ...[
             Row(
               children: [
                 Expanded(
@@ -615,15 +625,17 @@ class _ChecklistAnswer extends StatelessWidget {
                     controlAffinity: ListTileControlAffinity.leading,
                     dense: true,
                     title: Text(o.label.resolve(languageCode)),
-                    value: quantities.containsKey(o.value),
+                    value: rows.containsKey(o.value),
                     onChanged: (on) {
-                      final next = {...quantities};
-                      on == true ? next[o.value] = 1 : next.remove(o.value);
+                      final next = {...rows};
+                      on == true
+                          ? next[o.value] = {'quantity': 1}
+                          : next.remove(o.value);
                       _emit(next);
                     },
                   ),
                 ),
-                if (quantities.containsKey(o.value))
+                if (rows.containsKey(o.value))
                   Semantics(
                     label: strings.quantity,
                     child: Row(
@@ -632,25 +644,31 @@ class _ChecklistAnswer extends StatelessWidget {
                         IconButton(
                           key: ValueKey('${field.key}-minus-${o.value}'),
                           icon: const Icon(Icons.remove_circle_outline),
-                          onPressed: quantities[o.value]! > 1
+                          onPressed: quantityOf(o.value) > 1
                               ? () => _emit({
-                                  ...quantities,
-                                  o.value: quantities[o.value]! - 1,
+                                  ...rows,
+                                  o.value: {
+                                    ...rows[o.value]!,
+                                    'quantity': quantityOf(o.value) - 1,
+                                  },
                                 })
                               : null,
                         ),
                         Text(
-                          '${quantities[o.value]}',
+                          '${quantityOf(o.value)}',
                           key: ValueKey('${field.key}-qty-${o.value}'),
                         ),
                         IconButton(
                           key: ValueKey('${field.key}-plus-${o.value}'),
                           icon: const Icon(Icons.add_circle_outline),
                           onPressed:
-                              quantities[o.value]! < FormLogic.quantityMax
+                              quantityOf(o.value) < FormLogic.quantityMax
                               ? () => _emit({
-                                  ...quantities,
-                                  o.value: quantities[o.value]! + 1,
+                                  ...rows,
+                                  o.value: {
+                                    ...rows[o.value]!,
+                                    'quantity': quantityOf(o.value) + 1,
+                                  },
                                 })
                               : null,
                         ),
@@ -659,6 +677,135 @@ class _ChecklistAnswer extends StatelessWidget {
                   ),
               ],
             ),
+            if (_hasDetails && rows.containsKey(o.value))
+              _ItemDetails(
+                key: ValueKey('${field.key}-details-${o.value}'),
+                keyPrefix: '${field.key}-${o.value}',
+                row: rows[o.value]!,
+                strings: strings,
+                onChanged: (row) => _emit({...rows, o.value: row}),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Optional facts of one checked item: a note, its weight and its size in cm
+/// (they feed the volume and the weight the drivers see).
+class _ItemDetails extends StatefulWidget {
+  const _ItemDetails({
+    super.key,
+    required this.keyPrefix,
+    required this.row,
+    required this.strings,
+    required this.onChanged,
+  });
+
+  final String keyPrefix;
+  final Map<String, Object?> row;
+  final DynamicFormStrings strings;
+  final ValueChanged<Map<String, Object?>> onChanged;
+
+  @override
+  State<_ItemDetails> createState() => _ItemDetailsState();
+}
+
+class _ItemDetailsState extends State<_ItemDetails> {
+  late final _note = TextEditingController(text: '${widget.row['note'] ?? ''}');
+  late final _weight = TextEditingController(
+    text: '${widget.row['weight_kg'] ?? ''}',
+  );
+  late final Map<String, TextEditingController> _dims = {
+    for (final side in FormLogic.dimensionSides)
+      side: TextEditingController(
+        text: '${(widget.row['dimensions'] as Map?)?[side] ?? ''}',
+      ),
+  };
+
+  @override
+  void dispose() {
+    _note.dispose();
+    _weight.dispose();
+    for (final c in _dims.values) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  void _changed() {
+    final row = <String, Object?>{'quantity': widget.row['quantity']};
+    final note = _note.text.trim();
+    if (note.isNotEmpty) row['note'] = note;
+    final weight = FormLogic.parseNumber(_weight.text);
+    if (_weight.text.trim().isNotEmpty) row['weight_kg'] = weight ?? _weight.text;
+    final dims = {
+      for (final side in FormLogic.dimensionSides)
+        side: FormLogic.parseNumber(_dims[side]!.text),
+    };
+    if (dims.values.any((v) => v != null)) row['dimensions'] = dims;
+    widget.onChanged(row);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = widget.strings;
+    final labels = {'length': s.length, 'width': s.width, 'height': s.height};
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(
+        start: AppSpacing.lg,
+        bottom: AppSpacing.sm,
+      ),
+      child: Column(
+        children: [
+          TextField(
+            key: ValueKey('${widget.keyPrefix}-note'),
+            controller: _note,
+            maxLength: 255,
+            decoration: InputDecoration(
+              labelText: s.itemNote,
+              counterText: '',
+              isDense: true,
+            ),
+            onChanged: (_) => _changed(),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          TextField(
+            key: ValueKey('${widget.keyPrefix}-weight'),
+            controller: _weight,
+            decoration: InputDecoration(
+              labelText: s.itemWeight,
+              suffixText: s.kilograms,
+              isDense: true,
+            ),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            textDirection: TextDirection.ltr,
+            onChanged: (_) => _changed(),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Row(
+            children: [
+              for (final side in FormLogic.dimensionSides) ...[
+                if (side != 'length') const SizedBox(width: AppSpacing.xs),
+                Expanded(
+                  child: TextField(
+                    key: ValueKey('${widget.keyPrefix}-$side'),
+                    controller: _dims[side],
+                    decoration: InputDecoration(
+                      labelText: '${labels[side]} (${s.itemDimensions})',
+                      isDense: true,
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    textDirection: TextDirection.ltr,
+                    onChanged: (_) => _changed(),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ],
       ),
     );

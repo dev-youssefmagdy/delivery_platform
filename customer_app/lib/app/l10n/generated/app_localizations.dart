@@ -4207,6 +4207,858 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'يمكن للطرف الآخر فقط الإجابة عن هذا الطلب.'**
   String get adjErrCounterpart;
+
+  /// No description provided for @scHelpers.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد العمال'**
+  String get scHelpers;
+
+  /// No description provided for @scPacking.
+  ///
+  /// In ar, this message translates to:
+  /// **'التغليف'**
+  String get scPacking;
+
+  /// No description provided for @scStairs.
+  ///
+  /// In ar, this message translates to:
+  /// **'السلالم'**
+  String get scStairs;
+
+  /// No description provided for @scAssembly.
+  ///
+  /// In ar, this message translates to:
+  /// **'فك وتركيب الأثاث'**
+  String get scAssembly;
+
+  /// No description provided for @scEquipment.
+  ///
+  /// In ar, this message translates to:
+  /// **'معدات التحميل'**
+  String get scEquipment;
+
+  /// No description provided for @scWaiting.
+  ///
+  /// In ar, this message translates to:
+  /// **'مدة الانتظار المجانية'**
+  String get scWaiting;
+
+  /// No description provided for @scExtraStops.
+  ///
+  /// In ar, this message translates to:
+  /// **'محطات إضافية مشمولة'**
+  String get scExtraStops;
+
+  /// No description provided for @scTolls.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسوم الطرق'**
+  String get scTolls;
+
+  /// No description provided for @scParking.
+  ///
+  /// In ar, this message translates to:
+  /// **'الانتظار والركن'**
+  String get scParking;
+
+  /// No description provided for @scLegendIncluded.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشمول'**
+  String get scLegendIncluded;
+
+  /// No description provided for @scLegendExcluded.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير مشمول'**
+  String get scLegendExcluded;
+
+  /// No description provided for @scLegendAtCost.
+  ///
+  /// In ar, this message translates to:
+  /// **'بالتكلفة'**
+  String get scLegendAtCost;
+
+  /// No description provided for @scSummaryTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما يشمله العرض'**
+  String get scSummaryTitle;
+
+  /// No description provided for @scAgreedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما تم الاتفاق عليه'**
+  String get scAgreedTitle;
+
+  /// No description provided for @scRequestedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما طلبته'**
+  String get scRequestedTitle;
+
+  /// No description provided for @adjAmountLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'المبلغ المقترح'**
+  String get adjAmountLabel;
+
+  /// No description provided for @adjErrAmount.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل مبلغاً صحيحاً أكبر من الصفر.'**
+  String get adjErrAmount;
+
+  /// No description provided for @adjErrFloors.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل عدد الأدوار الإضافية.'**
+  String get adjErrFloors;
+
+  /// No description provided for @adjErrHelpers.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد العمال الإضافيين غير مسموح.'**
+  String get adjErrHelpers;
+
+  /// No description provided for @adjErrNotNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن طلب تغيير الآن.'**
+  String get adjErrNotNow;
+
+  /// No description provided for @adjErrReason.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب السبب (3 أحرف على الأقل).'**
+  String get adjErrReason;
+
+  /// No description provided for @adjErrScopeItem.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر البند المعني من الاتفاق.'**
+  String get adjErrScopeItem;
+
+  /// No description provided for @adjErrWithinScope.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا البند مشمول في الاتفاق ولا يمكن تحميل مبلغ إضافي عنه.'**
+  String get adjErrWithinScope;
+
+  /// No description provided for @adjScopeItemLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'بند الاتفاق: {item}'**
+  String adjScopeItemLine(String item);
+
+  /// No description provided for @adjHelpersLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} عمال'**
+  String adjHelpersLine(int count);
+
+  /// No description provided for @adjFloorsLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} أدوار'**
+  String adjFloorsLine(int count);
+
+  /// No description provided for @adjHelpersCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد العمال'**
+  String get adjHelpersCount;
+
+  /// No description provided for @adjPickItem.
+  ///
+  /// In ar, this message translates to:
+  /// **'البند المعني من الاتفاق'**
+  String get adjPickItem;
+
+  /// No description provided for @adjReasonLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'السبب'**
+  String get adjReasonLabel;
+
+  /// No description provided for @adjRequestButton.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب تغيير في الاتفاق'**
+  String get adjRequestButton;
+
+  /// No description provided for @adjRequestSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال طلبك للسائق.'**
+  String get adjRequestSent;
+
+  /// No description provided for @adjSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الطلب'**
+  String get adjSend;
+
+  /// No description provided for @adjTypeHelper.
+  ///
+  /// In ar, this message translates to:
+  /// **'عامل إضافي'**
+  String get adjTypeHelper;
+
+  /// No description provided for @adjTypeScope.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيير في الاتفاق'**
+  String get adjTypeScope;
+
+  /// No description provided for @dcCustodyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسار الشحنة'**
+  String get dcCustodyTitle;
+
+  /// No description provided for @dcCustodyNotStarted.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يتم استلام الشحنة بعد.'**
+  String get dcCustodyNotStarted;
+
+  /// No description provided for @dcCustodyPickedUp.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الاستلام من المرسل'**
+  String get dcCustodyPickedUp;
+
+  /// No description provided for @dcCustodyInTransit.
+  ///
+  /// In ar, this message translates to:
+  /// **'في الطريق'**
+  String get dcCustodyInTransit;
+
+  /// No description provided for @dcCustodyArrived.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلت إلى نقطة التسليم'**
+  String get dcCustodyArrived;
+
+  /// No description provided for @dcCustodyFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر التسليم'**
+  String get dcCustodyFailed;
+
+  /// No description provided for @dcCustodyReturning.
+  ///
+  /// In ar, this message translates to:
+  /// **'في طريق العودة للمرسل'**
+  String get dcCustodyReturning;
+
+  /// No description provided for @dcCustodyDelivered.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم التسليم'**
+  String get dcCustodyDelivered;
+
+  /// No description provided for @dcCustodyReturned.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الإرجاع للمرسل'**
+  String get dcCustodyReturned;
+
+  /// No description provided for @dcCustodyUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'حالة غير معروفة'**
+  String get dcCustodyUnknown;
+
+  /// No description provided for @dcOtpTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز المستلم'**
+  String get dcOtpTitle;
+
+  /// No description provided for @dcOtpWaiting.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يُرسل الرمز بعد'**
+  String get dcOtpWaiting;
+
+  /// No description provided for @dcOtpSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل الرمز للمستلم'**
+  String get dcOtpSent;
+
+  /// No description provided for @dcOtpSmsFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر إرسال الرسالة'**
+  String get dcOtpSmsFailed;
+
+  /// No description provided for @dcOtpVerified.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم التحقق'**
+  String get dcOtpVerified;
+
+  /// No description provided for @dcOtpLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرمز موقوف'**
+  String get dcOtpLocked;
+
+  /// No description provided for @dcOtpAttemptsLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاولات المتبقية: {left}'**
+  String dcOtpAttemptsLeft(int left);
+
+  /// No description provided for @dcOtpShareHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'نرسل رمزاً برسالة نصية إلى المستلم، ويقوله للمندوب عند استلام الشحنة. لا ترسله لأي شخص آخر.'**
+  String get dcOtpShareHint;
+
+  /// No description provided for @dcProofsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إثباتات الاستلام والتسليم'**
+  String get dcProofsTitle;
+
+  /// No description provided for @dcNoProofs.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد إثباتات بعد.'**
+  String get dcNoProofs;
+
+  /// No description provided for @dcProofLoadError.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تحميل الصورة. اضغط للمحاولة.'**
+  String get dcProofLoadError;
+
+  /// No description provided for @dcProofPhoto.
+  ///
+  /// In ar, this message translates to:
+  /// **'صورة'**
+  String get dcProofPhoto;
+
+  /// No description provided for @dcProofSignature.
+  ///
+  /// In ar, this message translates to:
+  /// **'توقيع'**
+  String get dcProofSignature;
+
+  /// No description provided for @dcProofOtp.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز المستلم'**
+  String get dcProofOtp;
+
+  /// No description provided for @dcProofPin.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز البدء'**
+  String get dcProofPin;
+
+  /// No description provided for @dcProofChecklist.
+  ///
+  /// In ar, this message translates to:
+  /// **'قائمة فحص'**
+  String get dcProofChecklist;
+
+  /// No description provided for @dcProofWeight.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوزن'**
+  String get dcProofWeight;
+
+  /// No description provided for @dcProofOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'إثبات'**
+  String get dcProofOther;
+
+  /// No description provided for @dcStagePickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'عند الاستلام'**
+  String get dcStagePickup;
+
+  /// No description provided for @dcStageDelivery.
+  ///
+  /// In ar, this message translates to:
+  /// **'عند التسليم'**
+  String get dcStageDelivery;
+
+  /// No description provided for @dcStageReturn.
+  ///
+  /// In ar, this message translates to:
+  /// **'عند الإرجاع'**
+  String get dcStageReturn;
+
+  /// No description provided for @dcChkSealed.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطرد مغلق'**
+  String get dcChkSealed;
+
+  /// No description provided for @dcChkUndamaged.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطرد سليم بلا أضرار'**
+  String get dcChkUndamaged;
+
+  /// No description provided for @dcChkLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'البيانات مطابقة للملصق'**
+  String get dcChkLabel;
+
+  /// No description provided for @dcChkRecipient.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم التأكد من هوية المستلم'**
+  String get dcChkRecipient;
+
+  /// No description provided for @dcWeightValue.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوزن المقاس: {kg} كجم'**
+  String dcWeightValue(String kg);
+
+  /// No description provided for @dcAttemptsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاولات التسليم'**
+  String get dcAttemptsTitle;
+
+  /// No description provided for @dcAttemptNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاولة {number}'**
+  String dcAttemptNumber(int number);
+
+  /// No description provided for @dcAttemptEvidence.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرفق صورة'**
+  String get dcAttemptEvidence;
+
+  /// No description provided for @dcPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'بانتظار قرارك'**
+  String get dcPending;
+
+  /// No description provided for @dcOutUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'المستلم غير متاح'**
+  String get dcOutUnavailable;
+
+  /// No description provided for @dcOutRefused.
+  ///
+  /// In ar, this message translates to:
+  /// **'المستلم رفض الاستلام'**
+  String get dcOutRefused;
+
+  /// No description provided for @dcOutWrongAddress.
+  ///
+  /// In ar, this message translates to:
+  /// **'العنوان خاطئ'**
+  String get dcOutWrongAddress;
+
+  /// No description provided for @dcOutOtpFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر التحقق من الرمز'**
+  String get dcOutOtpFailed;
+
+  /// No description provided for @dcOutRestricted.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشحنة تحتوي على مواد ممنوعة'**
+  String get dcOutRestricted;
+
+  /// No description provided for @dcOutOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب آخر'**
+  String get dcOutOther;
+
+  /// No description provided for @dcResRetry.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة محاولة التسليم'**
+  String get dcResRetry;
+
+  /// No description provided for @dcResReturn.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرجاع للمرسل'**
+  String get dcResReturn;
+
+  /// No description provided for @dcResOperations.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحويل لفريق العمليات'**
+  String get dcResOperations;
+
+  /// No description provided for @dcResUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'قرار غير معروف'**
+  String get dcResUnknown;
+
+  /// No description provided for @dcRoleSender.
+  ///
+  /// In ar, this message translates to:
+  /// **'المرسل'**
+  String get dcRoleSender;
+
+  /// No description provided for @dcRoleRecipient.
+  ///
+  /// In ar, this message translates to:
+  /// **'المستلم'**
+  String get dcRoleRecipient;
+
+  /// No description provided for @dcRolePickup.
+  ///
+  /// In ar, this message translates to:
+  /// **'جهة الاتصال عند التحميل'**
+  String get dcRolePickup;
+
+  /// No description provided for @dcRoleDropoff.
+  ///
+  /// In ar, this message translates to:
+  /// **'جهة الاتصال عند التسليم'**
+  String get dcRoleDropoff;
+
+  /// No description provided for @dcContactsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'جهات الاتصال'**
+  String get dcContactsTitle;
+
+  /// No description provided for @dcFailedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تسليم شحنتك'**
+  String get dcFailedTitle;
+
+  /// No description provided for @dcFailedChoose.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر ما يحدث للشحنة الآن.'**
+  String get dcFailedChoose;
+
+  /// No description provided for @dcShowProofs.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض صور الإثبات'**
+  String get dcShowProofs;
+
+  /// No description provided for @dcHideProofs.
+  ///
+  /// In ar, this message translates to:
+  /// **'إخفاء صور الإثبات'**
+  String get dcHideProofs;
+
+  /// No description provided for @dcErrAttemptDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم اتخاذ قرار بشأن هذه المحاولة بالفعل.'**
+  String get dcErrAttemptDone;
+
+  /// No description provided for @dcErrAttemptsExhausted.
+  ///
+  /// In ar, this message translates to:
+  /// **'استُنفدت محاولات التسليم. اختر الإرجاع أو العمليات.'**
+  String get dcErrAttemptsExhausted;
+
+  /// No description provided for @dcErrScopeMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد اتفاق نقل لهذا الطلب بعد.'**
+  String get dcErrScopeMissing;
+
+  /// No description provided for @rgTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إقرار بالمواد الممنوعة'**
+  String get rgTitle;
+
+  /// No description provided for @rgIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقرأ سياسة المواد الممنوعة قبل إرسال الطرد.'**
+  String get rgIntro;
+
+  /// No description provided for @rgReadPolicy.
+  ///
+  /// In ar, this message translates to:
+  /// **'قراءة السياسة'**
+  String get rgReadPolicy;
+
+  /// No description provided for @rgAcknowledge.
+  ///
+  /// In ar, this message translates to:
+  /// **'أقر بأن طردي لا يحتوي على مواد ممنوعة (النسخة {version})'**
+  String rgAcknowledge(int version);
+
+  /// No description provided for @rgErrRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'يجب الإقرار بسياسة المواد الممنوعة.'**
+  String get rgErrRequired;
+
+  /// No description provided for @rgErrStale.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيرت السياسة. اقرأها وأقر بها من جديد.'**
+  String get rgErrStale;
+
+  /// No description provided for @rgErrUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تحميل سياسة المواد الممنوعة الآن.'**
+  String get rgErrUnavailable;
+
+  /// No description provided for @lfLoadTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحمولة'**
+  String get lfLoadTitle;
+
+  /// No description provided for @lfLoadWeight.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوزن: {kg} كجم'**
+  String lfLoadWeight(String kg);
+
+  /// No description provided for @lfLoadVolume.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحجم: {volume} م³'**
+  String lfLoadVolume(String volume);
+
+  /// No description provided for @lfLoadValue.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيمة البضاعة: {value}'**
+  String lfLoadValue(String value);
+
+  /// No description provided for @lfLoadWindow.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحميل من {start} إلى {end}'**
+  String lfLoadWindow(String start, String end);
+
+  /// No description provided for @lfFileVideo.
+  ///
+  /// In ar, this message translates to:
+  /// **'فيديو'**
+  String get lfFileVideo;
+
+  /// No description provided for @lfFileDocument.
+  ///
+  /// In ar, this message translates to:
+  /// **'مستند'**
+  String get lfFileDocument;
+
+  /// No description provided for @lfItemNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة عن هذا الغرض'**
+  String get lfItemNote;
+
+  /// No description provided for @lfItemWeight.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوزن'**
+  String get lfItemWeight;
+
+  /// No description provided for @lfItemDimensionsUnit.
+  ///
+  /// In ar, this message translates to:
+  /// **'سم'**
+  String get lfItemDimensionsUnit;
+
+  /// No description provided for @lfPickVideo.
+  ///
+  /// In ar, this message translates to:
+  /// **'فيديو من المعرض'**
+  String get lfPickVideo;
+
+  /// No description provided for @lfUploading.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ رفع الملف…'**
+  String get lfUploading;
+
+  /// No description provided for @lfErrVolume.
+  ///
+  /// In ar, this message translates to:
+  /// **'حجم الحمولة أكبر من الحد المسموح لهذه الخدمة.'**
+  String get lfErrVolume;
+
+  /// No description provided for @lfErrWindowIncomplete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدد بداية ونهاية موعد التحميل.'**
+  String get lfErrWindowIncomplete;
+
+  /// No description provided for @lfErrWindowPast.
+  ///
+  /// In ar, this message translates to:
+  /// **'موعد التحميل في الماضي.'**
+  String get lfErrWindowPast;
+
+  /// No description provided for @lfErrWindowInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'نهاية موعد التحميل يجب أن تكون بعد بدايته.'**
+  String get lfErrWindowInvalid;
+
+  /// No description provided for @lfErrWindowLong.
+  ///
+  /// In ar, this message translates to:
+  /// **'موعد التحميل طويل جداً.'**
+  String get lfErrWindowLong;
+
+  /// No description provided for @lfErrAttachmentInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أحد الملفات المرفقة غير صالح. أعد رفعه.'**
+  String get lfErrAttachmentInvalid;
+
+  /// No description provided for @lfErrAttachmentLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'تجاوزت الحد المسموح من الصور أو الفيديوهات أو المستندات.'**
+  String get lfErrAttachmentLimit;
+
+  /// No description provided for @lfErrPendingLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك ملفات مرفوعة كثيرة لم تُستخدم. احذف بعضها أو أكمل الحجز.'**
+  String get lfErrPendingLimit;
+
+  /// No description provided for @lfErrInUse.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الملف مرتبط بحجز ولا يمكن حذفه.'**
+  String get lfErrInUse;
+
+  /// No description provided for @lfErrInfected.
+  ///
+  /// In ar, this message translates to:
+  /// **'رُفض الملف لأسباب أمنية.'**
+  String get lfErrInfected;
+
+  /// No description provided for @lfErrTooLarge.
+  ///
+  /// In ar, this message translates to:
+  /// **'حجم الملف أكبر من المسموح.'**
+  String get lfErrTooLarge;
+
+  /// No description provided for @lfErrTooSmall.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصورة صغيرة جداً.'**
+  String get lfErrTooSmall;
+
+  /// No description provided for @lfErrFileType.
+  ///
+  /// In ar, this message translates to:
+  /// **'نوع الملف غير مدعوم.'**
+  String get lfErrFileType;
+
+  /// No description provided for @lfErrScanner.
+  ///
+  /// In ar, this message translates to:
+  /// **'فحص الملفات غير متاح الآن. حاول بعد قليل.'**
+  String get lfErrScanner;
+
+  /// No description provided for @lfErrUploadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر رفع الملف. حاول مرة أخرى.'**
+  String get lfErrUploadFailed;
+
+  /// No description provided for @stpTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'محطات إضافية'**
+  String get stpTitle;
+
+  /// No description provided for @stpIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف محطات في الطريق مع اسم وهاتف من سيقابل السائق في كل محطة.'**
+  String get stpIntro;
+
+  /// No description provided for @stpAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة محطة'**
+  String get stpAdd;
+
+  /// No description provided for @stpMax.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلت إلى الحد الأقصى للمحطات ({max}).'**
+  String stpMax(int max);
+
+  /// No description provided for @stpNumbered.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحطة {number}: {place}'**
+  String stpNumbered(int number, String place);
+
+  /// No description provided for @stpMoveUp.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحريك لأعلى'**
+  String get stpMoveUp;
+
+  /// No description provided for @stpMoveDown.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحريك لأسفل'**
+  String get stpMoveDown;
+
+  /// No description provided for @stpRemove.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف المحطة'**
+  String get stpRemove;
+
+  /// No description provided for @stpContactName.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسم جهة الاتصال'**
+  String get stpContactName;
+
+  /// No description provided for @stpContactPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'هاتف جهة الاتصال'**
+  String get stpContactPhone;
+
+  /// No description provided for @stpNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة للسائق'**
+  String get stpNote;
+
+  /// No description provided for @stpErrName.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب اسم جهة الاتصال.'**
+  String get stpErrName;
 }
 
 class _AppLocalizationsDelegate

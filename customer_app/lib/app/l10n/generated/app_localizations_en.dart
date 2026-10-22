@@ -2323,4 +2323,470 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get adjErrCounterpart =>
       'Only the other side can answer this request.';
+
+  @override
+  String get scHelpers => 'Helpers';
+
+  @override
+  String get scPacking => 'Packing';
+
+  @override
+  String get scStairs => 'Stairs';
+
+  @override
+  String get scAssembly => 'Assembly';
+
+  @override
+  String get scEquipment => 'Loading equipment';
+
+  @override
+  String get scWaiting => 'Free waiting time';
+
+  @override
+  String get scExtraStops => 'Extra stops included';
+
+  @override
+  String get scTolls => 'Road tolls';
+
+  @override
+  String get scParking => 'Parking';
+
+  @override
+  String get scLegendIncluded => 'Included';
+
+  @override
+  String get scLegendExcluded => 'Not included';
+
+  @override
+  String get scLegendAtCost => 'At cost';
+
+  @override
+  String get scSummaryTitle => 'What is included';
+
+  @override
+  String get scAgreedTitle => 'What was agreed';
+
+  @override
+  String get scRequestedTitle => 'What you asked for';
+
+  @override
+  String get adjAmountLabel => 'Proposed amount';
+
+  @override
+  String get adjErrAmount => 'Enter a valid amount above zero.';
+
+  @override
+  String get adjErrFloors => 'Enter the number of extra floors.';
+
+  @override
+  String get adjErrHelpers => 'That number of extra helpers is not allowed.';
+
+  @override
+  String get adjErrNotNow => 'A change cannot be requested now.';
+
+  @override
+  String get adjErrReason => 'Write the reason (at least 3 characters).';
+
+  @override
+  String get adjErrScopeItem => 'Choose the item of the agreement.';
+
+  @override
+  String get adjErrWithinScope =>
+      'This item is covered by the agreement and cannot be charged extra.';
+
+  @override
+  String adjScopeItemLine(String item) {
+    return 'Agreement item: $item';
+  }
+
+  @override
+  String adjHelpersLine(int count) {
+    return '$count helpers';
+  }
+
+  @override
+  String adjFloorsLine(int count) {
+    return '$count floors';
+  }
+
+  @override
+  String get adjHelpersCount => 'Number of helpers';
+
+  @override
+  String get adjPickItem => 'Item of the agreement';
+
+  @override
+  String get adjReasonLabel => 'Reason';
+
+  @override
+  String get adjRequestButton => 'Request a change to the agreement';
+
+  @override
+  String get adjRequestSent => 'Your request was sent to the driver.';
+
+  @override
+  String get adjSend => 'Send request';
+
+  @override
+  String get adjTypeHelper => 'Extra helper';
+
+  @override
+  String get adjTypeScope => 'Agreement change';
+
+  @override
+  String get dcCustodyTitle => 'Parcel journey';
+
+  @override
+  String get dcCustodyNotStarted => 'The parcel has not been picked up yet.';
+
+  @override
+  String get dcCustodyPickedUp => 'Picked up';
+
+  @override
+  String get dcCustodyInTransit => 'On the way';
+
+  @override
+  String get dcCustodyArrived => 'Arrived at drop-off';
+
+  @override
+  String get dcCustodyFailed => 'Delivery failed';
+
+  @override
+  String get dcCustodyReturning => 'Returning to sender';
+
+  @override
+  String get dcCustodyDelivered => 'Delivered';
+
+  @override
+  String get dcCustodyReturned => 'Returned to sender';
+
+  @override
+  String get dcCustodyUnknown => 'Unknown status';
+
+  @override
+  String get dcOtpTitle => 'Recipient code';
+
+  @override
+  String get dcOtpWaiting => 'Code not sent yet';
+
+  @override
+  String get dcOtpSent => 'Code sent to the recipient';
+
+  @override
+  String get dcOtpSmsFailed => 'The message could not be sent';
+
+  @override
+  String get dcOtpVerified => 'Verified';
+
+  @override
+  String get dcOtpLocked => 'Code locked';
+
+  @override
+  String dcOtpAttemptsLeft(int left) {
+    return 'Attempts left: $left';
+  }
+
+  @override
+  String get dcOtpShareHint =>
+      'We text a code to the recipient, who reads it to the courier on receiving the parcel. Do not send it to anyone else.';
+
+  @override
+  String get dcProofsTitle => 'Pickup and delivery proofs';
+
+  @override
+  String get dcNoProofs => 'No proofs yet.';
+
+  @override
+  String get dcProofLoadError => 'The picture could not load. Tap to retry.';
+
+  @override
+  String get dcProofPhoto => 'Photo';
+
+  @override
+  String get dcProofSignature => 'Signature';
+
+  @override
+  String get dcProofOtp => 'Recipient code';
+
+  @override
+  String get dcProofPin => 'Start PIN';
+
+  @override
+  String get dcProofChecklist => 'Checklist';
+
+  @override
+  String get dcProofWeight => 'Weight';
+
+  @override
+  String get dcProofOther => 'Proof';
+
+  @override
+  String get dcStagePickup => 'At pickup';
+
+  @override
+  String get dcStageDelivery => 'At delivery';
+
+  @override
+  String get dcStageReturn => 'On return';
+
+  @override
+  String get dcChkSealed => 'Package is sealed';
+
+  @override
+  String get dcChkUndamaged => 'Package is undamaged';
+
+  @override
+  String get dcChkLabel => 'Label matches the order';
+
+  @override
+  String get dcChkRecipient => 'Recipient was checked';
+
+  @override
+  String dcWeightValue(String kg) {
+    return 'Measured weight: $kg kg';
+  }
+
+  @override
+  String get dcAttemptsTitle => 'Delivery attempts';
+
+  @override
+  String dcAttemptNumber(int number) {
+    return 'Attempt $number';
+  }
+
+  @override
+  String get dcAttemptEvidence => 'Picture attached';
+
+  @override
+  String get dcPending => 'Waiting for your decision';
+
+  @override
+  String get dcOutUnavailable => 'Recipient not available';
+
+  @override
+  String get dcOutRefused => 'Recipient refused';
+
+  @override
+  String get dcOutWrongAddress => 'Wrong address';
+
+  @override
+  String get dcOutOtpFailed => 'Code could not be verified';
+
+  @override
+  String get dcOutRestricted => 'The parcel holds restricted items';
+
+  @override
+  String get dcOutOther => 'Other reason';
+
+  @override
+  String get dcResRetry => 'Try delivering again';
+
+  @override
+  String get dcResReturn => 'Return to sender';
+
+  @override
+  String get dcResOperations => 'Hand to operations';
+
+  @override
+  String get dcResUnknown => 'Unknown decision';
+
+  @override
+  String get dcRoleSender => 'Sender';
+
+  @override
+  String get dcRoleRecipient => 'Recipient';
+
+  @override
+  String get dcRolePickup => 'Pickup contact';
+
+  @override
+  String get dcRoleDropoff => 'Drop-off contact';
+
+  @override
+  String get dcContactsTitle => 'Contacts';
+
+  @override
+  String get dcFailedTitle => 'Your parcel could not be delivered';
+
+  @override
+  String get dcFailedChoose => 'Choose what happens to the parcel now.';
+
+  @override
+  String get dcShowProofs => 'Show proof pictures';
+
+  @override
+  String get dcHideProofs => 'Hide proof pictures';
+
+  @override
+  String get dcErrAttemptDone => 'This attempt has already been decided.';
+
+  @override
+  String get dcErrAttemptsExhausted =>
+      'Delivery attempts are used up. Choose return or operations.';
+
+  @override
+  String get dcErrScopeMissing =>
+      'There is no moving agreement for this request yet.';
+
+  @override
+  String get rgTitle => 'Restricted goods acknowledgement';
+
+  @override
+  String get rgIntro =>
+      'Read the restricted goods policy before sending the parcel.';
+
+  @override
+  String get rgReadPolicy => 'Read the policy';
+
+  @override
+  String rgAcknowledge(int version) {
+    return 'I confirm my parcel holds no restricted goods (version $version)';
+  }
+
+  @override
+  String get rgErrRequired =>
+      'You must acknowledge the restricted goods policy.';
+
+  @override
+  String get rgErrStale =>
+      'The policy changed. Read it and acknowledge it again.';
+
+  @override
+  String get rgErrUnavailable => 'The restricted goods policy could not load.';
+
+  @override
+  String get lfLoadTitle => 'Load';
+
+  @override
+  String lfLoadWeight(String kg) {
+    return 'Weight: $kg kg';
+  }
+
+  @override
+  String lfLoadVolume(String volume) {
+    return 'Volume: $volume m³';
+  }
+
+  @override
+  String lfLoadValue(String value) {
+    return 'Goods value: $value';
+  }
+
+  @override
+  String lfLoadWindow(String start, String end) {
+    return 'Loading between $start and $end';
+  }
+
+  @override
+  String get lfFileVideo => 'Video';
+
+  @override
+  String get lfFileDocument => 'Document';
+
+  @override
+  String get lfItemNote => 'Note about this item';
+
+  @override
+  String get lfItemWeight => 'Weight';
+
+  @override
+  String get lfItemDimensionsUnit => 'cm';
+
+  @override
+  String get lfPickVideo => 'Video from gallery';
+
+  @override
+  String get lfUploading => 'Uploading the file…';
+
+  @override
+  String get lfErrVolume =>
+      'The load volume is above what this service allows.';
+
+  @override
+  String get lfErrWindowIncomplete =>
+      'Set both the start and the end of the loading window.';
+
+  @override
+  String get lfErrWindowPast => 'The loading window is in the past.';
+
+  @override
+  String get lfErrWindowInvalid => 'The window must end after it starts.';
+
+  @override
+  String get lfErrWindowLong => 'The loading window is too long.';
+
+  @override
+  String get lfErrAttachmentInvalid =>
+      'One of the attached files is not valid. Upload it again.';
+
+  @override
+  String get lfErrAttachmentLimit =>
+      'You passed the limit of photos, videos or documents.';
+
+  @override
+  String get lfErrPendingLimit =>
+      'You have many uploads not used yet. Remove some or finish the booking.';
+
+  @override
+  String get lfErrInUse =>
+      'This file belongs to a booking and cannot be removed.';
+
+  @override
+  String get lfErrInfected => 'The file was refused for security reasons.';
+
+  @override
+  String get lfErrTooLarge => 'The file is too large.';
+
+  @override
+  String get lfErrTooSmall => 'The picture is too small.';
+
+  @override
+  String get lfErrFileType => 'This file type is not supported.';
+
+  @override
+  String get lfErrScanner => 'File checking is unavailable. Try again shortly.';
+
+  @override
+  String get lfErrUploadFailed => 'The file could not be uploaded. Try again.';
+
+  @override
+  String get stpTitle => 'Extra stops';
+
+  @override
+  String get stpIntro =>
+      'Add stops on the way with the name and phone of the person the driver meets at each.';
+
+  @override
+  String get stpAdd => 'Add a stop';
+
+  @override
+  String stpMax(int max) {
+    return 'You reached the stop limit ($max).';
+  }
+
+  @override
+  String stpNumbered(int number, String place) {
+    return 'Stop $number: $place';
+  }
+
+  @override
+  String get stpMoveUp => 'Move up';
+
+  @override
+  String get stpMoveDown => 'Move down';
+
+  @override
+  String get stpRemove => 'Remove the stop';
+
+  @override
+  String get stpContactName => 'Contact name';
+
+  @override
+  String get stpContactPhone => 'Contact phone';
+
+  @override
+  String get stpNote => 'Note for the driver';
+
+  @override
+  String get stpErrName => 'Enter the contact name.';
 }

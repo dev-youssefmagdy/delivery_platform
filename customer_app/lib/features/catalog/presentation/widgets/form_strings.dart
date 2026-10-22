@@ -34,4 +34,7 @@ DynamicFormStrings dynamicFormStrings(AppLocalizations l10n) =>
       photoGallery: l10n.formPhotoGallery,
       pickDate: l10n.formPickDate,
       pickTime: l10n.formPickTime,
+      itemNote: l10n.lfItemNote,
+      itemWeight: l10n.lfItemWeight,
+      itemDimensions: l10n.lfItemDimensionsUnit,
     );

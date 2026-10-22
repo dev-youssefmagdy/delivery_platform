@@ -156,6 +156,9 @@ class BookingDraftNotifier extends Notifier<BookingDraft> {
       request.passengers,
       request.paymentMethod.value,
       request.couponCode,
+      request.bookingType.value,
+      request.restrictedGoodsPolicyVersion,
+      [for (final s in request.stops) [s.place.lat, s.place.lng, s.contactName, s.contactPhone, s.contactNote]],
       jsonEncode(request.serviceDetails, toEncodable: (o) => '$o'),
     ]);
     if (fingerprint != _fingerprint || _key == null) {

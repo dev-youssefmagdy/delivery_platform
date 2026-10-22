@@ -33,6 +33,9 @@ class DynamicFormStrings {
     required this.photoGallery,
     required this.pickDate,
     required this.pickTime,
+    this.itemNote,
+    this.itemWeight,
+    this.itemDimensions,
   });
 
   final String requiredMessage;
@@ -64,6 +67,12 @@ class DynamicFormStrings {
   final String photoGallery;
   final String pickDate;
   final String pickTime;
+
+  /// Optional per-item details of an item checklist (moving): a note, a
+  /// weight and the size unit (cm). All three must be given to show them.
+  final String? itemNote;
+  final String? itemWeight;
+  final String? itemDimensions;
 
   String messageFor(FormFieldIssue issue) {
     final limit = issue.limit ?? 0;

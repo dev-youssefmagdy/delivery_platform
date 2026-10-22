@@ -40,6 +40,7 @@ abstract final class BookingDto {
       lng: lng,
       title: address['title'] as String?,
       line: address['line'] as String?,
+      contact: StopContact.fromJson(m['contact']),
     );
   }
 
@@ -126,6 +127,10 @@ abstract final class BookingDto {
       distanceMeters: _int(m['distance_m']),
       provider: provider(m['provider']),
       vehicle: vehicle(m['vehicle']),
+      scope: m['scope'] is Map && (m['scope'] as Map).isNotEmpty
+          ? Map<String, Object?>.from(m['scope'] as Map)
+          : null,
+      scopeSummary: ScopeLine.list(m['scope_summary']),
     );
   }
 
@@ -254,6 +259,11 @@ abstract final class BookingDto {
       cancellation: cancellation(m['cancellation']),
       finalFare: money(m['final_fare']),
       receipt: receipt(m['receipt']),
+      bookingType: BookingType.parse(m['booking_type'] as String?),
+      contacts: BookingContact.list(m['contacts']),
+      delivery: DeliveryState.fromJson(m['delivery']),
+      load: LoadInfo.fromJson(m['load']),
+      scope: ScopeBlocks.fromBooking(m),
       allowedActions: [
         for (final a in (m['allowed_actions'] as List?) ?? const [])
           BookingAction.parse('$a'),
@@ -266,6 +276,9 @@ abstract final class BookingDto {
             at: _time(e['at']),
             sequence: _int(e['sequence']) ?? 0,
             reason: e['reason'] as String?,
+            custody: e['custody'] == null
+                ? null
+                : CustodyStatus.parse(e['custody'] as String?),
           ),
       ],
     );
@@ -287,5 +300,18 @@ abstract final class BookingDto {
     'lng': p.lng,
     if (p.title != null || p.line != null)
       'address': {'title': ?p.title, 'line': ?p.line},
+  };
+}
+
+extension StopInputBody on StopInput {
+  /// `stops[]` item: the place plus `contact {name, phone, note}` when given.
+  Map<String, Object?> toBody() => {
+    ...BookingDto.placeBody(place),
+    if (hasContact)
+      'contact': {
+        'name': (contactName ?? '').trim(),
+        'phone': (contactPhone ?? '').trim(),
+        if ((contactNote ?? '').trim().isNotEmpty) 'note': contactNote!.trim(),
+      },
   };
 }

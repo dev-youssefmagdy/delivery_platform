@@ -1166,5 +1166,244 @@
   "adjNoteOptional": "ملاحظة (اختيارية)",
   "adjDecideLater": "قرر لاحقاً",
   "adjErrNotPending": "تمت الإجابة عن هذا الطلب أو انتهت مدته.",
-  "adjErrCounterpart": "يمكن للطرف الآخر فقط الإجابة عن هذا الطلب."
+  "adjErrCounterpart": "يمكن للطرف الآخر فقط الإجابة عن هذا الطلب.",
+  "scHelpers": "عدد العمال",
+  "scPacking": "التغليف",
+  "scStairs": "السلالم",
+  "scAssembly": "فك وتركيب الأثاث",
+  "scEquipment": "معدات التحميل",
+  "scWaiting": "مدة الانتظار المجانية",
+  "scExtraStops": "محطات إضافية مشمولة",
+  "scTolls": "رسوم الطرق",
+  "scParking": "الانتظار والركن",
+  "scLegendIncluded": "مشمول",
+  "scLegendExcluded": "غير مشمول",
+  "scLegendAtCost": "بالتكلفة",
+  "scSummaryTitle": "ما يشمله العرض",
+  "scAgreedTitle": "ما تم الاتفاق عليه",
+  "scRequestedTitle": "ما طلبته",
+  "adjAmountLabel": "المبلغ المقترح",
+  "adjErrAmount": "أدخل مبلغاً صحيحاً أكبر من الصفر.",
+  "adjErrFloors": "أدخل عدد الأدوار الإضافية.",
+  "adjErrHelpers": "عدد العمال الإضافيين غير مسموح.",
+  "adjErrNotNow": "لا يمكن طلب تغيير الآن.",
+  "adjErrReason": "اكتب السبب (3 أحرف على الأقل).",
+  "adjErrScopeItem": "اختر البند المعني من الاتفاق.",
+  "adjErrWithinScope": "هذا البند مشمول في الاتفاق ولا يمكن تحميل مبلغ إضافي عنه.",
+  "adjScopeItemLine": "بند الاتفاق: {item}",
+  "@adjScopeItemLine": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "adjHelpersLine": "{count} عمال",
+  "@adjHelpersLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adjFloorsLine": "{count} أدوار",
+  "@adjFloorsLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adjHelpersCount": "عدد العمال",
+  "adjPickItem": "البند المعني من الاتفاق",
+  "adjReasonLabel": "السبب",
+  "adjRequestButton": "طلب تغيير في الاتفاق",
+  "adjRequestSent": "تم إرسال طلبك للسائق.",
+  "adjSend": "إرسال الطلب",
+  "adjTypeHelper": "عامل إضافي",
+  "adjTypeScope": "تغيير في الاتفاق",
+  "dcCustodyTitle": "مسار الشحنة",
+  "dcCustodyNotStarted": "لم يتم استلام الشحنة بعد.",
+  "dcCustodyPickedUp": "تم الاستلام من المرسل",
+  "dcCustodyInTransit": "في الطريق",
+  "dcCustodyArrived": "وصلت إلى نقطة التسليم",
+  "dcCustodyFailed": "تعذر التسليم",
+  "dcCustodyReturning": "في طريق العودة للمرسل",
+  "dcCustodyDelivered": "تم التسليم",
+  "dcCustodyReturned": "تم الإرجاع للمرسل",
+  "dcCustodyUnknown": "حالة غير معروفة",
+  "dcOtpTitle": "رمز المستلم",
+  "dcOtpWaiting": "لم يُرسل الرمز بعد",
+  "dcOtpSent": "أُرسل الرمز للمستلم",
+  "dcOtpSmsFailed": "تعذر إرسال الرسالة",
+  "dcOtpVerified": "تم التحقق",
+  "dcOtpLocked": "الرمز موقوف",
+  "dcOtpAttemptsLeft": "المحاولات المتبقية: {left}",
+  "@dcOtpAttemptsLeft": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "dcOtpShareHint": "نرسل رمزاً برسالة نصية إلى المستلم، ويقوله للمندوب عند استلام الشحنة. لا ترسله لأي شخص آخر.",
+  "dcProofsTitle": "إثباتات الاستلام والتسليم",
+  "dcNoProofs": "لا توجد إثباتات بعد.",
+  "dcProofLoadError": "تعذر تحميل الصورة. اضغط للمحاولة.",
+  "dcProofPhoto": "صورة",
+  "dcProofSignature": "توقيع",
+  "dcProofOtp": "رمز المستلم",
+  "dcProofPin": "رمز البدء",
+  "dcProofChecklist": "قائمة فحص",
+  "dcProofWeight": "الوزن",
+  "dcProofOther": "إثبات",
+  "dcStagePickup": "عند الاستلام",
+  "dcStageDelivery": "عند التسليم",
+  "dcStageReturn": "عند الإرجاع",
+  "dcChkSealed": "الطرد مغلق",
+  "dcChkUndamaged": "الطرد سليم بلا أضرار",
+  "dcChkLabel": "البيانات مطابقة للملصق",
+  "dcChkRecipient": "تم التأكد من هوية المستلم",
+  "dcWeightValue": "الوزن المقاس: {kg} كجم",
+  "@dcWeightValue": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "dcAttemptsTitle": "محاولات التسليم",
+  "dcAttemptNumber": "المحاولة {number}",
+  "@dcAttemptNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "dcAttemptEvidence": "مرفق صورة",
+  "dcPending": "بانتظار قرارك",
+  "dcOutUnavailable": "المستلم غير متاح",
+  "dcOutRefused": "المستلم رفض الاستلام",
+  "dcOutWrongAddress": "العنوان خاطئ",
+  "dcOutOtpFailed": "تعذر التحقق من الرمز",
+  "dcOutRestricted": "الشحنة تحتوي على مواد ممنوعة",
+  "dcOutOther": "سبب آخر",
+  "dcResRetry": "إعادة محاولة التسليم",
+  "dcResReturn": "إرجاع للمرسل",
+  "dcResOperations": "تحويل لفريق العمليات",
+  "dcResUnknown": "قرار غير معروف",
+  "dcRoleSender": "المرسل",
+  "dcRoleRecipient": "المستلم",
+  "dcRolePickup": "جهة الاتصال عند التحميل",
+  "dcRoleDropoff": "جهة الاتصال عند التسليم",
+  "dcContactsTitle": "جهات الاتصال",
+  "dcFailedTitle": "تعذر تسليم شحنتك",
+  "dcFailedChoose": "اختر ما يحدث للشحنة الآن.",
+  "dcShowProofs": "عرض صور الإثبات",
+  "dcHideProofs": "إخفاء صور الإثبات",
+  "dcErrAttemptDone": "تم اتخاذ قرار بشأن هذه المحاولة بالفعل.",
+  "dcErrAttemptsExhausted": "استُنفدت محاولات التسليم. اختر الإرجاع أو العمليات.",
+  "dcErrScopeMissing": "لا يوجد اتفاق نقل لهذا الطلب بعد.",
+  "rgTitle": "إقرار بالمواد الممنوعة",
+  "rgIntro": "اقرأ سياسة المواد الممنوعة قبل إرسال الطرد.",
+  "rgReadPolicy": "قراءة السياسة",
+  "rgAcknowledge": "أقر بأن طردي لا يحتوي على مواد ممنوعة (النسخة {version})",
+  "@rgAcknowledge": {
+    "placeholders": {
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "rgErrRequired": "يجب الإقرار بسياسة المواد الممنوعة.",
+  "rgErrStale": "تغيرت السياسة. اقرأها وأقر بها من جديد.",
+  "rgErrUnavailable": "تعذر تحميل سياسة المواد الممنوعة الآن.",
+  "lfLoadTitle": "الحمولة",
+  "lfLoadWeight": "الوزن: {kg} كجم",
+  "@lfLoadWeight": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "lfLoadVolume": "الحجم: {volume} م³",
+  "@lfLoadVolume": {
+    "placeholders": {
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+  "lfLoadValue": "قيمة البضاعة: {value}",
+  "@lfLoadValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "lfLoadWindow": "التحميل من {start} إلى {end}",
+  "@lfLoadWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "lfFileVideo": "فيديو",
+  "lfFileDocument": "مستند",
+  "lfItemNote": "ملاحظة عن هذا الغرض",
+  "lfItemWeight": "الوزن",
+  "lfItemDimensionsUnit": "سم",
+  "lfPickVideo": "فيديو من المعرض",
+  "lfUploading": "جارٍ رفع الملف…",
+  "lfErrVolume": "حجم الحمولة أكبر من الحد المسموح لهذه الخدمة.",
+  "lfErrWindowIncomplete": "حدد بداية ونهاية موعد التحميل.",
+  "lfErrWindowPast": "موعد التحميل في الماضي.",
+  "lfErrWindowInvalid": "نهاية موعد التحميل يجب أن تكون بعد بدايته.",
+  "lfErrWindowLong": "موعد التحميل طويل جداً.",
+  "lfErrAttachmentInvalid": "أحد الملفات المرفقة غير صالح. أعد رفعه.",
+  "lfErrAttachmentLimit": "تجاوزت الحد المسموح من الصور أو الفيديوهات أو المستندات.",
+  "lfErrPendingLimit": "لديك ملفات مرفوعة كثيرة لم تُستخدم. احذف بعضها أو أكمل الحجز.",
+  "lfErrInUse": "هذا الملف مرتبط بحجز ولا يمكن حذفه.",
+  "lfErrInfected": "رُفض الملف لأسباب أمنية.",
+  "lfErrTooLarge": "حجم الملف أكبر من المسموح.",
+  "lfErrTooSmall": "الصورة صغيرة جداً.",
+  "lfErrFileType": "نوع الملف غير مدعوم.",
+  "lfErrScanner": "فحص الملفات غير متاح الآن. حاول بعد قليل.",
+  "lfErrUploadFailed": "تعذر رفع الملف. حاول مرة أخرى.",
+  "stpTitle": "محطات إضافية",
+  "stpIntro": "أضف محطات في الطريق مع اسم وهاتف من سيقابل السائق في كل محطة.",
+  "stpAdd": "إضافة محطة",
+  "stpMax": "وصلت إلى الحد الأقصى للمحطات ({max}).",
+  "@stpMax": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "stpNumbered": "المحطة {number}: {place}",
+  "@stpNumbered": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "stpMoveUp": "تحريك لأعلى",
+  "stpMoveDown": "تحريك لأسفل",
+  "stpRemove": "حذف المحطة",
+  "stpContactName": "اسم جهة الاتصال",
+  "stpContactPhone": "هاتف جهة الاتصال",
+  "stpNote": "ملاحظة للسائق",
+  "stpErrName": "اكتب اسم جهة الاتصال."
 }

@@ -169,6 +169,53 @@ String bookingErrorText(AppLocalizations l10n, Object error) {
       return l10n.bkErrCooldown;
     case 'payments_not_configured':
       return l10n.payErrUnavailable;
+    case 'restricted_goods_ack_required':
+      return l10n.rgErrRequired;
+    case 'restricted_goods_ack_stale':
+      return l10n.rgErrStale;
+    case 'restricted_goods_policy_unavailable':
+      return l10n.rgErrUnavailable;
+    case 'volume_exceeded':
+      return l10n.lfErrVolume;
+    case 'pickup_window_incomplete':
+      return l10n.lfErrWindowIncomplete;
+    case 'pickup_window_in_past':
+      return l10n.lfErrWindowPast;
+    case 'pickup_window_invalid':
+      return l10n.lfErrWindowInvalid;
+    case 'pickup_window_too_long':
+      return l10n.lfErrWindowLong;
+    case 'attachment_invalid':
+      return l10n.lfErrAttachmentInvalid;
+    case 'attachment_limit_exceeded':
+      return l10n.lfErrAttachmentLimit;
+    case 'attachment_pending_limit':
+      return l10n.lfErrPendingLimit;
+    case 'attachment_in_use':
+      return l10n.lfErrInUse;
+    case 'document_infected':
+      return l10n.lfErrInfected;
+    case 'document_too_large':
+      return l10n.lfErrTooLarge;
+    case 'document_type_not_allowed':
+    case 'document_unreadable':
+    case 'document_pdf_active_content':
+      return l10n.lfErrFileType;
+    case 'document_image_too_large':
+      return l10n.lfErrTooLarge;
+    case 'document_image_too_small':
+      return l10n.lfErrTooSmall;
+    case 'document_upload_failed':
+      return l10n.lfErrUploadFailed;
+    case 'file_scanner_unavailable':
+      return l10n.lfErrScanner;
+    case 'offer_scope_required':
+      return l10n.dcErrScopeMissing;
+    case 'delivery_attempt_already_resolved':
+    case 'delivery_attempt_not_allowed':
+      return l10n.dcErrAttemptDone;
+    case 'delivery_attempts_exhausted':
+      return l10n.dcErrAttemptsExhausted;
   }
   if (error.code.startsWith('coupon_')) {
     final reason = error.meta['reason_code'];

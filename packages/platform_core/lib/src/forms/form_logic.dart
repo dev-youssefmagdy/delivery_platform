@@ -187,11 +187,34 @@ abstract final class FormLogic {
               'quantity': e['quantity'] is int
                   ? e['quantity']
                   : parseNumber('${e['quantity']}')?.toInt(),
+              ..._itemExtras(e),
             },
         ];
       default:
         return value;
     }
+  }
+
+  /// Optional per-item facts of a checklist row (moving): note, weight and
+  /// dimensions in cm. Anything unparsable is left out; the server validates
+  /// what is sent.
+  static Map<String, Object?> _itemExtras(Map row) {
+    final extras = <String, Object?>{};
+    final note = '${row['note'] ?? ''}'.trim();
+    if (note.isNotEmpty) extras['note'] = note;
+    final weight = row['weight_kg'] == null
+        ? null
+        : (row['weight_kg'] is num ? row['weight_kg'] as num : parseNumber('${row['weight_kg']}'));
+    if (weight != null) extras['weight_kg'] = weight;
+    final dims = row['dimensions'];
+    if (dims is Map) {
+      final parsed = {
+        for (final side in dimensionSides)
+          side: dims[side] is num ? dims[side] as num : parseNumber('${dims[side] ?? ''}'),
+      };
+      if (parsed.values.every((v) => v != null)) extras['dimensions'] = parsed;
+    }
+    return extras;
   }
 
   static FormFieldIssue? _length(Object? value, num? min, num max) {

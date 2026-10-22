@@ -33,11 +33,12 @@ class BookingRepositoryImpl implements BookingRepository {
   }) async {
     final body = <String, Object?>{
       'service_category_id': request.serviceCategoryId,
-      'booking_type': BookingType.onDemand.value,
+      'booking_type': request.bookingType.value,
       'pickup': BookingDto.placeBody(request.pickup),
       if (request.dropoff != null) 'dropoff': BookingDto.placeBody(request.dropoff!),
       if (request.stops.isNotEmpty)
-        'stops': [for (final s in request.stops) BookingDto.placeBody(s)],
+        'stops': [for (final s in request.stops) s.toBody()],
+      'restricted_goods_policy_version': ?request.restrictedGoodsPolicyVersion,
       'passengers': ?request.passengers,
       'service_details': request.serviceDetails,
       'proposed_fare_minor': request.proposedFareMinor,

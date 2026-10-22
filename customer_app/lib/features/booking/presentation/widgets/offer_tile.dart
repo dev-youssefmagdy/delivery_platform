@@ -4,6 +4,7 @@ import 'package:platform_core/platform_core.dart';
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../domain/entities/booking_entities.dart';
 import 'booking_texts.dart';
+import 'delivery_texts.dart' show scopeStrings;
 
 /// One provider offer (SRS 6.5): price, kind (accepts your fare or counter),
 /// provider and vehicle, ETA, note and a live expiry countdown.
@@ -119,6 +120,21 @@ class OfferTile extends StatelessWidget {
               ),
             if (facts.isNotEmpty)
               Text(facts.join(' · '), style: theme.textTheme.bodySmall),
+            if (offer.scopeSummary.isNotEmpty)
+              Container(
+                key: Key('offer-scope-${offer.id}'),
+                padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: ScopeSummaryList(
+                  lines: offer.scopeSummary,
+                  scope: offer.scope,
+                  strings: scopeStrings(l10n),
+                  dense: true,
+                ),
+              ),
             if (offer.note != null && offer.note!.isNotEmpty)
               Text(offer.note!, style: theme.textTheme.bodyMedium),
             Text(

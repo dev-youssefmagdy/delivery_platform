@@ -9,6 +9,7 @@ import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../../payments/presentation/widgets/trip_payment_card.dart';
 import '../../domain/entities/booking_entities.dart';
 import 'booking_sections.dart';
+import 'delivery_cards.dart';
 import 'rating_card.dart';
 
 /// Completed, cancelled, expired and other ended bookings (also used for trip
@@ -37,6 +38,18 @@ class ClosedView extends ConsumerWidget {
           languageCode: language,
         ),
         const SizedBox(height: AppSpacing.md),
+        if (booking.scope.isEmpty == false) ...[
+          BookingScopeCard(booking: booking),
+          const SizedBox(height: AppSpacing.md),
+        ],
+        if (booking.load != null) ...[
+          BookingLoadCard(booking: booking),
+          const SizedBox(height: AppSpacing.md),
+        ],
+        if (booking.delivery != null) ...[
+          DeliveryPanel(booking: booking),
+          const SizedBox(height: AppSpacing.md),
+        ],
         if (TripPaymentCard.needed(booking)) ...[
           TripPaymentCard(key: ValueKey('pay-${booking.id}'), booking: booking),
           const SizedBox(height: AppSpacing.md),

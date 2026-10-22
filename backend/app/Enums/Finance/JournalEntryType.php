@@ -22,6 +22,7 @@ enum JournalEntryType: string implements HasColor, HasLabel
     case PayoutReserve = 'payout_reserve';
     case PayoutPaid = 'payout_paid';
     case Adjustment = 'adjustment';
+    case CashSettlement = 'cash_settlement';
     case CancellationFee = 'cancellation_fee';
     case Reversal = 'reversal';
 
@@ -36,7 +37,7 @@ enum JournalEntryType: string implements HasColor, HasLabel
             self::BookingSettlementCash, self::BookingSettlementGateway, self::Tip => BadgeColor::Success,
             self::Refund, self::Reversal => BadgeColor::Warning,
             self::PayoutReserve, self::PayoutPaid => BadgeColor::Info,
-            self::Adjustment, self::CancellationFee => BadgeColor::Neutral,
+            self::Adjustment, self::CashSettlement, self::CancellationFee => BadgeColor::Neutral,
         };
     }
 }

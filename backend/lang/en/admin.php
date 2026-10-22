@@ -735,6 +735,26 @@ return [
                 'label' => 'Refund dual-approval threshold',
                 'description' => 'Refunds at or above this amount wait for a second admin to approve; smaller refunds run on the requester\'s authority. 0 means every refund needs a second approval.',
             ],
+            'payout_min_amount_minor' => [
+                'label' => 'Smallest payout',
+                'description' => 'The smallest amount a provider may request to withdraw.',
+            ],
+            'payout_max_amount_minor' => [
+                'label' => 'Largest payout',
+                'description' => 'The largest amount a provider may request in one payout.',
+            ],
+            'payout_fee_fixed_minor' => [
+                'label' => 'Payout fee (fixed)',
+                'description' => 'A fixed fee kept from each payout. It is added to the percentage fee below.',
+            ],
+            'payout_fee_basis_points' => [
+                'label' => 'Payout fee (percentage)',
+                'description' => 'Share of the payout kept as a fee. 100 basis points = 1%.',
+            ],
+            'payout_dual_approval_threshold_minor' => [
+                'label' => 'Payout dual-approval threshold',
+                'description' => 'Payouts at or above this amount need two different admins to approve; smaller ones need one. 0 means every payout needs two.',
+            ],
             'provider_cash_debt_limit_minor' => [
                 'label' => 'Provider cash debt limit',
                 'description' => 'Commission owed on cash jobs above which a provider cannot go online.',

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             GeographySeeder::class,
             DocumentTypeSeeder::class,
             ProviderSeeder::class,
+            CouponSeeder::class,
         ]);
     }
 }

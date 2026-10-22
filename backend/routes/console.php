@@ -36,3 +36,5 @@ Schedule::command('ledger:reconcile')->dailyAt('04:00')->withoutOverlapping();
 Schedule::command('payments:reconcile --sweep-only')->everyFiveMinutes()->withoutOverlapping();
 
 Schedule::command('payments:reconcile')->hourlyAt(30)->withoutOverlapping();
+
+Schedule::command('coupons:sync-status')->everyMinute()->withoutOverlapping();

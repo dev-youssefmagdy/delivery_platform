@@ -623,3 +623,46 @@ Booking `receipt` (completed trips) gains `coupon_applied`, `discount {amount_mi
 | GET | `/admin/customers/{uuid}/tabs/coupons` | `customers.view` + `coupons.view` | The customer's coupon uses |
 
 Console: `php artisan coupons:sync-status` (every minute): scheduled -> active, open -> expired, active -> exhausted when the committed uses or spend reach the limit or budget, exhausted -> active when capacity returned, and release of reservations whose booking ended without a trip.
+
+### 8.17 Earnings, payouts and wallet (P3.4)
+
+Provider endpoints need a `provider` token; reads are status-safe, writes need an active account. Money is integer minor units. Customer endpoints need a `customer` token.
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/provider/earnings/summary?period=day\|week\|month&date=` | Totals (jobs, gross, commission, provider-funded and platform-funded discount, tips, net, total earned, cash collected), `by_category`, daily `series` and the `wallet` position (`balance_minor`, `reserved_minor`, `available_minor`, `cash_debt_minor`, limits). Week starts Saturday, market timezone. |
+| GET | `/provider/earnings/transactions?from=&to=&per_page=` | Booking-level breakdown (paginated): gross fare, commission, discount by funder (a provider-funded coupon is already inside `provider_net`), tax, tip, `provider_net`, `provider_earning`, `cash_collected`, payment status. |
+| GET | `/provider/wallet/transactions` | Wallet statement lines (paginated): signed `change`, `balance_after`, type, description. |
+| GET | `/provider/payout-methods` | The provider's methods: type, label, `last4`, `verified`, `is_default`. Details are never returned. |
+| POST | `/provider/payout-methods` | `Idempotency-Key`. `{type: bank_account\|mobile_wallet, label, details: {holder_name, bank_name, account_number} \| {holder_name, wallet_number}, is_default?}`. Details are stored encrypted; finance must verify before use. |
+| PATCH / POST / DELETE | `/provider/payout-methods/{id}`, `/{id}/default`, `DELETE /{id}` | Changing the details drops the verification. 409 `payout_method_in_use` while an open payout uses the method. |
+| GET | `/provider/payouts` | History (paginated) with `meta.balance` (`wallet_minor`, `reserved_minor`, `available_minor`, `min_minor`, `max_minor`). |
+| GET | `/provider/payouts/{id}` | One request: amounts, `status`, masked method, transfer reference, rejection / failure reason, timestamps. |
+| POST | `/provider/payouts` | `Idempotency-Key`. `{amount_minor, payout_method_id}`. The fee and the approval path are the server's. The amount is reserved in the ledger in the same transaction (the wallet balance drops by it). 422 `payout_amount_below_minimum` / `payout_amount_above_maximum` (`meta.min`, `meta.max`), `payout_insufficient_balance` (`meta.max`), `payout_method_not_verified`, `payout_provider_not_approved`. A replay with the same key and body returns the first request; a different body is 422 `idempotency_key_reused`. |
+| POST | `/provider/payouts/{id}/cancel` | `Idempotency-Key`. Only while `requested` / `under_review`; the reservation is reversed. 409 `payout_not_cancellable`. |
+| GET | `/me/wallet` | Customer wallet(s): `{id, currency, balance}`. |
+| GET | `/me/wallet/transactions` | Customer wallet statement (paginated), same line shape as the provider's. |
+
+Payout statuses: `requested`, `under_review`, `approved`, `processing`, `paid`, `failed`, `rejected`, `cancelled`, `reversed`.
+
+Admin (session + Precognition; permission in brackets):
+
+| Method | Path | Permission | Notes |
+|---|---|---|---|
+| GET | `/admin/payout-requests`, `/{uuid}` | `payouts.view` | Listing (collapsed filters: status, provider, amount range, requested range, approver) and detail with timeline. |
+| POST | `/admin/payout-requests/{uuid}/review` | `payouts.review` | requested -> under_review. |
+| POST | `/admin/payout-requests/{uuid}/approve` | `payouts.approve` | Optional `reason` note. At or above the threshold the first call records the first approval; a DIFFERENT admin's second call approves (403 `payout_same_approver`). |
+| POST | `/admin/payout-requests/{uuid}/reject` | `payouts.approve` | Mandatory `reason`; reservation reversed. |
+| POST | `/admin/payout-requests/{uuid}/processing`, `/paid`, `/failed` | `payouts.review` | `paid`: `transfer_reference` (required), `evidence` (PDF / image, optional), `reason` note; `failed`: mandatory `reason`, reservation reversed. 409 `payout_state_conflict` from any other state. |
+| POST | `/admin/payout-requests/{uuid}/reverse` | `payouts.approve` | Paid transfer returned by the bank; mandatory `reason`. |
+| GET | `/admin/payout-requests/{uuid}/evidence` | `payouts.view` | The receipt (private disk). |
+| GET / POST | `/admin/payout-batches`, `/{uuid}` | `payouts.view`; create `payouts.review` | `POST /admin/payout-batches` (mandatory note) batches all approved payouts of one currency. |
+| POST | `/admin/payout-batches/{uuid}/export` | `payouts.review` | Streams the transfer file (decrypted destinations), audited, marks the batch exported. |
+| POST | `/admin/payout-methods/{uuid}/verify`, `/unverify` | `payouts.review` | Mandatory reason / note. |
+| GET / POST | `/admin/adjustment-requests`, `/{uuid}` | `wallets.view`; create `wallets.adjust` | `{ledger_account_id, direction, amount_minor, reference?, reason, idempotency_key}`. |
+| POST | `/admin/adjustment-requests/{uuid}/approve`, `/reject`, `/cancel` | `wallets.approve_adjustment`; cancel: the requester | Never the requester (403 `adjustment_self_approval`); approval posts the ledger entry. |
+| GET / POST | `/admin/cash-reconciliations`, `/{uuid}` | `finance.view`; open / settle `finance.reconcile` | Open: `{provider_id, period_from, period_to, notes?, idempotency_key}`. Settle: `{amount_minor, method, reference, reason}` (422 `cash_settlement_exceeds_debt`). |
+| POST | `/admin/cash-reconciliations/{uuid}/cancel` | `finance.reconcile` | Mandatory reason. |
+| GET | `/admin/providers/{uuid}/statement?from=&to=` | `finance.view` + `reports.export` | Wallet statement CSV with opening / closing balance and the ledger balance; audited. |
+| GET | `/admin/providers/{uuid}/tabs/earnings`, `/tabs/payouts` | `drivers.view` (+ `payouts.view` for payouts) | Lazy tabs. |
+| GET | `/admin/lookups/finance-providers`, `/wallets` | `payouts.view` or `finance.view`; `wallets.adjust` | Remote selects for the finance filters and the adjustment form. |

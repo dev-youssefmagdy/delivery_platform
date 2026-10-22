@@ -29,7 +29,7 @@
 | P3.1 | Double-entry ledger, wallets, commission rules, price breakdown | P1 | 🟡 | 2026-10-30 |
 | P3.2 | Payments: gateway adapter, cash flow, webhooks, tips | P1 | 🟡 | 2026-10-31 |
 | P3.3 | Coupon engine and coupon manager | P1 | 🟡 | 2026-11-01 |
-| P3.4 | Provider earnings, payouts, adjustments, cash reconciliation | P1 | ❌ | — |
+| P3.4 | Provider earnings, payouts, adjustments, cash reconciliation | P1 | 🟡 | 2026-11-02 |
 | P3.5 | Cancellation/no-show policies with fees, fare adjustments, receipts | P1 | ❌ | — |
 | P3.6 | Notifications platform (push, SMS, email, in-app inbox) | P1 | ❌ | — |
 | P3.7 | Booking chat and support tickets/disputes | P1 | ❌ | — |
@@ -49,6 +49,36 @@
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+
+---
+
+## P3.4 — Provider earnings, payouts, adjustments, cash reconciliation · 🟡 2026-11-02 (gate NOT run)
+
+Committed directly on `main`. ADR-123..127. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P3.4).
+
+### What was built
+
+- **Schema** (`2026_11_02_090000_create_payout_and_adjustment_tables`): `provider_payout_methods` (encrypted details, last four, verified), `payout_batches`, `payout_requests` (amount / fee / net, `PayoutStatus`, reserve / release / paid entries, reviewer and two approvers, transfer reference, evidence path, masked method snapshot, idempotency key unique per provider), `payout_events` (append-only timeline), `financial_adjustment_requests`, `cash_reconciliations`. New enums `PayoutStatus`, `PayoutMethodType`, `PayoutBatchStatus`, `ApprovalStatus`, `AdjustmentDirection`, `CashReconciliationStatus`, `CashSettlementMethod`; new journal type `cash_settlement`; settings `payout_min_amount_minor`, `payout_max_amount_minor`, `payout_fee_fixed_minor`, `payout_fee_basis_points`, `payout_dual_approval_threshold_minor`.
+- **Services** (`App\Services\Payout`, `App\Services\Finance`): `PayoutService` (request under the wallet row lock + reservation entry, idempotent; cancel), `PayoutReviewService` (review, approve with dual control, reject), `PayoutSettlementService` (processing, paid with receipt, failed, reversed), `PayoutBatchService` (batch + audited transfer file), `PayoutPostingService` (reserve / release / pay / reverse-paid entries), `PayoutQuoteService`, `ProviderBalanceService`, `PayoutMethodService`, `AdjustmentService` (maker-checker), `CashReconciliationService`, `ProviderEarningsService`, `ProviderStatementService`, `WalletStatementService`. Repositories (interface + Eloquent) for every table; the financial position now counts open payouts.
+- **API** (docs/API.md 8.17): `GET /provider/earnings/summary`, `GET /provider/earnings/transactions`, `GET /provider/wallet/transactions`, payout methods CRUD (+ default), `GET/POST /provider/payouts` (Idempotency-Key), `GET /provider/payouts/{id}`, `POST .../cancel`, `GET /me/wallet`, `GET /me/wallet/transactions`.
+- **Admin** (Admin Module Contract): Payout requests (queue with collapsed Appendix C filters, show with timeline, review / approve / reject / processing / paid with receipt / failed / reverse), Payout batches (create, show, export), Adjustment requests (maker-checker UI), Cash reconciliation (open, settle, cancel), payout-method verification, finance-scoped provider and wallet lookups, menu entries, policies and route permissions. Provider page: the Earnings tab is real (day / week / month, wallet position, by category, booking-level DataTable, permissioned and audited statement CSV export) and a Payouts tab (methods with verification, requests table) was added.
+- **Privacy:** provider anonymisation purges payout methods; the customer personal-data export has a `wallet` section; open payouts block provider deletion.
+
+### Sanity checks run (no test suite)
+
+`php -l` on every new and changed file; `migrate` / `migrate:rollback` / `migrate`; `route:list` (admin and api); `view:cache`; container resolution of every new service, repository and DataTable; rolled-back tinker scripts proving: payout reservation moves the wallet balance, an identical Idempotency-Key replays the first request, a second request beyond the balance is refused, dual approval (same admin refused, second admin approves), failed payout returns the money, paid payout clears payout clearing against gateway clearing, a second "mark paid" is refused, a paid payout reversal returns the money, adjustment maker-checker (self approval refused, second admin posts the entry, a re-approval is refused), cash reconciliation (settling above the debt refused, exact settlement zeroes the wallet) and the statement totals (opening + credits - debits = closing = ledger balance); in-process HTTP calls through the real kernel proved every new admin page and DataTable endpoint renders (200), Precognition returns 422 for invalid and 204 for valid input, a rejection without a reason is 422, a role without `payouts.review` is 403, the statement CSV downloads, and the provider / customer API endpoints (method create, unverified method refused, payout create / replay / below-minimum / cancel, summary, transactions, wallet lines). The earnings aggregation and the cash figures were checked against a hand-built settled booking. No JS or CSS changed, so `npm run build` was not run.
+
+### Known gaps / notes
+
+- Tests were not written or run (see MISSED_TESTS.md P3.4). Payout evidence upload goes through the real inspector but was not exercised with a file.
+- Single currency per payout (the default currency setting); a wallet in another currency cannot be withdrawn yet.
+- The batch is built from all approved payouts (no per-row selection); a payout cannot be removed from a batch (fail it instead).
+- Payout and adjustment notifications to the provider are P3.6; the apps' screens are P3.8; incentives / bonuses of SRS §7.6 are out of scope.
+- The earnings tab calls the earnings service three times per load (day, week, month); fine for one provider, cache it if the tab becomes hot.
+
+### Next steps
+
+P3.5 — cancellation / no-show policies with fees (post through the same ledger), fare adjustments and receipts. The payout and cash-settlement entry types are ready for the reconciliation report; P3.6 should notify providers of payout status changes (`PayoutHistory` is the event source).
 
 ---
 

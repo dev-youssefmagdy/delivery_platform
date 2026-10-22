@@ -810,3 +810,16 @@ Discovered while wiring this: the framework's default middleware priority list n
 
 **Decision.** Accepting consents or updating the profile with `marketing_opt_in` also writes the marketing push preference (`NotificationPreferenceService::syncMarketingConsent`), and switching the marketing push preference in settings mirrors back to `customer_profiles.marketing_opt_in`. Other channels keep their own saved choice; campaigns still read only the preference.
 **Why.** One consent, one source for campaigns (closes the P3.6 gap in ADR-133).
+
+## ADR-143 — Wallet debt settled through the payment flow · 2026-11-06 · Accepted
+
+**Decision.** `POST /me/wallet/settle-debt` creates a `debt` payment anchored to the customer's latest fee booking (payments need a booking), amount = the negative wallet balance the server sees now; a second call returns the open attempt; paid only by the verified gateway answer, which posts Dr gateway_clearing / Cr customer_wallet (`debt_settlement`). No provider mirror or booking status change.
+**Why.** P3.5 left debt settled by manual adjustment until the apps existed.
+
+## ADR-144 — Feature flags for Wallet and Offers tabs · 2026-11-06 · Accepted
+
+**Decision.** Settings `feature_wallet_enabled` and `feature_offers_enabled` (default true) fill `features` of the app config; the customer app hides a tab only when its flag is explicitly false.
+
+## ADR-145 — Payment UI never trusts the gateway return · 2026-11-06 · Accepted
+
+**Decision.** The apps open `action.url` externally/in-app browser and then only display what the server reports (realtime `payment.status_changed`, polling with back-off, `POST /payments/{id}/refresh`). One Idempotency-Key per (booking, method) intent; a failed attempt drops the key so the next try is a new attempt.

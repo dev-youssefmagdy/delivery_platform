@@ -734,3 +734,12 @@ Realtime (own channel only, never text): `booking.message_received` `{message_uu
 
 Admin (session guard): `/admin/support-tickets` (inbox + `{ticket}`, `activity`, `chat` (audited), `attachments/{uuid}`, `POST messages|claim|assign|escalate|resolve|reopen|priority|link-finance`), `/admin/macros` (CRUD without delete, activate / deactivate), `/admin/customers/{customer}/tabs/tickets`. Permissions: `support.view`, `support.manage`, `support.view_all`, `macros.manage`.
 
+
+
+## P3.8 — Wallet debt settlement and feature flags
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/api/v1/me/wallet/settle-debt` | Customer token, `Idempotency-Key`. Body as the payment intent (`payment_method_id?`, `method?`, `wallet_phone?`); the amount is the server's current wallet debt. Returns a payment (`kind: debt`) with `action`; `201`, or `200` when an open attempt is returned. `422 payment_nothing_to_pay` without debt. Paid only from the verified gateway answer, which credits the wallet. |
+
+`GET /config/app` `features` now holds `wallet` and `offers` (settings `feature_wallet_enabled`, `feature_offers_enabled`, default true). Payment resource `kind` may be `debt`.

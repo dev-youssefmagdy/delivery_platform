@@ -33,7 +33,7 @@
 | P3.5 | Cancellation/no-show policies with fees, fare adjustments, receipts | P1 | 🟡 | 2026-11-03 |
 | P3.6 | Notifications platform (push, SMS, email, in-app inbox) | P1 | 🟡 | 2026-11-04 |
 | P3.7 | Booking chat and support tickets/disputes | P1 | 🟡 | 2026-11-05 |
-| P3.8 | Flutter: wallet, payments, coupons, earnings, payouts | P1 | ❌ | — |
+| P3.8 | Flutter: wallet, payments, coupons, earnings, payouts | P1 | 🟡 | 2026-11-06 |
 | P4.1 | Courier/parcel backend | P1 | ❌ | — |
 | P4.2 | Furniture moving & freight backend (scoped offers) | P1 | ❌ | — |
 | P4.3 | Flutter courier/moving/freight flows | P1 | ❌ | — |
@@ -933,3 +933,14 @@ P0.2 — Backend core architecture (and P0.4 may run in parallel after P0.1).
 
 **Next (P3.8).** Wallet, payments, coupons, earnings and payout screens in both apps; `NotificationLinkType.wallet` / `payout` links still open the inbox; ticket `payment_id` / `payout_id` can be sent by the apps once those screens exist (the API already accepts them).
 
+
+
+## P3.8 — Flutter: wallet, payments, coupons, earnings, payouts · 🟡 (gate not run)
+
+**Built.** Backend (minimal, real gaps): settings `feature_wallet_enabled` / `feature_offers_enabled` (default on) feed `features.wallet` / `features.offers` of `GET /config/app`; wallet debt settlement `POST /me/wallet/settle-debt` (new `PaymentKind::Debt`, journal type `debt_settlement`, Dr gateway clearing / Cr customer wallet on the gateway's verified answer, replay of an open attempt, amount = the server's debt). `platform_core`: finance models, `PaymentsRepository`, `AdjustmentsRepository`, `EarningsRepository`, `WalletLineTile`, `AdjustmentCard`, `AmountRow`; tickets accept `payment_id` / `payout_id`. Customer app: Wallet and Offers tabs (visible unless the server flag is explicitly false), wallet balance + statement + debt card with settle flow, payment methods (gateway setup via url_launcher, delete), payment at completion (intent -> gateway page -> wait via realtime, polling and `POST /payments/{id}/refresh`; failed is recoverable, review state links a ticket with `payment_id`; the app never marks paid), tips (not preselected), my coupons, coupon box in the booking form (server quote + explanation code, payment method choice), full receipt screen, adjustment approval sheet, deep links (`wallet`). Driver app: Earnings tab (day/week/month, by category, chart, wallet position), booking-level breakdown, wallet ledger, cash-debt banner (Home, Earnings, ledger) with eligibility impact, cash-collected confirmation, payout methods CRUD, payout request (idempotent) + history + detail + cancel, adjustment create / approve / reject / withdraw, receipt, deep links (`payout`, `wallet`). ARB ar + en, no generated code needed beyond `gen-l10n`. Incentives stay hidden.
+
+**Checks run (no suites, no gates).** `php -l`, `route:list`, a rolled-back tinker script for debt settlement (debt 2500 -> pending payment -> replay -> paid -> debt 0), app config features; `flutter gen-l10n`; `dart analyze` of `packages/platform_core/lib` (3 pre-existing deprecation infos), `customer_app/lib`, `driver_app/lib` (no issues). Not run: pint, phpstan, php/flutter tests, `scripts/check.sh`, real gateway or device runs.
+
+**Known gaps.** Gateway page opens in the in-app browser (no webview package); no tests (see MISSED_TESTS.md); `app config` cache must be cleared after deploy to expose the new flags; payout method edit needs the details re-entered (the API never returns them); customer cannot request an adjustment (only answer); wallet debt is settled by card only; `platform_wallet` payments still unimplemented.
+
+**Next (Phase 4).** Reuse `PaymentFlowPanel`, `AdjustmentCard` and the finance repositories for courier / moving flows; proof and recipient screens do not touch money.

@@ -712,3 +712,30 @@ Not written or run by user instruction. Everything below should exist before P3.
 
 ### Manual / live
 - Chat and push on two real devices (foreground, background, killed), image upload from camera and gallery, signed image load with expired token, realtime reconnect after airplane mode, a real file scanner with an EICAR file, Arabic RTL layout of bubbles and ticket thread.
+
+
+## P3.8 — Flutter money features and wallet debt (not written; gate not run)
+
+### tests/Feature (backend)
+- `Config/AppConfigFeaturesTest`: `features.wallet` / `features.offers` default true; switching the settings off returns false and busts the cache.
+- `Payments/WalletDebtSettlementTest`: customer with debt 2500 -> `POST /me/wallet/settle-debt` creates a `debt` payment of 2500 (client amount ignored); second call returns the same attempt (200); no debt -> 422 `payment_nothing_to_pay`; verified webhook -> paid, entry `debt_settlement` balanced, wallet back to 0, `customer_fee_debt_outstanding` no longer blocks booking; provider receives no event; another customer cannot refresh the payment.
+
+### Flutter platform_core
+- `finance_models_test`: `PaymentInfo` (`{minor}` and `{amount_minor}` shapes, unknown status), `WalletInfo.inDebt`, `CouponQuote`, `Adjustment`, `TripReceipt` customer vs driver view, `EarningsSummary`, `PayoutRequest.returned`.
+- `finance_repository_test`: request shapes and Idempotency-Key for payments, tips, settle-debt, setup intent, payouts, payout methods, cash-collected; pagination parsing; `ticket` input with `payment_id` / `payout_id`.
+
+### customer_app
+- Payment failure recovery: start -> awaiting -> server says failed -> failed state with reason -> "try again" uses a new key and a new attempt; returning from the gateway without a server `paid` never shows paid; offline during polling keeps waiting; `reconciliation_required` shows the review state and the support link with `payment_id`; resume of a pending attempt on reopen.
+- Tip card: nothing preselected, pay disabled until an amount is chosen, `tip_amount_too_large` / `tip_already_given` messages.
+- Invalid coupon: `valid:false` with each reason code shows its ARB text; stale quote after fare change; booking refused with `coupon_<reason>` keeps the form input; valid quote shows the discount.
+- Wallet: loading / empty / error / offline / session expired, debt card -> settle flow, load more; payment methods add (pending until webhook) and delete; Offers tab lists automatic offers and history; tab visibility with flag false / missing.
+- Adjustment approval sheet opens once for a new pending request; approve / reject; expired -> refreshed list; receipt screen lines (discount, fee, tax, tip, total); `customerRouteFor(wallet)`; booking creation with `customer_fee_debt_outstanding`.
+
+### driver_app
+- Earnings tab period switch, empty period, by-category and chart; cash-debt banner warning vs blocked (over limit) and hidden without debt; booking-level breakdown; wallet ledger paging.
+- Payout states: request with local bounds, `payout_amount_below_minimum` / `payout_insufficient_balance`, retry after network drop reuses the key, detail for requested / under_review / approved / processing / paid / failed / rejected / cancelled / reversed, cancel only when `cancellable`, unverified methods not selectable.
+- Payout methods: add bank / wallet validation, edit re-enter, default, delete, `payout_method_in_use`.
+- Cash confirmation visible only with `confirm_cash_collected`, retry replay; adjustments create (waiting without amount), withdraw, approve / reject of the customer's request; `driverRouteFor(payout|wallet)`; receipt hides customer fee and tax.
+
+### Manual / live
+- A real gateway (Paymob) card payment with 3-D Secure, failure and abandon, saved-card setup; wallet debt settlement end to end; payout lifecycle with the admin panel; Arabic RTL layouts of every new screen.

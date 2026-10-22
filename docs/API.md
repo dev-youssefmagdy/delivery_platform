@@ -773,3 +773,24 @@ Admin (session guard): `/admin/support-tickets` (inbox + `{ticket}`, `activity`,
 
 Push events: `delivery.picked_up | arrived_dropoff | delivered | attempt_failed | attempt_resolved | returned | recipient_otp_locked` (link: booking). Admin: Safety tab (custody, code state, attempts, proofs), Bookings filters `custody_statuses[]`, `parcel_sizes[]`, `is_fragile`, override `POST /admin/bookings/{id}/lift-recipient-otp-lock` (`bookings.pin_override`, reason, audit).
 
+## P4.2 — Furniture moving & freight (ADR-152..157)
+
+### Offers (`POST /provider/bookings/{booking}/offers`, `.../offers/accept-customer-fare`)
+Moving / freight categories: a counter-offer needs `scope` (JSON Schema in `config/offer_scope.php`, version 1):
+`{vehicle_class (your vehicle's category code), helpers 0-10, packing none|wrap_only|full_pack, stairs {handling not_needed|included|extra_per_floor, included_floors}, assembly none|disassembly|assembly|both, loading_equipment[] (hand_trolley, forklift, crane, tail_lift, straps_blankets, pallet_jack), waiting_allowance_minutes, extra_stops_included, tolls|parking included|at_cost_with_evidence|excluded, exclusions?}`.
+Errors: `422 offer_scope_required | offer_scope_invalid (meta.scope_errors path => keyword) | offer_scope_vehicle_mismatch | offer_vehicle_capacity_insufficient (meta.shortfalls payload|volume)`. Accept-customer-fare stores the booking's `requested_scope`. Offer resources (both apps) add `scope_summary` (`[{key, label, value}]`).
+
+### Booking (customer and selected provider)
+`load` (`weight_kg`, `volume_m3`, `declared_value_minor`, `pickup_window {start,end}`, `items[]`, `attachments {photos, videos, documents}`), `requested_scope`, `requested_scope_summary`, `agreed_scope`, `agreed_scope_summary`; stops carry `contact {name, phone|null, phone_masked, note}` (provider: selected only). Request cards (pre-selection) add `summary.load`, `summary.pickup_window`, `summary.requested_scope` (no contacts, no addresses). Create / edit accept `stops[].contact {name, phone, note}`; `service_details` per seeded schema v2 (`items[] {item, quantity, note?, weight_kg?, dimensions?}`, `items_notes`, `estimated_weight`, `estimated_volume`, `pickup_window_start/_end` `Y-m-dTH:i`, `pieces`, `photos[]` / `documents[]` = attachment ids). New errors: `volume_exceeded`, `pickup_window_incomplete | _in_past | _invalid | _too_long`, `attachment_invalid`, `attachment_limit_exceeded`.
+
+### Attachments
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/bookings/attachments` | multipart `kind` photo\|video\|document + `file`; Idempotency-Key; `201 {id, kind, mime, size_bytes, attached:false}`; `409 attachment_pending_limit`, `422 document_*`, `503 file_scanner_unavailable` |
+| DELETE | `/bookings/attachments/{id}` | unreferenced uploads only (`409 attachment_in_use`) |
+| GET | `/bookings/{booking}/attachments`, `/attachments/{id}/file` | owner; signed URL |
+| GET | `/provider/bookings/{booking}/attachments`, `/attachments/{id}/file` | selected provider only (404 otherwise); signed URL |
+
+### Adjustments (`POST /bookings/{b}/adjustments`, `/provider/bookings/{b}/adjustments`)
+New `type` values `extra_helper` (`details.helpers` 1-5), `stairs` (`details.floors`). Scoped bookings require `details.scope_item` (helpers, stairs, extra_stops, waiting_allowance, tolls, parking, ...; implied when the type has one item). Errors: `adjustment_scope_item_required | _invalid`, `adjustment_within_scope`, `adjustment_floors_required`, `adjustment_helpers_invalid`. Approved adjustments feed `adjustments_total`, the final fare, the price breakdown and the receipt (`adjustments[].scope_item`, `booking.agreed_scope`).
+

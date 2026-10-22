@@ -854,3 +854,33 @@ Discovered while wiring this: the framework's default middleware priority list n
 **Decision.** A parcel request carries the uuid of the current published `restricted_goods` policy version; the booking stores its id and the time. A missing, unknown or superseded version is refused; with no published version parcel booking is unavailable (`RestrictedGoodsPolicySeeder` publishes a starter text, to be replaced by legal wording). Edits keep the original acknowledgement.
 **Why.** The stored acknowledgement must identify the exact text the customer accepted (SRS §13.3).
 
+## ADR-152 — Offer scope is a versioned JSON Schema, canonicalised and append-only · 2026-11-07 · Accepted
+
+**Decision.** `config/offer_scope.php` holds the scope schema (version 1) checked by a small `JsonSchemaValidator`; `OfferScopeData` canonicalises it (fixed key order, sorted equipment). Moving and freight families require a scope on counter-offers; offer versions stay append-only; `bookings.agreed_scope` is written once at selection and a model guard refuses a later rewrite (it is only cleared when the agreement ends).
+**Why.** Both parties must see the identical accepted summary (SRS §7.4), and the price may only change through adjustments (SRS §9.4). A schema version lets the shape evolve without rewriting stored agreements.
+
+## ADR-153 — Accepting the customer's fare carries the customer's requested scope · 2026-11-07 · Accepted
+
+**Decision.** At create / edit the server derives `bookings.requested_scope` from the validated form (helpers, packing, stairs from floors without lift, assembly, equipment, free wait, stops; tolls / parking default to at cost with evidence). An accept-customer-fare offer stores exactly that; a counter-offer stores the provider's scope. Both apps render `*_scope_summary` produced by one server function.
+**Why.** "Accept" must mean the same job for both sides; the client never composes the summary.
+
+## ADR-154 — Capacity is a dispatch filter and an offer guard · 2026-11-07 · Accepted
+
+**Decision.** `VehicleCapacityChecker` compares the booking's weight and volume with the vehicle's declared payload / volume, else its category's maximum; unknown limits pass. `FindEligibleProvidersService` drops such vehicles and `OfferSubmissionService` answers `offer_vehicle_capacity_insufficient`. Booking validation additionally caps the volume by the service's limits and largest vehicle.
+**Why.** SRS §10.1 lists capacity as an eligibility condition; filtering early avoids useless requests, the guard covers a vehicle switched after dispatch.
+
+## ADR-155 — Load rows, attachments and stop contacts · 2026-11-07 · Accepted
+
+**Decision.** `booking_items` are rewritten from the validated form with every create / edit (the form stays the single validation source); attachments are uploaded first and referenced by uuid from `photos` / `documents`, linked under row locks with per-kind limits, served only through signed routes to the owner and the selected provider; videos are scanned and size-capped but not re-encoded. Freight pickup / drop-off contacts use new `booking_contacts` roles (encrypted); intermediate stop contacts are encrypted in `booking_stops.contact_encrypted`. Seeded schemas get new versions; old versions are never mutated.
+**Why.** Staged disclosure (Plan I10) and the private file pipeline already exist; reusing them keeps phones and pictures out of JSON columns and lists.
+
+## ADR-156 — Post-confirmation changes reference scope items · 2026-11-07 · Accepted
+
+**Decision.** Adjustments gain `extra_helper` and `stairs`; on a scoped booking every request names a `scope_item` and the agreed scope decides whether it can be charged (tolls / parking only "at cost with evidence", stairs only beyond the included floors, helpers capped at 10 in total). The agreed waiting allowance extends the free wait before billing. The item is stored in the adjustment details and printed on the receipt.
+**Why.** SRS §9.4 forbids silent changes; tying them to the accepted lines makes disputes decidable.
+
+## ADR-157 — Deletion and export for the load · 2026-11-07 · Accepted
+
+**Decision.** Account deletion blanks item labels / notes and stop contacts and deletes every attachment row and file; quantities, dimensions, weights and scope stay for disputes. The export gets a `moving_freight` section with attachments as facts (no files).
+**Why.** Pictures and free text can identify people and homes; the structured facts back financial records.
+

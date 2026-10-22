@@ -35,7 +35,7 @@
 | P3.7 | Booking chat and support tickets/disputes | P1 | 🟡 | 2026-11-05 |
 | P3.8 | Flutter: wallet, payments, coupons, earnings, payouts | P1 | 🟡 | 2026-11-06 |
 | P4.1 | Courier/parcel backend | P1 | 🟡 | 2026-11-07 |
-| P4.2 | Furniture moving & freight backend (scoped offers) | P1 | ❌ | — |
+| P4.2 | Furniture moving & freight backend (scoped offers) | P1 | 🟡 | 2026-11-07 |
 | P4.3 | Flutter courier/moving/freight flows | P1 | ❌ | — |
 | P4.4 | Admin & E2E for non-ride services | P1 | ❌ | — |
 | P5.1 | Safety center, SOS, trusted contacts | P1 | ❌ | — |
@@ -971,3 +971,26 @@ P0.2 — Backend core architecture (and P0.4 may run in parallel after P0.1).
 **Known gaps.** Gateway page opens in the in-app browser (no webview package); no tests (see MISSED_TESTS.md); `app config` cache must be cleared after deploy to expose the new flags; payout method edit needs the details re-entered (the API never returns them); customer cannot request an adjustment (only answer); wallet debt is settled by card only; `platform_wallet` payments still unimplemented.
 
 **Next (Phase 4).** Reuse `PaymentFlowPanel`, `AdjustmentCard` and the finance repositories for courier / moving flows; proof and recipient screens do not touch money.
+
+
+## P4.2 — Furniture moving & freight backend (scoped offers) · 🟡 2026-11-07 (gate NOT run)
+
+Committed directly on `main`. ADR-152..157. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P4.2). The Flutter UI is P4.3, the full admin screens are P4.4.
+
+### Built
+- **Schema** (`2026_11_07_090000_create_moving_freight_tables`): `booking_items`, `booking_attachments`; `bookings.requested_scope`, `cargo_volume_m3`, `pickup_window_start/_end`; `booking_stops.contact_encrypted`.
+- **Structured scope** (`config/offer_scope.php` JSON Schema v1, `JsonSchemaValidator`, `OfferScopeData`, `OfferScopeService`): vehicle class, helpers, packing, stairs (handling + included floors), assembly, loading equipment, waiting allowance, extra stops, tolls / parking (`included | at_cost_with_evidence | excluded`), exclusions. Counter-offers in moving / freight families REQUIRE a valid scope (`offer_scope_required`, `offer_scope_invalid`, `offer_scope_vehicle_mismatch`); accept-customer-fare stores `bookings.requested_scope` (built from the form at create / edit). The accepted scope is copied to `agreed_scope` (now immutable at model level) and the receipt snapshot; offers and bookings expose `*_scope_summary` lines (same translated list for both apps).
+- **Capacity**: `VehicleCapacityChecker` (vehicle payload / volume, falling back to the vehicle category). Dispatch (`FindEligibleProvidersService`) skips vehicles that cannot carry `cargo_weight_kg` / `cargo_volume_m3`; offers are refused with `offer_vehicle_capacity_insufficient`; booking validation also checks volume (`volume_exceeded`).
+- **Moving / freight request**: seeded schemas re-published as v2 (moving: other items, weight, volume, destination carry distance, parking, loading equipment; freight: pieces, required pickup window, extra equipment). `booking_items` rows (checklist with note / weight / dimensions, free-text lines, cargo line) rewritten with each create / edit; `pickup_window_*` validated; freight `pickup_contact` / `dropoff_contact` now go to encrypted `booking_contacts` (new roles); intermediate stops accept `contact {name, phone, note}` (encrypted, selected provider only).
+- **Attachments** (`BookingAttachmentService`): `POST /bookings/attachments` (photo / video / document), private disk, sniffed type, images re-encoded, scanner, limits (12 photos, 2 videos, 5 documents per booking; 20 unreferenced uploads); the form's `photos` / `documents` fields now carry attachment uuids; signed file routes for the owner and the selected provider only.
+- **Adjustments**: new types `extra_helper`, `stairs`; scoped bookings must name a `details.scope_item`; the agreed scope decides (`adjustment_within_scope` for tolls / parking not "at cost", stairs within included floors); the waiting allowance extends the free wait; approved items appear in `adjustments_total`, the final fare, the breakdown and the receipt line with `scope_item`.
+- **Privacy / admin**: deletion scrubs item text, stop contacts and every attachment file; export has a `moving_freight` section; the booking Snapshots tab shows requested scope and load (free text only with `bookings.view_pii`).
+
+### Checks run (no suites, no linters)
+`php -l` on changed files; `migrate` / `rollback` / `migrate`; `route:list`; `view:cache`; container resolution of the touched services; `CatalogSeeder` re-run (v2 published, v1 snapshot untouched); a rolled-back tinker script covering form validation, items, requested scope, counter-offer without / invalid / mismatching / valid scope, accept-customer-fare, capacity (small vs big vehicle), `agreed_scope` immutability, extra helper and stairs adjustments (approve flow, within-scope refusals), tolls excluded by scope, photo upload / link / foreign uuid / limits, provider visibility, resources; pickup window and volume rules via reflection.
+
+### Known gaps
+No end-to-end HTTP booking creation was run (zone fixtures); `OfferSubmissionService` end-to-end not exercised; videos are scanned and capped but not transcoded; unreferenced uploads are not pruned yet (cap only); an invalid stop-contact phone is silently dropped; no admin screen beyond the Snapshots tab.
+
+### Next (P4.3)
+Flutter: scope editor for counter-offers (render the schema in `config/offer_scope.php`, send `scope`), summary lines from `*_scope_summary`, load form (items, volume, window), upload then reference ids, extra-helper / stairs adjustment requests with `details.scope_item`.

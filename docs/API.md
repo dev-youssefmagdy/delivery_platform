@@ -590,3 +590,36 @@ Payment resource: `{id, booking_id, kind (trip\|tip), method, gateway, status {c
 | GET / POST | `/admin/payment-reconciliation`, `/run`, `/{uuid}` | `finance.view` or `payments.view`; run: `finance.reconcile` | Reports of `payments:reconcile` |
 
 Console: `php artisan payments:reconcile [--sweep-only]` (scheduled: sweep every 5 minutes, full comparison hourly).
+
+### 8.16 Coupons (P3.3)
+
+Money is integer minor units. **A discount is never sent by the client**: the booking request carries only a `coupon_code`, the server finds the coupon, evaluates its rules, reserves it under a lock and later prices the trip itself. Every response with a coupon decision carries an explanation code (`reason_code`).
+
+**Customer (`customer` token)**
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/api/v1/coupons/validate` | A quote, nothing is reserved. Body `{coupon_code, service_category_id, proposed_fare_minor, payment_method?, pickup?: {lat, lng}, scheduled_at?}`. Always `200` with `{valid, reason_code, message, coupon, discount: {amount_minor, currency}}`; an ineligible coupon is an answer (`valid: false`), not an error. The attempt is logged. Throttled 30/min |
+| GET | `/api/v1/me/coupons` | `{available, history}`: the active automatic campaigns the customer can still use, and their last 20 coupon uses `{id, status (reserved\|committed\|released\|reversed), coupon {code, title}, booking, discount {amount_minor, currency, final}, reserved_at}`. Codes are never listed |
+| POST | `/api/v1/bookings` | Accepts `coupon_code` (letters, digits, `-`, `_`, max 40). A refused code answers `422` with `errors._code = coupon_<reason>`, `field coupon_code` and `meta.reason_code`; the booking is not created. With no code the best active automatic campaign is applied silently. Any `discount*` field in the body is ignored |
+
+Coupon summary: `{id, code, automatic, title {ar,en}, description, terms, summary, discount_type, starts_at, ends_at}`. Budget, counters and funding are never returned.
+
+Booking `receipt` (completed trips) gains `coupon_applied`, `discount {amount_minor, currency}` and `customer_payable {amount_minor, currency}`. A booking whose coupon covers the whole payable completes by itself: `payment.status = not_required`, status `completed`, no payment intent (`POST .../payment-intents` would answer `payment_nothing_to_pay`).
+
+**Reason codes** (`reason_code`, error `coupon_<code>`): `eligible, not_found, not_active, not_started, expired, exhausted, category_not_eligible, service_family_not_covered, service_category_not_covered, service_excluded, vehicle_not_covered, city_not_covered, zone_not_covered, payment_method_not_covered, new_customers_only, returning_customers_only, outside_schedule, below_minimum_fare, customer_limit_reached, global_limit_reached, budget_exhausted, stacking_not_allowed, currency_mismatch, no_discount`.
+
+**Admin panel (session guard).** Pages under `/admin/coupons`, behind `can:` policies; writes use FormRequests (Precognition) and AJAX forms:
+
+| Method | Path | Permission | Notes |
+|---|---|---|---|
+| GET | `/admin/coupons`, `/admin/coupons/{uuid}` | `coupons.view` (or `coupons.manage`) | Listing (collapsed filters: code, status, discount type, funding source, service family, active on date, validity range) and page (details with the customer preview, versions, redemptions, attempts, performance, test eligibility, activity) |
+| POST / PUT | `/admin/coupons`, `/admin/coupons/{uuid}` | `coupons.manage` | Create (as a draft) / edit with the eligibility builder. Changing the money terms of a non-draft coupon adds a version and needs a `reason` |
+| POST | `/admin/coupons/{uuid}/publish`, `/resume` | `coupons.manage` | Draft or paused -> active (scheduled when the start is ahead) |
+| POST | `/admin/coupons/{uuid}/pause`, `/archive` | `coupons.manage` | Mandatory `reason`, audited |
+| POST | `/admin/coupons/{uuid}/test` | `coupons.view` | `{customer_id, service_category_id, fare_minor, payment_method?, city_id?, zone_id?, at?}` -> decision, reason and per-funder amounts; logged as an `admin_test` attempt |
+| GET | `/admin/coupons/{uuid}/tabs/{redemptions,attempts,performance}` | `coupons.view` | Lazy tabs (DataTables with collapsed filters) |
+| POST | `/admin/coupons/export` | `coupons.export` | Queued CSV of the listing with its filters, audited |
+| GET | `/admin/customers/{uuid}/tabs/coupons` | `customers.view` + `coupons.view` | The customer's coupon uses |
+
+Console: `php artisan coupons:sync-status` (every minute): scheduled -> active, open -> expired, active -> exhausted when the committed uses or spend reach the limit or budget, exhausted -> active when capacity returned, and release of reservations whose booking ended without a trip.

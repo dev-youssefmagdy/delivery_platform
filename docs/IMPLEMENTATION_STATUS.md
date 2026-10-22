@@ -28,7 +28,7 @@
 | P2.9 | E2E ride test, race tests, MVP hardening | P0 | ❌ | — |
 | P3.1 | Double-entry ledger, wallets, commission rules, price breakdown | P1 | 🟡 | 2026-10-30 |
 | P3.2 | Payments: gateway adapter, cash flow, webhooks, tips | P1 | 🟡 | 2026-10-31 |
-| P3.3 | Coupon engine and coupon manager | P1 | ❌ | — |
+| P3.3 | Coupon engine and coupon manager | P1 | 🟡 | 2026-11-01 |
 | P3.4 | Provider earnings, payouts, adjustments, cash reconciliation | P1 | ❌ | — |
 | P3.5 | Cancellation/no-show policies with fees, fare adjustments, receipts | P1 | ❌ | — |
 | P3.6 | Notifications platform (push, SMS, email, in-app inbox) | P1 | ❌ | — |
@@ -49,6 +49,36 @@
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+
+---
+
+## P3.3 — Coupon engine and coupon manager · 🟡 2026-11-01 (gate NOT run)
+
+Committed directly on `main`. ADR-120..122. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P3.3).
+
+### What was built
+
+- **Schema** (`2026_11_01_090000_create_coupon_tables`): `coupons` (translatable title / description / legal terms, code nullable for automatic campaigns, caps, budget, counters, funding source + split, stacking and refund flags, exclusions, segments, payment methods, weekly schedule, status, period + timezone, version, lock_version), `coupon_scopes` (one pivot for families / categories / vehicle categories / cities / zones), immutable `coupon_versions`, `coupon_reservations`, `coupon_redemptions`, `coupon_attempts` (append-only), `promotion_funding_entries`; FKs `bookings.coupon_reservation_id`.
+- **Engine** (`App\Services\Coupon`): pure `CouponEligibilityService`; `CouponReservationService` (reserve under the coupon row lock, release, commit, reverse, `discountFor`); `CouponBookingService` (prepare outside / reserve inside the booking transaction, automatic campaigns, failure logging); `CouponQuoteService` (API validate and admin test); `CouponService` / `CouponLifecycleService` (admin writes, versions, status graph); `CouponStatusSyncService` + `coupons:sync-status` (every minute); `CustomerCouponService`.
+- **Carry-over from P3.2:** `BookingSettlementService::breakdownFor` now feeds `PriceBreakdownCalculator` the discount and the funding split from the booking's reservation (agreed fare, version terms, capped by the hold); commit at completion writes the redemption and funding entries and links them to the settlement journal entry; platform-funded discounts post to `promo_expense` and partner-funded to `partner_receivable` (existing posting builder), provider-funded reduce `provider_net`; the commission base stays the agreed fare. `FreeBookingCompletionService` completes a 100% discounted card / wallet booking with a `not_required` payment and the normal ledger posting (no gateway charge); a cash booking with nothing due opens `not_required`. Booking creation accepts `coupon_code`; cancel / expiry release in `BookingTransitionService`; a full refund reverses per policy in `RefundService`. The Customers "Coupons" tab shows real data; `PersonalDataExporter` exports coupon uses and attempts, `CustomerDeletionService` unlinks the customer's attempts.
+- **API:** `POST /coupons/validate`, `GET /me/coupons`, `coupon_code` on `POST /bookings`, receipt discount fields (docs/API.md 8.16).
+- **Admin** (Admin Module Contract): Coupons under Marketing (listing with collapsed Appendix C filters, create / edit with the eligibility builder, customer-facing preview, versions, redemptions / attempts / performance tabs with filters, "test eligibility" tool, publish / pause / resume / archive with reasons and audit, queued permissioned export), `CustomerLookup`, a single-date filter component, coupon tab on the customer page; six seed coupons (percentage, fixed, new customer, service-restricted split-funded, automatic weekend campaign, expired) in `CouponSeeder`.
+
+### Sanity checks run (no test suite)
+
+`php -l` on every new file; `migrate` / `migrate:rollback` / `migrate`; `route:list` (api and admin); `view:cache`; container resolution of every new and changed service; `db:seed --class=CouponSeeder` twice (idempotent); `coupons:sync-status`; rolled-back tinker scripts proving each eligibility rule on the seed coupons, reserve / second reserve refused at the global limit / release / re-reserve, commit with a redemption and funding entries linked to the ledger entry, the balanced gateway lines of a 100% coupon, `FreeBookingCompletionService` ending in `completed` with a `not_required` payment and a settled entry, full-refund reversal restoring the counters, admin create / versioned update / stale lock / pause / resume / archive with audit rows, the listing filter query, the queued CSV export, and a render of the show / edit / create / performance views.
+
+### Known gaps / notes for P3.4 and later
+
+- Stacking: one coupon per booking today; `stackable` is stored for later combination with referral rewards / other promotions (P5.7). Add-ons are still zero (P4).
+- The reservation holds a ceiling computed from the fare bounds at booking creation; if the final fare is lower the discount shrinks with it (percentage) and the rest of the hold returns at commit. A coupon whose minimum fare is not met by the agreed fare yields no discount and its reservation is released at completion.
+- Cancel always releases; keeping a coupon use after a late cancellation with a fee (policy) belongs to P3.5. The customer-facing Flutter UI is P3.8 (entry of the code, quote, discount line in the price summary and receipt).
+- Admin booking page does not show the coupon yet; the customer page and coupon page do. Referral and loyalty rewards (SRS 11.3) are P5.7.
+- Stale test: `CustomerDeletionAndExportTest` still expects `payments` in `sections_pending` (already stale since P3.2).
+
+### Next steps
+
+P3.4 — provider earnings, payouts, adjustments and cash reconciliation (a provider-funded coupon appears in `provider_net`; redemption funding entries are linked to ledger entries by booking).
 
 ---
 

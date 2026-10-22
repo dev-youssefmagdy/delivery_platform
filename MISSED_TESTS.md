@@ -422,3 +422,30 @@ Common for each action (data provider over the five actions): no permission -> 4
 - With Reverb running: open the map and the bookings list with Live refresh on; create a booking from the customer app, select an offer, move the driver app through the trip: markers and rows update within ~2 s, the indicator shows "Live" and the time of the last event; stop Reverb: indicator turns to "Reconnecting…", the map keeps refreshing by polling every 30 s and the list by the timer; restart Reverb: it recovers and refetches after a gap.
 - Run every override on a real booking with both apps open: the customer and driver apps react (cancelled, window extended, PIN pad unlocks, forced status) and the log shows one "notification stub" line per party.
 - Clustering with a few hundred seeded providers (`demo` seeder or a script) stays responsive; hovering shows only the id/category.
+
+
+## P3.1
+
+### tests/Unit/Finance (setup: Money/EGP, CommissionTerms 10% percentage, PriceBreakdownCalculator + SettlementPostingBuilder, LedgerService on the test DB)
+- `test_example_card_no_coupon`: fare 100 -> Dr gateway 100 / Cr provider 90, revenue 10; balanced.
+- `test_example_card_platform_coupon`: Dr gateway 80, promo 20 / Cr provider 90, revenue 10.
+- `test_example_cash_no_coupon`: Dr provider 10 / Cr revenue 10; wallet -10.
+- `test_example_cash_platform_coupon`: Dr promo 20 / Cr revenue 10, provider 10; driver nets 90.
+- `test_example_cash_provider_coupon`: Dr provider 10 / Cr revenue 10; driver nets 70.
+- `test_example_tip_by_card`: Dr gateway 15 / Cr provider 15; commission-free; with commission_on_tips the split uses tip commission.
+- `test_example_payout_reserve_then_paid`: reserve Dr provider 200 / Cr payout_clearing 200, paid Dr clearing / Cr gateway; second reserve on empty wallet with nonNegativeAccountIds refused.
+- `test_post_rejects_unbalanced_empty_nonpositive_and_currency_mismatch`.
+- `test_post_is_idempotent_and_key_reuse_with_other_lines_is_409`; concurrent same-key posts produce one entry (Concurrency suite).
+- `test_negative_balance_rules`: customer wallet refused below 0, provider wallet allowed, credit_limit respected, account already negative may receive money.
+- `test_reversal`: opposite lines, balances restored, second reversal returns the first, reversal of a reversal refused, audit row written.
+- `test_lock_order_is_ascending_ids` (query log) and a two-process deadlock test posting A->B and B->A.
+- `test_entries_are_immutable`: model update/delete throw.
+- `test_money_allocate_has_no_lost_minor_unit` and discount funding split sums exactly; hybrid min/max/cap-at-base; half-up rounding.
+- `test_commission_resolution_precedence`: priority, specificity, newest start, id, currency filter, inactive/expired/scheduled ignored, default setting fallback.
+- `test_commission_snapshot_immutable`: editing/disabling a rule or adding a version after selection does not change the booking snapshot or breakdown; snapshot cleared when the booking returns to searching and rebound at the next selection.
+- `test_financial_position`: cash debt equals -wallet balance, openItems counts non-zero wallets, CashDebtLimitExceeded in eligibility above the limit setting.
+
+### tests/Feature
+- `Booking/CashSettlementTest`: provider completion stores price_breakdown, posts one entry, sets settled_at; replay posts nothing; operator force-complete does the same; card booking stores breakdown only.
+- `Console/ReconcileLedgerTest`: ok report; tampered balance gives mismatch, critical log, non-zero exit; unbalanced entry and currency mismatch detected.
+- `Admin/Finance/*`: guest redirect, 403 without permission (page, JSON, datatable), each filter of commission rules / accounts / entries, precognitive 422/204 for commission rule forms, audit row on create/update/deactivate, deactivate without reason rejected, version added only when terms change, stale lock_version 409, wallet tabs need finance.view or wallets.view, reconciliation run needs finance.reconcile and is audited.

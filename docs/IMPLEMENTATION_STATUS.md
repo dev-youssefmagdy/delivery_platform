@@ -26,7 +26,7 @@
 | P2.7 | Driver app: complete ride flow | P0 | 🟡 | 2026-10-28 |
 | P2.8 | Admin: bookings, offers monitor, live operations v1 | P0 | 🟡 | 2026-10-29 |
 | P2.9 | E2E ride test, race tests, MVP hardening | P0 | ❌ | — |
-| P3.1 | Double-entry ledger, wallets, commission rules, price breakdown | P1 | ❌ | — |
+| P3.1 | Double-entry ledger, wallets, commission rules, price breakdown | P1 | 🟡 | 2026-10-30 |
 | P3.2 | Payments: gateway adapter, cash flow, webhooks, tips | P1 | ❌ | — |
 | P3.3 | Coupon engine and coupon manager | P1 | ❌ | — |
 | P3.4 | Provider earnings, payouts, adjustments, cash reconciliation | P1 | ❌ | — |
@@ -49,6 +49,18 @@
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+
+---
+
+## P3.1 — Double-entry ledger, wallets, commission rules, price breakdown · 🟡 2026-10-30 (gate NOT run)
+
+Committed on `main`. ADR-115. **By user instruction no test, pint, phpstan, `php artisan test`, vitest or `scripts/check.sh` was written or run**; missing tests are in `MISSED_TESTS.md` (P3.1).
+
+Built: migration (ledger_accounts, journal_entries, journal_lines, ledger_reconciliation_runs, commission_rules + versions, booking columns `commission_rule_id/_version_id`, `price_breakdown`, `settled_at`); `LedgerService` (post/reverse, balanced per currency, ordered locks, idempotent by key + fingerprint, negative policy, `nonNegativeAccountIds`); `CommissionResolver` + snapshot at provider selection (OfferSelectionService, cleared when the booking returns to searching); `PriceBreakdownCalculator`, `SettlementPostingBuilder` (cash, gateway, tip), `BookingSettlementService` hooked into TripLifecycleService completion and operator force-complete; `ledger:reconcile` (nightly, report only); `LedgerFinancialPositionRepository` replaces the neutral one (payments part stays behind `PaymentPositionRepositoryInterface` until P3.2); settings default commission / tax / customer fee; admin: Commission rules, Ledger accounts, Journal entries, Reconciliation, wallet tabs on customers and providers.
+
+Sanity checks run: `php -l`, migrate/rollback/migrate, `route:list`, `view:cache`, container resolution, rolled-back tinker proofs (all Plan 7.4 examples balanced with expected wallet balances, idempotent replay, key reuse refused, unbalanced refused, customer wallet never negative, payout reserve refused on empty wallet, reversal restores balances, reconcile ok then detects a tampered balance), admin index pages return 200.
+
+Gaps: no DB triggers (app user lacks privilege); add-ons, coupons, tips are zero until P4/P3.3/P3.2; completion hook not exercised on a real booking.
 
 ---
 

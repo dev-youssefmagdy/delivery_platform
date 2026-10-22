@@ -703,3 +703,34 @@ Both tokens (`customer`, `provider`); status-safe (a suspended account can still
 **Relation to `GET /me/messages`.** Help messages from support stay readable there (customer only); each one also creates an inbox entry (`link.type = message`, `link.id` = the message id). See ADR-132.
 
 Admin (session guard): `/admin/notification-templates` (CRUD without delete, activate / deactivate, `POST /preview`), `/admin/notification-deliveries` (read-only, `POST /{uuid}/retry` with a reason), `/admin/push-campaigns` (CRUD, `schedule`, `send`, `cancel`), `POST /admin/notifications/{uuid}/read` and `/read-all` (the bell). Permissions: `notifications.manage`, `push_campaigns.manage`.
+
+## P3.7 — Booking chat and support
+
+Tokens: `customer` and `provider` (the driver paths are `/provider/...`). Everything is scoped to the caller; a non-participant gets `403`, an unknown booking `404`. Writes need an `Idempotency-Key`. Error codes: `chat_forbidden`, `chat_closed`, `chat_empty`, `chat_message_too_long`, `ticket_category_not_allowed`, `ticket_limit_reached`, `ticket_rate_limited`, `ticket_link_invalid`, `ticket_closed`, `ticket_empty_reply`, `ticket_too_many_attachments`, `appeal_not_available`, `appeal_already_open`, plus the upload codes of documents (`document_type_not_allowed`, `document_infected`, ...).
+
+### Chat (ADR-137)
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/bookings/{booking}/messages` · `/api/v1/provider/bookings/{booking}/messages` | Latest 50, oldest first. `?after={message}` newer ones, `?before={message}` older ones. Item `{id, sender (customer\|provider), mine, body\|null, attachment {mime, size_bytes, url (signed, 5 min, needs the token)}\|null, purged, read_at, created_at}`. `meta`: `role`, `can_send`, `closes_at`, `unread`, `has_more`, `max_chars` |
+| POST | same path | multipart or JSON: `body` and/or `attachment` (one image). Needs `Idempotency-Key`; 30/min. `403 chat_closed` after the window. Phone-like digit runs are masked. `201` + the message |
+| POST | `.../messages/read` | `{up_to?}`; marks the other side's messages read; `meta.marked_read` |
+| GET | `.../messages/{message}/attachment` | signed + token; participants only |
+
+Realtime (own channel only, never text): `booking.message_received` `{message_uuid, sender, has_attachment, unread}` and `booking.messages_read` `{reader, read_count}`. Push event `booking.message_received` (link `chat` -> booking id). `allowed_actions` of the booking include `chat` and `appeal`.
+
+### Support (ADR-138..140)
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/support/categories` | Categories the app may choose (`value`, `label`) |
+| GET | `/api/v1/support/tickets` | Own tickets of this app, newest activity first; `status=active\|finished`, `page`, `per_page`. Item `{id, number, category, category_label, status, status_label, subject, source, booking_id, booking_code, can_reply, resolution, last_message_at, created_at}` |
+| POST | `/api/v1/support/tickets` | `category`, `subject`, `body`, `booking_id?`, `payment_id?`, `payout_id?` (ids the caller owns), `attachments[]` (max 3). `201` + ticket with `messages` |
+| GET | `/api/v1/support/tickets/{ticket}` | Ticket + public thread `messages[] {id, from (me\|support), body, attachments[] {id, name, mime, size_bytes, url}, created_at}`. Internal notes, assignee, group and SLA are NEVER returned |
+| POST | `/api/v1/support/tickets/{ticket}/messages` | `body`, `attachments[]`; reopens a resolved ticket within 7 days |
+| GET | `/api/v1/support/tickets/{ticket}/attachments/{attachment}` | signed + token |
+| POST | `/api/v1/bookings/{booking}/cancellation-appeal` · `/api/v1/provider/bookings/{booking}/cancellation-appeal` | `{reason}` (10+ chars): ticket with the fee decision snapshot |
+| POST | `/api/v1/bookings/{booking}/reports` (and the driver twin) | now creates a ticket; response keeps `{id, category, status (open\|closed)}` and adds `ticket_id`, `ticket_number` |
+
+Admin (session guard): `/admin/support-tickets` (inbox + `{ticket}`, `activity`, `chat` (audited), `attachments/{uuid}`, `POST messages|claim|assign|escalate|resolve|reopen|priority|link-finance`), `/admin/macros` (CRUD without delete, activate / deactivate), `/admin/customers/{customer}/tabs/tickets`. Permissions: `support.view`, `support.manage`, `support.view_all`, `macros.manage`.
+

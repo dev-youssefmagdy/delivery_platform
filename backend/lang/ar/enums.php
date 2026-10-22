@@ -329,6 +329,8 @@ return [
     'contact_role' => [
         'sender' => 'المرسل',
         'recipient' => 'المستلم',
+        'pickup_contact' => 'جهة الاتصال عند التحميل',
+        'dropoff_contact' => 'جهة الاتصال عند التسليم',
     ],
 
     'custody_status' => [
@@ -794,6 +796,8 @@ return [
         'waiting' => 'وقت الانتظار',
         'toll_parking' => 'رسوم طريق أو انتظار سيارات (بالتكلفة)',
         'scope_change' => 'تغيير نطاق الخدمة',
+        'extra_helper' => 'عامل إضافي',
+        'stairs' => 'سلالم أكثر من المتفق عليه',
     ],
     'booking_adjustment_status' => [
         'pending' => 'بانتظار الطرف الآخر',
@@ -1238,5 +1242,21 @@ return [
         'reopened' => 'إعادة فتح',
         'linked' => 'ربط عملية مالية',
         'sla_breached' => 'تجاوز مهلة الرد',
+    ],
+    'scope_item' => [
+        'helpers' => 'العمال',
+        'stairs' => 'السلالم',
+        'extra_stops' => 'التوقفات الإضافية',
+        'waiting_allowance' => 'مدة الانتظار المسموحة',
+        'tolls' => 'رسوم الطرق',
+        'parking' => 'موقف السيارات',
+        'packing' => 'التغليف',
+        'assembly' => 'الفك والتركيب',
+        'loading_equipment' => 'معدات التحميل',
+    ],
+    'cost_treatment' => [
+        'included' => 'مشمول في السعر',
+        'at_cost_with_evidence' => 'بالتكلفة الفعلية مع إيصال',
+        'excluded' => 'غير مشمول',
     ],
 ];

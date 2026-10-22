@@ -2747,6 +2747,8 @@ return [
             'route' => 'المسار',
             'commission' => 'العمولة',
             'agreed_scope' => 'النطاق المتفق عليه',
+            'requested_scope' => 'النطاق المطلوب',
+            'load' => 'الحمولة (الأغراض والحجم والموعد)',
             'cancellation_decision' => 'قرار الإلغاء',
             'arrival_evidence' => 'دليل الوصول',
         ],

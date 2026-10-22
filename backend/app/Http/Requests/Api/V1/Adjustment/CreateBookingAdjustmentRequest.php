@@ -29,7 +29,11 @@ class CreateBookingAdjustmentRequest extends FormRequest
             'type' => ['required', Rule::enum(BookingAdjustmentType::class)],
             'amount_minor' => ['nullable', 'integer', 'between:-1000000000,1000000000'],
             'reason' => ['required', 'string', 'min:3', 'max:'.(int) config('booking.adjustments.reason_max_chars', 500)],
-            'details' => ['nullable', 'array', 'max:6'],
+            'details' => ['nullable', 'array', 'max:8'],
+            // The item of the accepted scope the change refers to (moving / freight), and the facts the item needs.
+            'details.scope_item' => ['nullable', 'string', Rule::enum(\App\Enums\Scope\ScopeItem::class)],
+            'details.floors' => ['nullable', 'integer', 'between:1,40'],
+            'details.helpers' => ['nullable', 'integer', 'between:1,5'],
             'details.address' => ['nullable', 'string', 'max:255'],
             'details.minutes' => ['nullable', 'integer', 'between:0,1440'],
             'evidence' => ['nullable', 'array', 'max:4'],

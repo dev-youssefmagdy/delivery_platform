@@ -180,6 +180,8 @@ final class BookingReceiptService
                 'pickup' => (string) ($booking->pickup_address['line'] ?? ''),
                 'dropoff' => (string) ($booking->dropoff_address['line'] ?? ''),
                 'distance_m' => $booking->route_snapshot['distance_m'] ?? null,
+                // Moving / freight: the scope both parties accepted (P4.2); approved adjustments below refer to its items.
+                'agreed_scope' => $booking->agreed_scope,
                 'started_at' => $booking->started_at?->toIso8601ZuluString(),
                 'completed_at' => $booking->completed_at?->toIso8601ZuluString(),
             ],
@@ -193,6 +195,7 @@ final class BookingReceiptService
                 'adjustments' => $approved->map(static fn (BookingAdjustmentRequest $adjustment): array => [
                     'uuid' => $adjustment->uuid,
                     'type' => $adjustment->type->value,
+                    'scope_item' => $adjustment->details['scope_item'] ?? null,
                     'reason' => $adjustment->reason,
                     'amount_minor' => $adjustment->amount_minor,
                     'approved_at' => $adjustment->decided_at?->toIso8601ZuluString(),

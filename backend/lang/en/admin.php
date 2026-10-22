@@ -2750,6 +2750,8 @@ return [
             'route' => 'Route',
             'commission' => 'Commission',
             'agreed_scope' => 'Agreed scope',
+            'requested_scope' => 'Requested scope',
+            'load' => 'Load (items, volume, window)',
             'cancellation_decision' => 'Cancellation decision',
             'arrival_evidence' => 'Arrival evidence',
         ],

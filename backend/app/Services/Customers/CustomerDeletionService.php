@@ -9,7 +9,10 @@ use App\Exceptions\BusinessRuleViolation;
 use App\Models\AccountDeletionRequest;
 use App\Models\Admin;
 use App\Models\User;
+use App\Repositories\Contracts\Booking\BookingAttachmentRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingContactRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingItemRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingStopRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
@@ -54,6 +57,9 @@ final class CustomerDeletionService
         private readonly RecipientOtpRepositoryInterface $recipientOtps,
         private readonly DeliveryAttemptRepositoryInterface $deliveryAttempts,
         private readonly BookingProofRepositoryInterface $proofs,
+        private readonly BookingItemRepositoryInterface $items,
+        private readonly BookingAttachmentRepositoryInterface $attachments,
+        private readonly BookingStopRepositoryInterface $stops,
         private readonly PrivateFileStorage $files,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -100,7 +106,12 @@ final class CustomerDeletionService
             $this->recipientOtps->purgeForCustomer($locked->id);
             $this->deliveryAttempts->scrubForCustomer($locked->id);
             $proofFiles = $this->proofs->detachFilesForCustomer($locked->id);
-            $supportFiles = [...$ticketFiles, ...$chatFiles, ...$proofFiles];
+            // Moving / freight (P4.2): item notes and free-text items, the contacts of intermediate stops and every photo / video / document
+            // (pictures may show people and homes) go; the structured facts (quantities, dimensions, weights, scope) stay for disputes.
+            $itemsScrubbed = $this->items->scrubForCustomer($locked->id);
+            $stopContactsScrubbed = $this->stops->scrubContactsForCustomer($locked->id);
+            $loadFiles = $this->attachments->eraseForCustomer($locked->id);
+            $supportFiles = [...$ticketFiles, ...$chatFiles, ...$proofFiles, ...$loadFiles];
 
             $this->requests->update($request, [
                 'status' => DeletionRequestStatus::Completed,
@@ -116,7 +127,7 @@ final class CustomerDeletionService
                 before: ['status' => $previousStatus->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged, 'coupon_attempts_scrubbed' => $couponAttemptsScrubbed, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles), 'booking_contacts_scrubbed' => $contactsScrubbed, 'proof_files_removed' => count($proofFiles)],
+                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged, 'coupon_attempts_scrubbed' => $couponAttemptsScrubbed, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles), 'booking_contacts_scrubbed' => $contactsScrubbed, 'proof_files_removed' => count($proofFiles), 'booking_items_scrubbed' => $itemsScrubbed, 'stop_contacts_scrubbed' => $stopContactsScrubbed, 'load_files_removed' => count($loadFiles)],
             );
 
             return $request;

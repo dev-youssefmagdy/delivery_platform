@@ -8,7 +8,9 @@ use App\Models\BookingMessage;
 use App\Models\SupportTicket;
 use App\Models\TicketMessage;
 use App\Models\BookingStatusEvent;
+use App\Models\BookingAttachment;
 use App\Models\BookingContact;
+use App\Models\BookingItem;
 use App\Models\BookingProof;
 use App\Models\BookingStop;
 use App\Models\DeliveryAttempt;
@@ -29,7 +31,9 @@ use App\Models\UserConsent;
 use App\Models\UserDevice;
 use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingAttachmentRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingContactRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingItemRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
@@ -71,6 +75,8 @@ final class PersonalDataExporter
         private readonly BookingContactRepositoryInterface $contacts,
         private readonly BookingProofRepositoryInterface $proofs,
         private readonly DeliveryAttemptRepositoryInterface $deliveryAttempts,
+        private readonly BookingItemRepositoryInterface $items,
+        private readonly BookingAttachmentRepositoryInterface $attachments,
     ) {}
 
     /**
@@ -265,6 +271,33 @@ final class PersonalDataExporter
         ];
     }
 
+    /**
+     * Moving / freight data of a booking (P4.2): the load lines, the requested and accepted scope, the pickup window, the contacts the
+     * customer typed for intermediate stops and the attachments as facts (kind, size, time, hash; the files are not part of the export).
+     *
+     * @return array<string, mixed>|null
+     */
+    private function movingFreight(Booking $booking): ?array
+    {
+        $items = $this->items->forBooking($booking->id);
+        $attachments = $this->attachments->forBooking($booking->id);
+
+        if ($items->isEmpty() && $attachments->isEmpty() && $booking->requested_scope === null) {
+            return null;
+        }
+
+        return [
+            'requested_scope' => $booking->requested_scope,
+            'agreed_scope' => $booking->agreed_scope,
+            'weight_kg' => $booking->cargo_weight_kg,
+            'volume_m3' => $booking->cargo_volume_m3,
+            'pickup_window' => $booking->pickup_window_start === null ? null : ['start' => $booking->pickup_window_start->toIso8601String(), 'end' => $booking->pickup_window_end?->toIso8601String()],
+            'items' => $items->map(static fn (BookingItem $item): array => ['kind' => $item->kind, 'code' => $item->code, 'label' => $item->label, 'quantity' => $item->quantity, 'volume_m3' => $item->volume_m3, 'weight_kg' => $item->weight_kg, 'note' => $item->note])->values()->all(),
+            'stop_contacts' => $booking->stops->filter(static fn (BookingStop $stop): bool => $stop->contact_encrypted !== null)->map(static fn (BookingStop $stop): array => ['position' => $stop->position] + (array) $stop->contact())->values()->all(),
+            'attachments' => $attachments->map(static fn (BookingAttachment $attachment): array => ['kind' => $attachment->kind, 'field' => $attachment->field, 'size_bytes' => $attachment->size_bytes, 'uploaded_at' => $attachment->created_at->toIso8601String(), 'sha256' => $attachment->sha256])->values()->all(),
+        ];
+    }
+
     private function booking(Booking $booking): array
     {
         return [
@@ -295,6 +328,7 @@ final class PersonalDataExporter
             ],
             'ratings_and_reports' => $this->feedback($booking),
             'parcel' => $this->parcel($booking),
+            'moving_freight' => $this->movingFreight($booking),
             'timeline' => $this->bookingEvents->forBooking($booking)->map(static fn (BookingStatusEvent $event): array => [
                 'from' => $event->from_status?->value,
                 'to' => $event->to_status->value,

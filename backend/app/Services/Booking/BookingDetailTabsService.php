@@ -18,6 +18,7 @@ use App\Services\Courier\RecipientOtpService;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
+use App\Services\Scope\BookingLoadPresenter;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonInterface;
 
@@ -36,6 +37,7 @@ final class BookingDetailTabsService
         private readonly SettingsService $settings,
         private readonly DeliveryAttemptRepositoryInterface $attempts,
         private readonly RecipientOtpService $recipientOtps,
+        private readonly BookingLoadPresenter $loads,
     ) {}
 
     /**
@@ -76,10 +78,32 @@ final class BookingDetailTabsService
             'reference_estimate' => $booking->reference_estimate,
             'route' => $route,
             'commission' => $booking->commission_snapshot,
+            // Moving / freight (P4.2): what the customer asked for, the accepted scope and the load lines (free text only with view_pii).
+            'requested_scope' => $booking->requested_scope,
             'agreed_scope' => $booking->agreed_scope,
+            'load' => $this->load($booking, $canViewPii),
             'cancellation_decision' => $booking->cancellation_decision,
             'arrival_evidence' => $canViewPii ? $booking->arrival_evidence : null,
         ], static fn (mixed $value): bool => $value !== null && $value !== []);
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function load(Booking $booking, bool $canViewPii): ?array
+    {
+        $load = $this->loads->load($booking);
+
+        if ($load === null || $canViewPii) {
+            return $load;
+        }
+
+        foreach ($load['items'] as &$item) {
+            $item['label'] = $item['kind'] === 'free' ? null : $item['label'];
+            $item['note'] = null;
+        }
+
+        return $load;
     }
 
     /**

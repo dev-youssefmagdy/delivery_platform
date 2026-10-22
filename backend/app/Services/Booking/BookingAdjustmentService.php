@@ -21,6 +21,7 @@ use App\Models\User;
 use App\Repositories\Contracts\Booking\BookingAdjustmentRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Services\Audit\AuditLogger;
+use App\Services\Scope\OfferScopeService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -54,6 +55,7 @@ final class BookingAdjustmentService
         private readonly BookingTransitionService $transitions,
         private readonly BookingNotifier $notifier,
         private readonly AuditLogger $audit,
+        private readonly OfferScopeService $scopes,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -264,7 +266,10 @@ final class BookingAdjustmentService
                 throw BusinessRuleViolation::make('adjustment_evidence_required', 'evidence.reference');
             }
 
+            // Moving / freight: the request must name the item of the accepted scope it changes, and the scope decides if it can be charged (P4.2).
+            $scopeDetails = $this->scopes->assertAdjustmentAllowed($locked, $data);
             [$amount, $details] = $this->priceOf($locked, $data, $now);
+            $details += $scopeDetails;
             $this->assertAmount($locked, $data->type, $amount);
 
             $open = $this->adjustments->openForBooking($locked->id);
@@ -372,6 +377,14 @@ final class BookingAdjustmentService
         if ($data->type === BookingAdjustmentType::Waiting) {
             $rate = (int) ($booking->policy_snapshot['cancellation']['waiting_rate_minor'] ?? 0);
             $from = $booking->free_wait_ends_at ?? $booking->arrived_at;
+            // The agreed scope's waiting allowance extends the free wait (SRS §7.4): billing starts after the longer of the two.
+            $allowance = (int) ($booking->agreed_scope['waiting_allowance_minutes'] ?? 0);
+
+            if ($allowance > 0 && $booking->arrived_at !== null) {
+                $allowanceEnds = $booking->arrived_at->toImmutable()->addMinutes($allowance);
+                $from = $from === null || $allowanceEnds->greaterThan($from) ? $allowanceEnds : $from;
+            }
+
             $minutes = $from === null || $from->greaterThanOrEqualTo($now) ? 0 : (int) ceil($from->diffInSeconds($now) / 60);
             $details += ['billable_minutes' => $minutes, 'rate_minor' => $rate];
 

@@ -17,6 +17,8 @@ enum BookingAdjustmentType: string implements HasLabel
     case Waiting = 'waiting';
     case TollParking = 'toll_parking';
     case ScopeChange = 'scope_change';
+    case ExtraHelper = 'extra_helper';
+    case Stairs = 'stairs';
 
     public function requiresEvidence(): bool
     {
@@ -32,7 +34,7 @@ enum BookingAdjustmentType: string implements HasLabel
     {
         return match ($this) {
             self::Waiting, self::TollParking => [\App\Enums\Common\ActorType::Provider],
-            self::ExtraStop, self::ScopeChange => [\App\Enums\Common\ActorType::Provider, \App\Enums\Common\ActorType::Customer],
+            self::ExtraStop, self::ScopeChange, self::ExtraHelper, self::Stairs => [\App\Enums\Common\ActorType::Provider, \App\Enums\Common\ActorType::Customer],
         };
     }
 

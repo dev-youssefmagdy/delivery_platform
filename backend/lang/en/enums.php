@@ -329,6 +329,8 @@ return [
     'contact_role' => [
         'sender' => 'Sender',
         'recipient' => 'Recipient',
+        'pickup_contact' => 'Pickup contact',
+        'dropoff_contact' => 'Drop-off contact',
     ],
 
     'custody_status' => [
@@ -794,6 +796,8 @@ return [
         'waiting' => 'Waiting time',
         'toll_parking' => 'Toll or parking (at cost)',
         'scope_change' => 'Change of scope',
+        'extra_helper' => 'Extra helper',
+        'stairs' => 'Stairs beyond the agreed floors',
     ],
     'booking_adjustment_status' => [
         'pending' => 'Waiting for the other party',
@@ -1238,5 +1242,21 @@ return [
         'reopened' => 'Reopened',
         'linked' => 'Finance operation linked',
         'sla_breached' => 'SLA breached',
+    ],
+    'scope_item' => [
+        'helpers' => 'Helpers',
+        'stairs' => 'Stairs',
+        'extra_stops' => 'Extra stops',
+        'waiting_allowance' => 'Waiting allowance',
+        'tolls' => 'Tolls',
+        'parking' => 'Parking',
+        'packing' => 'Packing',
+        'assembly' => 'Assembly',
+        'loading_equipment' => 'Loading equipment',
+    ],
+    'cost_treatment' => [
+        'included' => 'Included in the fare',
+        'at_cost_with_evidence' => 'At cost, with a receipt',
+        'excluded' => 'Not included',
     ],
 ];

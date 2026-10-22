@@ -666,3 +666,21 @@ Admin (session + Precognition; permission in brackets):
 | GET | `/admin/providers/{uuid}/statement?from=&to=` | `finance.view` + `reports.export` | Wallet statement CSV with opening / closing balance and the ledger balance; audited. |
 | GET | `/admin/providers/{uuid}/tabs/earnings`, `/tabs/payouts` | `drivers.view` (+ `payouts.view` for payouts) | Lazy tabs. |
 | GET | `/admin/lookups/finance-providers`, `/wallets` | `payouts.view` or `finance.view`; `wallets.adjust` | Remote selects for the finance filters and the adjustment form. |
+
+## P3.5 — Cancellation fees, no-shows, fare adjustments, receipts
+
+Cancel (`POST /bookings/{b}/cancel`, `POST /provider/bookings/{b}/cancel`) now accepts optional `lat`, `lng`, `accuracy_m`, `recorded_at` (GPS evidence of a no-show). New reasons: customer `driver_no_show`, provider `customer_no_show` (existing). The decision gains `payer`, `provider_share_bp`, `penalty` and `evidence`; fees are posted to the ledger on commit. Errors: `provider_no_show_too_early`, `cancellation_cooldown_active` and `customer_fee_debt_outstanding` (422 on `POST /bookings`).
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/bookings/{b}/adjustments`, `/provider/bookings/{b}/adjustments` | Adjustments with `requested_by_me`, `can_answer`, `can_withdraw`. |
+| POST | `/bookings/{b}/adjustments`, `/provider/bookings/{b}/adjustments` | Idempotency-Key. `{type: extra_stop|waiting|toll_parking|scope_change, amount_minor?, reason, details?, evidence?{reference,note}}`; `waiting` may omit the amount when the policy has a per-minute rate. Errors: `adjustment_not_allowed_now` (409), `adjustment_open_limit` (409), `adjustment_amount_invalid`, `adjustment_evidence_required`, `adjustment_type_not_allowed` (422). |
+| POST | `.../adjustments/{a}/approve`, `/reject` | Idempotency-Key, `{note?}`. Only the other party (403 `adjustment_needs_counterpart`); 409 `adjustment_not_pending` / `adjustment_expired`. |
+| POST | `.../adjustments/{a}/withdraw` | The requester only. |
+| GET | `/bookings/{b}/receipt`, `/provider/bookings/{b}/receipt` | Immutable receipt (customer: fare lines; provider: earnings) + `html_url` (signed, 15 min, `lang`). 409 `receipt_not_available` before completion. |
+| GET | `/receipts/{uuid}?as=&lang=&signature=` | Printable HTML receipt (ar RTL / en), noindex. |
+
+Booking resources add `adjustments_total` and `current_total`; `allowed_actions` add `request_adjustment` and `view_receipt`. Realtime: `booking.adjustment_changed` on `private-customer.{uuid}` and `private-provider.{uuid}` with `{adjustment_uuid, event, status, type, requester, amount_minor, currency, adjustments_total_minor}`.
+
+Admin: `GET /admin/booking-adjustments`, `/{uuid}` (`bookings.view`), `POST /admin/booking-adjustments/{uuid}/void` (`bookings.manage`, reason), booking tabs `adjustments` and `receipt`, `POST /admin/cancellation-policies/{id}/preview` (calculator).
+

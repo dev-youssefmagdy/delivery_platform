@@ -30,7 +30,7 @@
 | P3.2 | Payments: gateway adapter, cash flow, webhooks, tips | P1 | 🟡 | 2026-10-31 |
 | P3.3 | Coupon engine and coupon manager | P1 | 🟡 | 2026-11-01 |
 | P3.4 | Provider earnings, payouts, adjustments, cash reconciliation | P1 | 🟡 | 2026-11-02 |
-| P3.5 | Cancellation/no-show policies with fees, fare adjustments, receipts | P1 | ❌ | — |
+| P3.5 | Cancellation/no-show policies with fees, fare adjustments, receipts | P1 | 🟡 | 2026-11-03 |
 | P3.6 | Notifications platform (push, SMS, email, in-app inbox) | P1 | ❌ | — |
 | P3.7 | Booking chat and support tickets/disputes | P1 | ❌ | — |
 | P3.8 | Flutter: wallet, payments, coupons, earnings, payouts | P1 | ❌ | — |
@@ -51,6 +51,27 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P3.5 — Cancellation/no-show policies with fees, fare adjustments, receipts · 🟡 2026-11-03 (gate NOT run)
+
+Committed directly on `main`. ADR-128..131. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P3.5).
+
+### Built
+- **Fee postings**: `CancellationFeePostingService` posts the fee decision (`cancellation_fee` entries, key `cancellation-fee:<uuid>:<seq>:<part>`) from `BookingTransitionService` inside the transition transaction. Customer fee = customer wallet debt (wallet may go negative) credited to provider share / platform revenue; provider fee or no-show penalty = provider wallet debit, platform revenue credit. Coupon use is kept on a late fee when the coupon's `restore_on_refund` is off (`CouponReservationService::settleCancelled`).
+- **Policy**: `waiting_rate_minor`, `require_no_show_evidence`, `provider_no_show_after_seconds`; rules gain `after_seconds` (time-based fee) and `provider_share_bp`; new stage `no_show`; customer reason `driver_no_show`.
+- **No-shows**: provider `customer_no_show` charges the customer's `no_show` rule only with verified arrival + a fresh GPS fix when evidence is required; customer `driver_no_show` is free and records the provider's `no_show` penalty. `ArrivalEvidenceBuilder` is shared with the arrival.
+- **Abuse**: `CancellationAbuseService` (settings `cancellation_abuse_threshold/_window_hours/_cooldown_minutes`, `customer_fee_debt_limit_minor`): customer cannot book during cooldown or with unpaid fees; provider gets eligibility reason `cancellation_cooldown`.
+- **Adjustments**: `booking_adjustment_requests`, `BookingAdjustmentService`, customer and provider endpoints (list/create/approve/reject/withdraw), realtime `booking.adjustment_changed`, expiry command `bookings:expire-adjustments`, `bookings.adjustments_total_minor` feeding `final_fare_minor`.
+- **Receipts**: immutable `booking_receipts` issued at completion; `GET /bookings/{b}/receipt`, `GET /provider/bookings/{b}/receipt`, signed printable HTML (`/receipts/{uuid}`, ar RTL / en).
+- **Admin**: Fare adjustments listing + detail + audited void, booking Adjustments and Receipt tabs, policy form fields, policy Calculator tab (`CancellationPolicyPreviewService`).
+
+### Sanity checks run (no suites)
+`php -l` on touched files; migrate / rollback / migrate; container resolution; `route:list`; `view:cache`; rolled-back tinker scripts proving fee matrix postings (customer percent with 70/30 split, no-show, no-evidence, driver no-show penalty, provider cancel, time-based rule) keep every ledger entry balanced and replays idempotent, and adjustment request/approve/reject/expire, completion total, receipt immutability.
+
+### Known gaps / notes for P3.6 and later
+- Card fees are not charged off-session: every customer fee is wallet debt; no customer top-up exists, so debts are settled through a P3.4 wallet adjustment until P3.8. Provider re-dispatch cancels are not counted by the abuse query (only bookings).
+- Appeals: `meta`-level hook only; P3.7 opens a support ticket from a disputed fee (decision snapshot is on the booking). Notifications are log stubs (`BookingNotifier::adjustmentChanged`); P3.6 should notify the other party of a pending adjustment, no-show and fee debt.
+- PDF is print-to-PDF of the HTML page (no PDF dependency added). Flutter UI is P3.8 / adjustments UI P3.8.
 
 ## P3.4 — Provider earnings, payouts, adjustments, cash reconciliation · 🟡 2026-11-02 (gate NOT run)
 

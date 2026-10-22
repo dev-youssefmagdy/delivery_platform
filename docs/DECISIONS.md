@@ -738,3 +738,24 @@ Discovered while wiring this: the framework's default middleware priority list n
 
 **Decision.** Earnings (day / week / month in the market timezone, week starting Saturday, and by service category) and the booking-level breakdown are computed from `bookings.price_breakdown` of settled bookings, the same numbers the ledger was posted from; a provider-funded coupon is shown on its own line and is already inside `provider_net`. The provider statement export (`finance.view` + `reports.export`) is built from the wallet's journal lines with the opening balance, credits, debits, closing balance and the cached ledger balance, streamed and audited, so its totals equal the ledger sums by construction. `GET /me/wallet`, `/me/wallet/transactions` (customer) and `GET /provider/wallet/transactions` return the wallet and its statement lines (signed change, balance after); the customer personal-data export gains a `wallet` section. Open payouts count as open financial items of a provider (deletion is blocked until they close).
 **Why.** One set of numbers for the apps, the admin and the ledger avoids three versions of "what I earned".
+
+## ADR-128 — Cancellation fees post to the ledger as wallet debts · 2026-11-03 · Accepted
+
+**Decision.** The fee decision of ADR-100 is posted by `CancellationFeePostingService` from `BookingTransitionService` in the same transaction (cancellation, or a provider cancel that re-dispatches). The payer is `decision.payer` (the canceller unless the fee is charged to the other side, as in a reported no-show). A customer fee debits the customer wallet (allowed below zero for this entry only) and credits the provider for `provider_share_bp` of it when the rule's recipient is the provider (default 100%), the rest to platform revenue; a provider fee or penalty debits the provider wallet and credits platform revenue (a provider is never the recipient of their own fee). Card fees are not charged off-session: all customer fees are wallet debts, and `customer_fee_debt_limit_minor` blocks new bookings above it. A late fee keeps the coupon use only when the coupon's `restore_on_refund` is off (closed as committed without redemption).
+**Why.** One mechanism for cash and card, atomic with the status, replay-safe, no new account types.
+
+## ADR-129 — No-shows need evidence; time-based rules; abuse cooldowns · 2026-11-03 · Accepted
+
+**Decision.** Customer no-show: only after arrival and the free wait; with `require_no_show_evidence` (default on) the fee needs a verified arrival and a report GPS fix (same freshness/radius as the arrival), otherwise basis `no_show_no_evidence` and no fee. Provider no-show reported by the customer (`driver_no_show`): allowed `provider_no_show_after_seconds` after selection while no verified arrival exists, always allowed by policy, free for the customer, the provider's `no_show` rule is recorded as a penalty. A rule may carry `after_seconds` (largest reached wins, measured from selection or arrival). Waiting is a `waiting` adjustment priced `ceil(minutes past the free wait) x waiting_rate_minor`, or negotiated when the rate is 0. Cooldowns are computed from bookings (threshold/window/cooldown settings), not stored.
+**Why.** SRS §8.4: no automatic penalty from one GPS signal; auditable, no drifting counters.
+
+## ADR-130 — Fare adjustments need the other party's approval · 2026-11-03 · Accepted
+
+**Decision.** `booking_adjustment_requests` (type extra_stop / waiting / toll_parking / scope_change; signed `amount_minor`, old and new total, reason, evidence; expires after 10 minutes). Allowed from selection to in-progress; the requester types are restricted per type; toll needs `evidence.reference`; the total is capped (agreed fare +50%) and one open request per type (max 3). Only the other party approves/rejects (403 `adjustment_needs_counterpart`), the requester withdraws; operations can only void. Approval adds to `bookings.adjustments_total_minor` under the booking lock; completion sets `final_fare_minor = agreed + total`, so breakdown, ledger and receipt use it; commission applies to the whole total. Pending requests expire at completion; a provider re-dispatch closes all.
+**Why.** I12 and SRS §9.4: no unilateral price change after selection.
+
+## ADR-131 — Receipts are immutable snapshots · 2026-11-03 · Accepted
+
+**Decision.** `booking_receipts` is written once at completion from the booking, its approved adjustments and stored price breakdown (the table refuses updates and deletes). Customer and provider views are projections of the same snapshot. Bookings completed earlier get a `backfilled` receipt on first read. HTML receipt behind a 15-minute signed link, Arabic RTL by default, print-ready (print to PDF; no PDF library added). Tips are separate payments and not on the receipt.
+**Why.** Plan I4.
+

@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Builder;
  */
 interface JournalEntryRepositoryInterface
 {
+    public function find(int $id): ?JournalEntry;
+
     public function findByUuid(string $uuid): ?JournalEntry;
 
     public function findByIdempotencyKey(string $key): ?JournalEntry;

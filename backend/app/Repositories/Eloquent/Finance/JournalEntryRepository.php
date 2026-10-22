@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 final class JournalEntryRepository implements JournalEntryRepositoryInterface
 {
+    public function find(int $id): ?JournalEntry
+    {
+        return JournalEntry::query()->find($id);
+    }
+
     public function findByUuid(string $uuid): ?JournalEntry
     {
         return JournalEntry::query()->where('uuid', $uuid)->first();

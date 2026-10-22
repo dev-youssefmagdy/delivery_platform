@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\Customer\BookingCancellationController;
 use App\Http\Controllers\Api\V1\Customer\BookingFeedbackController;
 use App\Http\Controllers\Api\V1\Customer\BookingOfferController;
 use App\Http\Controllers\Api\V1\Customer\BookingShareController;
+use App\Http\Controllers\Api\V1\Customer\PaymentController;
 use App\Http\Controllers\Api\V1\Geo\CityController;
 use App\Http\Controllers\Api\V1\Geo\PlaceController;
 use App\Http\Controllers\Api\V1\Geo\RouteController;
@@ -23,10 +24,12 @@ use App\Http\Controllers\Api\V1\Me\ConsentController;
 use App\Http\Controllers\Api\V1\Me\DeviceController;
 use App\Http\Controllers\Api\V1\Me\MeController;
 use App\Http\Controllers\Api\V1\Me\MessageController;
+use App\Http\Controllers\Api\V1\Me\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Me\PhotoController;
 use App\Http\Controllers\Api\V1\Me\SavedPlaceController;
 use App\Http\Controllers\Api\V1\Provider\ApplicationController;
 use App\Http\Controllers\Api\V1\Provider\AvailabilityController;
+use App\Http\Controllers\Api\V1\Provider\CashCollectionController;
 use App\Http\Controllers\Api\V1\Provider\DocumentController;
 use App\Http\Controllers\Api\V1\Provider\EligibilityController;
 use App\Http\Controllers\Api\V1\Provider\JobHistoryController;
@@ -36,6 +39,7 @@ use App\Http\Controllers\Api\V1\Provider\TripController;
 use App\Http\Controllers\Api\V1\Provider\TripFeedbackController;
 use App\Http\Controllers\Api\V1\Provider\RequestController;
 use App\Http\Controllers\Api\V1\Provider\VehicleController;
+use App\Http\Controllers\Api\V1\Webhooks\PaymentWebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -102,6 +106,8 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
     Route::middleware('ability:customer')->group(function (): void {
         Route::get('messages', [MessageController::class, 'index'])->name('messages.index');
         Route::post('messages/{message}/read', [MessageController::class, 'read'])->whereUuid('message')->name('messages.read');
+        // Saved online payment methods (P3.2): only brand and last four digits are returned.
+        Route::get('payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
     });
     Route::delete('account-deletion-requests/{deletionRequest}', [AccountDeletionController::class, 'destroy'])
         ->whereUuid('deletionRequest')->name('account-deletion-requests.destroy');
@@ -118,6 +124,8 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
             Route::post('saved-places', [SavedPlaceController::class, 'store'])->name('saved-places.store');
             Route::put('saved-places/{place}', [SavedPlaceController::class, 'update'])->whereUuid('place')->name('saved-places.update');
             Route::delete('saved-places/{place}', [SavedPlaceController::class, 'destroy'])->whereUuid('place')->name('saved-places.destroy');
+            Route::post('payment-methods/setup-intent', [PaymentMethodController::class, 'setupIntent'])->middleware('idempotent')->name('payment-methods.setup-intent');
+            Route::delete('payment-methods/{paymentMethod}', [PaymentMethodController::class, 'destroy'])->whereUuid('paymentMethod')->middleware('idempotent')->name('payment-methods.destroy');
         });
         Route::post('account-deletion-requests', [AccountDeletionController::class, 'store'])
             ->middleware('idempotent')->name('account-deletion-requests.store');
@@ -138,6 +146,10 @@ Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bo
     Route::delete('{booking}/share', [BookingShareController::class, 'destroy'])->whereUuid('booking')->name('share.destroy');
     Route::post('{booking}/rating', [BookingFeedbackController::class, 'rate'])->whereUuid('booking')->middleware('idempotent')->name('rating.store');
     Route::post('{booking}/reports', [BookingFeedbackController::class, 'report'])->whereUuid('booking')->middleware('idempotent')->name('reports.store');
+    // Online payment (P3.2): a card / wallet booking is paid after completion; a tip is a separate, optional charge. Neither
+    // can mark anything paid: only the gateway's verified webhook (or a server-side query) does.
+    Route::post('{booking}/payment-intents', [PaymentController::class, 'intent'])->whereUuid('booking')->middleware('idempotent')->name('payment-intents.store');
+    Route::post('{booking}/tips', [PaymentController::class, 'tip'])->whereUuid('booking')->middleware('idempotent')->name('tips.store');
 
     Route::middleware('account.active:strict')->group(function (): void {
         Route::post('/', [BookingController::class, 'store'])->middleware('idempotent')->name('store');
@@ -148,6 +160,18 @@ Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bo
         Route::post('{booking}/offers/{offer}/reject', [BookingOfferController::class, 'reject'])->whereUuid(['booking', 'offer'])->middleware('idempotent')->name('offers.reject');
     });
 });
+
+// Re-check one of the customer's own payments with the gateway after returning from the payment page (P3.2). Read-only for the
+// platform's state until the gateway itself says paid; limited per user.
+Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen', 'throttle:30,1'])->post('payments/{payment}/refresh', [PaymentController::class, 'refresh'])
+    ->whereUuid('payment')->name('payments.refresh');
+
+// Payment gateway callbacks (P3.2): no user authentication, the signature is checked over the raw body by the driver; own rate limit.
+Route::post('payment-gateways/{gateway}/webhook', PaymentWebhookController::class)
+    ->whereIn('gateway', App\Enums\Payments\PaymentGatewayName::values())
+    ->middleware(RateLimiterName::PaymentWebhooks->middleware())
+    ->withoutMiddleware('throttle:api')
+    ->name('payment-gateways.webhook');
 
 // Provider onboarding (P2.1): application, vehicles, documents, eligibility. `provider` tokens only (a customer token is
 // 403). Reads are status-safe so a suspended driver can still see why; writes need an active account. Files are only
@@ -185,6 +209,8 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::post('bookings/{booking}/verify-start-pin', [TripController::class, 'verifyStartPin'])->whereUuid('booking')->middleware('idempotent')->name('trip.verify-start-pin');
         Route::post('bookings/{booking}/start', [TripController::class, 'start'])->whereUuid('booking')->middleware('idempotent')->name('trip.start');
         Route::post('bookings/{booking}/complete', [TripController::class, 'complete'])->whereUuid('booking')->middleware('idempotent')->name('trip.complete');
+        // The provider confirms the cash was collected (P3.2): cash_due -> cash_collected.
+        Route::post('bookings/{booking}/cash-collected', [CashCollectionController::class, 'collected'])->whereUuid('booking')->middleware('idempotent')->name('trip.cash-collected');
         Route::post('bookings/{booking}/cancel', [TripController::class, 'cancel'])->whereUuid('booking')->middleware('idempotent:unless_preview')->name('trip.cancel');
         Route::post('bookings/{booking}/rating', [TripFeedbackController::class, 'rate'])->whereUuid('booking')->middleware('idempotent')->name('trip.rating');
         Route::post('bookings/{booking}/reports', [TripFeedbackController::class, 'report'])->whereUuid('booking')->middleware('idempotent')->name('trip.reports');

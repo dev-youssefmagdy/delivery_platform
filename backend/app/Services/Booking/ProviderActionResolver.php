@@ -5,6 +5,8 @@ namespace App\Services\Booking;
 use App\Enums\Booking\BookingStatus;
 use App\Enums\Booking\ProviderBookingAction;
 use App\Enums\Common\ActorType;
+use App\Enums\Payments\PaymentMethodType;
+use App\Enums\Payments\PaymentStatus;
 use App\Models\Booking;
 
 /**
@@ -50,6 +52,11 @@ final class ProviderActionResolver
                 break;
             default:
                 break;
+        }
+
+        // A completed cash booking waits for the provider to confirm the cash was collected (P3.2).
+        if ($booking->status === BookingStatus::Completed && $booking->payment_method === PaymentMethodType::Cash && $booking->payment_status === PaymentStatus::CashDue) {
+            $actions[] = ProviderBookingAction::ConfirmCashCollected;
         }
 
         if ($this->ratings->canRate($booking, ActorType::Provider)) {

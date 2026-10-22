@@ -538,6 +538,8 @@ return [
     ],
 
     'booking_action' => [
+        'pay' => 'Pay online',
+        'tip' => 'Leave a tip',
         'update_request' => 'Edit the request',
         'select_offer' => 'Choose a driver',
         'cancel' => 'Cancel the booking',
@@ -748,6 +750,7 @@ return [
     ],
 
     'provider_booking_action' => [
+        'confirm_cash_collected' => 'Confirm cash collected',
         'acknowledge' => 'Confirm the job',
         'arrived' => 'I have arrived',
         'verify_start_pin' => 'Enter the trip PIN',

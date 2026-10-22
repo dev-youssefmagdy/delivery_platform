@@ -538,6 +538,8 @@ return [
     ],
 
     'booking_action' => [
+        'pay' => 'الدفع إلكترونياً',
+        'tip' => 'ترك إكرامية',
         'update_request' => 'تعديل الطلب',
         'select_offer' => 'اختيار سائق',
         'cancel' => 'إلغاء الحجز',
@@ -748,6 +750,7 @@ return [
     ],
 
     'provider_booking_action' => [
+        'confirm_cash_collected' => 'تأكيد تحصيل النقد',
         'acknowledge' => 'تأكيد المهمة',
         'arrived' => 'لقد وصلت',
         'verify_start_pin' => 'إدخال رمز الرحلة',

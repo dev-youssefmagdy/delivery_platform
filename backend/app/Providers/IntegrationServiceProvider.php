@@ -7,6 +7,9 @@ use App\Integrations\Files\Drivers\ClamAvFileScanner;
 use App\Integrations\Files\Drivers\NoopFileScanner;
 use App\Integrations\IntegrationGuard;
 use App\Integrations\Maps\Contracts\MapsProvider;
+use App\Integrations\Payments\Contracts\PaymentGateway;
+use App\Integrations\Payments\Drivers\PaymobPaymentGateway;
+use App\Integrations\Payments\Drivers\SandboxPaymentGateway;
 use App\Integrations\Maps\Drivers\CachingMapsProvider;
 use App\Integrations\Maps\Drivers\FakeMapsProvider;
 use App\Integrations\Maps\Drivers\GoogleMapsProvider;
@@ -36,6 +39,7 @@ class IntegrationServiceProvider extends ServiceProvider
             'osrm_nominatim' => OsrmNominatimMapsProvider::class,
             'google' => GoogleMapsProvider::class,
         ]],
+        'payments' => [PaymentGateway::class, ['sandbox' => SandboxPaymentGateway::class, 'paymob' => PaymobPaymentGateway::class]],
         'file_scanner' => [FileScanner::class, ['noop' => NoopFileScanner::class, 'clamav' => ClamAvFileScanner::class]],
     ];
 

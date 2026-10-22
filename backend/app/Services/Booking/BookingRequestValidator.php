@@ -19,6 +19,7 @@ use App\Services\Catalog\Forms\ServiceFormValidator;
 use App\Services\Geography\GeoService;
 use App\Services\Geography\MapsService;
 use App\Services\Pricing\PriceGuidanceService;
+use App\Services\Payments\PaymentMethodAvailability;
 use App\Services\Settings\SettingsService;
 use App\Support\Money\Currency;
 use App\Support\Money\CurrencyRegistry;
@@ -42,6 +43,7 @@ final class BookingRequestValidator
         private readonly SettingsService $settings,
         private readonly ServiceCategoryRepositoryInterface $categories,
         private readonly CurrencyRegistry $currencies,
+        private readonly PaymentMethodAvailability $paymentMethods,
     ) {}
 
     /**
@@ -330,7 +332,7 @@ final class BookingRequestValidator
     {
         $payments = (array) ($snapshot['payments'] ?? []);
         $accepted = in_array($method->value, (array) ($payments['payment_methods'] ?? []), true)
-            && in_array($method->value, (array) config('booking.enabled_payment_methods', []), true)
+            && in_array($method->value, $this->paymentMethods->enabled(), true)
             && ($method !== PaymentMethodType::Cash || (bool) ($payments['cash_allowed'] ?? true));
 
         if (! $accepted) {

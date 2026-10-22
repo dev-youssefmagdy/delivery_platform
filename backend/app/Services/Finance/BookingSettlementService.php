@@ -15,6 +15,7 @@ use App\Enums\Settings\SettingKey;
 use App\Models\Booking;
 use App\Models\ProviderProfile;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Services\Payments\CashPaymentService;
 use App\Services\Settings\SettingsService;
 use App\Support\Money\CurrencyRegistry;
 use App\Support\Money\Money;
@@ -30,10 +31,13 @@ use LogicException;
  *    breakdown keeps it: the snapshot never changes (Plan I4).
  * 2. A cash booking is settled at once: the driver holds the cash, so the ledger records the platform's share as
  *    commission owed by the provider (Plan §7.4). The entry is idempotent by `booking-settlement:<uuid>`.
- *    Card and wallet bookings are settled by the payment flow when the gateway confirms the payment (P3.2); the
+ *    The cash payment row (`cash_due`) is opened next to it; the provider's confirmation makes it `cash_collected`.
+ *    Card and wallet bookings are settled by PaymentSettlementService when the gateway confirms the payment (P3.2); the
  *    breakdown is stored for them now so the receipt and the later posting use the same numbers.
  *
- * Add-ons, coupons and tips are zero until their milestones fill the corresponding input (P4, P3.3, P3.2).
+ * Add-ons and coupons are zero until their milestones fill the corresponding input (P4, P3.3). The tip input is wired
+ * (P3.2): a tip is its own payment and its own entry, so the stored booking breakdown keeps tip = 0 and a tip is priced by
+ * `breakdownFor($booking, null, $tip)` when its payment is settled (PaymentSettlementService).
  */
 final class BookingSettlementService
 {
@@ -46,6 +50,7 @@ final class BookingSettlementService
         private readonly BookingRepositoryInterface $bookings,
         private readonly SettingsService $settings,
         private readonly CurrencyRegistry $currencies,
+        private readonly CashPaymentService $cashPayments,
     ) {}
 
     public function onCompleted(Booking $booking): Booking
@@ -54,6 +59,8 @@ final class BookingSettlementService
 
         if ($booking->payment_method === PaymentMethodType::Cash) {
             $booking = $this->settleCash($booking);
+            // The payment axis of a cash trip: cash_due until the provider confirms the collection (P3.2).
+            $this->cashPayments->open($booking);
         }
 
         return $booking;
@@ -61,8 +68,10 @@ final class BookingSettlementService
 
     /**
      * The breakdown of a booking as it will be (or was) stored. Pure with respect to the booking: nothing is written.
+     * `$tip` is the tip input of PriceBreakdownCalculator: zero at completion (a tip is chosen afterwards, never
+     * preselected), the tip amount when a tip payment is settled (P3.2).
      */
-    public function breakdownFor(Booking $booking, ?CommissionTerms $terms = null): PriceBreakdown
+    public function breakdownFor(Booking $booking, ?CommissionTerms $terms = null, ?Money $tip = null): PriceBreakdown
     {
         $currency = $this->currencies->get($booking->currency);
         $fare = $booking->final_fare_minor ?? $booking->agreed_fare_minor ?? throw new LogicException('A booking needs an agreed fare to be priced.');
@@ -74,7 +83,7 @@ final class BookingSettlementService
             funding: DiscountFundingSplit::of(DiscountFunding::Platform),
             customerFee: Money::of($this->settings->int(SettingKey::CustomerServiceFeeMinor), $currency),
             taxRateBp: $this->settings->int(SettingKey::TaxRateBasisPoints),
-            tip: Money::zero($currency),
+            tip: $tip ?? Money::zero($currency),
             commission: $terms ?? $this->termsOf($booking),
         ));
     }

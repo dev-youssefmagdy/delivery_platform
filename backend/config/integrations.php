@@ -24,7 +24,7 @@ return [
     /*
     | Drivers that simulate success and therefore must never run in staging/production.
     */
-    'non_production_drivers' => ['fake', 'log', 'noop'],
+    'non_production_drivers' => ['fake', 'log', 'noop', 'sandbox'],
 
     'non_production_environments' => ['local', 'testing'],
 ];

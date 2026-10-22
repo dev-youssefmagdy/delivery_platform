@@ -40,6 +40,18 @@ use App\Repositories\Contracts\Finance\JournalLineRepositoryInterface;
 use App\Repositories\Contracts\Finance\LedgerAccountRepositoryInterface;
 use App\Repositories\Contracts\Finance\LedgerReconciliationRunRepositoryInterface;
 use App\Repositories\Contracts\Finance\PaymentPositionRepositoryInterface;
+use App\Repositories\Contracts\Payments\GatewayWebhookEventRepositoryInterface;
+use App\Repositories\Contracts\Payments\PaymentEventRepositoryInterface;
+use App\Repositories\Contracts\Payments\PaymentMethodRepositoryInterface;
+use App\Repositories\Contracts\Payments\PaymentReconciliationRunRepositoryInterface;
+use App\Repositories\Contracts\Payments\PaymentRefundRepositoryInterface;
+use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
+use App\Repositories\Eloquent\Payments\GatewayWebhookEventRepository;
+use App\Repositories\Eloquent\Payments\PaymentEventRepository;
+use App\Repositories\Eloquent\Payments\PaymentMethodRepository;
+use App\Repositories\Eloquent\Payments\PaymentReconciliationRunRepository;
+use App\Repositories\Eloquent\Payments\PaymentRefundRepository;
+use App\Repositories\Eloquent\Payments\PaymentRepository;
 use App\Repositories\Contracts\Geography\CityRepositoryInterface;
 use App\Repositories\Contracts\Geography\SavedPlaceRepositoryInterface;
 use App\Repositories\Contracts\Geography\ServiceZoneRepositoryInterface;
@@ -105,7 +117,7 @@ use App\Repositories\Eloquent\Finance\JournalLineRepository;
 use App\Repositories\Eloquent\Finance\LedgerAccountRepository;
 use App\Repositories\Eloquent\Finance\LedgerFinancialPositionRepository;
 use App\Repositories\Eloquent\Finance\LedgerReconciliationRunRepository;
-use App\Repositories\Eloquent\Finance\PrePaymentsPaymentPositionRepository;
+use App\Repositories\Eloquent\Finance\PaymentPositionRepository;
 use App\Repositories\Eloquent\Geography\CityRepository;
 use App\Repositories\Eloquent\Geography\SavedPlaceRepository;
 use App\Repositories\Eloquent\Geography\ServiceZoneRepository;
@@ -207,9 +219,15 @@ class RepositoryServiceProvider extends ServiceProvider
         OfferRepositoryInterface::class => OfferRepository::class,
         BookingOfferRepositoryInterface::class => BookingOfferBridge::class,
         FarePolicyRepositoryInterface::class => FarePolicyRepository::class,
-        // P3.1: the financial position is read from the ledger (ADR-115); its payments part stays neutral until P3.2.
+        // P3.1: the financial position is read from the ledger (ADR-115); P3.2 backs its payments part with the payments tables (ADR-116).
         FinancialPositionRepositoryInterface::class => LedgerFinancialPositionRepository::class,
-        PaymentPositionRepositoryInterface::class => PrePaymentsPaymentPositionRepository::class,
+        PaymentPositionRepositoryInterface::class => PaymentPositionRepository::class,
+        PaymentRepositoryInterface::class => PaymentRepository::class,
+        PaymentMethodRepositoryInterface::class => PaymentMethodRepository::class,
+        PaymentEventRepositoryInterface::class => PaymentEventRepository::class,
+        GatewayWebhookEventRepositoryInterface::class => GatewayWebhookEventRepository::class,
+        PaymentRefundRepositoryInterface::class => PaymentRefundRepository::class,
+        PaymentReconciliationRunRepositoryInterface::class => PaymentReconciliationRunRepository::class,
         LedgerAccountRepositoryInterface::class => LedgerAccountRepository::class,
         JournalEntryRepositoryInterface::class => JournalEntryRepository::class,
         JournalLineRepositoryInterface::class => JournalLineRepository::class,

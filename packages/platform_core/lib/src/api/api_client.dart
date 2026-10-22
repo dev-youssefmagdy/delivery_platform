@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 
@@ -114,6 +115,20 @@ class ApiClient {
         ),
       );
       return EnvelopeParser.parseSuccess(response.data);
+    } on DioException catch (e) {
+      throw _toApiException(e);
+    }
+  }
+
+  /// Downloads a private file (a signed attachment URL) with the same auth
+  /// and error handling as every other call. Used for chat and ticket images.
+  Future<Uint8List> getBytes(String url) async {
+    try {
+      final response = await _dio.get<List<int>>(
+        url,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      return Uint8List.fromList(response.data ?? const <int>[]);
     } on DioException catch (e) {
       throw _toApiException(e);
     }

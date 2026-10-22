@@ -185,7 +185,7 @@ Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bo
     Route::get('{booking}/messages', [BookingChatController::class, 'index'])->whereUuid('booking')->name('messages.index');
     Route::post('{booking}/messages/read', [BookingChatController::class, 'read'])->whereUuid('booking')->name('messages.read');
     Route::get('{booking}/messages/{message}/attachment', [BookingChatController::class, 'attachment'])->whereUuid(['booking', 'message'])->middleware('signed')->name('messages.attachment');
-    Route::post('{booking}/messages', [BookingChatController::class, 'store'])->whereUuid('booking')->middleware(['account.active', 'throttle:'.(int) config('support.chat.per_minute', 30).',1'])->name('messages.store');
+    Route::post('{booking}/messages', [BookingChatController::class, 'store'])->whereUuid('booking')->middleware(['account.active', 'throttle:'.(int) config('support.chat.per_minute', 30).',1', 'idempotent'])->name('messages.store');
     // A disputed cancellation fee opens a support ticket carrying the fee decision snapshot.
     Route::post('{booking}/cancellation-appeal', [SupportTicketController::class, 'appeal'])->whereUuid('booking')->middleware('idempotent')->name('cancellation-appeal');
 
@@ -279,7 +279,7 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::post('bookings/{booking}/adjustments/{adjustment}/reject', [TripAdjustmentController::class, 'reject'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.reject');
         Route::post('bookings/{booking}/adjustments/{adjustment}/withdraw', [TripAdjustmentController::class, 'withdraw'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.withdraw');
         Route::post('bookings/{booking}/skip', [RequestController::class, 'skip'])->whereUuid('booking')->name('requests.skip');
-        Route::post('bookings/{booking}/messages', [BookingChatController::class, 'store'])->whereUuid('booking')->middleware('throttle:'.(int) config('support.chat.per_minute', 30).',1')->name('bookings.messages.store');
+        Route::post('bookings/{booking}/messages', [BookingChatController::class, 'store'])->whereUuid('booking')->middleware(['throttle:'.(int) config('support.chat.per_minute', 30).',1', 'idempotent'])->name('bookings.messages.store');
 
         Route::post('applications', [ApplicationController::class, 'store'])->middleware('idempotent')->name('applications.store');
         Route::patch('application', [ApplicationController::class, 'update'])->name('application.update');

@@ -9,6 +9,7 @@ enum NotificationLinkType implements ApiEnum {
   wallet('wallet'),
   support('support'),
   message('message'),
+  chat('chat'),
   export('export'),
   inbox('inbox'),
   unknown('');

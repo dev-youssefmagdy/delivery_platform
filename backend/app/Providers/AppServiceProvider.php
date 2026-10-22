@@ -180,6 +180,8 @@ class AppServiceProvider extends ServiceProvider
             'push_campaign' => \App\Models\PushCampaign::class,
             'app_notification' => \App\Models\AppNotification::class,
             'notification_delivery' => \App\Models\NotificationDelivery::class,
+            'support_ticket' => \App\Models\SupportTicket::class,
+            'support_macro' => \App\Models\SupportMacro::class,
             // @admin-module:morph-map
         ]);
 

@@ -27,8 +27,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  * the status. A request for the state the booking is already in is answered as a replay instead of an error, so a retry
  * after a lost response is harmless (the `idempotent` middleware covers repeats of the same key).
  *
- * Totals are never read from the client: completion copies the agreed fare snapshot (plus approved adjustments, none
- * before P4) into `final_fare_minor`; cash trips get `payment_status = cash_due`. The price breakdown is stored and cash
+ * Totals are never read from the client: completion sets `final_fare_minor` to the agreed fare snapshot plus the approved
+ * adjustments (P3.5) and issues the immutable receipt; cash trips get `payment_status = cash_due`. The price breakdown is stored and cash
  * trips are settled in the ledger by `BookingSettlementService` in the same transaction (P3.1).
  */
 final class TripLifecycleService
@@ -42,6 +42,8 @@ final class TripLifecycleService
         private readonly BookingSettlementService $settlement,
         private readonly FreeBookingCompletionService $freeCompletion,
         private readonly ArrivalEvidenceBuilder $evidence,
+        private readonly BookingReceiptService $receipts,
+        private readonly BookingAdjustmentService $adjustments,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -87,6 +89,9 @@ final class TripLifecycleService
             $completed = $this->settlement->onCompleted($completed);
             // A coupon that covers the whole payable leaves nothing to charge: complete without a gateway payment (P3.3).
             $completed = $this->freeCompletion->completeIfNothingToPay($completed);
+            // Requests the other party never answered cannot change the price any more; the receipt is issued once, now (P3.5).
+            $this->adjustments->expireOpen($completed, 'booking_completed', CarbonImmutable::now());
+            $this->receipts->issue($completed->refresh());
             $this->providers->incrementCompletedJobs($provider->id);
             $this->notifier->completed($completed);
         });

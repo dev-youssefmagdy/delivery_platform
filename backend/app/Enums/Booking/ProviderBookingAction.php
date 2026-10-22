@@ -22,6 +22,8 @@ enum ProviderBookingAction: string implements HasLabel
     case RateCustomer = 'rate_customer';
     case Report = 'report';
     case ConfirmCashCollected = 'confirm_cash_collected';
+    case RequestAdjustment = 'request_adjustment';
+    case ViewReceipt = 'view_receipt';
 
     public function label(): string
     {

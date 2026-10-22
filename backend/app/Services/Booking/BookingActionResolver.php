@@ -48,6 +48,14 @@ final class BookingActionResolver
             $actions[] = BookingAction::Cancel;
         }
 
+        if (in_array($booking->status, [BookingStatus::ProviderSelected, BookingStatus::ProviderHeadingToPickup, BookingStatus::ProviderArrived, BookingStatus::InProgress], true)) {
+            $actions[] = BookingAction::RequestAdjustment;
+        }
+
+        if (in_array($booking->status, [BookingStatus::Completed, BookingStatus::CompletedPendingPayment], true)) {
+            $actions[] = BookingAction::ViewReceipt;
+        }
+
         if (ShareLinkService::canShare($booking->status)) {
             $actions[] = BookingAction::Share;
         }

@@ -1,6 +1,33 @@
 <?php
 
 return [
+    'receipt' => [
+        'title' => 'Trip receipt',
+        'job_title' => 'Job receipt',
+        'trip' => 'Trip',
+        'booking' => 'Booking',
+        'service' => 'Service',
+        'pickup' => 'Pickup',
+        'dropoff' => 'Drop-off',
+        'completed_at' => 'Completed',
+        'driver' => 'Driver',
+        'customer' => 'Customer',
+        'payment' => 'Payment method',
+        'fare' => 'Fare',
+        'agreed_fare' => 'Agreed fare',
+        'subtotal' => 'Fare after changes',
+        'discount' => 'Discount',
+        'service_fee' => 'Service fee',
+        'tax' => 'Tax',
+        'total' => 'Total',
+        'earnings' => 'Your earnings',
+        'gross' => 'Fare earned',
+        'commission' => 'Platform commission',
+        'provider_discount' => 'Discount funded by you',
+        'net' => 'Net earnings',
+        'footer' => 'This receipt was issued when the trip was completed and does not change afterwards. A tip, if any, is a separate payment.',
+        'print' => 'Print or save as PDF',
+    ],
     'trip_share' => [
         'title' => 'Follow a trip',
         'heading' => 'Trip in progress',

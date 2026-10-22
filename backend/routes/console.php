@@ -38,3 +38,5 @@ Schedule::command('payments:reconcile --sweep-only')->everyFiveMinutes()->withou
 Schedule::command('payments:reconcile')->hourlyAt(30)->withoutOverlapping();
 
 Schedule::command('coupons:sync-status')->everyMinute()->withoutOverlapping();
+
+Schedule::command('bookings:expire-adjustments')->everyMinute()->withoutOverlapping();

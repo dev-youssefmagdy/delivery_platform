@@ -77,6 +77,26 @@ final class BookingAdjustmentService
         return $this->request($booking, ActorType::Provider, $provider->id, $data);
     }
 
+    /**
+     * @return \Illuminate\Support\Collection<int, BookingAdjustmentRequest>
+     */
+    public function listForCustomer(User $customer, string $bookingUuid): \Illuminate\Support\Collection
+    {
+        $booking = $this->bookings->findOfCustomer($bookingUuid, $customer->id) ?? throw (new ModelNotFoundException)->setModel(Booking::class);
+
+        return $this->adjustments->forBooking($booking->id);
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, BookingAdjustmentRequest>
+     */
+    public function listForProvider(ProviderProfile $provider, string $bookingUuid): \Illuminate\Support\Collection
+    {
+        $booking = $this->bookings->findAssignedToProvider($bookingUuid, $provider->id) ?? throw (new ModelNotFoundException)->setModel(Booking::class);
+
+        return $this->adjustments->forBooking($booking->id);
+    }
+
     public function approveByCustomer(User $customer, string $bookingUuid, string $adjustmentUuid, ?string $note): BookingAdjustmentRequest
     {
         $booking = $this->bookings->findOfCustomer($bookingUuid, $customer->id) ?? throw (new ModelNotFoundException)->setModel(Booking::class);
@@ -173,6 +193,19 @@ final class BookingAdjustmentService
 
             if ($status !== null) {
                 $this->adjustments->update($adjustment, ['status' => $status, 'decided_by_type' => ActorType::System->value, 'decided_at' => $now, 'decision_note' => $reason]);
+            }
+        }
+    }
+
+    /**
+     * Expires the pending requests of a booking that is ending (completion): approved ones stay as decided. Call inside
+     * the booking transaction.
+     */
+    public function expireOpen(Booking $booking, string $reason, CarbonImmutable $now): void
+    {
+        foreach ($this->adjustments->forBooking($booking->id) as $adjustment) {
+            if ($adjustment->status->isOpen()) {
+                $this->adjustments->update($adjustment, ['status' => BookingAdjustmentStatus::Expired, 'decided_by_type' => ActorType::System->value, 'decided_at' => $now, 'decision_note' => $reason]);
             }
         }
     }

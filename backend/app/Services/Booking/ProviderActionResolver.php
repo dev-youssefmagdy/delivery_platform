@@ -54,6 +54,14 @@ final class ProviderActionResolver
                 break;
         }
 
+        if (in_array($booking->status, [BookingStatus::ProviderSelected, BookingStatus::ProviderHeadingToPickup, BookingStatus::ProviderArrived, BookingStatus::InProgress], true)) {
+            $actions[] = ProviderBookingAction::RequestAdjustment;
+        }
+
+        if (in_array($booking->status, [BookingStatus::Completed, BookingStatus::CompletedPendingPayment], true)) {
+            $actions[] = ProviderBookingAction::ViewReceipt;
+        }
+
         // A completed cash booking waits for the provider to confirm the cash was collected (P3.2).
         if ($booking->status === BookingStatus::Completed && $booking->payment_method === PaymentMethodType::Cash && $booking->payment_status === PaymentStatus::CashDue) {
             $actions[] = ProviderBookingAction::ConfirmCashCollected;

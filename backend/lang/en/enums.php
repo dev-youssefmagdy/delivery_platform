@@ -549,6 +549,8 @@ return [
         'cancel' => 'Cancel the booking',
         'share' => 'Share the trip',
         'rate' => 'Rate the trip',
+        'request_adjustment' => 'Change the fare',
+        'view_receipt' => 'View the receipt',
         'report' => 'Report a problem',
     ],
 
@@ -870,6 +872,8 @@ return [
 
     'provider_booking_action' => [
         'confirm_cash_collected' => 'Confirm cash collected',
+        'request_adjustment' => 'Change the fare',
+        'view_receipt' => 'View the receipt',
         'acknowledge' => 'Confirm the job',
         'arrived' => 'I have arrived',
         'verify_start_pin' => 'Enter the trip PIN',

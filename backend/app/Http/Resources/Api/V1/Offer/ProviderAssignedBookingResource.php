@@ -71,6 +71,9 @@ class ProviderAssignedBookingResource extends JsonResource
             'trip' => $this->trip($booking),
             'cancellation_terms' => $this->terms($booking),
             'final_fare' => $booking->final_fare_minor === null ? null : ['amount_minor' => $booking->final_fare_minor, 'currency' => $booking->currency],
+            // Approved fare adjustments (P3.5) so far, signed; the running total is the agreed fare plus this.
+            'adjustments_total' => $booking->agreed_fare_minor === null ? null : ['amount_minor' => $booking->adjustments_total_minor, 'currency' => $booking->currency],
+            'current_total' => $booking->agreed_fare_minor === null ? null : ['amount_minor' => max(0, $booking->agreed_fare_minor + $booking->adjustments_total_minor), 'currency' => $booking->currency],
             'allowed_actions' => array_map(static fn (ProviderBookingAction $action): string => $action->value, $this->allowedActions),
         ];
     }

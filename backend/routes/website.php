@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Website\ReceiptController;
 use App\Http\Controllers\Website\TripShareController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,6 @@ Route::middleware('throttle:60,1')->group(function (): void {
     Route::get('t/{token}', [TripShareController::class, 'show'])->where('token', '[A-Za-z0-9]{43}')->name('website.trip-share');
     Route::get('t/{token}/data', [TripShareController::class, 'data'])->where('token', '[A-Za-z0-9]{43}')->name('website.trip-share.data');
 });
+
+// Printable receipt (P3.5, SRS §6.7): reached only through the short-lived signed link the receipt API returns; noindex.
+Route::get('receipts/{receipt:uuid}', [ReceiptController::class, 'show'])->whereUuid('receipt')->middleware(['signed', 'throttle:60,1'])->name('website.receipt');

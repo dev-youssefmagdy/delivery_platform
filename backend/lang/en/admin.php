@@ -2461,6 +2461,12 @@ return [
             'from' => 'From: :status',
             'events' => [
                 'request_changed' => 'The customer changed the request',
+                'adjustment_requested' => 'A fare adjustment was requested',
+                'adjustment_approved' => 'A fare adjustment was approved',
+                'adjustment_rejected' => 'A fare adjustment was rejected',
+                'adjustment_withdrawn' => 'A fare adjustment was withdrawn',
+                'adjustment_expired' => 'A fare adjustment expired',
+                'adjustment_voided' => 'A fare adjustment was voided by operations',
                 'pin_locked' => 'Start PIN locked after wrong entries',
                 'pin_lock_lifted' => 'Start PIN lock lifted by operations',
                 'search_extended_by_operations' => 'Search extended by operations',

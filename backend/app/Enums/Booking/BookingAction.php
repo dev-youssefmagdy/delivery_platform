@@ -21,6 +21,8 @@ enum BookingAction: string implements HasLabel
     case Report = 'report';
     case Pay = 'pay';
     case Tip = 'tip';
+    case RequestAdjustment = 'request_adjustment';
+    case ViewReceipt = 'view_receipt';
 
     public function label(): string
     {

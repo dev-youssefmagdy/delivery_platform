@@ -549,6 +549,8 @@ return [
         'cancel' => 'إلغاء الحجز',
         'share' => 'مشاركة الرحلة',
         'rate' => 'تقييم الرحلة',
+        'request_adjustment' => 'تعديل الأجرة',
+        'view_receipt' => 'عرض الإيصال',
         'report' => 'الإبلاغ عن مشكلة',
     ],
 
@@ -870,6 +872,8 @@ return [
 
     'provider_booking_action' => [
         'confirm_cash_collected' => 'تأكيد تحصيل النقد',
+        'request_adjustment' => 'تعديل الأجرة',
+        'view_receipt' => 'عرض الإيصال',
         'acknowledge' => 'تأكيد المهمة',
         'arrived' => 'لقد وصلت',
         'verify_start_pin' => 'إدخال رمز الرحلة',

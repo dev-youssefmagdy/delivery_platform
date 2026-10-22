@@ -2458,6 +2458,12 @@ return [
             'from' => 'من: :status',
             'events' => [
                 'request_changed' => 'غيّر العميل الطلب',
+                'adjustment_requested' => 'تم طلب تعديل للأجرة',
+                'adjustment_approved' => 'تمت الموافقة على تعديل الأجرة',
+                'adjustment_rejected' => 'تم رفض تعديل الأجرة',
+                'adjustment_withdrawn' => 'تم سحب طلب تعديل الأجرة',
+                'adjustment_expired' => 'انتهت مهلة طلب تعديل الأجرة',
+                'adjustment_voided' => 'ألغت العمليات تعديل الأجرة',
                 'pin_locked' => 'قُفل رمز البدء بعد إدخالات خاطئة',
                 'pin_lock_lifted' => 'رفعت العمليات قفل رمز البدء',
                 'search_extended_by_operations' => 'مدّدت العمليات البحث',

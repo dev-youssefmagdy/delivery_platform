@@ -9,7 +9,11 @@ use App\Http\Controllers\Api\V1\Common\ConfigController;
 use App\Http\Controllers\Api\V1\Common\HealthController;
 use App\Http\Controllers\Api\V1\Common\MediaController;
 use App\Http\Controllers\Api\V1\Common\PolicyController;
+use App\Http\Controllers\Api\V1\Customer\BookingAdjustmentController;
 use App\Http\Controllers\Api\V1\Customer\BookingController;
+use App\Http\Controllers\Api\V1\Customer\BookingReceiptController;
+use App\Http\Controllers\Api\V1\Provider\TripAdjustmentController;
+use App\Http\Controllers\Api\V1\Provider\TripReceiptController;
 use App\Http\Controllers\Api\V1\Customer\CouponController;
 use App\Http\Controllers\Api\V1\Customer\BookingCancellationController;
 use App\Http\Controllers\Api\V1\Customer\BookingFeedbackController;
@@ -158,6 +162,14 @@ Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen'])->prefix('bo
     // can mark anything paid: only the gateway's verified webhook (or a server-side query) does.
     Route::post('{booking}/payment-intents', [PaymentController::class, 'intent'])->whereUuid('booking')->middleware('idempotent')->name('payment-intents.store');
     Route::post('{booking}/tips', [PaymentController::class, 'tip'])->whereUuid('booking')->middleware('idempotent')->name('tips.store');
+    // Fare adjustments after selection (P3.5, SRS §9.4): the other party approves in the app; only approved ones enter the price.
+    Route::get('{booking}/adjustments', [BookingAdjustmentController::class, 'index'])->whereUuid('booking')->name('adjustments.index');
+    Route::post('{booking}/adjustments', [BookingAdjustmentController::class, 'store'])->whereUuid('booking')->middleware('idempotent')->name('adjustments.store');
+    Route::post('{booking}/adjustments/{adjustment}/approve', [BookingAdjustmentController::class, 'approve'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.approve');
+    Route::post('{booking}/adjustments/{adjustment}/reject', [BookingAdjustmentController::class, 'reject'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.reject');
+    Route::post('{booking}/adjustments/{adjustment}/withdraw', [BookingAdjustmentController::class, 'withdraw'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.withdraw');
+    // The immutable receipt of a completed booking (JSON + a signed link to the printable HTML receipt).
+    Route::get('{booking}/receipt', [BookingReceiptController::class, 'show'])->whereUuid('booking')->name('receipt');
 
     Route::middleware('account.active:strict')->group(function (): void {
         Route::post('/', [BookingController::class, 'store'])->middleware('idempotent')->name('store');
@@ -207,6 +219,8 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
     Route::get('bookings', [JobHistoryController::class, 'index'])->name('bookings.index');
     Route::get('bookings/active', [TripController::class, 'active'])->name('bookings.active');
     Route::get('bookings/{booking}', [RequestController::class, 'show'])->whereUuid('booking')->name('bookings.show');
+    Route::get('bookings/{booking}/adjustments', [TripAdjustmentController::class, 'index'])->whereUuid('booking')->name('adjustments.index');
+    Route::get('bookings/{booking}/receipt', [TripReceiptController::class, 'show'])->whereUuid('booking')->name('receipt');
     // Earnings, wallet statement and payouts (P3.4, SRS §7.6): reads are status-safe, always scoped to the signed-in provider.
     Route::get('earnings/summary', [EarningsController::class, 'summary'])->name('earnings.summary');
     Route::get('earnings/transactions', [EarningsController::class, 'transactions'])->name('earnings.transactions');
@@ -236,6 +250,11 @@ Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen'])->prefix('pr
         Route::post('bookings/{booking}/cancel', [TripController::class, 'cancel'])->whereUuid('booking')->middleware('idempotent:unless_preview')->name('trip.cancel');
         Route::post('bookings/{booking}/rating', [TripFeedbackController::class, 'rate'])->whereUuid('booking')->middleware('idempotent')->name('trip.rating');
         Route::post('bookings/{booking}/reports', [TripFeedbackController::class, 'report'])->whereUuid('booking')->middleware('idempotent')->name('trip.reports');
+        // Fare adjustments (P3.5): the provider asks for an extra stop / waiting / toll at cost / scope change, or answers the customer's request.
+        Route::post('bookings/{booking}/adjustments', [TripAdjustmentController::class, 'store'])->whereUuid('booking')->middleware('idempotent')->name('adjustments.store');
+        Route::post('bookings/{booking}/adjustments/{adjustment}/approve', [TripAdjustmentController::class, 'approve'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.approve');
+        Route::post('bookings/{booking}/adjustments/{adjustment}/reject', [TripAdjustmentController::class, 'reject'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.reject');
+        Route::post('bookings/{booking}/adjustments/{adjustment}/withdraw', [TripAdjustmentController::class, 'withdraw'])->whereUuid(['booking', 'adjustment'])->middleware('idempotent')->name('adjustments.withdraw');
         Route::post('bookings/{booking}/skip', [RequestController::class, 'skip'])->whereUuid('booking')->name('requests.skip');
 
         Route::post('applications', [ApplicationController::class, 'store'])->middleware('idempotent')->name('applications.store');

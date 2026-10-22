@@ -49,7 +49,7 @@
                 <span class="block">{{ __('admin.bookings.notices.reason', ['reason' => $booking->cancellation_reason]) }}</span>
             @endif
             @if ($booking->cancellation_fee_minor)
-                <span class="block">{{ __('admin.bookings.notices.fee') }}: <x-admin.money :minor="$booking->cancellation_fee_minor" :currency="$booking->currency" /></span>
+                <span class="block">{{ __('admin.bookings.notices.fee') }}: <x-admin.money :minor="$booking->cancellation_fee_minor" :currency="$booking->currency" />@if ($booking->cancellation_fee_posted_at) · {{ __('admin.bookings.notices.fee_posted') }}@endif</span>
             @endif
         </x-admin.alert>
     @endif
@@ -64,6 +64,8 @@
             'safety' => ['label' => __('admin.bookings.tabs.safety'), 'icon' => 'shield'],
             'ratings' => ['label' => __('admin.bookings.tabs.ratings'), 'icon' => 'star'],
             ...(\Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\Payment::class) ? ['payment' => ['label' => __('admin.bookings.tabs.payment'), 'icon' => 'banknotes']] : []),
+            'adjustments' => ['label' => __('admin.booking_adjustments.tab'), 'icon' => 'banknotes'],
+            'receipt' => ['label' => __('admin.bookings.tabs.receipt'), 'icon' => 'document'],
             'audit' => ['label' => __('admin.bookings.tabs.audit'), 'icon' => 'shield'],
         ];
     @endphp
@@ -82,6 +84,8 @@
             @can('viewAny', \App\Models\Payment::class)
                 <x-admin.tabs.panel id="payment" :url="route('admin.bookings.tabs.payments', $booking)" />
             @endcan
+            <x-admin.tabs.panel id="adjustments" :url="route('admin.bookings.tabs.adjustments', $booking)" />
+            <x-admin.tabs.panel id="receipt" :url="route('admin.bookings.tabs.receipt', $booking)" />
             <x-admin.tabs.panel id="audit" :url="route('admin.bookings.tabs.audit', $booking)" />
         </x-admin.tabs>
     </x-admin.card>

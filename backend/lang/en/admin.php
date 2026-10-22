@@ -2101,6 +2101,25 @@ return [
         ],
     ],
 
+    'booking_adjustments' => [
+        'menu' => 'Fare adjustments',
+        'title' => 'Fare adjustments',
+        'subtitle' => 'Changes of the agreed fare after a driver was chosen: extra stops, waiting, tolls and parking, scope changes. Only the other party can approve; operations can only void.',
+        'show_title' => 'Fare adjustment',
+        'tab' => 'Adjustments',
+        'tab_intro' => 'Requests to change the fare of this booking. Only approved ones are part of the price.',
+        'voided' => 'The adjustment was voided.',
+        'stats' => ['pending' => 'Waiting for an answer'],
+        'filters' => ['search' => 'Booking code or request id', 'search_hint' => 'BK-… or the full request id'],
+        'fields' => [
+            'request' => 'Request', 'booking' => 'Booking', 'type' => 'Type', 'requester' => 'Asked by', 'amount' => 'Change',
+            'old_total' => 'Total before', 'new_total' => 'Total after', 'status' => 'Status', 'created' => 'Created',
+            'expires' => 'Expires', 'decided_at' => 'Answered', 'decision_note' => 'Answer note', 'evidence' => 'Evidence',
+        ],
+        'actions' => ['void' => 'Void'],
+        'confirm' => ['void_title' => 'Void this adjustment?', 'void_message' => 'A pending request is closed; an approved one is taken out of the fare. A reason is required.'],
+    ],
+
     'payments' => [
         'menu' => 'Payments',
         'title' => 'Payments',
@@ -2431,6 +2450,7 @@ return [
             'offers' => 'Offers',
             'dispatch' => 'Dispatch',
             'snapshots' => 'Snapshots',
+            'receipt' => 'Receipt',
             'safety' => 'PIN and proofs',
             'ratings' => 'Ratings',
             'payment' => 'Payment',
@@ -2449,6 +2469,7 @@ return [
             'support_flagged' => 'Flagged for support',
             'support_flagged_hint' => 'Flagged on :date.',
             'cancelled_at' => 'Cancelled on :date.',
+            'fee_posted' => 'posted to the ledger',
             'reason' => 'Reason: :reason',
             'fee' => 'Cancellation fee',
         ],
@@ -2489,6 +2510,13 @@ return [
         'audit' => [
             'intro' => 'Operator actions on this booking, with their reasons.',
             'override' => 'Override',
+        ],
+        'receipt' => [
+            'none' => 'No receipt yet. It is issued when the trip is completed.',
+            'intro' => 'Receipt :number, issued at completion. It never changes afterwards.',
+            'backfilled' => ' Built later from the stored breakdown (trip completed before receipts existed).',
+            'agreed' => 'Agreed fare', 'subtotal' => 'Fare after changes', 'discount' => 'Discount', 'fee' => 'Service fee', 'tax' => 'Tax',
+            'total' => 'Customer total', 'commission' => 'Commission', 'net' => 'Provider net', 'pickup' => 'Pickup',
         ],
         'snapshots' => [
             'intro' => 'What the booking was priced and validated with. Snapshots never change after creation.',

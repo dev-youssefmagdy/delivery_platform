@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Booking;
 
+use App\DataTables\Admin\Booking\BookingAdjustmentsDataTable;
 use App\DataTables\Admin\Booking\BookingAuditDataTable;
 use App\DataTables\Admin\Booking\BookingDispatchDataTable;
 use App\DataTables\Admin\Booking\BookingOffersDataTable;
 use App\Http\Controllers\Admin\AdminController;
 use App\Models\Booking;
 use App\Services\Booking\BookingDetailTabsService;
+use App\Services\Booking\BookingReceiptService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
 
@@ -47,6 +49,23 @@ final class BookingTabController extends AdminController
     public function ratings(Booking $booking): View
     {
         return view('admin.bookings.tabs.ratings', ['ratings' => $this->tabs->ratings($booking)]);
+    }
+
+    public function adjustments(BookingAdjustmentsDataTable $table, Booking $booking): mixed
+    {
+        return $table->render('admin.bookings.tabs.table', ['intro' => __('admin.booking_adjustments.tab_intro')]);
+    }
+
+    public function receipt(Booking $booking, BookingReceiptService $receipts): View
+    {
+        $receipt = $receipts->existing($booking);
+
+        return view('admin.bookings.tabs.receipt', [
+            'booking' => $booking,
+            'receipt' => $receipt === null ? null : $receipts->customerView($receipt),
+            'earnings' => $receipt?->snapshot['provider'] ?? null,
+            'canViewPii' => Gate::allows('viewPii', $booking),
+        ]);
     }
 
     public function audit(BookingAuditDataTable $table, Booking $booking): mixed

@@ -208,6 +208,15 @@ return [
             'permission' => App\Enums\Admin\AdminPermission::BookingsView,
         ],
         [
+            'key' => 'booking_adjustments',
+            'group' => 'operations',
+            'label' => 'admin.booking_adjustments.menu',
+            'route' => 'admin.booking-adjustments.index',
+            'active' => 'admin.booking-adjustments.*',
+            'icon' => 'banknotes',
+            'permission' => App\Enums\Admin\AdminPermission::BookingsView,
+        ],
+        [
             'key' => 'offers',
             'group' => 'operations',
             'label' => 'admin.offers.menu',

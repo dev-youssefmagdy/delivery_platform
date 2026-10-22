@@ -31,6 +31,8 @@ Route::prefix('bookings')->name('bookings.')->group(function (): void {
         Route::get('snapshots', 'snapshots')->name('snapshots')->can('view', 'booking');
         Route::get('safety', 'safety')->name('safety')->can('view', 'booking');
         Route::get('ratings', 'ratings')->name('ratings')->can('view', 'booking');
+        Route::get('adjustments', 'adjustments')->name('adjustments')->can('view', 'booking');
+        Route::get('receipt', 'receipt')->name('receipt')->can('view', 'booking');
         Route::get('audit', 'audit')->name('audit')->can('view', 'booking');
     });
 

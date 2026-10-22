@@ -32,6 +32,9 @@ return [
     ],
 
     'audit_action' => [
+        'requested' => 'تم الطلب',
+        'reprocessed' => 'أُعيدت المعالجة',
+        'cash_collected' => 'حُصّل النقد',
         'created' => 'إنشاء',
         'updated' => 'تعديل',
         'deleted' => 'حذف',
@@ -591,6 +594,64 @@ return [
         'cash_due' => 'نقدًا عند التسليم',
         'cash_collected' => 'تم استلام النقد',
         'reconciliation_required' => 'تحتاج إلى تسوية',
+    ],
+
+    'payment_gateway' => [
+        'sandbox' => 'بيئة تجريبية',
+        'paymob' => 'باي موب',
+    ],
+
+    'payment_kind' => [
+        'trip' => 'الرحلة',
+        'tip' => 'إكرامية',
+    ],
+
+    'payment_event_type' => [
+        'intent_created' => 'بدأ الدفع',
+        'status_changed' => 'تغيرت الحالة',
+        'webhook_applied' => 'طُبّق إشعار البوابة',
+        'webhook_ignored' => 'تجاهل إشعار البوابة',
+        'query_applied' => 'طُبّق استعلام البوابة',
+        'cash_collected' => 'حُصّل النقد',
+        'settled' => 'سُجّل في دفتر الأستاذ',
+        'timed_out' => 'لا تأكيد في الوقت المناسب',
+        'amount_mismatch' => 'اختلاف في المبلغ',
+        'refund_requested' => 'طُلب استرداد',
+        'refund_approved' => 'تمت الموافقة على الاسترداد',
+        'refund_rejected' => 'رُفض الاسترداد',
+        'refund_completed' => 'اكتمل الاسترداد',
+        'refund_failed' => 'فشل الاسترداد',
+    ],
+
+    'webhook_event_kind' => [
+        'payment_succeeded' => 'نجحت الدفعة',
+        'payment_failed' => 'فشلت الدفعة',
+        'payment_requires_action' => 'الدفعة تحتاج إجراء',
+        'refund_succeeded' => 'نجح الاسترداد',
+        'refund_failed' => 'فشل الاسترداد',
+        'method_saved' => 'حُفظت وسيلة الدفع',
+        'unknown' => 'أخرى',
+    ],
+
+    'webhook_outcome' => [
+        'received' => 'تم الاستلام',
+        'processed' => 'تمت المعالجة',
+        'duplicate' => 'مكرر',
+        'ignored' => 'متجاهَل',
+        'unmatched' => 'لا دفعة مطابقة',
+        'invalid_signature' => 'توقيع غير صالح',
+        'replay_window' => 'خارج نافذة الإعادة',
+        'amount_mismatch' => 'اختلاف في المبلغ',
+        'failed' => 'فشلت المعالجة',
+    ],
+
+    'refund_status' => [
+        'pending_approval' => 'بانتظار الموافقة',
+        'approved' => 'تمت الموافقة',
+        'processing' => 'لدى البوابة',
+        'completed' => 'مكتمل',
+        'failed' => 'فشل',
+        'rejected' => 'مرفوض',
     ],
 
     'fare_formula' => [

@@ -32,6 +32,9 @@ return [
     ],
 
     'audit_action' => [
+        'requested' => 'Requested',
+        'reprocessed' => 'Reprocessed',
+        'cash_collected' => 'Cash collected',
         'created' => 'Created',
         'updated' => 'Updated',
         'deleted' => 'Deleted',
@@ -591,6 +594,64 @@ return [
         'cash_due' => 'Cash due',
         'cash_collected' => 'Cash collected',
         'reconciliation_required' => 'Needs reconciliation',
+    ],
+
+    'payment_gateway' => [
+        'sandbox' => 'Sandbox (test)',
+        'paymob' => 'Paymob',
+    ],
+
+    'payment_kind' => [
+        'trip' => 'Trip',
+        'tip' => 'Tip',
+    ],
+
+    'payment_event_type' => [
+        'intent_created' => 'Payment started',
+        'status_changed' => 'Status changed',
+        'webhook_applied' => 'Gateway webhook applied',
+        'webhook_ignored' => 'Gateway webhook ignored',
+        'query_applied' => 'Gateway query applied',
+        'cash_collected' => 'Cash collected',
+        'settled' => 'Posted to the ledger',
+        'timed_out' => 'No confirmation in time',
+        'amount_mismatch' => 'Amount mismatch',
+        'refund_requested' => 'Refund requested',
+        'refund_approved' => 'Refund approved',
+        'refund_rejected' => 'Refund rejected',
+        'refund_completed' => 'Refund completed',
+        'refund_failed' => 'Refund failed',
+    ],
+
+    'webhook_event_kind' => [
+        'payment_succeeded' => 'Payment succeeded',
+        'payment_failed' => 'Payment failed',
+        'payment_requires_action' => 'Payment needs action',
+        'refund_succeeded' => 'Refund succeeded',
+        'refund_failed' => 'Refund failed',
+        'method_saved' => 'Payment method saved',
+        'unknown' => 'Other',
+    ],
+
+    'webhook_outcome' => [
+        'received' => 'Received',
+        'processed' => 'Processed',
+        'duplicate' => 'Duplicate',
+        'ignored' => 'Ignored',
+        'unmatched' => 'No matching payment',
+        'invalid_signature' => 'Invalid signature',
+        'replay_window' => 'Outside replay window',
+        'amount_mismatch' => 'Amount mismatch',
+        'failed' => 'Processing failed',
+    ],
+
+    'refund_status' => [
+        'pending_approval' => 'Waiting for approval',
+        'approved' => 'Approved',
+        'processing' => 'At the gateway',
+        'completed' => 'Completed',
+        'failed' => 'Failed',
+        'rejected' => 'Rejected',
     ],
 
     'fare_formula' => [

@@ -64,6 +64,11 @@ final readonly class PaymentFilterData implements FilterData
         return new self(bookingId: $bookingId);
     }
 
+    public function forUser(int $userId): self
+    {
+        return new self(userId: $userId);
+    }
+
     public function activeCount(): int
     {
         return self::countActive([$this->statuses, $this->kinds, $this->methods, $this->gateways, $this->search, $this->from ?? $this->to, $this->minAmountMinor ?? $this->maxAmountMinor]);

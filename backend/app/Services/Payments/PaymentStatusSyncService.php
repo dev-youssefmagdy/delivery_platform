@@ -3,6 +3,7 @@
 namespace App\Services\Payments;
 
 use App\DTOs\Payments\PaymentActor;
+use App\Enums\Common\AuditAction;
 use App\Enums\Payments\PaymentEventType;
 use App\Enums\Payments\PaymentStatus;
 use App\Enums\Settings\SettingKey;
@@ -10,9 +11,12 @@ use App\Integrations\Payments\Contracts\PaymentGateway;
 use App\Integrations\Payments\Data\GatewayPaymentState;
 use App\Integrations\Payments\Exceptions\PaymentGatewayException;
 use App\Integrations\Payments\PaymentGatewayManager;
+use App\Exceptions\BusinessRuleViolation;
+use App\Models\Admin;
 use App\Models\Payment;
 use App\Models\User;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
+use App\Services\Audit\AuditLogger;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\DatabaseManager;
@@ -30,6 +34,7 @@ final class PaymentStatusSyncService
         private readonly PaymentGatewayManager $gateways,
         private readonly PaymentOutcomeService $outcomes,
         private readonly SettingsService $settings,
+        private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -63,6 +68,31 @@ final class PaymentStatusSyncService
             if (in_array($locked->status, [...PaymentStatus::awaitingGateway(), PaymentStatus::ReconciliationRequired, PaymentStatus::Failed], true)) {
                 $this->apply($locked, $gateway, PaymentActor::query(), timeout: false);
             }
+
+            return $locked;
+        });
+    }
+
+    /**
+     * An operator asks the gateway about a payment (reconciliation tool). Same verified-query path as the customer refresh,
+     * with the operator and the mandatory reason on the timeline and in the audit log.
+     *
+     * @throws PaymentGatewayException the gateway could not be asked
+     */
+    public function refreshForAdmin(Payment $payment, Admin $admin, string $reason): Payment
+    {
+        $gateway = $payment->gateway === null ? null : $this->gateways->forName($payment->gateway);
+
+        if ($gateway === null || $payment->gateway_reference === null) {
+            throw BusinessRuleViolation::make('payments_not_configured');
+        }
+
+        return $this->db->transaction(function () use ($payment, $gateway, $admin, $reason): Payment {
+            $locked = $this->payments->lockById($payment->id) ?? throw (new ModelNotFoundException)->setModel(Payment::class);
+            $before = $locked->status;
+
+            $this->apply($locked, $gateway, PaymentActor::admin($admin), timeout: false);
+            $this->audit->record(AuditAction::Reconciled, $locked, $admin, before: ['status' => $before->value], after: ['status' => $locked->status->value], reason: $reason);
 
             return $locked;
         });

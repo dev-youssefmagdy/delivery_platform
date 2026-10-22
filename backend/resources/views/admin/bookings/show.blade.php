@@ -63,7 +63,7 @@
             'snapshots' => ['label' => __('admin.bookings.tabs.snapshots'), 'icon' => 'document'],
             'safety' => ['label' => __('admin.bookings.tabs.safety'), 'icon' => 'shield'],
             'ratings' => ['label' => __('admin.bookings.tabs.ratings'), 'icon' => 'star'],
-            'payment' => ['label' => __('admin.bookings.tabs.payment'), 'icon' => 'banknotes'],
+            ...(\Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\Payment::class) ? ['payment' => ['label' => __('admin.bookings.tabs.payment'), 'icon' => 'banknotes']] : []),
             'audit' => ['label' => __('admin.bookings.tabs.audit'), 'icon' => 'shield'],
         ];
     @endphp
@@ -79,7 +79,9 @@
             <x-admin.tabs.panel id="snapshots" :url="route('admin.bookings.tabs.snapshots', $booking)" />
             <x-admin.tabs.panel id="safety" :url="route('admin.bookings.tabs.safety', $booking)" />
             <x-admin.tabs.panel id="ratings" :url="route('admin.bookings.tabs.ratings', $booking)" />
-            <x-admin.tabs.panel id="payment"><x-admin.available-after :title="__('admin.bookings.tabs.payment')" milestone="P3.2" :module="__('admin.bookings.modules.payment')" /></x-admin.tabs.panel>
+            @can('viewAny', \App\Models\Payment::class)
+                <x-admin.tabs.panel id="payment" :url="route('admin.bookings.tabs.payments', $booking)" />
+            @endcan
             <x-admin.tabs.panel id="audit" :url="route('admin.bookings.tabs.audit', $booking)" />
         </x-admin.tabs>
     </x-admin.card>

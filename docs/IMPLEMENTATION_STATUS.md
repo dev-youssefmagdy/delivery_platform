@@ -34,7 +34,7 @@
 | P3.6 | Notifications platform (push, SMS, email, in-app inbox) | P1 | 🟡 | 2026-11-04 |
 | P3.7 | Booking chat and support tickets/disputes | P1 | 🟡 | 2026-11-05 |
 | P3.8 | Flutter: wallet, payments, coupons, earnings, payouts | P1 | 🟡 | 2026-11-06 |
-| P4.1 | Courier/parcel backend | P1 | ❌ | — |
+| P4.1 | Courier/parcel backend | P1 | 🟡 | 2026-11-07 |
 | P4.2 | Furniture moving & freight backend (scoped offers) | P1 | ❌ | — |
 | P4.3 | Flutter courier/moving/freight flows | P1 | ❌ | — |
 | P4.4 | Admin & E2E for non-ride services | P1 | ❌ | — |
@@ -51,6 +51,33 @@
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
+
+## P4.1 — Courier/parcel backend · 🟡 2026-11-07 (gate NOT run)
+
+Committed directly on `main`. ADR-146..151. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P4.1). The Flutter UI is P4.3, the full admin parcel screens are P4.4.
+
+### Built
+- **Schema** (`2026_11_06_090000_create_courier_tables`): `booking_contacts` (encrypted name / phone, role sender / recipient), `booking_recipient_otps` (HMAC only, attempts, resend counters, SMS delivery state), `delivery_attempts`; `booking_proofs` gained `stage` (pickup / delivery / return), `mime`, `size_bytes`, `scan_status`; `bookings` gained `custody_status`, `delivery_attempts_count`, restricted-goods acknowledgement (`restricted_goods_policy_version_id`, `_acknowledged_at`) and the indexed category columns `parcel_size`, `parcel_category`, `is_fragile`, `declared_value_minor` (plus an index on `cargo_weight_kg`).
+- **Booking creation** (`CreateBookingService`, `BookingRequestValidator`): parcel bookings need `restricted_goods_policy_version` (uuid of the CURRENT published policy; `restricted_goods_ack_required` / `_stale` / `restricted_goods_policy_unavailable`). `sender` / `recipient` contact answers are pulled out of `service_details` into encrypted `booking_contacts`; the indexed columns are copied from the validated details (`ParcelColumns`). Edits keep the stored contacts and the original acknowledgement. Seeded courier schema gained an optional `sender` contact (re-published as a new version by `CatalogSeeder`); `RestrictedGoodsPolicySeeder` publishes a starter policy when none exists.
+- **Custody** (`CustodyService`): picked_up (automatic at start), in_transit and arrived_dropoff (`POST /provider/bookings/{id}/custody`), attempt_failed, returning, delivered / returned (automatic at completion); order enforced by `CustodyStatus::allowedNext()`; each move is a status-less `booking_status_events` entry `custody_<x>` (the booking's own sequence = timeline order) and a customer notification.
+- **Recipient OTP** (`RecipientOtpService`): generated when the parcel is collected, sent to the recipient's phone through `SmsGateway` after commit (failure is stored as `failed`, never reported as sent; the code is never returned or logged outside the local `otp_dev` channel), HMAC-stored, cumulative attempt limit (5) -> lock + support flag + realtime + notification; resend with cooldown and cap; operations lift the lock (`lift_recipient_otp_lock` override, `bookings.pin_override`, reason, audit).
+- **Proofs** (`DeliveryProofService`, `ProofFileStore`, `ProofAccessService`): photo / signature (inspected, re-encoded, scanned through `FileScanner`, SHA-256, private disk), checklist, weight (mismatch flagged, never blocks). The server derives the stage from the booking state. `recipient_otp` and `pickup_pin` exist only as results of their own verification.
+- **Delivery attempts** (`DeliveryAttemptService`): `POST /provider/bookings/{id}/delivery-attempts` (outcome enum, reason, optional evidence picture) -> `delivery_attempt_failed`; resolved once by the customer, the provider or operations: retry (while attempts are left), return to sender (return leg ends with a return photo and completes at the agreed fare), or operations (support flag; `courier:escalate-attempts` hands unanswered attempts over after 30 minutes).
+- **Completion guard**: `BookingTransitionService` now checks the category's `delivery_proof_types` (stage-aware) AND `recipient_otp_required` (`booking_recipient_otp_required`; admins may bypass with a reason); a return leg needs only the return proofs.
+- **Privacy**: providers see contacts only through the selected-provider booking (name always, phone per the phone-exposure setting and only while the job is in flight); request cards carry no contact data; the customer sees their own entries with masked phones; customers get proofs only for their own booking, pictures via signed URLs behind the token.
+- **Notifications**: `delivery.picked_up`, `.arrived_dropoff`, `.delivered`, `.attempt_failed`, `.attempt_resolved`, `.returned`, `.recipient_otp_locked` (templates ar / en).
+- **Admin touches**: Safety tab shows custody, recipient code state, attempts (reason only with PII access) and proofs by stage; Bookings listing filters custody status, parcel size, fragile; timeline labels; the lift-lock override.
+- **Privacy tooling**: `CustomerDeletionService` scrubs contacts, code hashes, attempt text and proof pictures; `PersonalDataExporter` adds a `parcel` section per booking.
+
+### Verified (sanity only, no test suites)
+`php -l` on every touched file, `migrate` / `migrate:rollback --step=1` / `migrate`, `route:list`, `view:cache`, `schedule:list`, container resolution of the new services, and an in-process HTTP script on the testing database (`migrate:fresh --seed`) that drove: create without / with stale / with current acknowledgement -> encrypted contacts + indexed columns -> proof uploads (pickup, weight mismatch, checklist) -> start refused without proof -> start -> OTP SMS to the recipient only -> custody steps -> completion refused without OTP / delivery proof -> failed attempt with evidence (+ replay) -> customer retry -> 5 wrong codes lock -> operations lift -> verified (+ replay) -> second attempt -> return to sender -> return photo -> completion -> timeline order, privacy of the phone, signed proof files (owner 200, other customer 404, tampered 403), export and scrub -> a full happy-path hand-over. All checks passed.
+
+### Known gaps / notes for P4.2
+- Admin cannot open proof pictures yet (needs a signed admin route with permission + audit): P4.4. No admin screen to resolve an attempt; operators use the existing audited overrides.
+- A return leg completes at the agreed fare (the failure is not the provider's); a different split is an adjustment / dispute decision.
+- Signature pictures must be at least 200 px on both sides (shared photo inspector).
+- Seeded courier fare policy still requires the start PIN; whether parcels should skip it is a product decision.
+- Moving and freight can reuse proofs / custody-free flows: `DeliveryProofService::supported()` turns proofs on for any category with pickup / delivery proof settings; custody and attempts apply to `booking_type = parcel` only (`CustodyService::applies`).
 
 ## P3.5 — Cancellation/no-show policies with fees, fare adjustments, receipts · 🟡 2026-11-03 (gate NOT run)
 

@@ -823,3 +823,34 @@ Discovered while wiring this: the framework's default middleware priority list n
 ## ADR-145 — Payment UI never trusts the gateway return · 2026-11-06 · Accepted
 
 **Decision.** The apps open `action.url` externally/in-app browser and then only display what the server reports (realtime `payment.status_changed`, polling with back-off, `POST /payments/{id}/refresh`). One Idempotency-Key per (booking, method) intent; a failed attempt drops the key so the next try is a new attempt.
+
+## ADR-146 — Parcel contacts are encrypted rows, not form JSON · 2026-11-07 · Accepted
+
+**Decision.** `sender` / `recipient` contact answers are validated by the form schema, then removed from `service_details` and stored encrypted in `booking_contacts` (Laravel `Crypt`). Editing a request merges the stored contacts back for validation. Providers get a contact only from the assigned-booking resource (name; phone per `direct_phone_exposure`, only while the job is in flight); request cards and any pre-selection response carry none; customers see their own entries with a masked phone.
+**Why.** A clear-text phone in a JSON column leaks through exports, snapshots and logs. Account deletion nulls the encrypted values.
+
+## ADR-147 — Recipient OTP: HMAC, cumulative attempts, SMS after commit · 2026-11-07 · Accepted
+
+**Decision.** The code is generated at pickup, stored as `HMAC(app key | booking uuid)`, sent to the recipient only through `SmsGateway` after the transaction commits, and never returned or logged (the `log` driver's `otp_dev` channel is local-only). Attempts are cumulative per booking (a resend does not reset them); the 5th wrong entry locks the code, flags the booking for support and tells both parties; only operations lift it (`lift_recipient_otp_lock`). A failed SMS is stored as `failed` and the provider may resend (cooldown, cap). A verified code stores a `recipient_otp` proof; admins may complete without it (reason, audit).
+**Why.** Brute force over resends must not be possible, and delivery must never be reported as sent when it was not.
+
+## ADR-148 — Proof stage is derived by the server · 2026-11-07 · Accepted
+
+**Decision.** `booking_proofs.stage` (pickup / delivery / return) comes from the booking state (arrived = pickup, in progress = delivery, in progress with custody `returning` = return); the completion guard counts only delivery-stage proofs, the start guard only pickup-stage ones. Only photo, signature, checklist and weight are uploadable; pictures are inspected, re-encoded, scanned (`FileScanner`), hashed (SHA-256) and stored under `proofs/{booking}/{stage}/`. Same-hash repeats are replays.
+**Why.** A pickup photo must never satisfy a delivery requirement, and the client cannot choose the stage.
+
+## ADR-149 — Custody is a timeline of annotations, not a second status · 2026-11-07 · Accepted
+
+**Decision.** `bookings.custody_status` (picked_up, in_transit, arrived_dropoff, attempt_failed, returning, delivered, returned) is moved only by `CustodyService`, validated by `CustodyStatus::allowedNext()`, and every move is a status-less `booking_status_events` entry `custody_<x>`. `bookings.status` still changes only in `BookingTransitionService`. Custody applies to `booking_type = parcel`.
+**Why.** The SRS lifecycle graph stays unchanged while the parcel chain is auditable in the booking's own sequence.
+
+## ADR-150 — Failed delivery: retry, return leg, or operations · 2026-11-07 · Accepted
+
+**Decision.** `in_progress -> delivery_attempt_failed` is reported by the provider from the drop-off (`arrived_dropoff`). One resolution per attempt, by customer, provider or operations: retry (back to `in_progress`, limited to `courier.attempts.max_per_booking`), return to sender (back to `in_progress` with custody `returning`; completion needs the return photo, skips the recipient code and settles at the agreed fare), or operations (support flag; unanswered attempts escalate after `courier.attempts.escalate_after_minutes` through `courier:escalate-attempts`). The customer may start the retry transition (guard exception for `delivery_attempt_failed -> in_progress`).
+**Why.** The existing graph already allows this loop; settling the return leg at the agreed fare avoids punishing the provider for the recipient's absence, and any other split stays an adjustment or dispute.
+
+## ADR-151 — Restricted-goods acknowledgement names the policy version · 2026-11-07 · Accepted
+
+**Decision.** A parcel request carries the uuid of the current published `restricted_goods` policy version; the booking stores its id and the time. A missing, unknown or superseded version is refused; with no published version parcel booking is unavailable (`RestrictedGoodsPolicySeeder` publishes a starter text, to be replaced by legal wording). Edits keep the original acknowledgement.
+**Why.** The stored acknowledgement must identify the exact text the customer accepted (SRS §13.3).
+

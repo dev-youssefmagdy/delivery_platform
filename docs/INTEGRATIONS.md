@@ -91,3 +91,9 @@ Never commit credentials. `.env`, service-account JSON, keystores, `*.p12`, prov
 - Realtime: chat events use the existing Reverb setup on `private-customer.{uuid}` / `private-provider.{uuid}`; no new channel or authorization rule.
 - Go-live checks: run one chat with an image on two real devices (foreground and killed app push, deep link into the chat), open a ticket with a PDF and a photo, answer it from the admin panel and confirm the push, and confirm the file scanner rejects an EICAR test file.
 
+## Courier / parcel (P4.1)
+- The recipient code is sent to the **recipient's** phone through the existing `SmsGateway` (same `SMS_DRIVER` and credentials as OTP; the sender token must allow this text). With no driver configured the code is stored as undelivered (`delivery_status = failed`), never as sent.
+- Proof pictures go through the `FileScanner` adapter like every upload (`FILE_SCANNER_DRIVER`; unset = stored `not_scanned`).
+- Tunables (all optional, see `config/courier.php`): `COURIER_OTP_LENGTH`, `COURIER_OTP_MAX_ATTEMPTS`, `COURIER_OTP_RESEND_COOLDOWN`, `COURIER_OTP_MAX_RESENDS`, `COURIER_MAX_DELIVERY_ATTEMPTS`, `COURIER_ESCALATE_AFTER_MINUTES`, `COURIER_PROOFS_PER_MINUTE`.
+- Scheduler: `courier:escalate-attempts` every minute.
+

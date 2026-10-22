@@ -743,3 +743,33 @@ Admin (session guard): `/admin/support-tickets` (inbox + `{ticket}`, `activity`,
 | POST | `/api/v1/me/wallet/settle-debt` | Customer token, `Idempotency-Key`. Body as the payment intent (`payment_method_id?`, `method?`, `wallet_phone?`); the amount is the server's current wallet debt. Returns a payment (`kind: debt`) with `action`; `201`, or `200` when an open attempt is returned. `422 payment_nothing_to_pay` without debt. Paid only from the verified gateway answer, which credits the wallet. |
 
 `GET /config/app` `features` now holds `wallet` and `offers` (settings `feature_wallet_enabled`, `feature_offers_enabled`, default true). Payment resource `kind` may be `debt`.
+
+
+## P4.1 — Courier / parcel (ADR-146..151)
+
+`POST /api/v1/bookings` (parcel): `booking_type: parcel`, `service_details.recipient {name, phone}` (+ optional `sender`), and **`restricted_goods_policy_version`** (uuid of the current `restricted_goods` policy from `GET /policies/restricted_goods`). Errors: `422 restricted_goods_ack_required | restricted_goods_ack_stale | restricted_goods_policy_unavailable`. Booking responses (customer and provider) add `contacts[] {role, name, phone, phone_masked, contact_mode}` (provider: only the selected provider; `phone` only with direct exposure and while the job is in flight; the customer always gets `phone: null`) and `delivery` (null for rides): `{custody {status,label}, proofs {pickup_required, delivery_required[], return_required[], present {pickup[],delivery[],return[]}, current_stage}, recipient_otp {required, issued, verified, locked, delivery_status, attempts_used, attempts_remaining, max_attempts, resend_available_at, resends_left}, attempts {count, max, retry_available, pending, items[]}, awaiting_resolution, restricted_goods_acknowledged_at}`. The timeline's `note` entries carry `custody` (`picked_up` ... `returned`). The recipient code is never returned. New `allowed_actions`: provider `upload_proof`, `mark_in_transit`, `arrived_dropoff`, `verify_recipient_otp`, `resend_recipient_otp`, `report_delivery_attempt`, `resolve_delivery_attempt`; customer `view_proofs`, `resolve_delivery_attempt`.
+
+### Provider (`/api/v1/provider`, all POSTs need `Idempotency-Key`)
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/bookings/{booking}/proofs` | Own job's proofs `{id, type, type_label, stage, taken_at, details, file {url (signed, 5 min), mime, size_bytes}}` |
+| POST | `/bookings/{booking}/proofs` | `type` = `photo\|signature` (multipart `file`), `checklist` (`items[] {code, checked}`), `weight` (`weight_kg`), optional `note`. Stage is derived by the server (`409 proof_not_allowed_now` outside arrived / in progress). `201` + `{proof, booking}`; same picture again = `200` replay. `409 proof_already_recorded \| proof_limit_reached`; `422 proof_type_not_uploadable \| proofs_not_supported \| proof_checklist_invalid \| proof_weight_*`; file errors as documents; `503 file_scanner_unavailable`. 20/min |
+| GET | `/bookings/{booking}/proofs/{proof}/file` | signed + token |
+| POST | `/bookings/{booking}/custody` | `{event: in_transit\|arrived_dropoff}`; `409 custody_transition_invalid \| custody_not_active` |
+| POST | `/bookings/{booking}/verify-recipient-otp` | `{code}`; `422 recipient_otp_invalid` (`attempts_remaining`), `409 recipient_otp_locked \| recipient_otp_not_ready`. Replay when already verified |
+| POST | `/bookings/{booking}/recipient-otp/resend` | `429 recipient_otp_resend_too_soon`, `422 recipient_otp_resend_limit`, `409 recipient_otp_locked` |
+| POST | `/bookings/{booking}/delivery-attempts` | `{outcome: recipient_unavailable\|recipient_refused\|wrong_address\|otp_failed\|restricted_item\|other, reason? (required for other, restricted_item), evidence? (picture)}` -> `201` `{attempt, booking}` in `delivery_attempt_failed`; `409 custody_not_at_dropoff \| delivery_attempt_not_allowed`; repeat = `200` replay |
+| POST | `/bookings/{booking}/delivery-attempts/{attempt}/resolve` | `{resolution: retry\|return_to_sender\|operations}`; `422 delivery_attempts_exhausted`, `409 delivery_attempt_already_resolved` |
+| POST | `/bookings/{booking}/complete` | now also `422 booking_proof_required` (stage-aware) and `422 booking_recipient_otp_required` |
+
+### Customer (`/api/v1/bookings/{booking}`)
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/proofs` | Own booking only; the pickup PIN proof is never listed |
+| GET | `/proofs/{proof}/file` | signed + token, owner only (other customers 404) |
+| POST | `/delivery-attempts/{attempt}/resolve` | `{resolution}` as above (retry / return_to_sender / operations); Idempotency-Key |
+
+Push events: `delivery.picked_up | arrived_dropoff | delivered | attempt_failed | attempt_resolved | returned | recipient_otp_locked` (link: booking). Admin: Safety tab (custody, code state, attempts, proofs), Bookings filters `custody_statuses[]`, `parcel_sizes[]`, `is_fragile`, override `POST /admin/bookings/{id}/lift-recipient-otp-lock` (`bookings.pin_override`, reason, audit).
+

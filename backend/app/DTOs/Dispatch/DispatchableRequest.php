@@ -29,6 +29,9 @@ final readonly class DispatchableRequest
         public ?int $passengerCount = null,
         public array $summary = [],
         public int $generation = 1,
+        /** Load of a moving / freight request: a vehicle that cannot carry it is not dispatched (SRS §10.1). */
+        public ?float $requiredPayloadKg = null,
+        public ?float $requiredVolumeM3 = null,
     ) {}
 
     public function isOpenAt(CarbonImmutable $now): bool

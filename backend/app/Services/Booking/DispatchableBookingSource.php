@@ -54,8 +54,17 @@ final class DispatchableBookingSource implements DispatchableRequestSource
                 'restricted_pickup' => (bool) ($booking->policy_snapshot['zone']['restricted_pickup'] ?? false),
                 'payment_method' => $booking->payment_method->value,
                 'request_version' => $booking->request_version,
+                // Moving / freight (P4.2): the load and the requested scope are not personal data, so every dispatched provider may see them.
+                'load' => $booking->cargo_weight_kg === null && $booking->cargo_volume_m3 === null ? null : [
+                    'weight_kg' => $booking->cargo_weight_kg === null ? null : (float) $booking->cargo_weight_kg,
+                    'volume_m3' => $booking->cargo_volume_m3 === null ? null : (float) $booking->cargo_volume_m3,
+                ],
+                'pickup_window' => $booking->pickup_window_start === null ? null : ['start' => $booking->pickup_window_start->toIso8601ZuluString(), 'end' => $booking->pickup_window_end?->toIso8601ZuluString()],
+                'requested_scope' => $booking->requested_scope,
             ],
             generation: $booking->request_version,
+            requiredPayloadKg: $booking->cargo_weight_kg === null ? null : (float) $booking->cargo_weight_kg,
+            requiredVolumeM3: $booking->cargo_volume_m3 === null ? null : (float) $booking->cargo_volume_m3,
         );
     }
 }

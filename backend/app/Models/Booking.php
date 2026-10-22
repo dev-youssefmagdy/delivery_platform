@@ -47,6 +47,10 @@ use LogicException;
  * @property int|null $passengers
  * @property int|null $luggage_count
  * @property string|null $cargo_weight_kg decimal string
+ * @property string|null $cargo_volume_m3 decimal string
+ * @property array<string, mixed>|null $requested_scope
+ * @property Carbon|null $pickup_window_start
+ * @property Carbon|null $pickup_window_end
  * @property array<string, mixed> $service_details
  * @property int $proposed_fare_minor
  * @property string $currency
@@ -129,7 +133,7 @@ class Booking extends Model
     protected $fillable = [
         'uuid', 'code', 'customer_id', 'service_category_id', 'service_category_version_id', 'city_id', 'service_zone_id', 'fare_policy_id',
         'booking_type', 'sequence', 'request_version', 'pickup_point', 'pickup_address', 'dropoff_point', 'dropoff_address', 'scheduled_at',
-        'passengers', 'luggage_count', 'cargo_weight_kg', 'service_details', 'proposed_fare', 'reference_estimate', 'route_snapshot',
+        'passengers', 'luggage_count', 'cargo_weight_kg', 'cargo_volume_m3', 'requested_scope', 'pickup_window_start', 'pickup_window_end', 'service_details', 'proposed_fare', 'reference_estimate', 'route_snapshot',
         'service_snapshot', 'policy_snapshot', 'commission_snapshot', 'commission_rule_id', 'commission_rule_version_id', 'price_breakdown', 'settled_at', 'payment_method', 'payment_status', 'coupon_reservation_id',
         'selected_offer_id', 'agreed_fare_minor', 'agreed_offer_version_id', 'agreed_scope', 'provider_selected_at', 'provider_id', 'search_expires_at', 'pin_hash', 'pin_encrypted', 'cancelled_at', 'cancelled_by_type',
         'cancelled_by_id', 'cancellation_reason', 'completed_at', 'idempotency_key', 'lock_version',
@@ -159,6 +163,12 @@ class Booking extends Model
         static::saving(static function (self $booking): void {
             if ($booking->exists && $booking->isDirty('status') && ! BookingStatusGate::isOpen()) {
                 throw new LogicException('bookings.status is written only by BookingTransitionService.');
+            }
+
+            // The accepted scope is part of the agreement: it is written once at selection and cleared when the agreement ends
+            // (provider cancelled, back to search). A later price change goes through an adjustment request, never through the scope.
+            if ($booking->exists && $booking->isDirty('agreed_scope') && $booking->getOriginal('agreed_scope') !== null && $booking->agreed_scope !== null) {
+                throw new LogicException('bookings.agreed_scope is immutable once the offer is accepted.');
             }
         });
     }
@@ -284,6 +294,9 @@ class Booking extends Model
             'payment_status' => PaymentStatus::class,
             'agreed_fare_minor' => 'integer',
             'agreed_scope' => 'array',
+            'requested_scope' => 'array',
+            'pickup_window_start' => 'datetime',
+            'pickup_window_end' => 'datetime',
             'provider_selected_at' => 'datetime',
             'heading_at' => 'datetime',
             'arrived_at' => 'datetime',

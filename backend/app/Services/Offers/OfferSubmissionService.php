@@ -19,12 +19,15 @@ use App\Jobs\Booking\ExpireOffer;
 use App\Models\Booking;
 use App\Models\BookingOffer;
 use App\Models\ProviderProfile;
+use App\Models\Vehicle;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Booking\OfferRepositoryInterface;
 use App\Repositories\Contracts\Dispatch\DispatchRecipientRepositoryInterface;
 use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
+use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
 use App\Services\Booking\BookingTransitionService;
 use App\Services\Provider\ProviderEligibilityService;
+use App\Services\Scope\OfferScopeService;
 use App\Support\Booking\CounterOfferBounds;
 use App\Support\Money\Money;
 use Carbon\CarbonImmutable;
@@ -50,11 +53,13 @@ final class OfferSubmissionService
         private readonly OfferRepositoryInterface $offers,
         private readonly DispatchRecipientRepositoryInterface $recipients,
         private readonly ProviderProfileRepositoryInterface $providers,
+        private readonly VehicleRepositoryInterface $vehicles,
         private readonly ProviderEligibilityService $eligibility,
         private readonly BookingTransitionService $transitions,
         private readonly OfferNotifier $notifier,
         private readonly OfferCloser $closer,
         private readonly OfferSettlement $settlement,
+        private readonly OfferScopeService $scopes,
         private readonly DatabaseManager $db,
     ) {}
 
@@ -170,13 +175,24 @@ final class OfferSubmissionService
             $existing = $this->offers->lockActiveFor($locked->id, $provider->id);
             $policy = (array) ($locked->policy_snapshot['offers'] ?? []);
             $note = $this->cleanNote($data->note);
-            $scope = $kind === OfferKind::CounterOffer ? $data->scope : null;
+            // Moving / freight: the vehicle must carry the load, a counter-offer must carry a valid scope and an accepted customer
+            // fare carries the scope the customer requested (SRS §7.4, §10.1).
+            $offeringVehicle = $this->vehicles->find($vehicleId);
+
+            if (! $offeringVehicle instanceof Vehicle) {
+                throw BusinessRuleViolation::make('offer_vehicle_missing');
+            }
+
+
+            $this->scopes->assertCapacity($locked, $offeringVehicle);
+            $scope = $this->scopes->forOffer($locked, $offeringVehicle, $kind === OfferKind::CounterOffer, $data->scope);
 
             if ($existing instanceof BookingOffer) {
                 $existing->loadMissing('currentVersion');
                 $current = $existing->currentVersion;
 
-                if ($current !== null && $current->amount_minor === $amount && $current->note === $note && ($current->scope ?? []) === ($scope ?? [])) {
+                if ($current !== null && $current->amount_minor === $amount && $current->note === $note // Loose comparison: the JSON column does not keep key order.
+                    && ($current->scope ?? []) == ($scope ?? [])) {
                     return $this->result($locked, $existing, $now, replayed: true, revision: false);
                 }
 

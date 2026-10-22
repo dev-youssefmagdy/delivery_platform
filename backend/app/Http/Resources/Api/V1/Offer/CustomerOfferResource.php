@@ -35,6 +35,7 @@ class CustomerOfferResource extends JsonResource
             'revision_count' => $offer->revision_count,
             'note' => $version?->note,
             'scope' => ($version?->scope ?? []) === [] ? new stdClass : $version?->scope,
+            'scope_summary' => app(\App\Services\Scope\OfferScopeService::class)->summary($version?->scope),
             'eta_seconds' => $offer->eta_seconds,
             'distance_m' => $offer->distance_m,
             'expires_at' => $offer->expires_at->toIso8601ZuluString(),

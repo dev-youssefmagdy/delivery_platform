@@ -15,6 +15,7 @@ use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
 use App\Services\Location\Index\ProviderGeoIndex;
 use App\Services\Provider\ProviderEligibilityService;
+use App\Services\Scope\VehicleCapacityChecker;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonImmutable;
 
@@ -34,6 +35,7 @@ final class FindEligibleProvidersService
         private readonly DispatchRecipientRepositoryInterface $recipients,
         private readonly ProviderEligibilityService $eligibility,
         private readonly SettingsService $settings,
+        private readonly VehicleCapacityChecker $capacity,
     ) {}
 
     /**
@@ -101,6 +103,11 @@ final class FindEligibleProvidersService
         }
 
         if ($request->passengerCount !== null && $vehicle->passenger_capacity !== null && $vehicle->passenger_capacity < $request->passengerCount) {
+            return null;
+        }
+
+        // Moving / freight: a vehicle that cannot carry the weight or volume never receives the request.
+        if (! $this->capacity->fits($vehicle, $request->requiredPayloadKg, $request->requiredVolumeM3)) {
             return null;
         }
 

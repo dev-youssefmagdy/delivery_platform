@@ -116,6 +116,26 @@ class ClosedView extends ConsumerWidget {
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,
           children: [
+            if (booking.can(BookingAction.chat))
+              OutlinedButton.icon(
+                key: const Key('chat-history-button'),
+                icon: const Icon(Icons.chat_bubble_outline),
+                label: Text(l10n.supportOpenChatHistory),
+                onPressed: () => context.push(Routes.bookingChat(booking.id)),
+              ),
+            if (booking.can(BookingAction.appeal))
+              OutlinedButton.icon(
+                key: const Key('appeal-button'),
+                icon: const Icon(Icons.gavel_outlined),
+                label: Text(l10n.supportAppealButton),
+                onPressed: () => context.push(Routes.bookingAppeal(booking.id)),
+              ),
+            OutlinedButton.icon(
+              key: const Key('trip-help-button'),
+              icon: const Icon(Icons.support_agent_outlined),
+              label: Text(l10n.supportHelpAboutTrip),
+              onPressed: () => context.push(Routes.bookingSupport(booking.id, booking.code)),
+            ),
             if (booking.can(BookingAction.report))
               OutlinedButton.icon(
                 key: const Key('report-button'),

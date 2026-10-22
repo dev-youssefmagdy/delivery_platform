@@ -116,11 +116,18 @@ class _DriverShellState extends ConsumerState<DriverShell>
             onSelected: (value) {
               if (value == 'language') {
                 context.go('${Routes.language}?from=settings');
+              } else if (value == 'support') {
+                context.push(Routes.support);
               } else if (value == 'logout') {
                 ref.read(authActionsProvider).logout();
               }
             },
             itemBuilder: (_) => [
+              PopupMenuItem(
+                key: const Key('driver-support'),
+                value: 'support',
+                child: Text(l10n.supportHelp),
+              ),
               PopupMenuItem(
                 value: 'language',
                 child: Text(l10n.homeChangeLanguage),

@@ -43,6 +43,7 @@ export 'src/notifications/push_registrar.dart';
 export 'src/realtime/realtime_client.dart';
 export 'src/realtime/sequence_tracker.dart';
 export 'src/support/chat_repository.dart';
+export 'src/support/chat_state.dart';
 export 'src/support/support_models.dart';
 export 'src/support/support_repository.dart';
 export 'src/support/ui/chat_thread_view.dart';

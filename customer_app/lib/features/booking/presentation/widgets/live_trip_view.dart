@@ -162,6 +162,13 @@ class _LiveTripViewState extends ConsumerState<LiveTripView> {
               label: Text(l10n.bkSafety),
               onPressed: () => showSafetySheet(context),
             ),
+            if (booking.can(BookingAction.chat))
+              FilledButton.tonalIcon(
+                key: const Key('chat-button'),
+                icon: const Icon(Icons.chat_bubble_outline),
+                label: Text(l10n.supportOpenChat),
+                onPressed: () => context.push(Routes.bookingChat(booking.id)),
+              ),
             if (booking.can(BookingAction.report))
               OutlinedButton.icon(
                 key: const Key('report-button'),

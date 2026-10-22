@@ -26,7 +26,7 @@ class NotificationsScreen extends ConsumerWidget {
     final route = link == null ? null : driverRouteFor(link);
     if (route == null || route == Routes.notifications) return;
     try {
-      if (link!.type == NotificationLinkType.booking && link.id != null) {
+      if (link!.id != null && (link.type == NotificationLinkType.booking || link.type == NotificationLinkType.chat || link.type == NotificationLinkType.support)) {
         await ref.read(pushCoordinatorProvider).links.validate(link);
       }
       router.push(route);

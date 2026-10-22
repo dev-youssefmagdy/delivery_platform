@@ -11,6 +11,8 @@ enum JobAction implements ApiEnum {
   cancel('cancel'),
   rateCustomer('rate_customer'),
   report('report'),
+  chat('chat'),
+  appeal('appeal'),
   unknown('');
 
   const JobAction(this.value);

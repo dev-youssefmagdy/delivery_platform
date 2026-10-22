@@ -10,6 +10,7 @@ import '../../../../app/router.dart';
 import '../../../../core/providers.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../../jobs/presentation/providers/job_providers.dart';
+import '../../../support/presentation/providers/support_providers.dart';
 
 Duration? _noAutoRetry(int retryCount, Object error) => null;
 
@@ -27,6 +28,9 @@ String? driverRouteFor(NotificationLink link) {
     NotificationLinkType.booking when id != null => '${Routes.job}/$id',
     NotificationLinkType.application => Routes.applicationStatus,
     NotificationLinkType.documents => Routes.providerOnboarding,
+    NotificationLinkType.chat when id != null => Routes.jobChat(id),
+    NotificationLinkType.support when id != null => Routes.supportTicket(id),
+    NotificationLinkType.support => Routes.support,
     NotificationLinkType.inbox => Routes.notifications,
     _ => null,
   };
@@ -180,8 +184,11 @@ final pushCoordinatorProvider = Provider<PushCoordinator>((ref) {
     links: DeepLinkHandler(
       routeFor: driverRouteFor,
       validate: (link) async {
-        if (link.type == NotificationLinkType.booking && link.id != null) {
+        if ((link.type == NotificationLinkType.booking || link.type == NotificationLinkType.chat) && link.id != null) {
           await ref.read(jobRepositoryProvider).job(link.id!);
+        }
+        if (link.type == NotificationLinkType.support && link.id != null) {
+          await ref.read(supportRepositoryProvider).ticket(link.id!);
         }
         return true;
       },

@@ -3361,6 +3361,468 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الإشعارات'**
   String get accountNotifications;
+
+  /// No description provided for @chatTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحادثة'**
+  String get chatTitle;
+
+  /// No description provided for @chatInputHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب رسالة'**
+  String get chatInputHint;
+
+  /// No description provided for @chatSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال'**
+  String get chatSend;
+
+  /// No description provided for @chatAttach.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرفاق صورة'**
+  String get chatAttach;
+
+  /// No description provided for @attachCamera.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقاط صورة'**
+  String get attachCamera;
+
+  /// No description provided for @attachGallery.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار من المعرض'**
+  String get attachGallery;
+
+  /// No description provided for @attachRemove.
+  ///
+  /// In ar, this message translates to:
+  /// **'إزالة'**
+  String get attachRemove;
+
+  /// No description provided for @chatEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد رسائل بعد'**
+  String get chatEmptyTitle;
+
+  /// No description provided for @chatEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابدأ المحادثة. الرسائل ظاهرة لك وللطرف الآخر في هذا الحجز فقط.'**
+  String get chatEmptyBody;
+
+  /// No description provided for @chatClosedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إغلاق هذه المحادثة'**
+  String get chatClosedTitle;
+
+  /// No description provided for @chatClosedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما زال بإمكانك قراءة الرسائل. لأي أمر آخر تواصل مع الدعم.'**
+  String get chatClosedBody;
+
+  /// No description provided for @chatClosesAt.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكنك المحادثة حتى {time}'**
+  String chatClosesAt(String time);
+
+  /// No description provided for @chatSending.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ الإرسال…'**
+  String get chatSending;
+
+  /// No description provided for @chatFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تُرسل'**
+  String get chatFailed;
+
+  /// No description provided for @chatDiscard.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف'**
+  String get chatDiscard;
+
+  /// No description provided for @chatRead.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت القراءة'**
+  String get chatRead;
+
+  /// No description provided for @chatDelivered.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسلت'**
+  String get chatDelivered;
+
+  /// No description provided for @chatLoadOlder.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسائل أقدم'**
+  String get chatLoadOlder;
+
+  /// No description provided for @chatImageFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تحميل الصورة. اضغط لإعادة المحاولة.'**
+  String get chatImageFailed;
+
+  /// No description provided for @chatImageLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'صورة في المحادثة'**
+  String get chatImageLabel;
+
+  /// No description provided for @chatRemoved.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت إزالتها بعد انتهاء مدة الاحتفاظ'**
+  String get chatRemoved;
+
+  /// No description provided for @chatErrTooLongMax.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرسالة طويلة جداً (الحد الأقصى {max} حرفاً)'**
+  String chatErrTooLongMax(int max);
+
+  /// No description provided for @chatPhoneNotice.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُخفى أرقام الهواتف في الرسائل. استخدم زر الاتصال بدلاً من ذلك.'**
+  String get chatPhoneNotice;
+
+  /// No description provided for @chatUnavailableTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحادثة غير متاحة'**
+  String get chatUnavailableTitle;
+
+  /// No description provided for @chatUnavailableBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكنك المحادثة بعد تأكيد سائق لهذا الحجز.'**
+  String get chatUnavailableBody;
+
+  /// No description provided for @chatErrClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إغلاق محادثة هذا الحجز.'**
+  String get chatErrClosed;
+
+  /// No description provided for @chatErrForbidden.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت لست طرفاً في هذه المحادثة.'**
+  String get chatErrForbidden;
+
+  /// No description provided for @chatErrTooLong.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرسالة طويلة جداً.'**
+  String get chatErrTooLong;
+
+  /// No description provided for @supportTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المساعدة والدعم'**
+  String get supportTitle;
+
+  /// No description provided for @supportTicketTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلب'**
+  String get supportTicketTitle;
+
+  /// No description provided for @supportEmptyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد طلبات بعد'**
+  String get supportEmptyTitle;
+
+  /// No description provided for @supportEmptyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'افتح طلباً إذا احتجت مساعدة في رحلة أو دفعة أو حسابك.'**
+  String get supportEmptyBody;
+
+  /// No description provided for @supportNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'تواصل مع الدعم'**
+  String get supportNew;
+
+  /// No description provided for @supportFilterActive.
+  ///
+  /// In ar, this message translates to:
+  /// **'المفتوحة'**
+  String get supportFilterActive;
+
+  /// No description provided for @supportFilterFinished.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحلولة'**
+  String get supportFilterFinished;
+
+  /// No description provided for @supportFilterAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكل'**
+  String get supportFilterAll;
+
+  /// No description provided for @supportLoadMore.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض المزيد'**
+  String get supportLoadMore;
+
+  /// No description provided for @supportCategory.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما موضوع الطلب؟'**
+  String get supportCategory;
+
+  /// No description provided for @supportCategoryHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر تصنيفاً'**
+  String get supportCategoryHint;
+
+  /// No description provided for @supportSubject.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموضوع'**
+  String get supportSubject;
+
+  /// No description provided for @supportSubjectHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'عنوان قصير'**
+  String get supportSubjectHint;
+
+  /// No description provided for @supportBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'صف المشكلة'**
+  String get supportBody;
+
+  /// No description provided for @supportBodyHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'ماذا حدث؟ أضف تفاصيل تساعدنا على التحقق.'**
+  String get supportBodyHint;
+
+  /// No description provided for @supportBooking.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحجز {code}'**
+  String supportBooking(String code);
+
+  /// No description provided for @supportSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الطلب'**
+  String get supportSubmit;
+
+  /// No description provided for @supportRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الحقل مطلوب'**
+  String get supportRequired;
+
+  /// No description provided for @supportTooShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى كتابة المزيد'**
+  String get supportTooShort;
+
+  /// No description provided for @supportSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال طلبك.'**
+  String get supportSent;
+
+  /// No description provided for @supportReplyHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب رداً'**
+  String get supportReplyHint;
+
+  /// No description provided for @supportReplySend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الرد'**
+  String get supportReplySend;
+
+  /// No description provided for @supportReplyClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إغلاق هذا الطلب. افتح طلباً جديداً إذا كنت ما زلت بحاجة إلى مساعدة.'**
+  String get supportReplyClosed;
+
+  /// No description provided for @supportResolution.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحل'**
+  String get supportResolution;
+
+  /// No description provided for @supportFromSupport.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدعم'**
+  String get supportFromSupport;
+
+  /// No description provided for @supportFromMe.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت'**
+  String get supportFromMe;
+
+  /// No description provided for @supportNoInternal.
+  ///
+  /// In ar, this message translates to:
+  /// **'تظهر فقط الردود الموجهة إليك.'**
+  String get supportNoInternal;
+
+  /// No description provided for @supportAttachment.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرفق'**
+  String get supportAttachment;
+
+  /// No description provided for @supportTicketNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلب {number}'**
+  String supportTicketNumber(String number);
+
+  /// No description provided for @supportOpenedOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'فُتح في {date}'**
+  String supportOpenedOn(String date);
+
+  /// No description provided for @supportErrLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك طلبات مفتوحة كثيرة. انتظر الرد أو أضف رداً على طلب قائم.'**
+  String get supportErrLimit;
+
+  /// No description provided for @supportErrRate.
+  ///
+  /// In ar, this message translates to:
+  /// **'أرسلت طلبات كثيرة اليوم. حاول مرة أخرى غداً.'**
+  String get supportErrRate;
+
+  /// No description provided for @supportErrClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إغلاق هذا الطلب.'**
+  String get supportErrClosed;
+
+  /// No description provided for @supportErrAppealOpen.
+  ///
+  /// In ar, this message translates to:
+  /// **'لقد قدمت اعتراضاً على هذا الحجز من قبل.'**
+  String get supportErrAppealOpen;
+
+  /// No description provided for @supportErrAppealNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد رسوم على هذا الحجز يمكن الاعتراض عليها.'**
+  String get supportErrAppealNone;
+
+  /// No description provided for @supportErrInfected.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم رفض الملف بعد الفحص الأمني.'**
+  String get supportErrInfected;
+
+  /// No description provided for @supportErrFileType.
+  ///
+  /// In ar, this message translates to:
+  /// **'نوع الملف غير مسموح. استخدم صورة أو ملف PDF.'**
+  String get supportErrFileType;
+
+  /// No description provided for @supportErrFileSize.
+  ///
+  /// In ar, this message translates to:
+  /// **'حجم الملف كبير جداً.'**
+  String get supportErrFileSize;
+
+  /// No description provided for @supportAppealTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاعتراض على الرسوم'**
+  String get supportAppealTitle;
+
+  /// No description provided for @supportAppealIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخبرنا لماذا يجب مراجعة الرسوم. سيراجع الدعم الرحلة وقرار الرسوم ويرد عليك في هذا الطلب.'**
+  String get supportAppealIntro;
+
+  /// No description provided for @supportAppealReason.
+  ///
+  /// In ar, this message translates to:
+  /// **'لماذا تعترض؟'**
+  String get supportAppealReason;
+
+  /// No description provided for @supportAppealShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى الشرح بما لا يقل عن 10 أحرف.'**
+  String get supportAppealShort;
+
+  /// No description provided for @supportAppealSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الاعتراض'**
+  String get supportAppealSubmit;
+
+  /// No description provided for @supportAppealSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال اعتراضك إلى الدعم.'**
+  String get supportAppealSent;
+
+  /// No description provided for @supportOpenChat.
+  ///
+  /// In ar, this message translates to:
+  /// **'محادثة'**
+  String get supportOpenChat;
+
+  /// No description provided for @supportOpenChatHistory.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجل المحادثة'**
+  String get supportOpenChatHistory;
+
+  /// No description provided for @supportHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'المساعدة والدعم'**
+  String get supportHelp;
+
+  /// No description provided for @supportHelpAboutTrip.
+  ///
+  /// In ar, this message translates to:
+  /// **'احصل على مساعدة بخصوص هذه الرحلة'**
+  String get supportHelpAboutTrip;
+
+  /// No description provided for @supportAppealButton.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاعتراض على الرسوم'**
+  String get supportAppealButton;
 }
 
 class _AppLocalizationsDelegate

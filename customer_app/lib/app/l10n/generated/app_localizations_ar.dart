@@ -1521,4 +1521,260 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountNotifications => 'الإشعارات';
+
+  @override
+  String get chatTitle => 'المحادثة';
+
+  @override
+  String get chatInputHint => 'اكتب رسالة';
+
+  @override
+  String get chatSend => 'إرسال';
+
+  @override
+  String get chatAttach => 'إرفاق صورة';
+
+  @override
+  String get attachCamera => 'التقاط صورة';
+
+  @override
+  String get attachGallery => 'اختيار من المعرض';
+
+  @override
+  String get attachRemove => 'إزالة';
+
+  @override
+  String get chatEmptyTitle => 'لا توجد رسائل بعد';
+
+  @override
+  String get chatEmptyBody =>
+      'ابدأ المحادثة. الرسائل ظاهرة لك وللطرف الآخر في هذا الحجز فقط.';
+
+  @override
+  String get chatClosedTitle => 'تم إغلاق هذه المحادثة';
+
+  @override
+  String get chatClosedBody =>
+      'ما زال بإمكانك قراءة الرسائل. لأي أمر آخر تواصل مع الدعم.';
+
+  @override
+  String chatClosesAt(String time) {
+    return 'يمكنك المحادثة حتى $time';
+  }
+
+  @override
+  String get chatSending => 'جارٍ الإرسال…';
+
+  @override
+  String get chatFailed => 'لم تُرسل';
+
+  @override
+  String get chatDiscard => 'حذف';
+
+  @override
+  String get chatRead => 'تمت القراءة';
+
+  @override
+  String get chatDelivered => 'أُرسلت';
+
+  @override
+  String get chatLoadOlder => 'رسائل أقدم';
+
+  @override
+  String get chatImageFailed => 'تعذر تحميل الصورة. اضغط لإعادة المحاولة.';
+
+  @override
+  String get chatImageLabel => 'صورة في المحادثة';
+
+  @override
+  String get chatRemoved => 'تمت إزالتها بعد انتهاء مدة الاحتفاظ';
+
+  @override
+  String chatErrTooLongMax(int max) {
+    return 'الرسالة طويلة جداً (الحد الأقصى $max حرفاً)';
+  }
+
+  @override
+  String get chatPhoneNotice =>
+      'تُخفى أرقام الهواتف في الرسائل. استخدم زر الاتصال بدلاً من ذلك.';
+
+  @override
+  String get chatUnavailableTitle => 'المحادثة غير متاحة';
+
+  @override
+  String get chatUnavailableBody => 'يمكنك المحادثة بعد تأكيد سائق لهذا الحجز.';
+
+  @override
+  String get chatErrClosed => 'تم إغلاق محادثة هذا الحجز.';
+
+  @override
+  String get chatErrForbidden => 'أنت لست طرفاً في هذه المحادثة.';
+
+  @override
+  String get chatErrTooLong => 'الرسالة طويلة جداً.';
+
+  @override
+  String get supportTitle => 'المساعدة والدعم';
+
+  @override
+  String get supportTicketTitle => 'الطلب';
+
+  @override
+  String get supportEmptyTitle => 'لا توجد طلبات بعد';
+
+  @override
+  String get supportEmptyBody =>
+      'افتح طلباً إذا احتجت مساعدة في رحلة أو دفعة أو حسابك.';
+
+  @override
+  String get supportNew => 'تواصل مع الدعم';
+
+  @override
+  String get supportFilterActive => 'المفتوحة';
+
+  @override
+  String get supportFilterFinished => 'المحلولة';
+
+  @override
+  String get supportFilterAll => 'الكل';
+
+  @override
+  String get supportLoadMore => 'عرض المزيد';
+
+  @override
+  String get supportCategory => 'ما موضوع الطلب؟';
+
+  @override
+  String get supportCategoryHint => 'اختر تصنيفاً';
+
+  @override
+  String get supportSubject => 'الموضوع';
+
+  @override
+  String get supportSubjectHint => 'عنوان قصير';
+
+  @override
+  String get supportBody => 'صف المشكلة';
+
+  @override
+  String get supportBodyHint => 'ماذا حدث؟ أضف تفاصيل تساعدنا على التحقق.';
+
+  @override
+  String supportBooking(String code) {
+    return 'الحجز $code';
+  }
+
+  @override
+  String get supportSubmit => 'إرسال الطلب';
+
+  @override
+  String get supportRequired => 'هذا الحقل مطلوب';
+
+  @override
+  String get supportTooShort => 'يرجى كتابة المزيد';
+
+  @override
+  String get supportSent => 'تم إرسال طلبك.';
+
+  @override
+  String get supportReplyHint => 'اكتب رداً';
+
+  @override
+  String get supportReplySend => 'إرسال الرد';
+
+  @override
+  String get supportReplyClosed =>
+      'تم إغلاق هذا الطلب. افتح طلباً جديداً إذا كنت ما زلت بحاجة إلى مساعدة.';
+
+  @override
+  String get supportResolution => 'الحل';
+
+  @override
+  String get supportFromSupport => 'الدعم';
+
+  @override
+  String get supportFromMe => 'أنت';
+
+  @override
+  String get supportNoInternal => 'تظهر فقط الردود الموجهة إليك.';
+
+  @override
+  String get supportAttachment => 'مرفق';
+
+  @override
+  String supportTicketNumber(String number) {
+    return 'الطلب $number';
+  }
+
+  @override
+  String supportOpenedOn(String date) {
+    return 'فُتح في $date';
+  }
+
+  @override
+  String get supportErrLimit =>
+      'لديك طلبات مفتوحة كثيرة. انتظر الرد أو أضف رداً على طلب قائم.';
+
+  @override
+  String get supportErrRate => 'أرسلت طلبات كثيرة اليوم. حاول مرة أخرى غداً.';
+
+  @override
+  String get supportErrClosed => 'تم إغلاق هذا الطلب.';
+
+  @override
+  String get supportErrAppealOpen => 'لقد قدمت اعتراضاً على هذا الحجز من قبل.';
+
+  @override
+  String get supportErrAppealNone =>
+      'لا توجد رسوم على هذا الحجز يمكن الاعتراض عليها.';
+
+  @override
+  String get supportErrInfected => 'تم رفض الملف بعد الفحص الأمني.';
+
+  @override
+  String get supportErrFileType =>
+      'نوع الملف غير مسموح. استخدم صورة أو ملف PDF.';
+
+  @override
+  String get supportErrFileSize => 'حجم الملف كبير جداً.';
+
+  @override
+  String get supportAppealTitle => 'الاعتراض على الرسوم';
+
+  @override
+  String get supportAppealIntro =>
+      'أخبرنا لماذا يجب مراجعة الرسوم. سيراجع الدعم الرحلة وقرار الرسوم ويرد عليك في هذا الطلب.';
+
+  @override
+  String get supportAppealReason => 'لماذا تعترض؟';
+
+  @override
+  String get supportAppealShort => 'يرجى الشرح بما لا يقل عن 10 أحرف.';
+
+  @override
+  String get supportAppealSubmit => 'إرسال الاعتراض';
+
+  @override
+  String get supportAppealSent => 'تم إرسال اعتراضك إلى الدعم.';
+
+  @override
+  String get supportOpenChat => 'محادثة';
+
+  @override
+  String get supportOpenChatHistory => 'سجل المحادثة';
+
+  @override
+  String get supportHelp => 'المساعدة والدعم';
+
+  @override
+  String get supportHelpAboutTrip => 'احصل على مساعدة بخصوص هذه الرحلة';
+
+  @override
+  String get supportAppealButton => 'الاعتراض على الرسوم';
+
+  @override
+  String get actionRefresh => 'تحديث';
+
+  @override
+  String get actionBack => 'رجوع';
 }

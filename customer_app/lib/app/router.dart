@@ -13,6 +13,11 @@ import '../features/booking/presentation/screens/booking_form_screen.dart';
 import '../features/booking/presentation/screens/booking_screen.dart';
 import '../features/booking/presentation/screens/cancel_booking_screen.dart';
 import '../features/booking/presentation/screens/report_screen.dart';
+import '../features/support/presentation/screens/appeal_screen.dart';
+import '../features/support/presentation/screens/chat_screen.dart';
+import '../features/support/presentation/screens/new_ticket_screen.dart';
+import '../features/support/presentation/screens/ticket_detail_screen.dart';
+import '../features/support/presentation/screens/tickets_screen.dart';
 import '../features/catalog/presentation/screens/service_details_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/map/presentation/providers/map_providers.dart';
@@ -43,11 +48,19 @@ abstract final class Routes {
   static const bookingNew = '/booking/new';
   static const notifications = '/notifications';
   static const notificationSettings = '/notifications/settings';
+  static const support = '/support';
+  static const supportNew = '/support/new';
+
+  /// A support request (also the target of reply notifications).
+  static String supportTicket(String id) => '/support/ticket/$id';
 
   /// A booking at any stage; also the target of deep links and notification taps.
   static String booking(String id) => '/booking/$id';
   static String bookingCancel(String id) => '/booking/$id/cancel';
   static String bookingReport(String id) => '/booking/$id/report';
+  static String bookingChat(String id) => '/booking/$id/chat';
+  static String bookingAppeal(String id) => '/booking/$id/appeal';
+  static String bookingSupport(String id, String code) => '/support/new?booking=$id&code=$code';
 }
 
 /// Where the splash screen sends the user.
@@ -173,6 +186,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const NotificationSettingsScreen(),
       ),
       GoRoute(
+        path: Routes.support,
+        builder: (_, _) => const TicketsScreen(),
+        routes: [
+          GoRoute(
+            path: 'new',
+            builder: (_, state) => NewTicketScreen(
+              bookingId: state.uri.queryParameters['booking'],
+              bookingCode: state.uri.queryParameters['code'],
+            ),
+          ),
+          GoRoute(
+            path: 'ticket/:id',
+            builder: (_, state) =>
+                TicketDetailScreen(ticketId: state.pathParameters['id']!),
+          ),
+        ],
+      ),
+      GoRoute(
         path: Routes.bookingNew,
         builder: (_, _) => const BookingFormScreen(),
       ),
@@ -190,6 +221,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'report',
             builder: (_, state) =>
                 ReportScreen(bookingId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: 'chat',
+            builder: (_, state) =>
+                ChatScreen(bookingId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: 'appeal',
+            builder: (_, state) =>
+                AppealScreen(bookingId: state.pathParameters['id']!),
           ),
         ],
       ),

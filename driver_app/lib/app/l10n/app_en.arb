@@ -685,5 +685,117 @@
   "pushRationaleTitle": "Stay informed",
   "pushRationaleBody": "We will notify you about trip updates, payments and safety. Notifications on the lock screen stay short and never show personal details.",
   "pushRationaleLater": "Not now",
-  "accountNotifications": "Notifications"
+  "accountNotifications": "Notifications",
+  "chatTitle": "Chat",
+  "chatInputHint": "Write a message",
+  "chatSend": "Send",
+  "chatAttach": "Attach a photo",
+  "attachCamera": "Take a photo",
+  "attachGallery": "Choose from gallery",
+  "attachRemove": "Remove",
+  "chatEmptyTitle": "No messages yet",
+  "chatEmptyBody": "Say hello. Messages are only visible to you and the other side of this booking.",
+  "chatClosedTitle": "This conversation is closed",
+  "chatClosedBody": "You can still read the messages. For anything else, contact support.",
+  "chatClosesAt": "You can chat until {time}",
+  "@chatClosesAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSending": "Sending…",
+  "chatFailed": "Not sent",
+  "chatDiscard": "Discard",
+  "chatRead": "Read",
+  "chatDelivered": "Sent",
+  "chatLoadOlder": "Earlier messages",
+  "chatImageFailed": "Image could not be loaded. Tap to retry.",
+  "chatImageLabel": "Photo in the conversation",
+  "chatRemoved": "Removed after the retention period",
+  "chatErrTooLongMax": "Message is too long (maximum {max} characters)",
+  "@chatErrTooLongMax": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chatPhoneNotice": "Phone numbers in messages are hidden. Use the call button instead.",
+  "chatUnavailableTitle": "Chat is not available",
+  "chatUnavailableBody": "You can chat once a driver is confirmed for this booking.",
+  "chatErrClosed": "The conversation for this booking is closed.",
+  "chatErrForbidden": "You are not part of this conversation.",
+  "chatErrTooLong": "The message is too long.",
+  "supportTitle": "Help and support",
+  "supportTicketTitle": "Request",
+  "supportEmptyTitle": "No requests yet",
+  "supportEmptyBody": "Open a request if you need help with a trip, a payment or your account.",
+  "supportNew": "Contact support",
+  "supportFilterActive": "Open",
+  "supportFilterFinished": "Resolved",
+  "supportFilterAll": "All",
+  "supportLoadMore": "Show more",
+  "supportCategory": "What is it about?",
+  "supportCategoryHint": "Choose a category",
+  "supportSubject": "Subject",
+  "supportSubjectHint": "A short title",
+  "supportBody": "Describe the problem",
+  "supportBodyHint": "What happened? Add details that help us check it.",
+  "supportBooking": "Booking {code}",
+  "@supportBooking": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "supportSubmit": "Send request",
+  "supportRequired": "This field is required",
+  "supportTooShort": "Please write a little more",
+  "supportSent": "Your request was sent.",
+  "supportReplyHint": "Write a reply",
+  "supportReplySend": "Send reply",
+  "supportReplyClosed": "This request is closed. Open a new request if you still need help.",
+  "supportResolution": "Resolution",
+  "supportFromSupport": "Support",
+  "supportFromMe": "You",
+  "supportNoInternal": "Only replies meant for you are shown.",
+  "supportAttachment": "Attachment",
+  "supportTicketNumber": "Request {number}",
+  "@supportTicketNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "supportOpenedOn": "Opened {date}",
+  "@supportOpenedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "supportErrLimit": "You have too many open requests. Wait for an answer or reply to an existing one.",
+  "supportErrRate": "You sent too many requests today. Please try again tomorrow.",
+  "supportErrClosed": "This request is closed.",
+  "supportErrAppealOpen": "You already appealed this booking.",
+  "supportErrAppealNone": "There is no fee on this booking that can be appealed.",
+  "supportErrInfected": "The file was rejected by the security scan.",
+  "supportErrFileType": "This file type is not allowed. Use a photo or a PDF.",
+  "supportErrFileSize": "The file is too large.",
+  "supportAppealTitle": "Appeal the fee",
+  "supportAppealIntro": "Tell us why the fee should be reviewed. Support will check the trip and the fee decision, and answer in this request.",
+  "supportAppealReason": "Why do you disagree?",
+  "supportAppealShort": "Please explain in at least 10 characters.",
+  "supportAppealSubmit": "Send appeal",
+  "supportAppealSent": "Your appeal was sent to support.",
+  "supportOpenChat": "Chat",
+  "supportOpenChatHistory": "Chat history",
+  "supportHelp": "Help and support",
+  "supportHelpAboutTrip": "Get help with this trip",
+  "supportAppealButton": "Appeal the fee"
 }

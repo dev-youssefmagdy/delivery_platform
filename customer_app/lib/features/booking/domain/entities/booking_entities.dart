@@ -9,6 +9,8 @@ enum BookingAction implements ApiEnum {
   share('share'),
   rate('rate'),
   report('report'),
+  chat('chat'),
+  appeal('appeal'),
   unknown('');
 
   const BookingAction(this.value);

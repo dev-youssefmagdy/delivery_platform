@@ -10,6 +10,7 @@ import '../../../../app/router.dart';
 import '../../../../core/providers.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../../booking/presentation/providers/booking_providers.dart';
+import '../../../support/presentation/providers/support_providers.dart';
 
 Duration? _noAutoRetry(int retryCount, Object error) => null;
 
@@ -25,6 +26,9 @@ String? customerRouteFor(NotificationLink link) {
   final id = link.id;
   return switch (link.type) {
     NotificationLinkType.booking when id != null => Routes.booking(id),
+    NotificationLinkType.chat when id != null => Routes.bookingChat(id),
+    NotificationLinkType.support when id != null => Routes.supportTicket(id),
+    NotificationLinkType.support => Routes.support,
     NotificationLinkType.inbox => Routes.notifications,
     _ => null,
   };
@@ -178,8 +182,11 @@ final pushCoordinatorProvider = Provider<PushCoordinator>((ref) {
     links: DeepLinkHandler(
       routeFor: customerRouteFor,
       validate: (link) async {
-        if (link.type == NotificationLinkType.booking && link.id != null) {
+        if ((link.type == NotificationLinkType.booking || link.type == NotificationLinkType.chat) && link.id != null) {
           await ref.read(bookingRepositoryProvider).get(link.id!);
+        }
+        if (link.type == NotificationLinkType.support && link.id != null) {
+          await ref.read(supportRepositoryProvider).ticket(link.id!);
         }
         return true;
       },

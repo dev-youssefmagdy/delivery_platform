@@ -1546,4 +1546,264 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountNotifications => 'Notifications';
+
+  @override
+  String get chatTitle => 'Chat';
+
+  @override
+  String get chatInputHint => 'Write a message';
+
+  @override
+  String get chatSend => 'Send';
+
+  @override
+  String get chatAttach => 'Attach a photo';
+
+  @override
+  String get attachCamera => 'Take a photo';
+
+  @override
+  String get attachGallery => 'Choose from gallery';
+
+  @override
+  String get attachRemove => 'Remove';
+
+  @override
+  String get chatEmptyTitle => 'No messages yet';
+
+  @override
+  String get chatEmptyBody =>
+      'Say hello. Messages are only visible to you and the other side of this booking.';
+
+  @override
+  String get chatClosedTitle => 'This conversation is closed';
+
+  @override
+  String get chatClosedBody =>
+      'You can still read the messages. For anything else, contact support.';
+
+  @override
+  String chatClosesAt(String time) {
+    return 'You can chat until $time';
+  }
+
+  @override
+  String get chatSending => 'Sending…';
+
+  @override
+  String get chatFailed => 'Not sent';
+
+  @override
+  String get chatDiscard => 'Discard';
+
+  @override
+  String get chatRead => 'Read';
+
+  @override
+  String get chatDelivered => 'Sent';
+
+  @override
+  String get chatLoadOlder => 'Earlier messages';
+
+  @override
+  String get chatImageFailed => 'Image could not be loaded. Tap to retry.';
+
+  @override
+  String get chatImageLabel => 'Photo in the conversation';
+
+  @override
+  String get chatRemoved => 'Removed after the retention period';
+
+  @override
+  String chatErrTooLongMax(int max) {
+    return 'Message is too long (maximum $max characters)';
+  }
+
+  @override
+  String get chatPhoneNotice =>
+      'Phone numbers in messages are hidden. Use the call button instead.';
+
+  @override
+  String get chatUnavailableTitle => 'Chat is not available';
+
+  @override
+  String get chatUnavailableBody =>
+      'You can chat once a driver is confirmed for this booking.';
+
+  @override
+  String get chatErrClosed => 'The conversation for this booking is closed.';
+
+  @override
+  String get chatErrForbidden => 'You are not part of this conversation.';
+
+  @override
+  String get chatErrTooLong => 'The message is too long.';
+
+  @override
+  String get supportTitle => 'Help and support';
+
+  @override
+  String get supportTicketTitle => 'Request';
+
+  @override
+  String get supportEmptyTitle => 'No requests yet';
+
+  @override
+  String get supportEmptyBody =>
+      'Open a request if you need help with a trip, a payment or your account.';
+
+  @override
+  String get supportNew => 'Contact support';
+
+  @override
+  String get supportFilterActive => 'Open';
+
+  @override
+  String get supportFilterFinished => 'Resolved';
+
+  @override
+  String get supportFilterAll => 'All';
+
+  @override
+  String get supportLoadMore => 'Show more';
+
+  @override
+  String get supportCategory => 'What is it about?';
+
+  @override
+  String get supportCategoryHint => 'Choose a category';
+
+  @override
+  String get supportSubject => 'Subject';
+
+  @override
+  String get supportSubjectHint => 'A short title';
+
+  @override
+  String get supportBody => 'Describe the problem';
+
+  @override
+  String get supportBodyHint =>
+      'What happened? Add details that help us check it.';
+
+  @override
+  String supportBooking(String code) {
+    return 'Booking $code';
+  }
+
+  @override
+  String get supportSubmit => 'Send request';
+
+  @override
+  String get supportRequired => 'This field is required';
+
+  @override
+  String get supportTooShort => 'Please write a little more';
+
+  @override
+  String get supportSent => 'Your request was sent.';
+
+  @override
+  String get supportReplyHint => 'Write a reply';
+
+  @override
+  String get supportReplySend => 'Send reply';
+
+  @override
+  String get supportReplyClosed =>
+      'This request is closed. Open a new request if you still need help.';
+
+  @override
+  String get supportResolution => 'Resolution';
+
+  @override
+  String get supportFromSupport => 'Support';
+
+  @override
+  String get supportFromMe => 'You';
+
+  @override
+  String get supportNoInternal => 'Only replies meant for you are shown.';
+
+  @override
+  String get supportAttachment => 'Attachment';
+
+  @override
+  String supportTicketNumber(String number) {
+    return 'Request $number';
+  }
+
+  @override
+  String supportOpenedOn(String date) {
+    return 'Opened $date';
+  }
+
+  @override
+  String get supportErrLimit =>
+      'You have too many open requests. Wait for an answer or reply to an existing one.';
+
+  @override
+  String get supportErrRate =>
+      'You sent too many requests today. Please try again tomorrow.';
+
+  @override
+  String get supportErrClosed => 'This request is closed.';
+
+  @override
+  String get supportErrAppealOpen => 'You already appealed this booking.';
+
+  @override
+  String get supportErrAppealNone =>
+      'There is no fee on this booking that can be appealed.';
+
+  @override
+  String get supportErrInfected =>
+      'The file was rejected by the security scan.';
+
+  @override
+  String get supportErrFileType =>
+      'This file type is not allowed. Use a photo or a PDF.';
+
+  @override
+  String get supportErrFileSize => 'The file is too large.';
+
+  @override
+  String get supportAppealTitle => 'Appeal the fee';
+
+  @override
+  String get supportAppealIntro =>
+      'Tell us why the fee should be reviewed. Support will check the trip and the fee decision, and answer in this request.';
+
+  @override
+  String get supportAppealReason => 'Why do you disagree?';
+
+  @override
+  String get supportAppealShort => 'Please explain in at least 10 characters.';
+
+  @override
+  String get supportAppealSubmit => 'Send appeal';
+
+  @override
+  String get supportAppealSent => 'Your appeal was sent to support.';
+
+  @override
+  String get supportOpenChat => 'Chat';
+
+  @override
+  String get supportOpenChatHistory => 'Chat history';
+
+  @override
+  String get supportHelp => 'Help and support';
+
+  @override
+  String get supportHelpAboutTrip => 'Get help with this trip';
+
+  @override
+  String get supportAppealButton => 'Appeal the fee';
+
+  @override
+  String get actionRefresh => 'Refresh';
+
+  @override
+  String get actionBack => 'Back';
 }

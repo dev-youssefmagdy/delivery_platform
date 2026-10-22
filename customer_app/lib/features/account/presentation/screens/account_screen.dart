@@ -70,6 +70,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             onTap: () => context.push(Routes.notifications),
           ),
           ListTile(
+            key: const Key('home-support'),
+            minTileHeight: context.density.minTouchTarget,
+            leading: const Icon(Icons.support_agent_outlined),
+            title: Text(l10n.supportHelp),
+            onTap: () => context.push(Routes.support),
+          ),
+          ListTile(
             minTileHeight: context.density.minTouchTarget,
             leading: const Icon(Icons.language),
             title: Text(l10n.homeChangeLanguage),

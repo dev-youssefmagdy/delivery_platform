@@ -8,6 +8,11 @@ import '../features/jobs/presentation/screens/application_status_screen.dart';
 import '../features/jobs/presentation/screens/cancel_job_screen.dart';
 import '../features/jobs/presentation/screens/job_screen.dart';
 import '../features/jobs/presentation/screens/report_job_screen.dart';
+import '../features/support/presentation/screens/appeal_screen.dart';
+import '../features/support/presentation/screens/chat_screen.dart';
+import '../features/support/presentation/screens/new_ticket_screen.dart';
+import '../features/support/presentation/screens/ticket_detail_screen.dart';
+import '../features/support/presentation/screens/tickets_screen.dart';
 import '../features/auth/presentation/screens/account_status_screen.dart';
 import '../features/auth/presentation/screens/auth_screen.dart';
 import '../features/auth/presentation/screens/otp_screen.dart';
@@ -42,6 +47,14 @@ abstract final class Routes {
   static const job = '/job';
   static const notifications = '/notifications';
   static const notificationSettings = '/notifications/settings';
+  static const support = '/support';
+  static const supportNew = '/support/new';
+
+  /// A support request (also the target of reply notifications).
+  static String supportTicket(String id) => '/support/ticket/$id';
+  static String jobChat(String id) => '/job/$id/chat';
+  static String jobAppeal(String id) => '/job/$id/appeal';
+  static String jobSupport(String id, String code) => '/support/new?booking=$id&code=$code';
 }
 
 /// Where the splash screen sends the user.
@@ -72,7 +85,9 @@ bool _isJobPage(String location) =>
     location == Routes.notifications ||
     location == Routes.notificationSettings ||
     location == Routes.job ||
-    location.startsWith('${Routes.job}/');
+    location.startsWith('${Routes.job}/') ||
+    location == Routes.support ||
+    location.startsWith('${Routes.support}/');
 
 bool _isSignedInOnly(String location) =>
     location == Routes.accountStatus ||
@@ -148,6 +163,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const NotificationSettingsScreen(),
       ),
       GoRoute(
+        path: Routes.support,
+        builder: (_, _) => const TicketsScreen(),
+        routes: [
+          GoRoute(
+            path: 'new',
+            builder: (_, state) => NewTicketScreen(
+              bookingId: state.uri.queryParameters['booking'],
+              bookingCode: state.uri.queryParameters['code'],
+            ),
+          ),
+          GoRoute(
+            path: 'ticket/:id',
+            builder: (_, state) =>
+                TicketDetailScreen(ticketId: state.pathParameters['id']!),
+          ),
+        ],
+      ),
+      GoRoute(
         path: Routes.applicationStatus,
         builder: (_, _) => const ApplicationStatusScreen(),
       ),
@@ -165,6 +198,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'report',
             builder: (_, state) =>
                 ReportJobScreen(bookingId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: 'chat',
+            builder: (_, state) =>
+                ChatScreen(bookingId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: 'appeal',
+            builder: (_, state) =>
+                AppealScreen(bookingId: state.pathParameters['id']!),
           ),
         ],
       ),

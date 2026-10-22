@@ -368,6 +368,41 @@ class _JobViewState extends ConsumerState<JobView> {
                     ),
                 ],
               ),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                children: [
+                  if (job.can(JobAction.chat))
+                    Expanded(
+                      child: AppButton(
+                        key: const Key('job-chat'),
+                        label: l10n.supportOpenChat,
+                        icon: Icons.chat_bubble_outline,
+                        secondary: true,
+                        onPressed: () => context.push(Routes.jobChat(job.id)),
+                      ),
+                    ),
+                  if (job.can(JobAction.chat)) const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: AppButton(
+                      key: const Key('job-help'),
+                      label: l10n.supportHelpAboutTrip,
+                      icon: Icons.support_agent_outlined,
+                      secondary: true,
+                      onPressed: () => context.push(Routes.jobSupport(job.id, job.code)),
+                    ),
+                  ),
+                ],
+              ),
+              if (job.can(JobAction.appeal)) ...[
+                const SizedBox(height: AppSpacing.sm),
+                AppButton(
+                  key: const Key('job-appeal'),
+                  label: l10n.supportAppealButton,
+                  icon: Icons.gavel_outlined,
+                  secondary: true,
+                  onPressed: () => context.push(Routes.jobAppeal(job.id)),
+                ),
+              ],
             ],
           ),
         ),

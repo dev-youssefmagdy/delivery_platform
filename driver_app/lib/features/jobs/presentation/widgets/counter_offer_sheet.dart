@@ -9,6 +9,7 @@ import '../../domain/entities/job_entities.dart';
 import '../providers/job_providers.dart';
 import 'job_texts.dart';
 import 'keypad.dart';
+import 'scope_builder.dart';
 
 /// Opens the counter-offer keypad. Returns the submitted offer, or null when
 /// the driver closed it.
@@ -42,6 +43,11 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
   bool _busy = false;
   Object? _error;
   MyOffer? _result;
+
+  /// Moving / freight: the scope is built first, the price second.
+  late bool _scopeStep = widget.card.scopeRequired;
+  OfferScope? _scope;
+  Map<String, ScopeIssue> _scopeIssues = const {};
 
   int get _exponent => widget.card.proposedFare.exponent;
 
@@ -90,6 +96,26 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
     fareMinor: widget.card.proposedFare.minor,
   );
 
+  /// The draft to start from: the offer being revised, else what the customer
+  /// asked for, else the template defaults.
+  OfferScope _initialScope(ScopeTemplate template) {
+    final vehicle = template.vehicleClass ?? '';
+    final current = widget.current?.scope;
+    if (current != null) return OfferScope.fromJson(current, vehicleClass: vehicle);
+    final requested = widget.card.requestedScope;
+    if (requested != null) return OfferScope.fromJson(requested, vehicleClass: vehicle);
+    return OfferScope(vehicleClass: vehicle);
+  }
+
+  void _continueFromScope(ScopeTemplate template) {
+    final scope = _scope ?? _initialScope(template);
+    final issues = scope.validate(template);
+    setState(() {
+      _scopeIssues = issues;
+      if (issues.isEmpty) _scopeStep = false;
+    });
+  }
+
   Future<void> _submit() async {
     final minor = _minor;
     if (_busy || minor == null || _check != AmountCheck.ok) return;
@@ -104,6 +130,7 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
             widget.card.id,
             minor,
             currency: widget.card.proposedFare.currency,
+            scope: _scope?.toJson(),
           );
       if (!mounted) return;
       if (offer.earningsPreview == null) {
@@ -119,9 +146,109 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
       setState(() {
         _busy = false;
         _error = e;
+        // The server refused the scope: show its reasons on the same fields.
+        if (e is ApiException && e.code == 'offer_scope_invalid') {
+          _scopeIssues = scopeIssuesFromServer(e.meta['scope_errors']);
+          _scopeStep = true;
+        } else if (e is ApiException && e.code == 'offer_scope_vehicle_mismatch') {
+          _scopeIssues = const {'vehicle_class': ScopeIssue.invalidChoice};
+          _scopeStep = true;
+        }
       });
       if (errorMeansLost(e)) Navigator.of(context).pop();
     }
+  }
+
+  Widget _scopePage(BuildContext context, AppLocalizations l10n, ThemeData theme) {
+    final template = ref.watch(scopeTemplateProvider);
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+      child: template.when(
+        loading: () => const SizedBox(height: 240, child: Center(child: CircularProgressIndicator())),
+        error: (e, _) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(jobErrorText(l10n, e), textAlign: TextAlign.center),
+            const SizedBox(height: AppSpacing.md),
+            AppButton(
+              key: const Key('scope-retry'),
+              label: l10n.actionRetry,
+              onPressed: () => ref.invalidate(scopeTemplateProvider),
+            ),
+          ],
+        ),
+        data: (t) {
+          if (t.vehicleClass == null) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(l10n.scNoVehicle, key: const Key('scope-no-vehicle'), textAlign: TextAlign.center),
+                const SizedBox(height: AppSpacing.md),
+                AppButton(label: l10n.actionDone, onPressed: () => Navigator.of(context).pop()),
+              ],
+            );
+          }
+          final scope = _scope ??= _initialScope(t);
+          final hint = _error == null ? null : jobErrorText(l10n, _error!);
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(l10n.scTitle, style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
+              const SizedBox(height: AppSpacing.xs),
+              Text(l10n.scIntro, textAlign: TextAlign.center, style: theme.textTheme.bodySmall),
+              if (widget.card.requestedScopeSummary.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.sm),
+                ExpansionTile(
+                  key: const Key('scope-requested'),
+                  title: Text(l10n.scRequestedTitle),
+                  children: [
+                    ScopeSummaryList(
+                      lines: widget.card.requestedScopeSummary,
+                      scope: widget.card.requestedScope,
+                      strings: scopeStrings(l10n),
+                      showTitle: false,
+                      dense: true,
+                    ),
+                  ],
+                ),
+              ],
+              const SizedBox(height: AppSpacing.sm),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: ScopeBuilder(
+                    scope: scope,
+                    template: t,
+                    issues: _scopeIssues,
+                    onChanged: (v) => setState(() {
+                      _scope = v;
+                      _error = null;
+                      if (_scopeIssues.isNotEmpty) _scopeIssues = v.validate(t);
+                    }),
+                  ),
+                ),
+              ),
+              if (hint != null)
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
+                  child: Text(
+                    hint,
+                    key: const Key('scope-error'),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: theme.colorScheme.error),
+                  ),
+                ),
+              const SizedBox(height: AppSpacing.sm),
+              AppButton(
+                key: const Key('scope-continue'),
+                label: l10n.scContinue,
+                onPressed: () => _continueFromScope(t),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -131,6 +258,7 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
     final formatter = ref.watch(moneyFormatterProvider);
     final card = widget.card;
     final fare = card.proposedFare;
+    if (_scopeStep) return _scopePage(context, l10n, theme);
     final result = _result;
     final preview = result?.earningsPreview;
     final minor = _minor;
@@ -300,6 +428,13 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
                         ),
                 ),
               ),
+              if (card.scopeRequired)
+                TextButton.icon(
+                  key: const Key('scope-edit'),
+                  onPressed: _busy ? null : () => setState(() => _scopeStep = true),
+                  icon: const Icon(Icons.tune),
+                  label: Text(l10n.scEditScope),
+                ),
               BigKeypad(
                 onDigit: _digit,
                 onBackspace: _back,

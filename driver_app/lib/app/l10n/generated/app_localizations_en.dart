@@ -2617,4 +2617,646 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dadjErrCounterpart =>
       'Only the other side can answer this request.';
+
+  @override
+  String get scPackingNone => 'No packing';
+
+  @override
+  String get scPackingWrap => 'Wrap only';
+
+  @override
+  String get scPackingFull => 'Full packing';
+
+  @override
+  String get scStairsNotNeeded => 'No stairs';
+
+  @override
+  String get scStairsIncluded => 'Stairs included';
+
+  @override
+  String get scStairsExtra => 'Extra price per floor';
+
+  @override
+  String get scAssemblyNone => 'No assembly';
+
+  @override
+  String get scAssemblyDisassembly => 'Disassembly only';
+
+  @override
+  String get scAssemblyAssembly => 'Assembly only';
+
+  @override
+  String get scAssemblyBoth => 'Disassembly and assembly';
+
+  @override
+  String get scEqHandTrolley => 'Hand trolley';
+
+  @override
+  String get scEqForklift => 'Forklift';
+
+  @override
+  String get scEqCrane => 'Crane';
+
+  @override
+  String get scEqTailLift => 'Tail lift';
+
+  @override
+  String get scEqStraps => 'Straps and blankets';
+
+  @override
+  String get scEqPalletJack => 'Pallet jack';
+
+  @override
+  String get scTreatIncluded => 'Included in the price';
+
+  @override
+  String get scTreatAtCost => 'At cost with receipt';
+
+  @override
+  String get scTreatExcluded => 'Not included';
+
+  @override
+  String get scIssueRequired => 'This field is required.';
+
+  @override
+  String get scIssueRange => 'The value is outside the allowed range.';
+
+  @override
+  String get scIssueChoice => 'Choose a value from the list.';
+
+  @override
+  String get scIssueFloors => 'Say how many floors are included.';
+
+  @override
+  String get scIssueTooLong => 'The text is too long.';
+
+  @override
+  String get scIssueDuplicate => 'An item is chosen more than once.';
+
+  @override
+  String get scHelpers => 'Helpers';
+
+  @override
+  String get scPacking => 'Packing';
+
+  @override
+  String get scStairs => 'Stairs';
+
+  @override
+  String get scIncludedFloors => 'Included floors';
+
+  @override
+  String get scAssembly => 'Assembly';
+
+  @override
+  String get scEquipment => 'Loading equipment';
+
+  @override
+  String get scWaiting => 'Free waiting time';
+
+  @override
+  String get scMinutesShort => 'min';
+
+  @override
+  String get scExtraStops => 'Extra stops included';
+
+  @override
+  String get scTolls => 'Road tolls';
+
+  @override
+  String get scParking => 'Parking';
+
+  @override
+  String get scExclusions => 'What the offer does not cover';
+
+  @override
+  String get scExclusionsHelp =>
+      'Optional, shown to the customer with the offer.';
+
+  @override
+  String get scNoVehicle =>
+      'Pick your current vehicle and go online before sending a moving offer.';
+
+  @override
+  String get scTitle => 'What does your offer include?';
+
+  @override
+  String get scIntro =>
+      'The customer sees these terms and they become the agreement once your offer is chosen.';
+
+  @override
+  String get scRequestedTitle => 'What the customer asked for';
+
+  @override
+  String get scContinue => 'Continue to price';
+
+  @override
+  String get scEditScope => 'Edit what is included';
+
+  @override
+  String get scLegendIncluded => 'Included';
+
+  @override
+  String get scLegendExcluded => 'Not included';
+
+  @override
+  String get scLegendAtCost => 'At cost';
+
+  @override
+  String get scSummaryTitle => 'What is included';
+
+  @override
+  String get jbErrScopeRequired =>
+      'Add what your offer includes before sending.';
+
+  @override
+  String get jbErrScopeInvalid =>
+      'Some offer terms are not valid. Check the marked fields.';
+
+  @override
+  String get jbErrScopeVehicle =>
+      'The vehicle class in the offer does not match your current vehicle.';
+
+  @override
+  String get jbErrCapacityBoth =>
+      'Your vehicle cannot carry the weight or the volume of this load.';
+
+  @override
+  String get jbErrCapacityVolume =>
+      'The load is bigger than your vehicle can hold.';
+
+  @override
+  String get jbErrCapacityPayload =>
+      'The load is heavier than your vehicle can carry.';
+
+  @override
+  String get jbErrCapacity => 'Your vehicle does not fit this load.';
+
+  @override
+  String get dlErrProofNow => 'This proof cannot be recorded at this step.';
+
+  @override
+  String get dlErrProofDone => 'This proof is already recorded.';
+
+  @override
+  String get dlErrProofLimit => 'You reached the proof limit for this step.';
+
+  @override
+  String get dlErrProofType =>
+      'This kind of proof is not used for this service.';
+
+  @override
+  String get dlErrChecklist => 'The checklist is not valid.';
+
+  @override
+  String get dlErrWeight => 'Enter a valid weight above zero.';
+
+  @override
+  String get dlErrInfected =>
+      'The file was refused for security reasons. Take another picture.';
+
+  @override
+  String get dlErrScanner =>
+      'File checking is unavailable. We will retry automatically.';
+
+  @override
+  String get dlErrCustody => 'This step cannot be recorded now.';
+
+  @override
+  String get dlErrOtpInvalid => 'The code is not correct.';
+
+  @override
+  String dlErrOtpInvalidLeft(int left) {
+    return 'The code is not correct. Attempts left: $left';
+  }
+
+  @override
+  String get dlErrOtpLocked =>
+      'The code is locked after wrong tries. Contact support.';
+
+  @override
+  String get dlErrOtpNotReady => 'The recipient code is not ready yet.';
+
+  @override
+  String get dlErrOtpResendSoon =>
+      'Wait a moment before sending the code again.';
+
+  @override
+  String get dlErrOtpResendLimit => 'The code cannot be sent again.';
+
+  @override
+  String get dlErrAttemptNotAllowed =>
+      'This cannot be done on the delivery attempt now.';
+
+  @override
+  String get dlErrAttemptsExhausted =>
+      'Delivery attempts are used up. Choose return or operations.';
+
+  @override
+  String get dlErrOtpRequired =>
+      'Enter the recipient code before completing the delivery.';
+
+  @override
+  String get dadjErrScopeItem => 'Choose the item of the moving agreement.';
+
+  @override
+  String get dadjErrWithinScope =>
+      'This item is covered by the agreement and cannot be charged extra.';
+
+  @override
+  String get dadjErrFloors => 'Enter the number of extra floors.';
+
+  @override
+  String get dadjErrHelpers => 'That number of extra helpers is not allowed.';
+
+  @override
+  String jbVolumeM3(String volume) {
+    return '$volume m³';
+  }
+
+  @override
+  String jbPickupWindow(String start, String end) {
+    return 'Loading between $start and $end';
+  }
+
+  @override
+  String get jbRequestedScope => 'What the customer asks for';
+
+  @override
+  String get jbAcceptScopeNote =>
+      'By accepting the customer\'s fare you agree to what they asked for, as shown.';
+
+  @override
+  String get dlCustodyTitle => 'Parcel journey';
+
+  @override
+  String get dlCustodyPickedUp => 'Picked up';
+
+  @override
+  String get dlCustodyInTransit => 'On the way';
+
+  @override
+  String get dlCustodyArrived => 'Arrived at drop-off';
+
+  @override
+  String get dlCustodyFailed => 'Delivery failed';
+
+  @override
+  String get dlCustodyReturning => 'Returning to sender';
+
+  @override
+  String get dlCustodyDelivered => 'Delivered';
+
+  @override
+  String get dlCustodyReturned => 'Returned to sender';
+
+  @override
+  String get dlCustodyUnknown => 'Unknown status';
+
+  @override
+  String get dlOtpTitle => 'Recipient code';
+
+  @override
+  String get dlOtpWaiting => 'Code not sent yet';
+
+  @override
+  String get dlOtpSent => 'Code sent to the recipient';
+
+  @override
+  String get dlOtpSmsFailed => 'The message could not be sent';
+
+  @override
+  String get dlOtpVerified => 'Verified';
+
+  @override
+  String get dlOtpLocked => 'Code locked';
+
+  @override
+  String dlOtpAttemptsLeft(int left) {
+    return 'Attempts left: $left';
+  }
+
+  @override
+  String get dlOtpAskRecipient =>
+      'Ask the recipient for the code they received by SMS.';
+
+  @override
+  String get dlOtpEnter => 'Enter recipient code';
+
+  @override
+  String get dlOtpLockedButton => 'Code locked';
+
+  @override
+  String get dlOtpSheetTitle => 'Delivery code';
+
+  @override
+  String get dlOtpField => 'Digits of the code';
+
+  @override
+  String get dlOtpVerify => 'Confirm code';
+
+  @override
+  String get dlOtpResend => 'Send the code again';
+
+  @override
+  String dlOtpResendIn(String time) {
+    return 'Send again in $time';
+  }
+
+  @override
+  String get dlProofsTitle => 'Pickup and delivery proofs';
+
+  @override
+  String get dlNoProofs => 'No proofs yet.';
+
+  @override
+  String get dlProofLoadError => 'The picture could not load. Tap to retry.';
+
+  @override
+  String get dlProofPhoto => 'Photo';
+
+  @override
+  String get dlProofSignature => 'Signature';
+
+  @override
+  String get dlProofOtp => 'Recipient code';
+
+  @override
+  String get dlProofPin => 'Start PIN';
+
+  @override
+  String get dlProofChecklist => 'Checklist';
+
+  @override
+  String get dlProofWeight => 'Weight';
+
+  @override
+  String get dlProofOther => 'Proof';
+
+  @override
+  String get dlStagePickup => 'At pickup';
+
+  @override
+  String get dlStageDelivery => 'At delivery';
+
+  @override
+  String get dlStageReturn => 'On return';
+
+  @override
+  String get dlChkSealed => 'Package is sealed';
+
+  @override
+  String get dlChkUndamaged => 'Package is undamaged';
+
+  @override
+  String get dlChkLabel => 'Label matches the order';
+
+  @override
+  String get dlChkRecipient => 'Recipient was checked';
+
+  @override
+  String dlWeightValue(String kg) {
+    return 'Measured weight: $kg kg';
+  }
+
+  @override
+  String get dlAttemptsTitle => 'Delivery attempts';
+
+  @override
+  String dlAttemptNumber(int number) {
+    return 'Attempt $number';
+  }
+
+  @override
+  String get dlAttemptEvidence => 'Picture attached';
+
+  @override
+  String get dlPending => 'Waiting for a decision';
+
+  @override
+  String get dlOutUnavailable => 'Recipient not available';
+
+  @override
+  String get dlOutRefused => 'Recipient refused';
+
+  @override
+  String get dlOutWrongAddress => 'Wrong address';
+
+  @override
+  String get dlOutOtpFailed => 'Code could not be verified';
+
+  @override
+  String get dlOutRestricted => 'The parcel holds restricted items';
+
+  @override
+  String get dlOutOther => 'Other reason';
+
+  @override
+  String get dlResRetry => 'Try again';
+
+  @override
+  String get dlResReturn => 'Return to sender';
+
+  @override
+  String get dlResOperations => 'Hand to operations';
+
+  @override
+  String get dlResUnknown => 'Unknown decision';
+
+  @override
+  String dlCaptureTitle(String type) {
+    return 'Record: $type';
+  }
+
+  @override
+  String get dlTakePhoto => 'Take a picture';
+
+  @override
+  String get dlRetakePhoto => 'Retake';
+
+  @override
+  String get dlProofNote => 'Note (optional)';
+
+  @override
+  String get dlSignHint => 'Ask the recipient to sign inside the box.';
+
+  @override
+  String get dlSignClear => 'Clear signature';
+
+  @override
+  String get dlWeightLabel => 'Measured weight';
+
+  @override
+  String get dlKg => 'kg';
+
+  @override
+  String get dlCm => 'cm';
+
+  @override
+  String get dlSaveProof => 'Save and send';
+
+  @override
+  String get dlQueueHint =>
+      'The proof is kept on your phone and sent automatically when you are online.';
+
+  @override
+  String get dlProofQueued => 'Proof saved. It is being sent.';
+
+  @override
+  String get dlErrCamera => 'The camera could not open.';
+
+  @override
+  String get dlErrPhotoFirst => 'Take a picture first.';
+
+  @override
+  String get dlErrSignFirst => 'Draw the signature first.';
+
+  @override
+  String get dlErrOutcomeFirst => 'Choose why delivery failed.';
+
+  @override
+  String get dlErrReasonNeeded => 'Write the reason (at least 3 characters).';
+
+  @override
+  String dlAddProof(String type) {
+    return 'Add: $type';
+  }
+
+  @override
+  String dlProofWaiting(String type) {
+    return 'Waiting to send: $type';
+  }
+
+  @override
+  String dlProofFailed(String type, String reason) {
+    return '$type was refused: $reason';
+  }
+
+  @override
+  String get dlDiscard => 'Discard';
+
+  @override
+  String get dlSendNow => 'Send now';
+
+  @override
+  String get dlShowProofs => 'Show recorded proofs';
+
+  @override
+  String get dlHideProofs => 'Hide proofs';
+
+  @override
+  String get dlMarkInTransit => 'Parcel is on the way';
+
+  @override
+  String get dlArrivedDropoff => 'I arrived at the drop-off';
+
+  @override
+  String get dlReportAttempt => 'Delivery failed';
+
+  @override
+  String get dlAttemptTitle => 'Why could you not deliver?';
+
+  @override
+  String get dlAttemptBody =>
+      'The customer is told and decides what happens next. Add a picture if you can.';
+
+  @override
+  String get dlReasonRequired => 'Reason (required)';
+
+  @override
+  String get dlReasonOptional => 'Notes (optional)';
+
+  @override
+  String get dlAddEvidence => 'Add a picture as evidence';
+
+  @override
+  String get dlAttemptSend => 'Send report';
+
+  @override
+  String get dlResolveButton => 'Decide what happens next';
+
+  @override
+  String get dlResolveTitle => 'What happens to the parcel?';
+
+  @override
+  String get dlResolveBody =>
+      'Try again, take it back to the sender, or hand the case to operations.';
+
+  @override
+  String get dlResolveNothing => 'No attempt is waiting for a decision.';
+
+  @override
+  String get dlContactsTitle => 'Contacts';
+
+  @override
+  String get dlRoleSender => 'Sender';
+
+  @override
+  String get dlRoleRecipient => 'Recipient';
+
+  @override
+  String get dlRolePickup => 'Pickup contact';
+
+  @override
+  String get dlRoleDropoff => 'Drop-off contact';
+
+  @override
+  String get dlStopsTitle => 'Route stops';
+
+  @override
+  String dlStopNumber(int number) {
+    return 'Stop $number';
+  }
+
+  @override
+  String get dlNextStop => 'next';
+
+  @override
+  String get dlLoadTitle => 'Load';
+
+  @override
+  String dlLoadWeight(String kg) {
+    return 'Weight: $kg kg';
+  }
+
+  @override
+  String dlLoadVolume(String volume) {
+    return 'Volume: $volume m³';
+  }
+
+  @override
+  String get dlFileVideo => 'Video';
+
+  @override
+  String get dlFileDocument => 'Document';
+
+  @override
+  String dadjScopeItemLine(String item) {
+    return 'Agreement item: $item';
+  }
+
+  @override
+  String dadjHelpersLine(int count) {
+    return '$count helpers';
+  }
+
+  @override
+  String dadjFloorsLine(int count) {
+    return '$count floors';
+  }
+
+  @override
+  String get dadjTypeHelper => 'Extra helper';
+
+  @override
+  String get dadjTypeStairs => 'Extra stairs';
+
+  @override
+  String get dadjHelpersCount => 'Extra helpers';
+
+  @override
+  String get dadjFloorsCount => 'Extra floors';
+
+  @override
+  String get dadjReceiptRef => 'Receipt number';
 }

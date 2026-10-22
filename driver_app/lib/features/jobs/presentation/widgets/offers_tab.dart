@@ -136,6 +136,21 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                   : l10n.jbKindFare,
               style: theme.textTheme.bodySmall,
             ),
+            if (offer.scopeSummary.isNotEmpty)
+              ExpansionTile(
+                key: Key('offer-scope-${offer.id}'),
+                tilePadding: EdgeInsets.zero,
+                title: Text(l10n.scSummaryTitle),
+                children: [
+                  ScopeSummaryList(
+                    lines: offer.scopeSummary,
+                    scope: offer.scope,
+                    strings: scopeStrings(l10n),
+                    showTitle: false,
+                    dense: true,
+                  ),
+                ],
+              ),
             if (reason != null) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(reason, key: const Key('offer-reason')),

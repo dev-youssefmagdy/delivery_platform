@@ -157,3 +157,20 @@ class AttachmentPhotoHandler implements PhotoFieldHandler, PhotoPreviewSource {
 }
 
 enum _Choice { camera, gallery, video }
+
+/// Takes one picture with the camera (proofs, evidence). Returns the local
+/// path, or null when the person cancelled or the camera is unavailable.
+class CameraCapture {
+  const CameraCapture({this.picker});
+
+  final ImagePicker? picker;
+
+  Future<String?> take() async {
+    final file = await (picker ?? ImagePicker()).pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+      maxWidth: 2048,
+    );
+    return file?.path;
+  }
+}

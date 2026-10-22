@@ -15,6 +15,9 @@ class JobRemoteDataSource {
 
   Future<ApiResult<Object?>> offers() => _api.get('/provider/offers');
 
+  /// Schema, version and vehicle class for the scope builder (P4.3).
+  Future<ApiResult<Object?>> offerScope() => _api.get('/provider/offer-scope');
+
   Future<ApiResult<Object?>> acceptCustomerFare(
     String id,
     Map<String, Object?> body,

@@ -7,6 +7,7 @@ import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../../jobs/domain/amount_input.dart';
 import '../../../jobs/domain/entities/job_entities.dart';
+import '../../../jobs/presentation/widgets/scope_builder.dart' show ScopeStepper;
 import '../providers/earnings_providers.dart';
 
 /// "I collected the cash": the driver confirms the cash of a completed cash
@@ -73,6 +74,51 @@ class _CashCollectedCardState extends ConsumerState<CashCollectedCard> {
   }
 }
 
+/// Scope items an adjustment type may refer to (`config/offer_scope.php`
+/// `adjustment_items`); the server stays the authority.
+const adjustmentScopeItems = <String, List<String>>{
+  'extra_helper': ['helpers'],
+  'stairs': ['stairs'],
+  'extra_stop': ['extra_stops'],
+  'waiting': ['waiting_allowance'],
+  'toll_parking': ['tolls', 'parking'],
+  'scope_change': [
+    'helpers',
+    'stairs',
+    'extra_stops',
+    'waiting_allowance',
+    'tolls',
+    'parking',
+    'packing',
+    'assembly',
+    'loading_equipment',
+  ],
+};
+
+String scopeItemText(AppLocalizations l10n, String item) => switch (item) {
+  'helpers' => l10n.scHelpers,
+  'stairs' => l10n.scStairs,
+  'extra_stops' => l10n.scExtraStops,
+  'waiting_allowance' => l10n.scWaiting,
+  'tolls' => l10n.scTolls,
+  'parking' => l10n.scParking,
+  'packing' => l10n.scPacking,
+  'assembly' => l10n.scAssembly,
+  'loading_equipment' => l10n.scEquipment,
+  _ => item,
+};
+
+/// The scope line of an adjustment card ("Item: Helpers · 2 helpers").
+String? adjustmentDetailText(AppLocalizations l10n, Adjustment a) {
+  final item = a.scopeItem;
+  if (item == null) return null;
+  return [
+    l10n.dadjScopeItemLine(scopeItemText(l10n, item)),
+    if (a.helpers != null) l10n.dadjHelpersLine(a.helpers!),
+    if (a.floors != null) l10n.dadjFloorsLine(a.floors!),
+  ].join(' · ');
+}
+
 AdjustmentStrings _strings(AppLocalizations l10n) => AdjustmentStrings(
   approve: l10n.adjApprove,
   reject: l10n.adjReject,
@@ -133,6 +179,7 @@ class _JobAdjustmentsSectionState extends ConsumerState<JobAdjustmentsSection> {
         for (final a in items) ...[
           AdjustmentCard(
             adjustment: a,
+            detail: adjustmentDetailText(l10n, a),
             formatter: f,
             strings: _strings(l10n),
             busy: _busy == a.id,
@@ -152,7 +199,7 @@ class _JobAdjustmentsSectionState extends ConsumerState<JobAdjustmentsSection> {
               context: context,
               isScrollControlled: true,
               showDragHandle: true,
-              builder: (_) => _NewAdjustmentSheet(bookingId: job.id),
+              builder: (_) => _NewAdjustmentSheet(bookingId: job.id, scoped: job.scope.agreed != null),
             ),
           ),
       ],
@@ -161,18 +208,26 @@ class _JobAdjustmentsSectionState extends ConsumerState<JobAdjustmentsSection> {
 }
 
 class _NewAdjustmentSheet extends ConsumerStatefulWidget {
-  const _NewAdjustmentSheet({required this.bookingId});
+  const _NewAdjustmentSheet({required this.bookingId, this.scoped = false});
 
   final String bookingId;
+
+  /// A moving / freight job with an agreed scope: the change must name the
+  /// scope item it refers to.
+  final bool scoped;
 
   @override
   ConsumerState<_NewAdjustmentSheet> createState() => _NewAdjustmentSheetState();
 }
 
 class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
-  AdjustmentType _type = AdjustmentType.extraStop;
+  late AdjustmentType _type = widget.scoped ? AdjustmentType.extraHelper : AdjustmentType.extraStop;
   final _amount = TextEditingController();
   final _reason = TextEditingController();
+  final _reference = TextEditingController();
+  String? _scopeItem;
+  int _helpers = 1;
+  int _floors = 1;
   bool _busy = false;
   String? _error;
 
@@ -180,6 +235,7 @@ class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
   void dispose() {
     _amount.dispose();
     _reason.dispose();
+    _reference.dispose();
     super.dispose();
   }
 
@@ -187,8 +243,19 @@ class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
     AdjustmentType.extraStop => l10n.dadjTypeExtraStop,
     AdjustmentType.waiting => l10n.dadjTypeWaiting,
     AdjustmentType.tollParking => l10n.dadjTypeToll,
+    AdjustmentType.extraHelper => l10n.dadjTypeHelper,
+    AdjustmentType.stairs => l10n.dadjTypeStairs,
     _ => l10n.dadjTypeScope,
   };
+
+  List<String> get _items => adjustmentScopeItems[_type.value] ?? const [];
+
+  /// The scope item sent: the chosen one, or the only one the type has.
+  String? get _effectiveItem {
+    if (!widget.scoped) return null;
+    if (_items.length == 1) return _items.first;
+    return _items.contains(_scopeItem) ? _scopeItem : null;
+  }
 
   Future<void> _send() async {
     final l10n = AppLocalizations.of(context);
@@ -208,12 +275,28 @@ class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
       setState(() => _error = l10n.dadjErrReason);
       return;
     }
+    if (widget.scoped && _effectiveItem == null) {
+      setState(() => _error = l10n.dadjErrScopeItem);
+      return;
+    }
+    if (_type == AdjustmentType.tollParking && _reference.text.trim().isEmpty) {
+      setState(() => _error = l10n.dadjErrEvidence);
+      return;
+    }
     setState(() {
       _busy = true;
       _error = null;
     });
     try {
-      await ref.read(jobAdjustmentsProvider(widget.bookingId).notifier).create(NewAdjustmentInput(type: _type, reason: _reason.text.trim(), amountMinor: amount));
+      await ref.read(jobAdjustmentsProvider(widget.bookingId).notifier).create(NewAdjustmentInput(
+          type: _type,
+          reason: _reason.text.trim(),
+          amountMinor: amount,
+          scopeItem: _effectiveItem,
+          helpers: _type == AdjustmentType.extraHelper ? _helpers : null,
+          floors: _type == AdjustmentType.stairs ? _floors : null,
+          evidenceReference: _type == AdjustmentType.tollParking ? _reference.text.trim() : null,
+        ));
       messenger.showSnackBar(SnackBar(content: Text(l10n.dadjSent)));
       if (navigator.mounted) navigator.pop();
     } on Object catch (e) {
@@ -242,10 +325,50 @@ class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
             Wrap(
               spacing: AppSpacing.sm,
               children: [
-                for (final t in AdjustmentType.choices)
+                for (final t in widget.scoped ? AdjustmentType.scopedChoices : AdjustmentType.choices)
                   ChoiceChip(key: Key('adj-type-${t.value}'), label: Text(_typeText(l10n, t)), selected: _type == t, onSelected: (_) => setState(() => _type = t)),
               ],
             ),
+            if (widget.scoped && _items.length > 1) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Wrap(
+                spacing: AppSpacing.sm,
+                children: [
+                  for (final item in _items)
+                    ChoiceChip(
+                      key: Key('adj-item-$item'),
+                      label: Text(scopeItemText(l10n, item)),
+                      selected: _scopeItem == item,
+                      onSelected: (_) => setState(() => _scopeItem = item),
+                    ),
+                ],
+              ),
+            ],
+            if (_type == AdjustmentType.extraHelper)
+              ScopeStepper(
+                key: const ValueKey('adj-helpers'),
+                label: l10n.dadjHelpersCount,
+                value: _helpers,
+                min: 1,
+                max: 5,
+                onChanged: (v) => setState(() => _helpers = v),
+              ),
+            if (_type == AdjustmentType.stairs)
+              ScopeStepper(
+                key: const ValueKey('adj-floors'),
+                label: l10n.dadjFloorsCount,
+                value: _floors,
+                min: 1,
+                max: 40,
+                onChanged: (v) => setState(() => _floors = v),
+              ),
+            if (_type == AdjustmentType.tollParking)
+              TextField(
+                key: const Key('adj-reference'),
+                controller: _reference,
+                maxLength: 120,
+                decoration: InputDecoration(labelText: l10n.dadjReceiptRef),
+              ),
             const SizedBox(height: AppSpacing.sm),
             TextField(
               key: const Key('adj-amount'),

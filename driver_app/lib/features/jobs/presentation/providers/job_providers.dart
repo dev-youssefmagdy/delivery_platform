@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -549,17 +550,21 @@ class JobActions {
     }),
   );
 
+  /// [scope] is the moving / freight scope (`OfferScope.toJson()`); it is part
+  /// of the intent, so changing the scope is a new intent with a new key.
   Future<MyOffer> counterOffer(
     String bookingId,
     int amountMinor, {
     String? currency,
+    Map<String, Object?>? scope,
   }) => _negotiation(
-    () => _run('counter:$bookingId:$amountMinor', (key) async {
+    () => _run('counter:$bookingId:$amountMinor:${scope == null ? '' : jsonEncode(scope)}', (key) async {
       final offer = await _repo.counterOffer(
         bookingId,
         amountMinor: amountMinor,
         currency: currency,
         idempotencyKey: key,
+        scope: scope,
       );
       _refreshNegotiation();
       return offer;
@@ -722,3 +727,10 @@ class JobActions {
 }
 
 final jobActionsProvider = Provider<JobActions>((ref) => JobActions(ref));
+
+/// Options, bounds and vehicle class of the scope builder; read once per
+/// opening of the builder.
+final scopeTemplateProvider = FutureProvider.autoDispose<ScopeTemplate>(
+  (ref) => ref.watch(jobRepositoryProvider).offerScope(),
+  retry: _noAutoRetry,
+);

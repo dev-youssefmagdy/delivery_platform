@@ -49,6 +49,7 @@ abstract final class JobDto {
       lng: lng,
       title: address['title'] as String?,
       line: address['line'] as String?,
+      contact: StopContact.fromJson(m['contact']),
     );
   }
 
@@ -85,6 +86,8 @@ abstract final class JobDto {
       distanceMeters: _int(m['distance_m']),
       closedAt: _time(m['closed_at']),
       earningsPreview: earnings(m['earnings_preview']),
+      scope: m['scope'] is Map ? Map<String, Object?>.from(m['scope'] as Map) : null,
+      scopeSummary: ScopeLine.list(m['scope_summary']),
     );
   }
 
@@ -150,6 +153,12 @@ abstract final class JobDto {
       ),
       restrictedPickup: details['restricted_pickup'] == true,
       myOffer: offer(m['my_offer']),
+      scopeRequired: details['scope_required'] == true,
+      load: LoadInfo.fromCard(details['load'], details['pickup_window']),
+      requestedScope: details['requested_scope'] is Map && (details['requested_scope'] as Map).isNotEmpty
+          ? Map<String, Object?>.from(details['requested_scope'] as Map)
+          : null,
+      requestedScopeSummary: ScopeLine.list(details['requested_scope_summary']),
     );
   }
 
@@ -265,6 +274,11 @@ abstract final class JobDto {
       customer: customer(m['customer']),
       terms: terms(m['cancellation_terms']),
       earningsPreview: earnings(m['earnings_preview']),
+      contacts: BookingContact.list(m['contacts']),
+      delivery: DeliveryState.fromJson(m['delivery']),
+      load: LoadInfo.fromJson(m['load']),
+      scope: ScopeBlocks.fromBooking(m),
+      bookingType: BookingType.parse(m['booking_type'] as String?),
     );
   }
 

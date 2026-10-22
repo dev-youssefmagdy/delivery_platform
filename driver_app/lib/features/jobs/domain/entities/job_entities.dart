@@ -16,6 +16,13 @@ enum JobAction implements ApiEnum {
   confirmCashCollected('confirm_cash_collected'),
   requestAdjustment('request_adjustment'),
   viewReceipt('view_receipt'),
+  uploadProof('upload_proof'),
+  markInTransit('mark_in_transit'),
+  arrivedDropoff('arrived_dropoff'),
+  verifyRecipientOtp('verify_recipient_otp'),
+  resendRecipientOtp('resend_recipient_otp'),
+  reportDeliveryAttempt('report_delivery_attempt'),
+  resolveDeliveryAttempt('resolve_delivery_attempt'),
   unknown('');
 
   const JobAction(this.value);
@@ -121,6 +128,8 @@ class MyOffer {
     this.distanceMeters,
     this.closedAt,
     this.earningsPreview,
+    this.scope,
+    this.scopeSummary = const [],
   });
 
   final String id;
@@ -141,6 +150,10 @@ class MyOffer {
 
   /// Only when the server says it is available (commission arrives with P3.1).
   final EarningsPreview? earningsPreview;
+
+  /// Moving / freight: the offered scope and the server's summary lines.
+  final Map<String, Object?>? scope;
+  final List<ScopeLine> scopeSummary;
 
   bool get isPending => state == OfferState.pending;
 }
@@ -197,6 +210,10 @@ class RequestCard {
     this.paymentMethod = PaymentMethodType.cash,
     this.restrictedPickup = false,
     this.myOffer,
+    this.scopeRequired = false,
+    this.load,
+    this.requestedScope,
+    this.requestedScopeSummary = const [],
   });
 
   final String id;
@@ -217,6 +234,16 @@ class RequestCard {
   final PaymentMethodType paymentMethod;
   final bool restrictedPickup;
   final MyOffer? myOffer;
+
+  /// Moving / freight: a counter-offer must carry a scope (opens the builder).
+  final bool scopeRequired;
+
+  /// Weight / volume / pickup window of the load (no personal data).
+  final LoadInfo? load;
+
+  /// What the customer asked for, with the server's summary lines.
+  final Map<String, Object?>? requestedScope;
+  final List<ScopeLine> requestedScopeSummary;
 }
 
 /// The request feed answer: cards plus why the list may be empty.
@@ -238,12 +265,16 @@ class JobPlace {
     required this.lng,
     this.title,
     this.line,
+    this.contact,
   });
 
   final double lat;
   final double lng;
   final String? title;
   final String? line;
+
+  /// Contact of an intermediate stop (moving / freight), selected provider only.
+  final StopContact? contact;
 
   String? get label => (title != null && title!.isNotEmpty) ? title : line;
 }
@@ -386,6 +417,11 @@ class Job {
     this.agreedFare,
     this.finalFare,
     this.earningsPreview,
+    this.contacts = const [],
+    this.delivery,
+    this.load,
+    this.scope = const ScopeBlocks(),
+    this.bookingType = BookingType.unknown,
   });
 
   final String id;
@@ -411,19 +447,34 @@ class Job {
   final CancellationTerms terms;
   final EarningsPreview? earningsPreview;
 
+  /// Sender / recipient / freight contacts (phones only per exposure rules).
+  final List<BookingContact> contacts;
+
+  /// Custody, proofs, recipient code and failed attempts; null for rides.
+  final DeliveryState? delivery;
+
+  /// Items, weight, volume, pickup window (moving / freight).
+  final LoadInfo? load;
+
+  /// Requested and agreed scope with the server's summaries.
+  final ScopeBlocks scope;
+  final BookingType bookingType;
+
   bool can(JobAction action) => allowedActions.contains(action);
 
   /// Statuses that end the job for the driver.
-  bool get isFinished => const {
-    BookingStatus.completed,
-    BookingStatus.completedPendingPayment,
-    BookingStatus.disputed,
-    BookingStatus.cancelledByCustomer,
-    BookingStatus.cancelledByProvider,
-    BookingStatus.cancelledByOperations,
-    BookingStatus.expiredNoProvider,
-    BookingStatus.deliveryAttemptFailed,
-  }.contains(status);
+  bool get isFinished => status == BookingStatus.deliveryAttemptFailed
+      // A failed attempt still needs a decision (retry / return): the job stays open.
+      ? !(delivery?.awaitingResolution ?? false) && !can(JobAction.resolveDeliveryAttempt)
+      : const {
+          BookingStatus.completed,
+          BookingStatus.completedPendingPayment,
+          BookingStatus.disputed,
+          BookingStatus.cancelledByCustomer,
+          BookingStatus.cancelledByProvider,
+          BookingStatus.cancelledByOperations,
+          BookingStatus.expiredNoProvider,
+        }.contains(status);
 
   bool get isCompleted =>
       status == BookingStatus.completed ||

@@ -12,6 +12,7 @@ import '../../../earnings/presentation/widgets/job_money_widgets.dart';
 import 'completion_summary.dart';
 import 'confirm_sheet.dart';
 import 'countdown.dart';
+import 'delivery_section.dart';
 import 'job_texts.dart';
 import 'navigation.dart';
 import 'pin_sheet.dart';
@@ -250,12 +251,6 @@ class _JobViewState extends ConsumerState<JobView> {
                     label: l10n.jbPickup,
                     place: job.pickup,
                   ),
-                  for (final s in job.stops)
-                    _PlaceRow(
-                      icon: Icons.more_vert,
-                      label: l10n.jbStopLabel,
-                      place: s,
-                    ),
                   if (job.dropoff != null)
                     _PlaceRow(
                       icon: Icons.flag_outlined,
@@ -320,6 +315,11 @@ class _JobViewState extends ConsumerState<JobView> {
                     ),
                 ],
               ),
+              JobContactsSection(job: job),
+              JobStopsList(job: job),
+              JobScopeSection(job: job),
+              JobLoadSection(job: job),
+              JobDeliverySection(job: job),
               if (_notes(job).isNotEmpty)
                 _Section(
                   title: l10n.jbInstructionsTitle,

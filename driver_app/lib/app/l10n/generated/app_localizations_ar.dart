@@ -2554,4 +2554,637 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dadjErrCounterpart => 'يمكن للطرف الآخر فقط الإجابة عن هذا الطلب.';
+
+  @override
+  String get scPackingNone => 'بدون تغليف';
+
+  @override
+  String get scPackingWrap => 'تغطية فقط';
+
+  @override
+  String get scPackingFull => 'تغليف كامل';
+
+  @override
+  String get scStairsNotNeeded => 'لا توجد سلالم';
+
+  @override
+  String get scStairsIncluded => 'السلالم مشمولة';
+
+  @override
+  String get scStairsExtra => 'سلالم بسعر إضافي للدور';
+
+  @override
+  String get scAssemblyNone => 'بدون فك وتركيب';
+
+  @override
+  String get scAssemblyDisassembly => 'فك فقط';
+
+  @override
+  String get scAssemblyAssembly => 'تركيب فقط';
+
+  @override
+  String get scAssemblyBoth => 'فك وتركيب';
+
+  @override
+  String get scEqHandTrolley => 'عربة يد';
+
+  @override
+  String get scEqForklift => 'رافعة شوكية';
+
+  @override
+  String get scEqCrane => 'ونش';
+
+  @override
+  String get scEqTailLift => 'رافعة خلفية';
+
+  @override
+  String get scEqStraps => 'أحزمة وأغطية';
+
+  @override
+  String get scEqPalletJack => 'عربة بالتات';
+
+  @override
+  String get scTreatIncluded => 'مشمولة في السعر';
+
+  @override
+  String get scTreatAtCost => 'بالتكلفة مع إيصال';
+
+  @override
+  String get scTreatExcluded => 'غير مشمولة';
+
+  @override
+  String get scIssueRequired => 'هذا الحقل مطلوب.';
+
+  @override
+  String get scIssueRange => 'القيمة خارج الحد المسموح.';
+
+  @override
+  String get scIssueChoice => 'اختر قيمة من القائمة.';
+
+  @override
+  String get scIssueFloors => 'حدد عدد الأدوار المشمولة.';
+
+  @override
+  String get scIssueTooLong => 'النص أطول من المسموح.';
+
+  @override
+  String get scIssueDuplicate => 'تم اختيار العنصر أكثر من مرة.';
+
+  @override
+  String get scHelpers => 'عدد العمال';
+
+  @override
+  String get scPacking => 'التغليف';
+
+  @override
+  String get scStairs => 'السلالم';
+
+  @override
+  String get scIncludedFloors => 'عدد الأدوار المشمولة';
+
+  @override
+  String get scAssembly => 'فك وتركيب الأثاث';
+
+  @override
+  String get scEquipment => 'معدات التحميل';
+
+  @override
+  String get scWaiting => 'مدة الانتظار المجانية';
+
+  @override
+  String get scMinutesShort => 'د';
+
+  @override
+  String get scExtraStops => 'محطات إضافية مشمولة';
+
+  @override
+  String get scTolls => 'رسوم الطرق';
+
+  @override
+  String get scParking => 'الانتظار والركن';
+
+  @override
+  String get scExclusions => 'ما لا يشمله العرض';
+
+  @override
+  String get scExclusionsHelp => 'اختياري، يظهر للعميل بجانب العرض.';
+
+  @override
+  String get scNoVehicle => 'اختر مركبتك الحالية وكن متصلاً قبل إرسال عرض نقل.';
+
+  @override
+  String get scTitle => 'ماذا يشمل عرضك؟';
+
+  @override
+  String get scIntro =>
+      'هذه الشروط تظهر للعميل وتصبح اتفاقاً ملزماً عند اختيار عرضك.';
+
+  @override
+  String get scRequestedTitle => 'ما طلبه العميل';
+
+  @override
+  String get scContinue => 'متابعة إلى السعر';
+
+  @override
+  String get scEditScope => 'تعديل ما يشمله العرض';
+
+  @override
+  String get scLegendIncluded => 'مشمول';
+
+  @override
+  String get scLegendExcluded => 'غير مشمول';
+
+  @override
+  String get scLegendAtCost => 'بالتكلفة';
+
+  @override
+  String get scSummaryTitle => 'ما يشمله العرض';
+
+  @override
+  String get jbErrScopeRequired => 'أضف ما يشمله عرضك قبل الإرسال.';
+
+  @override
+  String get jbErrScopeInvalid =>
+      'بعض شروط العرض غير صحيحة. راجع الحقول المعلّمة.';
+
+  @override
+  String get jbErrScopeVehicle =>
+      'فئة المركبة في العرض لا تطابق مركبتك الحالية.';
+
+  @override
+  String get jbErrCapacityBoth => 'مركبتك لا تتسع لوزن وحجم هذه الحمولة.';
+
+  @override
+  String get jbErrCapacityVolume => 'حجم الحمولة أكبر من حجم مركبتك.';
+
+  @override
+  String get jbErrCapacityPayload => 'وزن الحمولة أكبر من حمولة مركبتك.';
+
+  @override
+  String get jbErrCapacity => 'مركبتك لا تناسب هذه الحمولة.';
+
+  @override
+  String get dlErrProofNow => 'لا يمكن تسجيل هذا الإثبات في هذه المرحلة.';
+
+  @override
+  String get dlErrProofDone => 'هذا الإثبات مسجل بالفعل.';
+
+  @override
+  String get dlErrProofLimit =>
+      'وصلت إلى الحد الأقصى من الإثباتات لهذه المرحلة.';
+
+  @override
+  String get dlErrProofType => 'هذا النوع من الإثبات غير مطلوب لهذه الخدمة.';
+
+  @override
+  String get dlErrChecklist => 'قائمة الفحص غير صحيحة.';
+
+  @override
+  String get dlErrWeight => 'أدخل وزناً صحيحاً أكبر من الصفر.';
+
+  @override
+  String get dlErrInfected => 'رفض الملف لأسباب أمنية. التقط صورة أخرى.';
+
+  @override
+  String get dlErrScanner =>
+      'فحص الملفات غير متاح الآن. سنعيد المحاولة تلقائياً.';
+
+  @override
+  String get dlErrCustody => 'لا يمكن تسجيل هذه الخطوة الآن.';
+
+  @override
+  String get dlErrOtpInvalid => 'الرمز غير صحيح.';
+
+  @override
+  String dlErrOtpInvalidLeft(int left) {
+    return 'الرمز غير صحيح. المحاولات المتبقية: $left';
+  }
+
+  @override
+  String get dlErrOtpLocked =>
+      'تم إيقاف الرمز بعد محاولات خاطئة. تواصل مع الدعم.';
+
+  @override
+  String get dlErrOtpNotReady => 'رمز المستلم غير جاهز بعد.';
+
+  @override
+  String get dlErrOtpResendSoon => 'انتظر قليلاً قبل إعادة إرسال الرمز.';
+
+  @override
+  String get dlErrOtpResendLimit => 'لا يمكن إعادة إرسال الرمز أكثر من ذلك.';
+
+  @override
+  String get dlErrAttemptNotAllowed =>
+      'لا يمكن تنفيذ هذا الإجراء على محاولة التسليم الآن.';
+
+  @override
+  String get dlErrAttemptsExhausted =>
+      'استُنفدت محاولات التسليم. اختر الإرجاع أو العمليات.';
+
+  @override
+  String get dlErrOtpRequired => 'أدخل رمز المستلم قبل إنهاء التسليم.';
+
+  @override
+  String get dadjErrScopeItem => 'اختر البند المعني من اتفاق النقل.';
+
+  @override
+  String get dadjErrWithinScope =>
+      'هذا البند مشمول في الاتفاق ولا يمكن تحميل مبلغ إضافي عنه.';
+
+  @override
+  String get dadjErrFloors => 'أدخل عدد الأدوار الإضافية.';
+
+  @override
+  String get dadjErrHelpers => 'عدد العمال الإضافيين غير مسموح.';
+
+  @override
+  String jbVolumeM3(String volume) {
+    return '$volume م³';
+  }
+
+  @override
+  String jbPickupWindow(String start, String end) {
+    return 'التحميل من $start إلى $end';
+  }
+
+  @override
+  String get jbRequestedScope => 'ما يطلبه العميل';
+
+  @override
+  String get jbAcceptScopeNote =>
+      'بقبول سعر العميل تلتزم بما طلبه العميل كما هو موضح.';
+
+  @override
+  String get dlCustodyTitle => 'مسار الشحنة';
+
+  @override
+  String get dlCustodyPickedUp => 'تم الاستلام من المرسل';
+
+  @override
+  String get dlCustodyInTransit => 'في الطريق';
+
+  @override
+  String get dlCustodyArrived => 'وصلت إلى نقطة التسليم';
+
+  @override
+  String get dlCustodyFailed => 'تعذر التسليم';
+
+  @override
+  String get dlCustodyReturning => 'في طريق العودة للمرسل';
+
+  @override
+  String get dlCustodyDelivered => 'تم التسليم';
+
+  @override
+  String get dlCustodyReturned => 'تم الإرجاع للمرسل';
+
+  @override
+  String get dlCustodyUnknown => 'حالة غير معروفة';
+
+  @override
+  String get dlOtpTitle => 'رمز المستلم';
+
+  @override
+  String get dlOtpWaiting => 'لم يُرسل الرمز بعد';
+
+  @override
+  String get dlOtpSent => 'أُرسل الرمز للمستلم';
+
+  @override
+  String get dlOtpSmsFailed => 'تعذر إرسال الرسالة';
+
+  @override
+  String get dlOtpVerified => 'تم التحقق';
+
+  @override
+  String get dlOtpLocked => 'الرمز موقوف';
+
+  @override
+  String dlOtpAttemptsLeft(int left) {
+    return 'المحاولات المتبقية: $left';
+  }
+
+  @override
+  String get dlOtpAskRecipient =>
+      'اطلب من المستلم الرمز الذي وصله برسالة نصية.';
+
+  @override
+  String get dlOtpEnter => 'إدخال رمز المستلم';
+
+  @override
+  String get dlOtpLockedButton => 'الرمز موقوف';
+
+  @override
+  String get dlOtpSheetTitle => 'رمز التسليم';
+
+  @override
+  String get dlOtpField => 'الرمز المكون من أرقام';
+
+  @override
+  String get dlOtpVerify => 'تأكيد الرمز';
+
+  @override
+  String get dlOtpResend => 'إعادة إرسال الرمز';
+
+  @override
+  String dlOtpResendIn(String time) {
+    return 'إعادة الإرسال بعد $time';
+  }
+
+  @override
+  String get dlProofsTitle => 'إثباتات الاستلام والتسليم';
+
+  @override
+  String get dlNoProofs => 'لا توجد إثباتات بعد.';
+
+  @override
+  String get dlProofLoadError => 'تعذر تحميل الصورة. اضغط للمحاولة.';
+
+  @override
+  String get dlProofPhoto => 'صورة';
+
+  @override
+  String get dlProofSignature => 'توقيع';
+
+  @override
+  String get dlProofOtp => 'رمز المستلم';
+
+  @override
+  String get dlProofPin => 'رمز البدء';
+
+  @override
+  String get dlProofChecklist => 'قائمة فحص';
+
+  @override
+  String get dlProofWeight => 'الوزن';
+
+  @override
+  String get dlProofOther => 'إثبات';
+
+  @override
+  String get dlStagePickup => 'عند الاستلام';
+
+  @override
+  String get dlStageDelivery => 'عند التسليم';
+
+  @override
+  String get dlStageReturn => 'عند الإرجاع';
+
+  @override
+  String get dlChkSealed => 'الطرد مغلق';
+
+  @override
+  String get dlChkUndamaged => 'الطرد سليم بلا أضرار';
+
+  @override
+  String get dlChkLabel => 'البيانات مطابقة للملصق';
+
+  @override
+  String get dlChkRecipient => 'تم التأكد من هوية المستلم';
+
+  @override
+  String dlWeightValue(String kg) {
+    return 'الوزن المقاس: $kg كجم';
+  }
+
+  @override
+  String get dlAttemptsTitle => 'محاولات التسليم';
+
+  @override
+  String dlAttemptNumber(int number) {
+    return 'المحاولة $number';
+  }
+
+  @override
+  String get dlAttemptEvidence => 'مرفق صورة';
+
+  @override
+  String get dlPending => 'بانتظار القرار';
+
+  @override
+  String get dlOutUnavailable => 'المستلم غير متاح';
+
+  @override
+  String get dlOutRefused => 'المستلم رفض الاستلام';
+
+  @override
+  String get dlOutWrongAddress => 'العنوان خاطئ';
+
+  @override
+  String get dlOutOtpFailed => 'تعذر التحقق من الرمز';
+
+  @override
+  String get dlOutRestricted => 'الشحنة تحتوي على مواد ممنوعة';
+
+  @override
+  String get dlOutOther => 'سبب آخر';
+
+  @override
+  String get dlResRetry => 'إعادة المحاولة';
+
+  @override
+  String get dlResReturn => 'إرجاع للمرسل';
+
+  @override
+  String get dlResOperations => 'تحويل للعمليات';
+
+  @override
+  String get dlResUnknown => 'قرار غير معروف';
+
+  @override
+  String dlCaptureTitle(String type) {
+    return 'تسجيل: $type';
+  }
+
+  @override
+  String get dlTakePhoto => 'التقاط صورة';
+
+  @override
+  String get dlRetakePhoto => 'إعادة الالتقاط';
+
+  @override
+  String get dlProofNote => 'ملاحظة (اختيارية)';
+
+  @override
+  String get dlSignHint => 'اطلب من المستلم التوقيع داخل الإطار.';
+
+  @override
+  String get dlSignClear => 'مسح التوقيع';
+
+  @override
+  String get dlWeightLabel => 'الوزن المقاس';
+
+  @override
+  String get dlKg => 'كجم';
+
+  @override
+  String get dlCm => 'سم';
+
+  @override
+  String get dlSaveProof => 'حفظ وإرسال';
+
+  @override
+  String get dlQueueHint =>
+      'يُحفظ الإثبات على هاتفك ويُرسل تلقائياً عند توفر الاتصال.';
+
+  @override
+  String get dlProofQueued => 'تم حفظ الإثبات وسيُرسل الآن.';
+
+  @override
+  String get dlErrCamera => 'تعذر فتح الكاميرا.';
+
+  @override
+  String get dlErrPhotoFirst => 'التقط صورة أولاً.';
+
+  @override
+  String get dlErrSignFirst => 'ارسم التوقيع أولاً.';
+
+  @override
+  String get dlErrOutcomeFirst => 'اختر سبب تعذر التسليم.';
+
+  @override
+  String get dlErrReasonNeeded => 'اكتب السبب (3 أحرف على الأقل).';
+
+  @override
+  String dlAddProof(String type) {
+    return 'إضافة: $type';
+  }
+
+  @override
+  String dlProofWaiting(String type) {
+    return 'بانتظار الإرسال: $type';
+  }
+
+  @override
+  String dlProofFailed(String type, String reason) {
+    return 'لم يُقبل $type: $reason';
+  }
+
+  @override
+  String get dlDiscard => 'حذف';
+
+  @override
+  String get dlSendNow => 'إرسال الآن';
+
+  @override
+  String get dlShowProofs => 'عرض الإثباتات المسجلة';
+
+  @override
+  String get dlHideProofs => 'إخفاء الإثباتات';
+
+  @override
+  String get dlMarkInTransit => 'الشحنة في الطريق';
+
+  @override
+  String get dlArrivedDropoff => 'وصلت إلى نقطة التسليم';
+
+  @override
+  String get dlReportAttempt => 'تعذر التسليم';
+
+  @override
+  String get dlAttemptTitle => 'لماذا تعذر التسليم؟';
+
+  @override
+  String get dlAttemptBody =>
+      'سيُبلَّغ العميل ويقرر الخطوة التالية. أرفق صورة إن أمكن.';
+
+  @override
+  String get dlReasonRequired => 'اكتب السبب (مطلوب)';
+
+  @override
+  String get dlReasonOptional => 'ملاحظات (اختيارية)';
+
+  @override
+  String get dlAddEvidence => 'إضافة صورة كدليل';
+
+  @override
+  String get dlAttemptSend => 'إرسال البلاغ';
+
+  @override
+  String get dlResolveButton => 'قرار ما بعد تعذر التسليم';
+
+  @override
+  String get dlResolveTitle => 'ماذا تفعل بالشحنة؟';
+
+  @override
+  String get dlResolveBody =>
+      'اختر إعادة المحاولة أو إرجاعها للمرسل أو تحويل الحالة للعمليات.';
+
+  @override
+  String get dlResolveNothing => 'لا توجد محاولة تنتظر القرار.';
+
+  @override
+  String get dlContactsTitle => 'جهات الاتصال';
+
+  @override
+  String get dlRoleSender => 'المرسل';
+
+  @override
+  String get dlRoleRecipient => 'المستلم';
+
+  @override
+  String get dlRolePickup => 'جهة الاتصال عند التحميل';
+
+  @override
+  String get dlRoleDropoff => 'جهة الاتصال عند التسليم';
+
+  @override
+  String get dlStopsTitle => 'محطات الرحلة';
+
+  @override
+  String dlStopNumber(int number) {
+    return 'المحطة $number';
+  }
+
+  @override
+  String get dlNextStop => 'التالية';
+
+  @override
+  String get dlLoadTitle => 'الحمولة';
+
+  @override
+  String dlLoadWeight(String kg) {
+    return 'الوزن: $kg كجم';
+  }
+
+  @override
+  String dlLoadVolume(String volume) {
+    return 'الحجم: $volume م³';
+  }
+
+  @override
+  String get dlFileVideo => 'فيديو';
+
+  @override
+  String get dlFileDocument => 'مستند';
+
+  @override
+  String dadjScopeItemLine(String item) {
+    return 'بند الاتفاق: $item';
+  }
+
+  @override
+  String dadjHelpersLine(int count) {
+    return '$count عمال';
+  }
+
+  @override
+  String dadjFloorsLine(int count) {
+    return '$count أدوار';
+  }
+
+  @override
+  String get dadjTypeHelper => 'عامل إضافي';
+
+  @override
+  String get dadjTypeStairs => 'سلالم إضافية';
+
+  @override
+  String get dadjHelpersCount => 'عدد العمال الإضافيين';
+
+  @override
+  String get dadjFloorsCount => 'عدد الأدوار الإضافية';
+
+  @override
+  String get dadjReceiptRef => 'رقم الإيصال';
 }

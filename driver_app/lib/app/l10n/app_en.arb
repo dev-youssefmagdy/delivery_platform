@@ -1072,5 +1072,325 @@
   "dadjErrEvidence": "This type needs evidence. Add details in the reason.",
   "dadjErrType": "This type of change is not allowed for this service.",
   "dadjErrNotPending": "This request was already answered or has expired.",
-  "dadjErrCounterpart": "Only the other side can answer this request."
+  "dadjErrCounterpart": "Only the other side can answer this request.",
+  "scPackingNone": "No packing",
+  "scPackingWrap": "Wrap only",
+  "scPackingFull": "Full packing",
+  "scStairsNotNeeded": "No stairs",
+  "scStairsIncluded": "Stairs included",
+  "scStairsExtra": "Extra price per floor",
+  "scAssemblyNone": "No assembly",
+  "scAssemblyDisassembly": "Disassembly only",
+  "scAssemblyAssembly": "Assembly only",
+  "scAssemblyBoth": "Disassembly and assembly",
+  "scEqHandTrolley": "Hand trolley",
+  "scEqForklift": "Forklift",
+  "scEqCrane": "Crane",
+  "scEqTailLift": "Tail lift",
+  "scEqStraps": "Straps and blankets",
+  "scEqPalletJack": "Pallet jack",
+  "scTreatIncluded": "Included in the price",
+  "scTreatAtCost": "At cost with receipt",
+  "scTreatExcluded": "Not included",
+  "scIssueRequired": "This field is required.",
+  "scIssueRange": "The value is outside the allowed range.",
+  "scIssueChoice": "Choose a value from the list.",
+  "scIssueFloors": "Say how many floors are included.",
+  "scIssueTooLong": "The text is too long.",
+  "scIssueDuplicate": "An item is chosen more than once.",
+  "scHelpers": "Helpers",
+  "scPacking": "Packing",
+  "scStairs": "Stairs",
+  "scIncludedFloors": "Included floors",
+  "scAssembly": "Assembly",
+  "scEquipment": "Loading equipment",
+  "scWaiting": "Free waiting time",
+  "scMinutesShort": "min",
+  "scExtraStops": "Extra stops included",
+  "scTolls": "Road tolls",
+  "scParking": "Parking",
+  "scExclusions": "What the offer does not cover",
+  "scExclusionsHelp": "Optional, shown to the customer with the offer.",
+  "scNoVehicle": "Pick your current vehicle and go online before sending a moving offer.",
+  "scTitle": "What does your offer include?",
+  "scIntro": "The customer sees these terms and they become the agreement once your offer is chosen.",
+  "scRequestedTitle": "What the customer asked for",
+  "scContinue": "Continue to price",
+  "scEditScope": "Edit what is included",
+  "scLegendIncluded": "Included",
+  "scLegendExcluded": "Not included",
+  "scLegendAtCost": "At cost",
+  "scSummaryTitle": "What is included",
+  "jbErrScopeRequired": "Add what your offer includes before sending.",
+  "jbErrScopeInvalid": "Some offer terms are not valid. Check the marked fields.",
+  "jbErrScopeVehicle": "The vehicle class in the offer does not match your current vehicle.",
+  "jbErrCapacityBoth": "Your vehicle cannot carry the weight or the volume of this load.",
+  "jbErrCapacityVolume": "The load is bigger than your vehicle can hold.",
+  "jbErrCapacityPayload": "The load is heavier than your vehicle can carry.",
+  "jbErrCapacity": "Your vehicle does not fit this load.",
+  "dlErrProofNow": "This proof cannot be recorded at this step.",
+  "dlErrProofDone": "This proof is already recorded.",
+  "dlErrProofLimit": "You reached the proof limit for this step.",
+  "dlErrProofType": "This kind of proof is not used for this service.",
+  "dlErrChecklist": "The checklist is not valid.",
+  "dlErrWeight": "Enter a valid weight above zero.",
+  "dlErrInfected": "The file was refused for security reasons. Take another picture.",
+  "dlErrScanner": "File checking is unavailable. We will retry automatically.",
+  "dlErrCustody": "This step cannot be recorded now.",
+  "dlErrOtpInvalid": "The code is not correct.",
+  "dlErrOtpInvalidLeft": "The code is not correct. Attempts left: {left}",
+  "@dlErrOtpInvalidLeft": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "dlErrOtpLocked": "The code is locked after wrong tries. Contact support.",
+  "dlErrOtpNotReady": "The recipient code is not ready yet.",
+  "dlErrOtpResendSoon": "Wait a moment before sending the code again.",
+  "dlErrOtpResendLimit": "The code cannot be sent again.",
+  "dlErrAttemptNotAllowed": "This cannot be done on the delivery attempt now.",
+  "dlErrAttemptsExhausted": "Delivery attempts are used up. Choose return or operations.",
+  "dlErrOtpRequired": "Enter the recipient code before completing the delivery.",
+  "dadjErrScopeItem": "Choose the item of the moving agreement.",
+  "dadjErrWithinScope": "This item is covered by the agreement and cannot be charged extra.",
+  "dadjErrFloors": "Enter the number of extra floors.",
+  "dadjErrHelpers": "That number of extra helpers is not allowed.",
+  "jbVolumeM3": "{volume} m³",
+  "@jbVolumeM3": {
+    "placeholders": {
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+  "jbPickupWindow": "Loading between {start} and {end}",
+  "@jbPickupWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "jbRequestedScope": "What the customer asks for",
+  "jbAcceptScopeNote": "By accepting the customer's fare you agree to what they asked for, as shown.",
+  "dlCustodyTitle": "Parcel journey",
+  "dlCustodyPickedUp": "Picked up",
+  "dlCustodyInTransit": "On the way",
+  "dlCustodyArrived": "Arrived at drop-off",
+  "dlCustodyFailed": "Delivery failed",
+  "dlCustodyReturning": "Returning to sender",
+  "dlCustodyDelivered": "Delivered",
+  "dlCustodyReturned": "Returned to sender",
+  "dlCustodyUnknown": "Unknown status",
+  "dlOtpTitle": "Recipient code",
+  "dlOtpWaiting": "Code not sent yet",
+  "dlOtpSent": "Code sent to the recipient",
+  "dlOtpSmsFailed": "The message could not be sent",
+  "dlOtpVerified": "Verified",
+  "dlOtpLocked": "Code locked",
+  "dlOtpAttemptsLeft": "Attempts left: {left}",
+  "@dlOtpAttemptsLeft": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "dlOtpAskRecipient": "Ask the recipient for the code they received by SMS.",
+  "dlOtpEnter": "Enter recipient code",
+  "dlOtpLockedButton": "Code locked",
+  "dlOtpSheetTitle": "Delivery code",
+  "dlOtpField": "Digits of the code",
+  "dlOtpVerify": "Confirm code",
+  "dlOtpResend": "Send the code again",
+  "dlOtpResendIn": "Send again in {time}",
+  "@dlOtpResendIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dlProofsTitle": "Pickup and delivery proofs",
+  "dlNoProofs": "No proofs yet.",
+  "dlProofLoadError": "The picture could not load. Tap to retry.",
+  "dlProofPhoto": "Photo",
+  "dlProofSignature": "Signature",
+  "dlProofOtp": "Recipient code",
+  "dlProofPin": "Start PIN",
+  "dlProofChecklist": "Checklist",
+  "dlProofWeight": "Weight",
+  "dlProofOther": "Proof",
+  "dlStagePickup": "At pickup",
+  "dlStageDelivery": "At delivery",
+  "dlStageReturn": "On return",
+  "dlChkSealed": "Package is sealed",
+  "dlChkUndamaged": "Package is undamaged",
+  "dlChkLabel": "Label matches the order",
+  "dlChkRecipient": "Recipient was checked",
+  "dlWeightValue": "Measured weight: {kg} kg",
+  "@dlWeightValue": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "dlAttemptsTitle": "Delivery attempts",
+  "dlAttemptNumber": "Attempt {number}",
+  "@dlAttemptNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "dlAttemptEvidence": "Picture attached",
+  "dlPending": "Waiting for a decision",
+  "dlOutUnavailable": "Recipient not available",
+  "dlOutRefused": "Recipient refused",
+  "dlOutWrongAddress": "Wrong address",
+  "dlOutOtpFailed": "Code could not be verified",
+  "dlOutRestricted": "The parcel holds restricted items",
+  "dlOutOther": "Other reason",
+  "dlResRetry": "Try again",
+  "dlResReturn": "Return to sender",
+  "dlResOperations": "Hand to operations",
+  "dlResUnknown": "Unknown decision",
+  "dlCaptureTitle": "Record: {type}",
+  "@dlCaptureTitle": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "dlTakePhoto": "Take a picture",
+  "dlRetakePhoto": "Retake",
+  "dlProofNote": "Note (optional)",
+  "dlSignHint": "Ask the recipient to sign inside the box.",
+  "dlSignClear": "Clear signature",
+  "dlWeightLabel": "Measured weight",
+  "dlKg": "kg",
+  "dlCm": "cm",
+  "dlSaveProof": "Save and send",
+  "dlQueueHint": "The proof is kept on your phone and sent automatically when you are online.",
+  "dlProofQueued": "Proof saved. It is being sent.",
+  "dlErrCamera": "The camera could not open.",
+  "dlErrPhotoFirst": "Take a picture first.",
+  "dlErrSignFirst": "Draw the signature first.",
+  "dlErrOutcomeFirst": "Choose why delivery failed.",
+  "dlErrReasonNeeded": "Write the reason (at least 3 characters).",
+  "dlAddProof": "Add: {type}",
+  "@dlAddProof": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "dlProofWaiting": "Waiting to send: {type}",
+  "@dlProofWaiting": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "dlProofFailed": "{type} was refused: {reason}",
+  "@dlProofFailed": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "dlDiscard": "Discard",
+  "dlSendNow": "Send now",
+  "dlShowProofs": "Show recorded proofs",
+  "dlHideProofs": "Hide proofs",
+  "dlMarkInTransit": "Parcel is on the way",
+  "dlArrivedDropoff": "I arrived at the drop-off",
+  "dlReportAttempt": "Delivery failed",
+  "dlAttemptTitle": "Why could you not deliver?",
+  "dlAttemptBody": "The customer is told and decides what happens next. Add a picture if you can.",
+  "dlReasonRequired": "Reason (required)",
+  "dlReasonOptional": "Notes (optional)",
+  "dlAddEvidence": "Add a picture as evidence",
+  "dlAttemptSend": "Send report",
+  "dlResolveButton": "Decide what happens next",
+  "dlResolveTitle": "What happens to the parcel?",
+  "dlResolveBody": "Try again, take it back to the sender, or hand the case to operations.",
+  "dlResolveNothing": "No attempt is waiting for a decision.",
+  "dlContactsTitle": "Contacts",
+  "dlRoleSender": "Sender",
+  "dlRoleRecipient": "Recipient",
+  "dlRolePickup": "Pickup contact",
+  "dlRoleDropoff": "Drop-off contact",
+  "dlStopsTitle": "Route stops",
+  "dlStopNumber": "Stop {number}",
+  "@dlStopNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "dlNextStop": "next",
+  "dlLoadTitle": "Load",
+  "dlLoadWeight": "Weight: {kg} kg",
+  "@dlLoadWeight": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "dlLoadVolume": "Volume: {volume} m³",
+  "@dlLoadVolume": {
+    "placeholders": {
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+  "dlFileVideo": "Video",
+  "dlFileDocument": "Document",
+  "dadjScopeItemLine": "Agreement item: {item}",
+  "@dadjScopeItemLine": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "dadjHelpersLine": "{count} helpers",
+  "@dadjHelpersLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dadjFloorsLine": "{count} floors",
+  "@dadjFloorsLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dadjTypeHelper": "Extra helper",
+  "dadjTypeStairs": "Extra stairs",
+  "dadjHelpersCount": "Extra helpers",
+  "dadjFloorsCount": "Extra floors",
+  "dadjReceiptRef": "Receipt number"
 }

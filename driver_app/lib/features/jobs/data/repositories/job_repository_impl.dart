@@ -54,13 +54,19 @@ class JobRepositoryImpl implements JobRepository {
     required String idempotencyKey,
     String? currency,
     int? etaMinutes,
+    Map<String, Object?>? scope,
   }) async => _requireOffer(
     (await _remote.counter(bookingId, {
       'amount_minor': amountMinor,
       'currency': ?currency,
       'eta_minutes': ?etaMinutes,
+      'scope': ?scope,
     }, idempotencyKey)).data,
   );
+
+  @override
+  Future<ScopeTemplate> offerScope() async =>
+      ScopeTemplate.fromJson((await _remote.offerScope()).data);
 
   @override
   Future<void> withdrawOffer(String offerId) async {

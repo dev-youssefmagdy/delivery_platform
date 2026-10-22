@@ -1256,5 +1256,325 @@
   "dadjErrEvidence": "هذا النوع يحتاج إثباتاً. أضف التفاصيل في السبب.",
   "dadjErrType": "هذا النوع من التغيير غير مسموح لهذه الخدمة.",
   "dadjErrNotPending": "تمت الإجابة عن هذا الطلب أو انتهت مدته.",
-  "dadjErrCounterpart": "يمكن للطرف الآخر فقط الإجابة عن هذا الطلب."
+  "dadjErrCounterpart": "يمكن للطرف الآخر فقط الإجابة عن هذا الطلب.",
+  "scPackingNone": "بدون تغليف",
+  "scPackingWrap": "تغطية فقط",
+  "scPackingFull": "تغليف كامل",
+  "scStairsNotNeeded": "لا توجد سلالم",
+  "scStairsIncluded": "السلالم مشمولة",
+  "scStairsExtra": "سلالم بسعر إضافي للدور",
+  "scAssemblyNone": "بدون فك وتركيب",
+  "scAssemblyDisassembly": "فك فقط",
+  "scAssemblyAssembly": "تركيب فقط",
+  "scAssemblyBoth": "فك وتركيب",
+  "scEqHandTrolley": "عربة يد",
+  "scEqForklift": "رافعة شوكية",
+  "scEqCrane": "ونش",
+  "scEqTailLift": "رافعة خلفية",
+  "scEqStraps": "أحزمة وأغطية",
+  "scEqPalletJack": "عربة بالتات",
+  "scTreatIncluded": "مشمولة في السعر",
+  "scTreatAtCost": "بالتكلفة مع إيصال",
+  "scTreatExcluded": "غير مشمولة",
+  "scIssueRequired": "هذا الحقل مطلوب.",
+  "scIssueRange": "القيمة خارج الحد المسموح.",
+  "scIssueChoice": "اختر قيمة من القائمة.",
+  "scIssueFloors": "حدد عدد الأدوار المشمولة.",
+  "scIssueTooLong": "النص أطول من المسموح.",
+  "scIssueDuplicate": "تم اختيار العنصر أكثر من مرة.",
+  "scHelpers": "عدد العمال",
+  "scPacking": "التغليف",
+  "scStairs": "السلالم",
+  "scIncludedFloors": "عدد الأدوار المشمولة",
+  "scAssembly": "فك وتركيب الأثاث",
+  "scEquipment": "معدات التحميل",
+  "scWaiting": "مدة الانتظار المجانية",
+  "scMinutesShort": "د",
+  "scExtraStops": "محطات إضافية مشمولة",
+  "scTolls": "رسوم الطرق",
+  "scParking": "الانتظار والركن",
+  "scExclusions": "ما لا يشمله العرض",
+  "scExclusionsHelp": "اختياري، يظهر للعميل بجانب العرض.",
+  "scNoVehicle": "اختر مركبتك الحالية وكن متصلاً قبل إرسال عرض نقل.",
+  "scTitle": "ماذا يشمل عرضك؟",
+  "scIntro": "هذه الشروط تظهر للعميل وتصبح اتفاقاً ملزماً عند اختيار عرضك.",
+  "scRequestedTitle": "ما طلبه العميل",
+  "scContinue": "متابعة إلى السعر",
+  "scEditScope": "تعديل ما يشمله العرض",
+  "scLegendIncluded": "مشمول",
+  "scLegendExcluded": "غير مشمول",
+  "scLegendAtCost": "بالتكلفة",
+  "scSummaryTitle": "ما يشمله العرض",
+  "jbErrScopeRequired": "أضف ما يشمله عرضك قبل الإرسال.",
+  "jbErrScopeInvalid": "بعض شروط العرض غير صحيحة. راجع الحقول المعلّمة.",
+  "jbErrScopeVehicle": "فئة المركبة في العرض لا تطابق مركبتك الحالية.",
+  "jbErrCapacityBoth": "مركبتك لا تتسع لوزن وحجم هذه الحمولة.",
+  "jbErrCapacityVolume": "حجم الحمولة أكبر من حجم مركبتك.",
+  "jbErrCapacityPayload": "وزن الحمولة أكبر من حمولة مركبتك.",
+  "jbErrCapacity": "مركبتك لا تناسب هذه الحمولة.",
+  "dlErrProofNow": "لا يمكن تسجيل هذا الإثبات في هذه المرحلة.",
+  "dlErrProofDone": "هذا الإثبات مسجل بالفعل.",
+  "dlErrProofLimit": "وصلت إلى الحد الأقصى من الإثباتات لهذه المرحلة.",
+  "dlErrProofType": "هذا النوع من الإثبات غير مطلوب لهذه الخدمة.",
+  "dlErrChecklist": "قائمة الفحص غير صحيحة.",
+  "dlErrWeight": "أدخل وزناً صحيحاً أكبر من الصفر.",
+  "dlErrInfected": "رفض الملف لأسباب أمنية. التقط صورة أخرى.",
+  "dlErrScanner": "فحص الملفات غير متاح الآن. سنعيد المحاولة تلقائياً.",
+  "dlErrCustody": "لا يمكن تسجيل هذه الخطوة الآن.",
+  "dlErrOtpInvalid": "الرمز غير صحيح.",
+  "dlErrOtpInvalidLeft": "الرمز غير صحيح. المحاولات المتبقية: {left}",
+  "@dlErrOtpInvalidLeft": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "dlErrOtpLocked": "تم إيقاف الرمز بعد محاولات خاطئة. تواصل مع الدعم.",
+  "dlErrOtpNotReady": "رمز المستلم غير جاهز بعد.",
+  "dlErrOtpResendSoon": "انتظر قليلاً قبل إعادة إرسال الرمز.",
+  "dlErrOtpResendLimit": "لا يمكن إعادة إرسال الرمز أكثر من ذلك.",
+  "dlErrAttemptNotAllowed": "لا يمكن تنفيذ هذا الإجراء على محاولة التسليم الآن.",
+  "dlErrAttemptsExhausted": "استُنفدت محاولات التسليم. اختر الإرجاع أو العمليات.",
+  "dlErrOtpRequired": "أدخل رمز المستلم قبل إنهاء التسليم.",
+  "dadjErrScopeItem": "اختر البند المعني من اتفاق النقل.",
+  "dadjErrWithinScope": "هذا البند مشمول في الاتفاق ولا يمكن تحميل مبلغ إضافي عنه.",
+  "dadjErrFloors": "أدخل عدد الأدوار الإضافية.",
+  "dadjErrHelpers": "عدد العمال الإضافيين غير مسموح.",
+  "jbVolumeM3": "{volume} م³",
+  "@jbVolumeM3": {
+    "placeholders": {
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+  "jbPickupWindow": "التحميل من {start} إلى {end}",
+  "@jbPickupWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "jbRequestedScope": "ما يطلبه العميل",
+  "jbAcceptScopeNote": "بقبول سعر العميل تلتزم بما طلبه العميل كما هو موضح.",
+  "dlCustodyTitle": "مسار الشحنة",
+  "dlCustodyPickedUp": "تم الاستلام من المرسل",
+  "dlCustodyInTransit": "في الطريق",
+  "dlCustodyArrived": "وصلت إلى نقطة التسليم",
+  "dlCustodyFailed": "تعذر التسليم",
+  "dlCustodyReturning": "في طريق العودة للمرسل",
+  "dlCustodyDelivered": "تم التسليم",
+  "dlCustodyReturned": "تم الإرجاع للمرسل",
+  "dlCustodyUnknown": "حالة غير معروفة",
+  "dlOtpTitle": "رمز المستلم",
+  "dlOtpWaiting": "لم يُرسل الرمز بعد",
+  "dlOtpSent": "أُرسل الرمز للمستلم",
+  "dlOtpSmsFailed": "تعذر إرسال الرسالة",
+  "dlOtpVerified": "تم التحقق",
+  "dlOtpLocked": "الرمز موقوف",
+  "dlOtpAttemptsLeft": "المحاولات المتبقية: {left}",
+  "@dlOtpAttemptsLeft": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "dlOtpAskRecipient": "اطلب من المستلم الرمز الذي وصله برسالة نصية.",
+  "dlOtpEnter": "إدخال رمز المستلم",
+  "dlOtpLockedButton": "الرمز موقوف",
+  "dlOtpSheetTitle": "رمز التسليم",
+  "dlOtpField": "الرمز المكون من أرقام",
+  "dlOtpVerify": "تأكيد الرمز",
+  "dlOtpResend": "إعادة إرسال الرمز",
+  "dlOtpResendIn": "إعادة الإرسال بعد {time}",
+  "@dlOtpResendIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dlProofsTitle": "إثباتات الاستلام والتسليم",
+  "dlNoProofs": "لا توجد إثباتات بعد.",
+  "dlProofLoadError": "تعذر تحميل الصورة. اضغط للمحاولة.",
+  "dlProofPhoto": "صورة",
+  "dlProofSignature": "توقيع",
+  "dlProofOtp": "رمز المستلم",
+  "dlProofPin": "رمز البدء",
+  "dlProofChecklist": "قائمة فحص",
+  "dlProofWeight": "الوزن",
+  "dlProofOther": "إثبات",
+  "dlStagePickup": "عند الاستلام",
+  "dlStageDelivery": "عند التسليم",
+  "dlStageReturn": "عند الإرجاع",
+  "dlChkSealed": "الطرد مغلق",
+  "dlChkUndamaged": "الطرد سليم بلا أضرار",
+  "dlChkLabel": "البيانات مطابقة للملصق",
+  "dlChkRecipient": "تم التأكد من هوية المستلم",
+  "dlWeightValue": "الوزن المقاس: {kg} كجم",
+  "@dlWeightValue": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "dlAttemptsTitle": "محاولات التسليم",
+  "dlAttemptNumber": "المحاولة {number}",
+  "@dlAttemptNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "dlAttemptEvidence": "مرفق صورة",
+  "dlPending": "بانتظار القرار",
+  "dlOutUnavailable": "المستلم غير متاح",
+  "dlOutRefused": "المستلم رفض الاستلام",
+  "dlOutWrongAddress": "العنوان خاطئ",
+  "dlOutOtpFailed": "تعذر التحقق من الرمز",
+  "dlOutRestricted": "الشحنة تحتوي على مواد ممنوعة",
+  "dlOutOther": "سبب آخر",
+  "dlResRetry": "إعادة المحاولة",
+  "dlResReturn": "إرجاع للمرسل",
+  "dlResOperations": "تحويل للعمليات",
+  "dlResUnknown": "قرار غير معروف",
+  "dlCaptureTitle": "تسجيل: {type}",
+  "@dlCaptureTitle": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "dlTakePhoto": "التقاط صورة",
+  "dlRetakePhoto": "إعادة الالتقاط",
+  "dlProofNote": "ملاحظة (اختيارية)",
+  "dlSignHint": "اطلب من المستلم التوقيع داخل الإطار.",
+  "dlSignClear": "مسح التوقيع",
+  "dlWeightLabel": "الوزن المقاس",
+  "dlKg": "كجم",
+  "dlCm": "سم",
+  "dlSaveProof": "حفظ وإرسال",
+  "dlQueueHint": "يُحفظ الإثبات على هاتفك ويُرسل تلقائياً عند توفر الاتصال.",
+  "dlProofQueued": "تم حفظ الإثبات وسيُرسل الآن.",
+  "dlErrCamera": "تعذر فتح الكاميرا.",
+  "dlErrPhotoFirst": "التقط صورة أولاً.",
+  "dlErrSignFirst": "ارسم التوقيع أولاً.",
+  "dlErrOutcomeFirst": "اختر سبب تعذر التسليم.",
+  "dlErrReasonNeeded": "اكتب السبب (3 أحرف على الأقل).",
+  "dlAddProof": "إضافة: {type}",
+  "@dlAddProof": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "dlProofWaiting": "بانتظار الإرسال: {type}",
+  "@dlProofWaiting": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "dlProofFailed": "لم يُقبل {type}: {reason}",
+  "@dlProofFailed": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "dlDiscard": "حذف",
+  "dlSendNow": "إرسال الآن",
+  "dlShowProofs": "عرض الإثباتات المسجلة",
+  "dlHideProofs": "إخفاء الإثباتات",
+  "dlMarkInTransit": "الشحنة في الطريق",
+  "dlArrivedDropoff": "وصلت إلى نقطة التسليم",
+  "dlReportAttempt": "تعذر التسليم",
+  "dlAttemptTitle": "لماذا تعذر التسليم؟",
+  "dlAttemptBody": "سيُبلَّغ العميل ويقرر الخطوة التالية. أرفق صورة إن أمكن.",
+  "dlReasonRequired": "اكتب السبب (مطلوب)",
+  "dlReasonOptional": "ملاحظات (اختيارية)",
+  "dlAddEvidence": "إضافة صورة كدليل",
+  "dlAttemptSend": "إرسال البلاغ",
+  "dlResolveButton": "قرار ما بعد تعذر التسليم",
+  "dlResolveTitle": "ماذا تفعل بالشحنة؟",
+  "dlResolveBody": "اختر إعادة المحاولة أو إرجاعها للمرسل أو تحويل الحالة للعمليات.",
+  "dlResolveNothing": "لا توجد محاولة تنتظر القرار.",
+  "dlContactsTitle": "جهات الاتصال",
+  "dlRoleSender": "المرسل",
+  "dlRoleRecipient": "المستلم",
+  "dlRolePickup": "جهة الاتصال عند التحميل",
+  "dlRoleDropoff": "جهة الاتصال عند التسليم",
+  "dlStopsTitle": "محطات الرحلة",
+  "dlStopNumber": "المحطة {number}",
+  "@dlStopNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "dlNextStop": "التالية",
+  "dlLoadTitle": "الحمولة",
+  "dlLoadWeight": "الوزن: {kg} كجم",
+  "@dlLoadWeight": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "dlLoadVolume": "الحجم: {volume} م³",
+  "@dlLoadVolume": {
+    "placeholders": {
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+  "dlFileVideo": "فيديو",
+  "dlFileDocument": "مستند",
+  "dadjScopeItemLine": "بند الاتفاق: {item}",
+  "@dadjScopeItemLine": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "dadjHelpersLine": "{count} عمال",
+  "@dadjHelpersLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dadjFloorsLine": "{count} أدوار",
+  "@dadjFloorsLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dadjTypeHelper": "عامل إضافي",
+  "dadjTypeStairs": "سلالم إضافية",
+  "dadjHelpersCount": "عدد العمال الإضافيين",
+  "dadjFloorsCount": "عدد الأدوار الإضافية",
+  "dadjReceiptRef": "رقم الإيصال"
 }

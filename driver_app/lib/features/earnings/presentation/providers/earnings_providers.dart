@@ -54,6 +54,15 @@ String moneyErrorText(AppLocalizations l10n, Object error, {String Function(Stri
       return l10n.dadjErrEvidence;
     case 'adjustment_type_not_allowed':
       return l10n.dadjErrType;
+    case 'adjustment_scope_item_required':
+    case 'adjustment_scope_item_invalid':
+      return l10n.dadjErrScopeItem;
+    case 'adjustment_within_scope':
+      return l10n.dadjErrWithinScope;
+    case 'adjustment_floors_required':
+      return l10n.dadjErrFloors;
+    case 'adjustment_helpers_invalid':
+      return l10n.dadjErrHelpers;
     case 'adjustment_not_pending':
     case 'adjustment_expired':
       return l10n.dadjErrNotPending;

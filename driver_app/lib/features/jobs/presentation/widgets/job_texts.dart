@@ -176,6 +176,60 @@ String jobErrorText(AppLocalizations l10n, Object error) {
       return l10n.jbErrRatingClosed;
     case 'rating_already_submitted':
       return l10n.jbErrRatingDone;
+    case 'offer_scope_required':
+      return l10n.jbErrScopeRequired;
+    case 'offer_scope_invalid':
+      return l10n.jbErrScopeInvalid;
+    case 'offer_scope_vehicle_mismatch':
+      return l10n.jbErrScopeVehicle;
+    case 'offer_vehicle_capacity_insufficient':
+      final shortfalls = error.meta['shortfalls'];
+      final list = shortfalls is List ? shortfalls.map((e) => '$e').toList() : const <String>[];
+      if (list.contains('payload') && list.contains('volume')) return l10n.jbErrCapacityBoth;
+      if (list.contains('volume')) return l10n.jbErrCapacityVolume;
+      if (list.contains('payload')) return l10n.jbErrCapacityPayload;
+      return l10n.jbErrCapacity;
+    case 'proof_not_allowed_now':
+      return l10n.dlErrProofNow;
+    case 'proof_already_recorded':
+      return l10n.dlErrProofDone;
+    case 'proof_limit_reached':
+      return l10n.dlErrProofLimit;
+    case 'proof_type_not_uploadable':
+    case 'proofs_not_supported':
+      return l10n.dlErrProofType;
+    case 'proof_checklist_invalid':
+      return l10n.dlErrChecklist;
+    case 'proof_weight_required':
+    case 'proof_weight_invalid':
+      return l10n.dlErrWeight;
+    case 'document_infected':
+      return l10n.dlErrInfected;
+    case 'file_scanner_unavailable':
+      return l10n.dlErrScanner;
+    case 'custody_transition_invalid':
+    case 'custody_not_active':
+    case 'custody_not_at_dropoff':
+      return l10n.dlErrCustody;
+    case 'recipient_otp_invalid':
+      final otpLeft = error.meta['attempts_remaining'];
+      return otpLeft is num ? l10n.dlErrOtpInvalidLeft(otpLeft.toInt()) : l10n.dlErrOtpInvalid;
+    case 'recipient_otp_locked':
+      return l10n.dlErrOtpLocked;
+    case 'recipient_otp_not_ready':
+    case 'recipient_otp_not_required':
+      return l10n.dlErrOtpNotReady;
+    case 'recipient_otp_resend_too_soon':
+      return l10n.dlErrOtpResendSoon;
+    case 'recipient_otp_resend_limit':
+      return l10n.dlErrOtpResendLimit;
+    case 'delivery_attempt_not_allowed':
+    case 'delivery_attempt_already_resolved':
+      return l10n.dlErrAttemptNotAllowed;
+    case 'delivery_attempts_exhausted':
+      return l10n.dlErrAttemptsExhausted;
+    case 'booking_recipient_otp_required':
+      return l10n.dlErrOtpRequired;
     case 'too_many_requests':
       return l10n.jbErrRateLimited;
     case 'account_suspended':
@@ -225,3 +279,10 @@ String formatDateTime(BuildContext context, DateTime time) =>
     DateFormat.yMMMd(Localizations.localeOf(context).toString())
         .add_jm()
         .format(time.toLocal());
+
+ScopeStrings scopeStrings(AppLocalizations l10n) => ScopeStrings(
+  included: l10n.scLegendIncluded,
+  excluded: l10n.scLegendExcluded,
+  atCost: l10n.scLegendAtCost,
+  title: l10n.scSummaryTitle,
+);

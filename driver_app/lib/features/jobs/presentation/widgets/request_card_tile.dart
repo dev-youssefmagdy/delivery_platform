@@ -180,8 +180,37 @@ class _RequestCardTileState extends ConsumerState<RequestCardTile> {
                 ),
               if (card.restrictedPickup)
                 StatusChip(label: l10n.jbRestrictedPickup, tone: ChipTone.warning),
+              if (card.load?.volumeM3 != null)
+                StatusChip(
+                  key: const Key('request-volume'),
+                  label: l10n.jbVolumeM3('${card.load!.volumeM3}'),
+                  tone: ChipTone.neutral,
+                ),
             ],
           ),
+          if (card.load?.windowStart != null)
+            _InfoRow(
+              icon: Icons.event_available_outlined,
+              text: l10n.jbPickupWindow(
+                formatDateTime(context, card.load!.windowStart!),
+                card.load!.windowEnd == null ? '' : formatDateTime(context, card.load!.windowEnd!),
+              ),
+            ),
+          if (card.requestedScopeSummary.isNotEmpty)
+            ExpansionTile(
+              key: const Key('request-scope'),
+              tilePadding: EdgeInsets.zero,
+              title: Text(l10n.jbRequestedScope),
+              children: [
+                ScopeSummaryList(
+                  lines: card.requestedScopeSummary,
+                  scope: card.requestedScope,
+                  strings: scopeStrings(l10n),
+                  showTitle: false,
+                  dense: true,
+                ),
+              ],
+            ),
           const SizedBox(height: AppSpacing.md),
           if (offer != null && offer.isPending) ...[
             Container(
@@ -228,6 +257,15 @@ class _RequestCardTileState extends ConsumerState<RequestCardTile> {
               ],
             ),
           ] else ...[
+            if (card.scopeRequired)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.xs),
+                child: Text(
+                  l10n.jbAcceptScopeNote,
+                  key: const Key('request-accept-note'),
+                  style: theme.textTheme.bodySmall,
+                ),
+              ),
             AppButton(
               key: const Key('request-accept'),
               label: l10n.jbAcceptFare,

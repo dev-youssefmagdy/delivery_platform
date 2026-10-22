@@ -1,3 +1,4 @@
+import 'package:platform_core/platform_core.dart';
 import '../entities/job_entities.dart';
 
 /// Everything the driver does with requests, offers and jobs. Every write
@@ -23,7 +24,12 @@ abstract interface class JobRepository {
     required String idempotencyKey,
     String? currency,
     int? etaMinutes,
+    Map<String, Object?>? scope,
   });
+
+  /// Options, bounds and vehicle class of the scope builder
+  /// (`GET /provider/offer-scope`).
+  Future<ScopeTemplate> offerScope();
 
   Future<void> withdrawOffer(String offerId);
 

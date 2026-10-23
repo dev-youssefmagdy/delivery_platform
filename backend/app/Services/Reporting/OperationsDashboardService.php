@@ -86,7 +86,7 @@ final class OperationsDashboardService
      * @param array<string, mixed> $live
      * @param array<string, CarbonInterface|null> $asOf
      */
-    private function tile(KpiKey $key, ReportFilterData $filters, array $totals, array $previous, array $finance, array $financePrevious, array $live, string $currency, array $asOf): ?KpiTile
+    private function tile(KpiKey $key, ReportFilterData $filters, array $totals, array $previous, array $finance, array $financePrevious, array $live, string $currency, array $asOf): KpiTile
     {
         $ratio = static fn (array $data, string $numerator, string $denominator): ?float => ($data[$denominator] ?? 0) > 0 ? round(100 * ($data[$numerator] ?? 0) / $data[$denominator], 1) : null;
         $cancelled = static fn (array $data): int => ($data['cancelled_customer'] ?? 0) + ($data['cancelled_provider'] ?? 0) + ($data['cancelled_operations'] ?? 0);
@@ -216,7 +216,7 @@ final class OperationsDashboardService
     /**
      * Link of the listing behind a KPI with its filters pre-applied (`?filters[...]`). Every key used here exists in the target filter DTO.
      */
-    private function drillDown(KpiKey $key, ReportingRange $range, ReportFilterData $filters): ?string
+    private function drillDown(KpiKey $key, ReportingRange $range, ReportFilterData $filters): string
     {
         $created = ['created_at' => ['from' => $range->from->toDateString(), 'to' => $range->to->toDateString()]];
         $scope = array_filter(['city_ids' => $filters->cityIds, 'zone_ids' => $filters->zoneIds, 'service_category_ids' => $filters->categoryIds]);

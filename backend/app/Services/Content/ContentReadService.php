@@ -80,7 +80,7 @@ final class ContentReadService
     public function banners(array $placements = [], ?BannerAudience $audience = null, ?string $locale = null): array
     {
         $locale = $this->locale($locale);
-        $key = 'banners:'.implode(',', array_map(static fn (BannerPlacement $placement): string => $placement->value, $placements)).':'.($audience?->value ?? '*').":{$locale}";
+        $key = 'banners:'.implode(',', array_map(static fn (BannerPlacement $placement): string => $placement->value, $placements)).':'.($audience->value ?? '*').":{$locale}";
 
         return $this->cache->remember($key, fn (): array => $this->content->liveBanners($placements, $audience, Carbon::now())
             ->map(fn (ContentBanner $banner): ?array => $this->bannerPayload($banner, $locale))
@@ -126,7 +126,7 @@ final class ContentReadService
     {
         $locale = $this->locale($locale);
 
-        return $this->cache->remember('articles:'.($type?->value ?? '*').":{$categorySlug}:{$limit}:{$locale}", fn (): array => $this->content->liveArticles($type, $categorySlug, $limit)
+        return $this->cache->remember('articles:'.($type->value ?? '*').":{$categorySlug}:{$limit}:{$locale}", fn (): array => $this->content->liveArticles($type, $categorySlug, $limit)
             ->map(fn (ContentArticle $article): ?array => $this->articlePayload($article, $locale, false))
             ->filter()
             ->values()
@@ -508,6 +508,6 @@ final class ContentReadService
 
     private function locale(?string $locale): string
     {
-        return Locale::tryFromValue($locale ?? app()->getLocale())?->value ?? Locale::default()->value;
+        return Locale::tryFromValue($locale ?? app()->getLocale())->value ?? Locale::default()->value;
     }
 }

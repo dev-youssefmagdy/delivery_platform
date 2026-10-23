@@ -72,7 +72,7 @@ final class CouponAttemptsDataTable extends AdminDataTable
         $table->addColumn('context', static fn (CouponAttempt $row): string => e($row->context->label()));
         $this->enumBadgeColumn($table, 'result');
         $table->addColumn('reason', static fn (CouponAttempt $row): string => e($row->reason()?->label() ?? $row->reason_code));
-        $table->addColumn('discount', static fn (CouponAttempt $row): string => $row->discount_minor === null ? '—' : e(app(\App\Support\Coupon\CouponPresenter::class)->money($row->discount_minor, $row->coupon?->currency ?? 'EGP')));
+        $table->addColumn('discount', static fn (CouponAttempt $row): string => $row->discount_minor === null ? '—' : e(app(\App\Support\Coupon\CouponPresenter::class)->money($row->discount_minor, $row->coupon->currency ?? 'EGP')));
         $this->rawColumn('discount');
         $this->dateColumn($table, 'created_at');
     }

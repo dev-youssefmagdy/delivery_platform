@@ -46,7 +46,7 @@ final class WalletLookup implements Lookup
             $owner = $account->owner;
             $user = $owner instanceof ProviderProfile ? $owner->user : ($owner instanceof User ? $owner : null);
             $phone = $user?->phone_e164;
-            $name = $user?->name ?? __('admin.ledger.accounts.unnamed');
+            $name = $user->name ?? __('admin.ledger.accounts.unnamed');
             $label = $name.($phone === null ? '' : ' · '.PhoneNumber::mask($phone)).' · '.$account->type->label().' · '.$account->currency;
 
             return new LookupOptionData($account->id, $label, ['uuid' => $account->uuid, 'kind' => $account->type === LedgerAccountType::ProviderWallet ? 'provider' : 'customer']);

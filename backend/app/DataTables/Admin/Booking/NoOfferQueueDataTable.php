@@ -79,7 +79,7 @@ final class NoOfferQueueDataTable extends AdminDataTable
             return (string) ($name[app()->getLocale()] ?? $name['ar'] ?? '—');
         });
         $this->enumBadgeColumn($table, 'status');
-        $this->userColumn($table, 'customer', static fn (Booking $booking): ?array => [
+        $this->userColumn($table, 'customer', static fn (Booking $booking): array => [
             $booking->customer->name ?? __('admin.customers.unnamed'),
             $booking->customer->phone_e164 === null ? null : PhoneNumber::mask($booking->customer->phone_e164),
         ]);

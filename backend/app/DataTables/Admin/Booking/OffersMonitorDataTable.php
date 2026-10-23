@@ -79,7 +79,7 @@ final class OffersMonitorDataTable extends AdminDataTable
         $table->editColumn('booking_code', static fn (Model $row): string => '<a href="'.e(route('admin.bookings.show', (string) $row->getAttribute('booking_uuid'))).'" class="font-medium text-brand-700 hover:underline ltr-only">'.e((string) $row->getAttribute('booking_code')).'</a>');
         $this->rawColumn('booking_code');
 
-        $this->userColumn($table, 'provider', static fn (BookingOffer $offer): ?array => [
+        $this->userColumn($table, 'provider', static fn (BookingOffer $offer): array => [
             $offer->providerProfile->user->name ?? __('admin.providers.unnamed'),
             $offer->providerProfile->user->phone_e164 === null ? null : PhoneNumber::mask($offer->providerProfile->user->phone_e164),
         ]);

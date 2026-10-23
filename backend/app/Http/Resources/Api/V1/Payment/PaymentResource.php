@@ -22,7 +22,7 @@ class PaymentResource extends JsonResource
     public function toArray(Request $request): array
     {
         $intent = $this->resource instanceof PaymentIntentResult ? $this->resource : null;
-        $payment = $intent?->payment ?? $this->resource;
+        $payment = $intent->payment ?? $this->resource;
         $payment->loadMissing(['booking:id,uuid', 'paymentMethod']);
 
         return [

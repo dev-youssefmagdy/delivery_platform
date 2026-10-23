@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Content\ContentWorkflowStatus;
 use App\Models\Concerns\HasContentWorkflow;
 use App\Support\Audit\Auditable;
 use Illuminate\Database\Eloquent\Model;
@@ -64,7 +65,10 @@ class ContentFaq extends Model
     protected function casts(): array
     {
         return [
-            ...self::workflowCasts(),
+            'status' => ContentWorkflowStatus::class,
+            'scheduled_at' => 'datetime',
+            'published_at' => 'datetime',
+            'lock_version' => 'integer',
             'sort_order' => 'integer',
             'fallback_to_ar' => 'boolean',
         ];

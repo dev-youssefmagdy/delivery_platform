@@ -25,7 +25,7 @@ abstract class SiteController extends Controller
 
     protected function locale(): string
     {
-        return Locale::tryFromValue(app()->getLocale())?->value ?? Locale::default()->value;
+        return Locale::tryFromValue(app()->getLocale())->value ?? Locale::default()->value;
     }
 
     /**

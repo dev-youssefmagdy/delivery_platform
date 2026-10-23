@@ -172,7 +172,7 @@ final class PersonalDataExporter
                 'coupon' => $reservation->coupon->code ?? $reservation->coupon->name,
                 'booking' => $reservation->booking?->code,
                 'status' => $reservation->status->value,
-                'discount_minor' => $reservation->redemption?->discount_minor ?? $reservation->hold_minor,
+                'discount_minor' => $reservation->redemption->discount_minor ?? $reservation->hold_minor,
                 'final' => $reservation->redemption !== null,
                 'currency' => $reservation->currency,
                 'reserved_at' => $reservation->reserved_at->toIso8601String(),

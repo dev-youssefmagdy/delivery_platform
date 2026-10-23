@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\Content\BannerAudience;
 use App\Enums\Content\BannerKind;
 use App\Enums\Content\BannerPlacement;
+use App\Enums\Content\ContentWorkflowStatus;
 use App\Models\Concerns\HasContentWorkflow;
 use App\Support\Audit\Auditable;
 use Illuminate\Database\Eloquent\Model;
@@ -61,7 +62,10 @@ class ContentBanner extends Model
     protected function casts(): array
     {
         return [
-            ...self::workflowCasts(),
+            'status' => ContentWorkflowStatus::class,
+            'scheduled_at' => 'datetime',
+            'published_at' => 'datetime',
+            'lock_version' => 'integer',
             'kind' => BannerKind::class,
             'placement' => BannerPlacement::class,
             'audience' => BannerAudience::class,

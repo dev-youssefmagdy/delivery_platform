@@ -55,7 +55,7 @@ final class BookingDispatchDataTable extends BookingTabDataTable
     {
         $table->only(['wave', 'provider', 'distance_m', 'notified_at', 'seen_at', 'response', 'responded_at']);
 
-        $this->userColumn($table, 'provider', static fn (DispatchRecipient $recipient): ?array => [
+        $this->userColumn($table, 'provider', static fn (DispatchRecipient $recipient): array => [
             $recipient->providerProfile->user->name ?? __('admin.providers.unnamed'),
             $recipient->providerProfile->user->phone_e164 === null ? null : PhoneNumber::mask($recipient->providerProfile->user->phone_e164),
         ]);

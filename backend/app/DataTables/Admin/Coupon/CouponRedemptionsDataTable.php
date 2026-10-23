@@ -72,7 +72,7 @@ class CouponRedemptionsDataTable extends AdminDataTable
         $table->only(['id', 'customer', 'booking', 'fare', 'discount', 'funding', 'status', 'redeemed_at', 'actions']);
         $money = fn (int $minor, string $currency): string => app(MoneyFormatter::class)->format(Money::of($minor, app(CurrencyRegistry::class)->get($currency)));
 
-        $this->userColumn($table, 'customer', static fn (CouponRedemption $row): ?array => [
+        $this->userColumn($table, 'customer', static fn (CouponRedemption $row): array => [
             $row->user->name ?? __('admin.customers.unnamed'),
             $row->user->phone_e164 === null ? null : PhoneNumber::mask($row->user->phone_e164),
         ]);

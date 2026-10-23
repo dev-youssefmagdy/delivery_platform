@@ -44,7 +44,7 @@ final class ReportChartService
             $series[] = [
                 'key' => $column,
                 'label' => (string) __("reporting.columns.{$column}"),
-                'data' => array_map(static fn (array $row): int|float|null => isset($row[$column]) ? (float) $row[$column] + 0 : null, $rows),
+                'data' => array_map(static fn (array $row): ?float => isset($row[$column]) ? (float) $row[$column] + 0 : null, $rows),
                 'slot' => $index + 1,
             ];
         }

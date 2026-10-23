@@ -14,7 +14,7 @@ final class ContentMediaLookup implements Lookup
 {
     public function __construct(private readonly ContentMediaRepositoryInterface $media) {}
 
-    public function permission(): ?AdminPermission
+    public function permission(): AdminPermission
     {
         return AdminPermission::ContentManage;
     }

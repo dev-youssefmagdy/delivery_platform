@@ -242,6 +242,6 @@ final class NotificationService
     {
         $preferred = $recipient instanceof HasLocalePreference ? $recipient->preferredLocale() : null;
 
-        return Locale::tryFromValue($preferred)?->value ?? Locale::default()->value;
+        return Locale::tryFromValue($preferred)->value ?? Locale::default()->value;
     }
 }

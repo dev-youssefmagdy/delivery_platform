@@ -25,7 +25,7 @@ final class RefundPostingBuilder
     public function reverse(array $original, int $gatewayAccountId, Money $collected, Money $refund): array
     {
         if ($refund->equals($collected)) {
-            return array_values(array_map(static fn (JournalLineData $line): JournalLineData => $line->reversed(), $original));
+            return array_map(static fn (JournalLineData $line): JournalLineData => $line->reversed(), $original);
         }
 
         $gatewayLine = null;

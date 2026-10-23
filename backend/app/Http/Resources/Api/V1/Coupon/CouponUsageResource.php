@@ -19,7 +19,7 @@ class CouponUsageResource extends JsonResource
     public function toArray(Request $request): array
     {
         $reservation = $this->resource;
-        $amount = $reservation->redemption?->discount_minor ?? $reservation->hold_minor;
+        $amount = $reservation->redemption->discount_minor ?? $reservation->hold_minor;
 
         return [
             'id' => $reservation->uuid,

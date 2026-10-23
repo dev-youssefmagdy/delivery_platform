@@ -33,7 +33,7 @@ final class CatalogController extends Controller
     {
         if ($request->point() === null) {
             return ApiResponse::success(data: $this->cached(
-                'categories.'.app()->getLocale().'.'.($request->bookingType()?->value ?? 'all').'.'.($request->familyId() ?? 'all'),
+                'categories.'.app()->getLocale().'.'.($request->bookingType()->value ?? 'all').'.'.($request->familyId() ?? 'all'),
                 fn (): string => ServiceCategoryResource::collection($this->catalog->categories($request->bookingType(), $request->familyId())->categories)->toJson(),
             ));
         }

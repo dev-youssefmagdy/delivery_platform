@@ -42,7 +42,7 @@ class ProviderOfferResource extends JsonResource
             'version' => $version?->version,
             'revision_count' => $offer->revision_count,
             'note' => $version?->note,
-            'scope' => ($version?->scope ?? []) === [] ? new stdClass : $version?->scope,
+            'scope' => ($version->scope ?? []) === [] ? new stdClass : $version?->scope,
             'scope_summary' => app(\App\Services\Scope\OfferScopeService::class)->summary($version?->scope),
             'eta_seconds' => $offer->eta_seconds,
             'distance_m' => $offer->distance_m,

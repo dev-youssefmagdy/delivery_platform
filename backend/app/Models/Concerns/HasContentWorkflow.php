@@ -72,17 +72,4 @@ trait HasContentWorkflow
     {
         return $query->where($this->qualifyColumn('status'), ContentWorkflowStatus::Published->value);
     }
-
-    /**
-     * @return array<string, string>
-     */
-    public static function workflowCasts(): array
-    {
-        return [
-            'status' => ContentWorkflowStatus::class,
-            'scheduled_at' => 'datetime',
-            'published_at' => 'datetime',
-            'lock_version' => 'integer',
-        ];
-    }
 }

@@ -25,7 +25,7 @@ class ReportResource extends JsonResource
 
         return [
             'id' => $ticket->uuid,
-            'category' => $category?->value ?? $ticket->category->value,
+            'category' => $category->value ?? $ticket->category->value,
             'category_label' => $category?->label() ?? $ticket->category->label(),
             'status' => $status,
             'status_label' => __("enums.report_status.{$status}"),

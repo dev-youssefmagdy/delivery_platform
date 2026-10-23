@@ -43,7 +43,7 @@ enum NotificationCategory: string implements HasLabel
      */
     public static function forUsers(): array
     {
-        return array_values(array_filter(self::cases(), static fn (self $category): bool => $category !== self::System));
+        return array_filter(self::cases(), static fn (self $category): bool => $category !== self::System);
     }
 
     /**

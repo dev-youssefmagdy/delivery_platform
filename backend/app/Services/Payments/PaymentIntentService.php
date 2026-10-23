@@ -236,7 +236,7 @@ final class PaymentIntentService
     private function start(User $customer, Booking $booking, PaymentGateway $gateway, PaymentKind $kind, Money $amount, StartPaymentData $data, PaymentMethodType $default, string $description): PaymentIntentResult
     {
         $saved = $this->methods->resolveOwned($customer, $data->paymentMethodId);
-        $type = $saved?->type ?? $data->methodType ?? $default;
+        $type = $saved->type ?? $data->methodType ?? $default;
 
         if (! in_array($type, [PaymentMethodType::Card, PaymentMethodType::MobileWallet], true)) {
             throw BusinessRuleViolation::make('payment_method_unsupported', 'payment_method');

@@ -35,7 +35,7 @@ final class CouponsDataTable extends AdminDataTable
         return self::TABLE_ID;
     }
 
-    public function exportPermission(): ?AdminPermission
+    public function exportPermission(): AdminPermission
     {
         return AdminPermission::CouponsExport;
     }

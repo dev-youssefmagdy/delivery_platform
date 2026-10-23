@@ -104,6 +104,6 @@ class ReferralRelationship extends Model
      */
     public function flagKeys(): array
     {
-        return array_values(array_map(static fn (array $flag): string => $flag['flag'], $this->fraud_flags ?? []));
+        return array_map(static fn (array $flag): string => $flag['flag'], $this->fraud_flags ?? []);
     }
 }

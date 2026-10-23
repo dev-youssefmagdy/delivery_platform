@@ -217,7 +217,7 @@ final class ReferralRepository implements ReferralRepositoryInterface
     public function campaignTotals(int $campaignId): array
     {
         $rows = ReferralRelationship::query()->where('campaign_id', $campaignId)->selectRaw('status, count(*) as total, sum(qualified_at is not null) as qualified')->groupBy('status')->get();
-        $by = static fn (RelationshipStatus $status): int => (int) ($rows->firstWhere('status', $status)?->total ?? 0);
+        $by = static fn (RelationshipStatus $status): int => (int) ($rows->firstWhere('status', $status)->total ?? 0);
 
         return [
             'relationships' => (int) $rows->sum('total'),

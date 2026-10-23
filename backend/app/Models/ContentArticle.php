@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Content\ArticleType;
 use App\Enums\Content\BodyFormat;
+use App\Enums\Content\ContentWorkflowStatus;
 use App\Models\Concerns\HasContentWorkflow;
 use App\Support\Audit\Auditable;
 use Illuminate\Database\Eloquent\Model;
@@ -75,7 +76,10 @@ class ContentArticle extends Model
     protected function casts(): array
     {
         return [
-            ...self::workflowCasts(),
+            'status' => ContentWorkflowStatus::class,
+            'scheduled_at' => 'datetime',
+            'published_at' => 'datetime',
+            'lock_version' => 'integer',
             'type' => ArticleType::class,
             'body_format' => BodyFormat::class,
             'sort_order' => 'integer',

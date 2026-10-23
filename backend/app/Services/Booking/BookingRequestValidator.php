@@ -98,7 +98,7 @@ final class BookingRequestValidator
         $weight = $this->weightKg($snapshot, $details);
         $volume = LoadDetails::volumeM3($details);
         $this->assertCapacity($passengers, $luggage, $weight, $snapshot, $volume);
-        [$windowStart, $windowEnd] = LoadDetails::pickupWindow($details, $area->city?->timezone ?? (string) config('app.timezone'));
+        [$windowStart, $windowEnd] = LoadDetails::pickupWindow($details, $area->city->timezone ?? (string) config('app.timezone'));
         $this->assertPickupWindow($windowStart, $windowEnd, $now);
         /** @var list<array<string, mixed>> $schemaFields */
         $schemaFields = (array) ($snapshot['form_schema']['fields'] ?? []);

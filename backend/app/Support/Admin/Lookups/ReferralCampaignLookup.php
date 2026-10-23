@@ -14,7 +14,7 @@ final class ReferralCampaignLookup implements Lookup
 {
     public function __construct(private readonly ReferralRepositoryInterface $referrals) {}
 
-    public function permission(): ?AdminPermission
+    public function permission(): AdminPermission
     {
         return AdminPermission::ReferralsView;
     }

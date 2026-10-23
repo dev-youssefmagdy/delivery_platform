@@ -153,8 +153,8 @@ final class GrowthViewService
      */
     private function campaignView(IncentiveCampaign $campaign, ?IncentiveProgress $progress): array
     {
-        $jobs = $progress?->completed_jobs ?? 0;
-        $awards = $progress?->awards_count ?? 0;
+        $jobs = $progress->completed_jobs ?? 0;
+        $awards = $progress->awards_count ?? 0;
         $done = $awards >= $campaign->max_awards_per_provider;
 
         return [

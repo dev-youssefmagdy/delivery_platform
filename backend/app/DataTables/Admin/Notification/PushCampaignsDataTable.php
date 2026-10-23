@@ -64,7 +64,7 @@ final class PushCampaignsDataTable extends AdminDataTable
         $table->editColumn('audience', static fn (Model $row): string => $row instanceof PushCampaign ? e($row->audience->label()) : '');
         $this->enumBadgeColumn($table, 'status');
         $table->editColumn('scheduled_at', fn (Model $row): string => $row instanceof PushCampaign && $row->scheduled_at !== null ? $this->formatDate($row->scheduled_at) : '—');
-        $table->addColumn('created_by', static fn (PushCampaign $campaign): string => e($campaign->createdBy?->name ?? '—'));
+        $table->addColumn('created_by', static fn (PushCampaign $campaign): string => e($campaign->createdBy->name ?? '—'));
         $this->dateColumn($table, 'created_at');
 
         $this->actionsColumn($table, static fn (PushCampaign $campaign): array => [

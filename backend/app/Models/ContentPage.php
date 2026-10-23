@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Content\BodyFormat;
+use App\Enums\Content\ContentWorkflowStatus;
 use App\Enums\Content\PageKind;
 use App\Models\Concerns\HasContentWorkflow;
 use App\Support\Audit\Auditable;
@@ -83,7 +84,10 @@ class ContentPage extends Model
     protected function casts(): array
     {
         return [
-            ...self::workflowCasts(),
+            'status' => ContentWorkflowStatus::class,
+            'scheduled_at' => 'datetime',
+            'published_at' => 'datetime',
+            'lock_version' => 'integer',
             'kind' => PageKind::class,
             'body_format' => BodyFormat::class,
             'blocks' => 'array',

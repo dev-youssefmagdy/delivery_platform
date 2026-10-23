@@ -369,7 +369,7 @@ final class OfferSubmissionService
     private function result(Booking $booking, BookingOffer $offer, CarbonImmutable $now, bool $replayed, bool $revision): OfferSubmissionResult
     {
         $offer->loadMissing(['currentVersion', 'booking']);
-        $amount = (int) ($offer->currentVersion?->amount_minor ?? 0);
+        $amount = (int) ($offer->currentVersion->amount_minor ?? 0);
 
         return new OfferSubmissionResult(
             $this->offers->loadCard($offer),

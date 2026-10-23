@@ -77,7 +77,7 @@ class SafetyIncidentsDataTable extends AdminDataTable
         $this->enumBadgeColumn($table, 'status');
         $table->addColumn('reporter', static fn (SafetyIncident $incident): string => e(($incident->reporter->name ?? '—').' · '.$incident->reporter_type->label()));
         $table->addColumn('booking', static fn (SafetyIncident $incident): string => $incident->booking === null ? '—' : e($incident->booking->code));
-        $table->addColumn('assignee', static fn (SafetyIncident $incident): string => e($incident->assignedAdmin?->name ?? '—'));
+        $table->addColumn('assignee', static fn (SafetyIncident $incident): string => e($incident->assignedAdmin->name ?? '—'));
         $table->editColumn('sla_due_at', function (Model $row): string {
             if (! $row instanceof SafetyIncident || $row->sla_due_at === null) {
                 return '—';

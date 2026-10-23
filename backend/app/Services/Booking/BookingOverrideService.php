@@ -148,7 +148,7 @@ final class BookingOverrideService
                 feeDecision: $decision,
             ));
 
-            return ['fee_decision' => $fee->value, 'fee_minor' => $decision?->feeMinor ?? 0];
+            return ['fee_decision' => $fee->value, 'fee_minor' => $decision->feeMinor ?? 0];
         });
     }
 

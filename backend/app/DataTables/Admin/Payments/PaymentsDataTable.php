@@ -77,7 +77,7 @@ class PaymentsDataTable extends AdminDataTable
         $this->rawColumn('payment');
         $table->addColumn('booking', static fn (Payment $payment): string => '<a href="'.e(route('admin.bookings.show', $payment->booking->uuid)).'" class="ltr-only text-brand-700 hover:underline">'.e($payment->booking->code).'</a>');
         $this->rawColumn('booking');
-        $this->userColumn($table, 'customer', static fn (Payment $payment): ?array => [
+        $this->userColumn($table, 'customer', static fn (Payment $payment): array => [
             $payment->user->name ?? __('admin.customers.unnamed'),
             $payment->user->phone_e164 === null ? null : PhoneNumber::mask($payment->user->phone_e164),
         ]);

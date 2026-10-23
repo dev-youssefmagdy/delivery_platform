@@ -52,7 +52,7 @@ final class CouponDefinitionFactory
         $exclusions = [];
 
         foreach (['service_category_ids', 'vehicle_category_ids'] as $key) {
-            $exclusions[$key] = array_values(array_map('intval', (array) ($coupon->exclusions[$key] ?? [])));
+            $exclusions[$key] = array_map('intval', (array) ($coupon->exclusions[$key] ?? []));
         }
 
         return new CouponDefinition(
@@ -68,7 +68,7 @@ final class CouponDefinitionFactory
             exclusions: $exclusions,
             segments: array_values(array_filter(array_map(static fn (mixed $value): ?CouponSegment => CouponSegment::tryFrom((string) $value), (array) $coupon->segments))),
             paymentMethods: array_values(array_filter(array_map(static fn (mixed $value): ?PaymentMethodType => PaymentMethodType::tryFrom((string) $value), (array) $coupon->payment_methods))),
-            schedule: array_values(array_map(static fn (array $window): array => ['day' => (int) $window['day'], 'from' => (string) $window['from'], 'to' => (string) $window['to']], (array) $coupon->schedule)),
+            schedule: array_map(static fn (array $window): array => ['day' => (int) $window['day'], 'from' => (string) $window['from'], 'to' => (string) $window['to']], (array) $coupon->schedule),
             perCustomerLimit: $coupon->per_customer_limit,
             globalLimit: $coupon->global_limit,
             budgetMinor: $coupon->budget_minor,

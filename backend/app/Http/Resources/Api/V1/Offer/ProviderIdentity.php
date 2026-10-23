@@ -57,7 +57,7 @@ final class ProviderIdentity
             'year' => $vehicle->year,
             'color' => $vehicle->color,
             'plate' => $showPlate ? $vehicle->plate_display : null,
-            'capabilities' => array_values($vehicle->capabilities),
+            'capabilities' => $vehicle->capabilities,
             'passenger_capacity' => $vehicle->passenger_capacity,
         ];
     }

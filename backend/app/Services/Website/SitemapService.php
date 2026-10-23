@@ -143,7 +143,7 @@ final class SitemapService
      */
     private function slugs(PageKind $kind): array
     {
-        return array_values(array_map(static fn (array $page): string => (string) $page['slug'], $this->content->pages($kind, Locale::default()->value)));
+        return array_map(static fn (array $page): string => (string) $page['slug'], $this->content->pages($kind, Locale::default()->value));
     }
 
     /**
@@ -151,7 +151,7 @@ final class SitemapService
      */
     private function articleSlugs(ArticleType $type): array
     {
-        return array_values(array_map(static fn (array $article): string => (string) $article['slug'], $this->content->articles($type, null, 1000, Locale::default()->value)));
+        return array_map(static fn (array $article): string => (string) $article['slug'], $this->content->articles($type, null, 1000, Locale::default()->value));
     }
 
     /**

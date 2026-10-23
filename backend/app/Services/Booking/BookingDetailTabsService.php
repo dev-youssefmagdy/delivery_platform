@@ -159,7 +159,7 @@ final class BookingDetailTabsService
         return $this->ratings->forBooking($booking->id)->map(fn (BookingRating $rating): array => [
             'from' => ActorType::tryFrom($rating->rater_type)?->label() ?? $rating->rater_type,
             'stars' => $rating->stars,
-            'tags' => array_values((array) ($rating->tags ?? [])),
+            'tags' => (array) ($rating->tags ?? []),
             'comment' => $rating->comment,
             'status' => $rating->moderation_status->label(),
             'time' => $this->time($rating->created_at),

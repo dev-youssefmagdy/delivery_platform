@@ -19,7 +19,7 @@ final class BookingItemRepository implements BookingItemRepositoryInterface
     {
         BookingItem::query()->where('booking_id', $booking->id)->delete();
 
-        foreach (array_values($items) as $position => $item) {
+        foreach ($items as $position => $item) {
             BookingItem::query()->create($item + ['booking_id' => $booking->id, 'position' => $position]);
         }
     }

@@ -83,7 +83,7 @@ class SupportTicketsDataTable extends AdminDataTable
         $this->enumBadgeColumn($table, 'status');
         $table->addColumn('requester', static fn (SupportTicket $ticket): string => e((($ticket->source === \App\Enums\Support\TicketSource::Website ? ($ticket->context['contact']['name'] ?? null) : $ticket->user->name) ?? '—').' · '.($ticket->source === \App\Enums\Support\TicketSource::Website ? $ticket->source->label() : $ticket->app->label())));
         $table->addColumn('booking', static fn (SupportTicket $ticket): string => $ticket->booking === null ? '—' : e($ticket->booking->code));
-        $table->addColumn('assignee', static fn (SupportTicket $ticket): string => e($ticket->assignedAdmin?->name ?? '—'));
+        $table->addColumn('assignee', static fn (SupportTicket $ticket): string => e($ticket->assignedAdmin->name ?? '—'));
         $table->editColumn('group', static fn (Model $row): string => $row instanceof SupportTicket ? e($row->group->label()) : '');
         $table->editColumn('sla_due_at', function (Model $row): string {
             if (! $row instanceof SupportTicket || $row->sla_due_at === null) {

@@ -144,7 +144,7 @@ final class RatingModerationService
 
             if ($user !== null && ! $user->isAnonymised()) {
                 $app = $rating->rater_type === ActorType::Provider->value ? ClientApp::Provider : ClientApp::Customer;
-                $this->party->user($user, $app, NotificationEvent::ReviewHidden, $rating->uuid.':'.($rating->moderated_at?->timestamp ?? 0), [], $rating->uuid);
+                $this->party->user($user, $app, NotificationEvent::ReviewHidden, $rating->uuid.':'.($rating->moderated_at->timestamp ?? 0), [], $rating->uuid);
             }
         } catch (Throwable $e) {
             report($e);

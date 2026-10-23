@@ -180,8 +180,8 @@ final class FeatureFlagService
         $rules = $this->cache->remember(self::CACHE_KEY, self::CACHE_TTL_SECONDS, fn (): array => $this->flags->allKeyed()
             ->map(static fn (FeatureFlag $flag): array => [
                 'enabled' => $flag->enabled,
-                'apps' => array_values($flag->apps ?? []),
-                'city_ids' => array_values(array_map('intval', $flag->city_ids ?? [])),
+                'apps' => $flag->apps ?? [],
+                'city_ids' => array_map('intval', $flag->city_ids ?? []),
                 'rollout_percent' => $flag->rollout_percent,
             ])->all());
 

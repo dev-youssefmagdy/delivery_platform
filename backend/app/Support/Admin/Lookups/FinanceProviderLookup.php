@@ -16,7 +16,7 @@ final class FinanceProviderLookup implements Lookup
 {
     public function __construct(private readonly ProviderProfileRepositoryInterface $providers) {}
 
-    public function permission(): ?AdminPermission
+    public function permission(): AdminPermission
     {
         // Either permission is enough; the check below enforces it per request through the registry's permission() value.
         return auth('admin')->user()?->can(AdminPermission::PayoutsView->value) ? AdminPermission::PayoutsView : AdminPermission::FinanceView;

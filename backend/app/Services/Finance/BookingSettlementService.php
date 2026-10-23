@@ -89,8 +89,8 @@ final class BookingSettlementService
         return $this->calculator->calculate(new PriceBreakdownInput(
             agreedFare: $agreed,
             addons: Money::zero($currency),
-            discount: $coupon?->amount ?? Money::zero($currency),
-            funding: $coupon?->funding ?? DiscountFundingSplit::of(DiscountFunding::Platform),
+            discount: $coupon->amount ?? Money::zero($currency),
+            funding: $coupon->funding ?? DiscountFundingSplit::of(DiscountFunding::Platform),
             customerFee: Money::of($this->settings->int(SettingKey::CustomerServiceFeeMinor), $currency),
             taxRateBp: $this->settings->int(SettingKey::TaxRateBasisPoints),
             tip: $tip ?? Money::zero($currency),

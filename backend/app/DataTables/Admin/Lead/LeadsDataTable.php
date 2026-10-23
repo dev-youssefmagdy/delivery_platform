@@ -63,8 +63,8 @@ final class LeadsDataTable extends AdminDataTable
         $this->rawColumn('reference');
         $table->addColumn('contact', static fn (Lead $lead): string => e($lead->name).' <span dir="ltr" class="text-xs text-slate-500">'.e(PhoneNumber::mask($lead->phone_e164)).'</span>');
         $this->rawColumn('contact');
-        $table->addColumn('city', static fn (Lead $lead): string => e($lead->city?->name ?? $lead->city_other ?? '—'));
-        $table->addColumn('service', static fn (Lead $lead): string => e($lead->serviceCategory?->name ?? '—'));
+        $table->addColumn('city', static fn (Lead $lead): string => e($lead->city->name ?? $lead->city_other ?? '—'));
+        $table->addColumn('service', static fn (Lead $lead): string => e($lead->serviceCategory->name ?? '—'));
         $this->dateColumn($table, 'created_at');
         $this->enumBadgeColumn($table, 'status');
 

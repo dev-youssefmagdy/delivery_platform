@@ -22,7 +22,7 @@ final class SiteChrome
      */
     public function build(?string $locale = null): array
     {
-        $locale = Locale::tryFromValue($locale ?? app()->getLocale())?->value ?? Locale::default()->value;
+        $locale = Locale::tryFromValue($locale ?? app()->getLocale())->value ?? Locale::default()->value;
         $menus = $this->content->menus($locale);
         $banners = $this->content->banners([BannerPlacement::WebTopBar], null, $locale);
 

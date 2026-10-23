@@ -196,7 +196,7 @@ final class PushCampaignService
         $pairs = 0;
 
         foreach ($this->preferences->optedInUsersWithDevice(NotificationCategory::Marketing, NotificationChannel::Push, $apps) as $user) {
-            [$title, $body] = $campaign->contentFor(Locale::tryFromValue($user->preferredLocale())?->value ?? Locale::default()->value);
+            [$title, $body] = $campaign->contentFor(Locale::tryFromValue($user->preferredLocale())->value ?? Locale::default()->value);
 
             foreach ($apps as $app) {
                 if ($this->devices->withPushToken($user, $app)->isEmpty()) {

@@ -63,7 +63,7 @@ final class BookingOffersDataTable extends BookingTabDataTable
     {
         $table->only(['provider', 'kind', 'status', 'amount', 'anomaly', 'created_at', 'versions', 'close_reason']);
 
-        $this->userColumn($table, 'provider', static fn (BookingOffer $offer): ?array => [
+        $this->userColumn($table, 'provider', static fn (BookingOffer $offer): array => [
             $offer->providerProfile->user->name ?? __('admin.providers.unnamed'),
             $offer->providerProfile->user->phone_e164 === null ? null : PhoneNumber::mask($offer->providerProfile->user->phone_e164),
         ]);

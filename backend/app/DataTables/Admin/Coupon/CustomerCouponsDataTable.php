@@ -70,7 +70,7 @@ final class CustomerCouponsDataTable extends AdminDataTable
         $table->addColumn('booking', static fn (CouponReservation $row): string => $row->booking === null ? '—' : '<a href="'.e(route('admin.bookings.show', $row->booking->uuid)).'" class="ltr-only text-brand-700 hover:underline">'.e($row->booking->code).'</a>');
         $this->rawColumn('booking');
         $this->enumBadgeColumn($table, 'status');
-        $table->addColumn('discount', static fn (CouponReservation $row): string => e($presenter->money($row->redemption?->discount_minor ?? $row->hold_minor, $row->currency)).($row->redemption === null ? ' <span class="text-xs text-slate-500">'.e(__('admin.coupons.customer_tab.held')).'</span>' : ''));
+        $table->addColumn('discount', static fn (CouponReservation $row): string => e($presenter->money($row->redemption->discount_minor ?? $row->hold_minor, $row->currency)).($row->redemption === null ? ' <span class="text-xs text-slate-500">'.e(__('admin.coupons.customer_tab.held')).'</span>' : ''));
         $this->rawColumn('discount');
         $this->dateColumn($table, 'reserved_at');
     }

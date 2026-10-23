@@ -54,8 +54,23 @@ return new class extends Migration
             $table->foreignId('service_category_id')->nullable()->constrained('service_categories')->nullOnDelete();
             $table->foreignId('city_id')->nullable()->constrained('cities')->nullOnDelete();
             $table->boolean('fallback_to_ar')->default(true);
-            $this->seo($table);
-            $this->workflow($table);
+            $table->json('seo_title')->nullable();
+            $table->json('seo_description')->nullable();
+            $table->json('og_title')->nullable();
+            $table->json('og_description')->nullable();
+            $table->foreignId('og_image_id')->nullable()->constrained('content_media')->nullOnDelete();
+            $table->string('canonical_url', 500)->nullable();
+            $table->boolean('noindex')->default(false);
+            $table->string('status', 16)->default('draft');
+            $table->timestamp('scheduled_at')->nullable();
+            $table->timestamp('published_at')->nullable();
+            $table->foreignId('published_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('created_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('updated_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->unsignedInteger('lock_version')->default(0);
+            $table->timestamps();
+
+            $table->index(['status', 'scheduled_at']);
 
             $table->index(['kind', 'status']);
         });
@@ -74,8 +89,23 @@ return new class extends Migration
             $table->foreignId('cover_media_id')->nullable()->constrained('content_media')->nullOnDelete();
             $table->unsignedSmallInteger('sort_order')->default(0);
             $table->boolean('fallback_to_ar')->default(true);
-            $this->seo($table);
-            $this->workflow($table);
+            $table->json('seo_title')->nullable();
+            $table->json('seo_description')->nullable();
+            $table->json('og_title')->nullable();
+            $table->json('og_description')->nullable();
+            $table->foreignId('og_image_id')->nullable()->constrained('content_media')->nullOnDelete();
+            $table->string('canonical_url', 500)->nullable();
+            $table->boolean('noindex')->default(false);
+            $table->string('status', 16)->default('draft');
+            $table->timestamp('scheduled_at')->nullable();
+            $table->timestamp('published_at')->nullable();
+            $table->foreignId('published_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('created_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('updated_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->unsignedInteger('lock_version')->default(0);
+            $table->timestamps();
+
+            $table->index(['status', 'scheduled_at']);
 
             $table->index(['type', 'status']);
         });
@@ -90,7 +120,16 @@ return new class extends Migration
             $table->json('answer_html')->nullable();
             $table->unsignedSmallInteger('sort_order')->default(0);
             $table->boolean('fallback_to_ar')->default(true);
-            $this->workflow($table);
+            $table->string('status', 16)->default('draft');
+            $table->timestamp('scheduled_at')->nullable();
+            $table->timestamp('published_at')->nullable();
+            $table->foreignId('published_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('created_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('updated_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->unsignedInteger('lock_version')->default(0);
+            $table->timestamps();
+
+            $table->index(['status', 'scheduled_at']);
 
             $table->index(['category_id', 'status']);
         });
@@ -110,7 +149,16 @@ return new class extends Migration
             $table->timestamp('ends_at')->nullable();
             $table->unsignedSmallInteger('sort_order')->default(0);
             $table->boolean('fallback_to_ar')->default(true);
-            $this->workflow($table);
+            $table->string('status', 16)->default('draft');
+            $table->timestamp('scheduled_at')->nullable();
+            $table->timestamp('published_at')->nullable();
+            $table->foreignId('published_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('created_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('updated_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->unsignedInteger('lock_version')->default(0);
+            $table->timestamps();
+
+            $table->index(['status', 'scheduled_at']);
 
             $table->index(['placement', 'status']);
         });
@@ -122,7 +170,16 @@ return new class extends Migration
             $table->json('title');
             $table->json('items');
             $table->boolean('fallback_to_ar')->default(true);
-            $this->workflow($table);
+            $table->string('status', 16)->default('draft');
+            $table->timestamp('scheduled_at')->nullable();
+            $table->timestamp('published_at')->nullable();
+            $table->foreignId('published_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('created_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('updated_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->unsignedInteger('lock_version')->default(0);
+            $table->timestamps();
+
+            $table->index(['status', 'scheduled_at']);
 
             $table->index(['location', 'status']);
         });
@@ -162,30 +219,5 @@ return new class extends Migration
         foreach (['content_revisions', 'content_app_links', 'content_menus', 'content_banners', 'content_faqs', 'content_articles', 'content_pages', 'content_categories', 'content_media'] as $table) {
             Schema::dropIfExists($table);
         }
-    }
-
-    private function workflow(Blueprint $table): void
-    {
-        $table->string('status', 16)->default('draft');
-        $table->timestamp('scheduled_at')->nullable();
-        $table->timestamp('published_at')->nullable();
-        $table->foreignId('published_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
-        $table->foreignId('created_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
-        $table->foreignId('updated_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
-        $table->unsignedInteger('lock_version')->default(0);
-        $table->timestamps();
-
-        $table->index(['status', 'scheduled_at']);
-    }
-
-    private function seo(Blueprint $table): void
-    {
-        $table->json('seo_title')->nullable();
-        $table->json('seo_description')->nullable();
-        $table->json('og_title')->nullable();
-        $table->json('og_description')->nullable();
-        $table->foreignId('og_image_id')->nullable()->constrained('content_media')->nullOnDelete();
-        $table->string('canonical_url', 500)->nullable();
-        $table->boolean('noindex')->default(false);
     }
 };

@@ -37,27 +37,27 @@ final class AppLinkController extends AdminController
         return $this->formResponse(__('content.created'))->redirect(route('admin.content-app-links.index'));
     }
 
-    public function edit(ContentAppLink $link): View
+    public function edit(ContentAppLink $contentAppLink): View
     {
-        return view('admin.content.app-links.form', ['link' => $link]);
+        return view('admin.content.app-links.form', ['link' => $contentAppLink]);
     }
 
-    public function update(SaveAppLinkRequest $request, ContentAppLink $link): AdminFormResponse
+    public function update(SaveAppLinkRequest $request, ContentAppLink $contentAppLink): AdminFormResponse
     {
-        $this->service->update($link, AppLinkData::fromRequest($request), $this->actor());
+        $this->service->update($contentAppLink, AppLinkData::fromRequest($request), $this->actor());
 
         return $this->formResponse(__('content.updated'))->redirect(route('admin.content-app-links.index'));
     }
 
-    public function destroy(DestroyContentRequest $request, ContentAppLink $link): AdminFormResponse
+    public function destroy(DestroyContentRequest $request, ContentAppLink $contentAppLink): AdminFormResponse
     {
-        $this->service->delete($link, $this->actor(), $request->reason());
+        $this->service->delete($contentAppLink, $this->actor(), $request->reason());
 
         return $this->formResponse(__('content.deleted'))->reloadTable(ContentAppLinksDataTable::TABLE_ID);
     }
 
-    public function activity(ContentAppLink $link, AuditTrailService $trail): View
+    public function activity(ContentAppLink $contentAppLink, AuditTrailService $trail): View
     {
-        return view('admin.partials.activity', ['logs' => $trail->latestFor($link)]);
+        return view('admin.partials.activity', ['logs' => $trail->latestFor($contentAppLink)]);
     }
 }

@@ -33,36 +33,36 @@ final class ArticleController extends AdminController
 
     public function store(SaveArticleRequest $request): AdminFormResponse
     {
-        $article = $this->service->create(ContentType::Article, ArticleData::fromRequest($request), $this->actor());
+        $contentArticle = $this->service->create(ContentType::Article, ArticleData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.created'))->redirect(route('admin.content-articles.show', $article));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-articles.show', $contentArticle));
     }
 
-    public function show(ContentArticle $article): View
+    public function show(ContentArticle $contentArticle): View
     {
-        return view('admin.content.articles.show', ['article' => $article->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'category', 'cover', 'ogImage'])]);
+        return view('admin.content.articles.show', ['article' => $contentArticle->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'category', 'cover', 'ogImage'])]);
     }
 
-    public function activity(ContentArticle $article, AuditTrailService $trail): View
+    public function activity(ContentArticle $contentArticle, AuditTrailService $trail): View
     {
-        return view('admin.partials.activity', ['logs' => $trail->latestFor($article)]);
+        return view('admin.partials.activity', ['logs' => $trail->latestFor($contentArticle)]);
     }
 
-    public function edit(ContentArticle $article): View
+    public function edit(ContentArticle $contentArticle): View
     {
-        return view('admin.content.articles.form', ['article' => $article->loadMissing(['category', 'cover', 'ogImage'])]);
+        return view('admin.content.articles.form', ['article' => $contentArticle->loadMissing(['category', 'cover', 'ogImage'])]);
     }
 
-    public function update(SaveArticleRequest $request, ContentArticle $article): AdminFormResponse
+    public function update(SaveArticleRequest $request, ContentArticle $contentArticle): AdminFormResponse
     {
-        $this->service->update($article, ArticleData::fromRequest($request), $this->actor());
+        $this->service->update($contentArticle, ArticleData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-articles.show', $article));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-articles.show', $contentArticle));
     }
 
-    public function destroy(DestroyContentRequest $request, ContentArticle $article): AdminFormResponse
+    public function destroy(DestroyContentRequest $request, ContentArticle $contentArticle): AdminFormResponse
     {
-        $this->service->delete($article, $this->actor(), $request->reason());
+        $this->service->delete($contentArticle, $this->actor(), $request->reason());
 
         $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentArticlesDataTable::TABLE_ID);
 

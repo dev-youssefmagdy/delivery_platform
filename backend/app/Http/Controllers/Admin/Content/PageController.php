@@ -35,36 +35,36 @@ final class PageController extends AdminController
 
     public function store(SavePageRequest $request): AdminFormResponse
     {
-        $page = $this->service->create(ContentType::Page, PageData::fromRequest($request), $this->actor());
+        $contentPage = $this->service->create(ContentType::Page, PageData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.created'))->redirect(route('admin.content-pages.show', $page));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-pages.show', $contentPage));
     }
 
-    public function show(ContentPage $page): View
+    public function show(ContentPage $contentPage): View
     {
-        return view('admin.content.pages.show', ['page' => $page->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'hero', 'ogImage', 'serviceCategory', 'city'])]);
+        return view('admin.content.pages.show', ['page' => $contentPage->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'hero', 'ogImage', 'serviceCategory', 'city'])]);
     }
 
-    public function activity(ContentPage $page, AuditTrailService $trail): View
+    public function activity(ContentPage $contentPage, AuditTrailService $trail): View
     {
-        return view('admin.partials.activity', ['logs' => $trail->latestFor($page)]);
+        return view('admin.partials.activity', ['logs' => $trail->latestFor($contentPage)]);
     }
 
-    public function edit(ContentPage $page): View
+    public function edit(ContentPage $contentPage): View
     {
-        return view('admin.content.pages.form', ['page' => $page->loadMissing(['hero', 'ogImage', 'serviceCategory', 'city'])]);
+        return view('admin.content.pages.form', ['page' => $contentPage->loadMissing(['hero', 'ogImage', 'serviceCategory', 'city'])]);
     }
 
-    public function update(SavePageRequest $request, ContentPage $page): AdminFormResponse
+    public function update(SavePageRequest $request, ContentPage $contentPage): AdminFormResponse
     {
-        $this->service->update($page, PageData::fromRequest($request), $this->actor());
+        $this->service->update($contentPage, PageData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-pages.show', $page));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-pages.show', $contentPage));
     }
 
-    public function destroy(DestroyContentRequest $request, ContentPage $page): AdminFormResponse
+    public function destroy(DestroyContentRequest $request, ContentPage $contentPage): AdminFormResponse
     {
-        $this->service->delete($page, $this->actor(), $request->reason());
+        $this->service->delete($contentPage, $this->actor(), $request->reason());
 
         $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentPagesDataTable::TABLE_ID);
 

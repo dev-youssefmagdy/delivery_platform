@@ -33,36 +33,36 @@ final class BannerController extends AdminController
 
     public function store(SaveBannerRequest $request): AdminFormResponse
     {
-        $banner = $this->service->create(ContentType::Banner, BannerData::fromRequest($request), $this->actor());
+        $contentBanner = $this->service->create(ContentType::Banner, BannerData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.created'))->redirect(route('admin.content-banners.show', $banner));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-banners.show', $contentBanner));
     }
 
-    public function show(ContentBanner $banner): View
+    public function show(ContentBanner $contentBanner): View
     {
-        return view('admin.content.banners.show', ['banner' => $banner->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'media'])]);
+        return view('admin.content.banners.show', ['banner' => $contentBanner->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'media'])]);
     }
 
-    public function activity(ContentBanner $banner, AuditTrailService $trail): View
+    public function activity(ContentBanner $contentBanner, AuditTrailService $trail): View
     {
-        return view('admin.partials.activity', ['logs' => $trail->latestFor($banner)]);
+        return view('admin.partials.activity', ['logs' => $trail->latestFor($contentBanner)]);
     }
 
-    public function edit(ContentBanner $banner): View
+    public function edit(ContentBanner $contentBanner): View
     {
-        return view('admin.content.banners.form', ['banner' => $banner->loadMissing(['media'])]);
+        return view('admin.content.banners.form', ['banner' => $contentBanner->loadMissing(['media'])]);
     }
 
-    public function update(SaveBannerRequest $request, ContentBanner $banner): AdminFormResponse
+    public function update(SaveBannerRequest $request, ContentBanner $contentBanner): AdminFormResponse
     {
-        $this->service->update($banner, BannerData::fromRequest($request), $this->actor());
+        $this->service->update($contentBanner, BannerData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-banners.show', $banner));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-banners.show', $contentBanner));
     }
 
-    public function destroy(DestroyContentRequest $request, ContentBanner $banner): AdminFormResponse
+    public function destroy(DestroyContentRequest $request, ContentBanner $contentBanner): AdminFormResponse
     {
-        $this->service->delete($banner, $this->actor(), $request->reason());
+        $this->service->delete($contentBanner, $this->actor(), $request->reason());
 
         $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentBannersDataTable::TABLE_ID);
 

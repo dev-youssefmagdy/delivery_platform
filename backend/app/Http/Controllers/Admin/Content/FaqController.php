@@ -33,36 +33,36 @@ final class FaqController extends AdminController
 
     public function store(SaveFaqRequest $request): AdminFormResponse
     {
-        $faq = $this->service->create(ContentType::Faq, FaqData::fromRequest($request), $this->actor());
+        $contentFaq = $this->service->create(ContentType::Faq, FaqData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.created'))->redirect(route('admin.content-faqs.show', $faq));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-faqs.show', $contentFaq));
     }
 
-    public function show(ContentFaq $faq): View
+    public function show(ContentFaq $contentFaq): View
     {
-        return view('admin.content.faqs.show', ['faq' => $faq->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'category', 'serviceCategory'])]);
+        return view('admin.content.faqs.show', ['faq' => $contentFaq->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'category', 'serviceCategory'])]);
     }
 
-    public function activity(ContentFaq $faq, AuditTrailService $trail): View
+    public function activity(ContentFaq $contentFaq, AuditTrailService $trail): View
     {
-        return view('admin.partials.activity', ['logs' => $trail->latestFor($faq)]);
+        return view('admin.partials.activity', ['logs' => $trail->latestFor($contentFaq)]);
     }
 
-    public function edit(ContentFaq $faq): View
+    public function edit(ContentFaq $contentFaq): View
     {
-        return view('admin.content.faqs.form', ['faq' => $faq->loadMissing(['category', 'serviceCategory'])]);
+        return view('admin.content.faqs.form', ['faq' => $contentFaq->loadMissing(['category', 'serviceCategory'])]);
     }
 
-    public function update(SaveFaqRequest $request, ContentFaq $faq): AdminFormResponse
+    public function update(SaveFaqRequest $request, ContentFaq $contentFaq): AdminFormResponse
     {
-        $this->service->update($faq, FaqData::fromRequest($request), $this->actor());
+        $this->service->update($contentFaq, FaqData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-faqs.show', $faq));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-faqs.show', $contentFaq));
     }
 
-    public function destroy(DestroyContentRequest $request, ContentFaq $faq): AdminFormResponse
+    public function destroy(DestroyContentRequest $request, ContentFaq $contentFaq): AdminFormResponse
     {
-        $this->service->delete($faq, $this->actor(), $request->reason());
+        $this->service->delete($contentFaq, $this->actor(), $request->reason());
 
         $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentFaqsDataTable::TABLE_ID);
 

@@ -37,27 +37,27 @@ final class CategoryController extends AdminController
         return $this->formResponse(__('content.created'))->redirect(route('admin.content-categories.index'));
     }
 
-    public function edit(ContentCategory $category): View
+    public function edit(ContentCategory $contentCategory): View
     {
-        return view('admin.content.categories.form', ['category' => $category]);
+        return view('admin.content.categories.form', ['category' => $contentCategory]);
     }
 
-    public function update(SaveCategoryRequest $request, ContentCategory $category): AdminFormResponse
+    public function update(SaveCategoryRequest $request, ContentCategory $contentCategory): AdminFormResponse
     {
-        $this->service->update($category, CategoryData::fromRequest($request), $this->actor());
+        $this->service->update($contentCategory, CategoryData::fromRequest($request), $this->actor());
 
         return $this->formResponse(__('content.updated'))->redirect(route('admin.content-categories.index'));
     }
 
-    public function destroy(DestroyContentRequest $request, ContentCategory $category): AdminFormResponse
+    public function destroy(DestroyContentRequest $request, ContentCategory $contentCategory): AdminFormResponse
     {
-        $this->service->delete($category, $this->actor(), $request->reason());
+        $this->service->delete($contentCategory, $this->actor(), $request->reason());
 
         return $this->formResponse(__('content.deleted'))->reloadTable(ContentCategoriesDataTable::TABLE_ID);
     }
 
-    public function activity(ContentCategory $category, AuditTrailService $trail): View
+    public function activity(ContentCategory $contentCategory, AuditTrailService $trail): View
     {
-        return view('admin.partials.activity', ['logs' => $trail->latestFor($category)]);
+        return view('admin.partials.activity', ['logs' => $trail->latestFor($contentCategory)]);
     }
 }

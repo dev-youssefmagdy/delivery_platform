@@ -33,36 +33,36 @@ final class MenuController extends AdminController
 
     public function store(SaveMenuRequest $request): AdminFormResponse
     {
-        $menu = $this->service->create(ContentType::Menu, MenuData::fromRequest($request), $this->actor());
+        $contentMenu = $this->service->create(ContentType::Menu, MenuData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.created'))->redirect(route('admin.content-menus.show', $menu));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-menus.show', $contentMenu));
     }
 
-    public function show(ContentMenu $menu): View
+    public function show(ContentMenu $contentMenu): View
     {
-        return view('admin.content.menus.show', ['menu' => $menu->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name'])]);
+        return view('admin.content.menus.show', ['menu' => $contentMenu->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name'])]);
     }
 
-    public function activity(ContentMenu $menu, AuditTrailService $trail): View
+    public function activity(ContentMenu $contentMenu, AuditTrailService $trail): View
     {
-        return view('admin.partials.activity', ['logs' => $trail->latestFor($menu)]);
+        return view('admin.partials.activity', ['logs' => $trail->latestFor($contentMenu)]);
     }
 
-    public function edit(ContentMenu $menu): View
+    public function edit(ContentMenu $contentMenu): View
     {
-        return view('admin.content.menus.form', ['menu' => $menu]);
+        return view('admin.content.menus.form', ['menu' => $contentMenu]);
     }
 
-    public function update(SaveMenuRequest $request, ContentMenu $menu): AdminFormResponse
+    public function update(SaveMenuRequest $request, ContentMenu $contentMenu): AdminFormResponse
     {
-        $this->service->update($menu, MenuData::fromRequest($request), $this->actor());
+        $this->service->update($contentMenu, MenuData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-menus.show', $menu));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-menus.show', $contentMenu));
     }
 
-    public function destroy(DestroyContentRequest $request, ContentMenu $menu): AdminFormResponse
+    public function destroy(DestroyContentRequest $request, ContentMenu $contentMenu): AdminFormResponse
     {
-        $this->service->delete($menu, $this->actor(), $request->reason());
+        $this->service->delete($contentMenu, $this->actor(), $request->reason());
 
         $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentMenusDataTable::TABLE_ID);
 

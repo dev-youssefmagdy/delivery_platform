@@ -225,7 +225,7 @@ class ReceiptSection extends StatelessWidget {
                 l10n.bkReceiptDistance,
                 Text(
                   l10n.bkKilometres(
-                    (receipt.plannedDistanceMeters! / 1000).toStringAsFixed(1),
+                    formatter.number(receipt.plannedDistanceMeters! / 1000, fractionDigits: 1),
                   ),
                 ),
               ),

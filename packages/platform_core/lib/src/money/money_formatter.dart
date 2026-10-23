@@ -54,6 +54,17 @@ class MoneyFormatter {
     return out.toString();
   }
 
+  /// Locale-aware plain number (ratings, distances, counts): the same digit style and decimal separator as [format],
+  /// so a screen never mixes Arabic-Indic and Western digits.
+  String number(num value, {int fractionDigits = 0}) {
+    final indic = _digitStyle == DigitStyle.arabicIndic;
+    final text = value.toStringAsFixed(fractionDigits);
+    return _applyDigits(indic ? text.replaceAll('.', '٫') : text);
+  }
+
+  /// Re-renders the digits of an already formatted string (dates, times) in the preferred style.
+  String localizeDigits(String input) => _applyDigits(input);
+
   String _applyDigits(String input) {
     if (_digitStyle == DigitStyle.western) return input;
     const indic = '٠١٢٣٤٥٦٧٨٩';

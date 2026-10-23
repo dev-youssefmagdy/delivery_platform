@@ -277,6 +277,7 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
               destination:
                   destination.title ?? destination.address ?? l10n.mapPinnedLocation,
               estimate: estimate,
+              formatter: formatter,
               onRetry: () => ref.invalidate(routeEstimateProvider(estimateArgs)),
             ),
             const SizedBox(height: AppSpacing.md),
@@ -433,12 +434,14 @@ class _RouteSummary extends StatelessWidget {
     required this.pickup,
     required this.destination,
     required this.estimate,
+    required this.formatter,
     required this.onRetry,
   });
 
   final String pickup;
   final String destination;
   final AsyncValue<RouteEstimate> estimate;
+  final MoneyFormatter formatter;
   final VoidCallback onRetry;
 
   @override
@@ -485,7 +488,7 @@ class _RouteSummary extends StatelessWidget {
               ),
               data: (e) => Text(
                 l10n.bkRouteFacts(
-                  (e.distanceMeters / 1000).toStringAsFixed(1),
+                  formatter.number(e.distanceMeters / 1000, fractionDigits: 1),
                   (e.durationSeconds / 60).ceil(),
                 ),
                 style: theme.textTheme.bodyMedium,

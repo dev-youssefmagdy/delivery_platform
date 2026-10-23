@@ -40,7 +40,7 @@ class OfferTile extends StatelessWidget {
     final facts = <String>[
       if (eta != null) l10n.bkOfferEta((eta / 60).ceil()),
       if (offer.distanceMeters != null)
-        l10n.bkOfferDistance((offer.distanceMeters! / 1000).toStringAsFixed(1)),
+        l10n.bkOfferDistance(formatter.number(offer.distanceMeters! / 1000, fractionDigits: 1)),
       if (provider != null && provider.completedJobs > 0)
         l10n.bkOfferTrips(provider.completedJobs),
     ];
@@ -107,11 +107,11 @@ class OfferTile extends StatelessWidget {
                   Text(
                     provider.ratingProvisional
                         ? l10n.bkOfferRatingNew(
-                            provider.ratingAverage.toStringAsFixed(1),
+                            formatter.number(provider.ratingAverage, fractionDigits: 1),
                             provider.ratingCount,
                           )
                         : l10n.bkOfferRating(
-                            provider.ratingAverage.toStringAsFixed(1),
+                            formatter.number(provider.ratingAverage, fractionDigits: 1),
                             provider.ratingCount,
                           ),
                     style: theme.textTheme.bodySmall,

@@ -335,7 +335,7 @@ class _ProviderCard extends StatelessWidget {
                   if (provider.ratingCount > 0)
                     Text(
                       l10n.bkOfferRating(
-                        provider.ratingAverage.toStringAsFixed(1),
+                        formatter.number(provider.ratingAverage, fractionDigits: 1),
                         provider.ratingCount,
                       ),
                       style: theme.textTheme.bodySmall,

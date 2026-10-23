@@ -285,7 +285,7 @@ class _JobViewState extends ConsumerState<JobView> {
                       job.customer.ratingCount > 0)
                     Text(
                       l10n.jbCustomerRating(
-                        job.customer.ratingAverage!.toStringAsFixed(1),
+                        formatter.number(job.customer.ratingAverage!, fractionDigits: 1),
                         job.customer.ratingCount,
                       ),
                     ),

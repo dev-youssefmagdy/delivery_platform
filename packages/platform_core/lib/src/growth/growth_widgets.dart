@@ -10,6 +10,7 @@ import '../ui/components.dart';
 import '../ui/tokens.dart';
 import 'growth_models.dart';
 import 'growth_strings.dart';
+import '../ui/isolated_text.dart';
 
 String _date(BuildContext context, DateTime? at) => at == null ? '—' : MaterialLocalizations.of(context).formatMediumDate(at);
 

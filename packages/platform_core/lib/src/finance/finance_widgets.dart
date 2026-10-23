@@ -4,6 +4,7 @@ import '../ui/components.dart';
 import '../ui/tokens.dart';
 import '../money/money_formatter.dart';
 import 'finance_models.dart';
+import '../ui/isolated_text.dart';
 
 /// "12 Mar 2026 14:05" in the person's locale.
 String formatFinanceTime(BuildContext context, DateTime? value) {

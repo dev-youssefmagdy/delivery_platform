@@ -41,4 +41,4 @@ class IsolatedText extends StatelessWidget {
 
 /// Wraps [value] in Unicode left-to-right isolate marks so a Latin run (plate, phone, e-mail, masked card) keeps its own order inside
 /// an Arabic sentence without changing the direction or alignment of the surrounding paragraph.
-String ltrIsolate(String value) => '⁦$value⁩';
+String ltrIsolate(String value) => '\u2066$value\u2069';

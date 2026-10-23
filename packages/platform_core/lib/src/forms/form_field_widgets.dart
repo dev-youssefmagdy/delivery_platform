@@ -9,6 +9,7 @@ import 'dynamic_form_strings.dart';
 import 'form_logic.dart';
 import 'form_schema.dart';
 import 'photo_field_handler.dart';
+import '../ui/isolated_text.dart';
 
 /// Builds the control of one field. Each [FormFieldType] has its own widget so
 /// the renderer itself stays a thin loop (no per-service branching anywhere).

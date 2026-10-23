@@ -14,6 +14,7 @@ import 'safety_models.dart';
 import 'safety_state.dart';
 import 'safety_strings.dart';
 import 'safety_widgets.dart';
+import '../ui/isolated_text.dart';
 
 const _uuid = Uuid();
 

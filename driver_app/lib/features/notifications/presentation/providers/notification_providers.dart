@@ -35,6 +35,8 @@ String? driverRouteFor(NotificationLink link) {
     NotificationLinkType.wallet => Routes.walletLedger,
     NotificationLinkType.support when id != null => Routes.supportTicket(id),
     NotificationLinkType.support => Routes.support,
+    NotificationLinkType.safety when id != null => Routes.safetyIncident(id),
+    NotificationLinkType.safety => Routes.safetyIncidents,
     NotificationLinkType.inbox => Routes.notifications,
     _ => null,
   };

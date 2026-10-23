@@ -3259,4 +3259,322 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dadjReceiptRef => 'Receipt number';
+
+  @override
+  String get sfTitle => 'Safety and help';
+
+  @override
+  String get sfHoldLabel => 'SOS';
+
+  @override
+  String sfHoldHint(int seconds) {
+    return 'Press and hold for $seconds seconds to send an alert';
+  }
+
+  @override
+  String get sfHolding => 'Keep holding';
+
+  @override
+  String get sfSending => 'Sending your alert…';
+
+  @override
+  String get sfSentTitle => 'Alert sent';
+
+  @override
+  String get sfFailedTitle => 'The alert could not be sent';
+
+  @override
+  String get sfFailedBody =>
+      'Check your connection. If you are in danger, call the emergency number below now.';
+
+  @override
+  String get sfRetry => 'Try again';
+
+  @override
+  String get sfNoJob =>
+      'The safety button works during a job. You can still call the emergency numbers below.';
+
+  @override
+  String get sfNumbersTitle => 'Local emergency numbers';
+
+  @override
+  String sfCall(String name, String number) {
+    return 'Call $name ($number)';
+  }
+
+  @override
+  String get sfNoDispatch =>
+      'This app does not call emergency services for you and nobody is dispatched automatically. In danger, call the number yourself.';
+
+  @override
+  String get sfWhatWeDid => 'What was done';
+
+  @override
+  String get sfReport => 'Report an incident';
+
+  @override
+  String get sfShareTrip => 'Share trip with trusted contacts';
+
+  @override
+  String get sfContacts => 'Trusted contacts';
+
+  @override
+  String get sfCallSupport => 'Call platform support';
+
+  @override
+  String get sfDone => 'Done';
+
+  @override
+  String get sfCancel => 'Cancel';
+
+  @override
+  String get sfNumPolice => 'Police';
+
+  @override
+  String get sfNumAmbulance => 'Ambulance';
+
+  @override
+  String get sfNumFire => 'Fire brigade';
+
+  @override
+  String get sfNumTourist => 'Tourist police';
+
+  @override
+  String get sfNumOther => 'Emergency';
+
+  @override
+  String get sfCatEmergency => 'Emergency';
+
+  @override
+  String get sfCatAccident => 'Accident';
+
+  @override
+  String get sfCatMedical => 'Medical problem';
+
+  @override
+  String get sfCatThreat => 'Threat or violence';
+
+  @override
+  String get sfCatHarassment => 'Harassment';
+
+  @override
+  String get sfCatUnsafeDriving => 'Unsafe driving';
+
+  @override
+  String get sfCatTheft => 'Theft or lost belongings';
+
+  @override
+  String get sfCatIdentityMismatch => 'Driver or vehicle does not match';
+
+  @override
+  String get sfCatOther => 'Other safety concern';
+
+  @override
+  String get sfReportTitle => 'Report an incident';
+
+  @override
+  String get sfReportCategory => 'What happened?';
+
+  @override
+  String get sfReportNarrative => 'Describe it';
+
+  @override
+  String get sfReportNarrativeHint =>
+      'Where, who, and anything that helps the safety team';
+
+  @override
+  String get sfReportTooShort => 'Write at least a few words.';
+
+  @override
+  String get sfReportCallback => 'Phone to call you back (optional)';
+
+  @override
+  String get sfReportSubmit => 'Send report';
+
+  @override
+  String get sfReportSent => 'Report received';
+
+  @override
+  String get sfReportUrgent =>
+      'If you are in immediate danger, go back and use the SOS button or call the emergency number.';
+
+  @override
+  String get sfIncidentsTitle => 'Safety cases';
+
+  @override
+  String get sfIncidentsEmpty => 'You have not raised any safety case.';
+
+  @override
+  String get sfStatusNew => 'Received';
+
+  @override
+  String get sfStatusAcknowledged => 'Being handled';
+
+  @override
+  String get sfStatusInvestigating => 'Being reviewed';
+
+  @override
+  String get sfStatusEscalated => 'Escalated to a senior officer';
+
+  @override
+  String get sfStatusResolved => 'Resolved';
+
+  @override
+  String sfOutcome(String outcome) {
+    return 'Outcome: $outcome';
+  }
+
+  @override
+  String get sfTimeline => 'What happened so far';
+
+  @override
+  String get sfIncidentContacts => 'Your trusted contacts';
+
+  @override
+  String get sfFiles => 'Files you added';
+
+  @override
+  String get sfAddUpdate => 'Add an update';
+
+  @override
+  String get sfUpdateHint => 'Tell the safety team more';
+
+  @override
+  String get sfSendUpdate => 'Send update';
+
+  @override
+  String get sfAddFile => 'Add a photo';
+
+  @override
+  String get sfResolvedNote =>
+      'This case is closed. If something changed, report a new incident.';
+
+  @override
+  String sfCaseNumber(String number) {
+    return 'Case $number';
+  }
+
+  @override
+  String get sfActorYou => 'You';
+
+  @override
+  String get sfActorStaff => 'Safety team';
+
+  @override
+  String get sfActorSystem => 'System';
+
+  @override
+  String get sfContactsTitle => 'Trusted contacts';
+
+  @override
+  String get sfContactsIntro =>
+      'People we may text when you press SOS or share a trip. We only message them as you allow below, and only after you confirm they agreed.';
+
+  @override
+  String get sfContactsEmpty => 'No trusted contacts yet.';
+
+  @override
+  String get sfContactsAdd => 'Add contact';
+
+  @override
+  String sfContactsLimit(int max) {
+    return 'You can keep up to $max contacts.';
+  }
+
+  @override
+  String get sfContactName => 'Name';
+
+  @override
+  String get sfContactPhone => 'Phone number';
+
+  @override
+  String get sfContactPhoneHint => '+201001234567';
+
+  @override
+  String get sfContactRelationship => 'Relationship (optional)';
+
+  @override
+  String get sfRelFamily => 'Family';
+
+  @override
+  String get sfRelPartner => 'Partner';
+
+  @override
+  String get sfRelFriend => 'Friend';
+
+  @override
+  String get sfRelColleague => 'Colleague';
+
+  @override
+  String get sfRelOther => 'Other';
+
+  @override
+  String get sfConsentTitle => 'What may we send this person?';
+
+  @override
+  String get sfConsentSos => 'A text message when I press SOS';
+
+  @override
+  String get sfConsentTrip => 'The live trip link when I share a trip';
+
+  @override
+  String get sfConsentLocation => 'My last position in the SOS message';
+
+  @override
+  String get sfConsentConfirm =>
+      'I confirm this person agreed to receive these messages.';
+
+  @override
+  String get sfContactSave => 'Save';
+
+  @override
+  String get sfContactDelete => 'Remove contact';
+
+  @override
+  String get sfContactDeleteConfirm => 'Remove this trusted contact?';
+
+  @override
+  String get sfContactRequired => 'This field is required.';
+
+  @override
+  String get sfContactConsentRequired => 'Confirm that this person agreed.';
+
+  @override
+  String get sfShareTitle => 'Share this trip';
+
+  @override
+  String get sfShareBody =>
+      'We text a live trip link to the trusted contacts who agreed to receive it. The link shows the driver\'s first name, the vehicle and the live position, and stops when the trip ends.';
+
+  @override
+  String get sfShareNoContacts =>
+      'Add a trusted contact who agreed to receive trip links first.';
+
+  @override
+  String get sfShareSend => 'Send to trusted contacts';
+
+  @override
+  String sfShareResult(int sent, int total) {
+    return 'Sent to $sent of $total contacts';
+  }
+
+  @override
+  String get sfShareCopy => 'Copy link';
+
+  @override
+  String get sfShareCopied => 'Link copied';
+
+  @override
+  String get sfShareStop => 'Stop sharing';
+
+  @override
+  String get sfShareStopped => 'Sharing stopped. The link no longer works.';
+
+  @override
+  String sfShareExpires(String time) {
+    return 'The link works until $time';
+  }
+
+  @override
+  String get sfSettingsTile => 'Trusted contacts and safety';
 }

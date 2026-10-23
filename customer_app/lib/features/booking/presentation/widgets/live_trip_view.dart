@@ -15,7 +15,7 @@ import '../providers/booking_providers.dart';
 import 'booking_sections.dart';
 import 'booking_texts.dart';
 import 'delivery_cards.dart';
-import 'safety_sheet.dart';
+import '../../../safety/presentation/widgets/safety_sheet.dart';
 
 /// Seconds after which a location fix is shown as stale.
 const staleLocationAfter = Duration(seconds: 45);
@@ -178,7 +178,7 @@ class _LiveTripViewState extends ConsumerState<LiveTripView> {
               key: const Key('safety-button'),
               icon: const Icon(Icons.shield_outlined),
               label: Text(l10n.bkSafety),
-              onPressed: () => showSafetySheet(context),
+              onPressed: () => showSafetySheet(context, bookingId: booking.id),
             ),
             if (booking.can(BookingAction.chat))
               FilledButton.tonalIcon(

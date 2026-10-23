@@ -16,6 +16,7 @@ import '../features/booking/presentation/screens/report_screen.dart';
 import '../features/payments/presentation/screens/payment_methods_screen.dart';
 import '../features/payments/presentation/screens/receipt_screen.dart';
 import '../features/payments/presentation/screens/wallet_screen.dart';
+import '../features/safety/presentation/screens/safety_screens.dart';
 import '../features/support/presentation/screens/appeal_screen.dart';
 import '../features/support/presentation/screens/chat_screen.dart';
 import '../features/support/presentation/screens/new_ticket_screen.dart';
@@ -52,6 +53,10 @@ abstract final class Routes {
   static const notifications = '/notifications';
   static const notificationSettings = '/notifications/settings';
   static const support = '/support';
+  static const safetyIncidents = '/safety/incidents';
+  static const safetyContacts = '/safety/contacts';
+  static String safetyIncident(String id) => '/safety/incidents/$id';
+  static String safetyReport(String bookingId) => '/safety/report/$bookingId';
   static const supportNew = '/support/new';
 
   /// The wallet as a full screen (also the target of wallet notifications); the Wallet tab shows the same content.
@@ -116,11 +121,13 @@ const _readyOnly = {
   Routes.notificationSettings,
   Routes.wallet,
   Routes.paymentMethods,
+  Routes.safetyIncidents,
+  Routes.safetyContacts,
 };
 
 /// Pure redirect rules (unit tested). Returns null to stay.
 String? computeRedirect({required String location, required AuthStage stage}) {
-  if (_readyOnly.contains(location) || location.startsWith('/booking/')) {
+  if (_readyOnly.contains(location) || location.startsWith('/booking/') || location.startsWith('/safety/')) {
     if (stage == AuthStage.ready) return null;
     return stage == AuthStage.signedOut ? Routes.splash : routeForStage(stage);
   }
@@ -201,6 +208,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: Routes.wallet, builder: (_, _) => const WalletScreen(showBack: true)),
       GoRoute(path: Routes.paymentMethods, builder: (_, _) => const PaymentMethodsScreen()),
+      GoRoute(path: Routes.safetyContacts, builder: (_, _) => const SafetyContactsScreen()),
+      GoRoute(
+        path: Routes.safetyIncidents,
+        builder: (_, _) => const SafetyIncidentsScreen(),
+        routes: [GoRoute(path: ':id', builder: (_, state) => SafetyIncidentScreen(incidentId: state.pathParameters['id']!))],
+      ),
+      GoRoute(path: '/safety/report/:bookingId', builder: (_, state) => SafetyReportScreen(bookingId: state.pathParameters['bookingId']!)),
       GoRoute(
         path: Routes.support,
         builder: (_, _) => const TicketsScreen(),

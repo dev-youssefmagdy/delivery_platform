@@ -2740,4 +2740,322 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get stpErrName => 'اكتب اسم جهة الاتصال.';
+
+  @override
+  String get sfTitle => 'السلامة والمساعدة';
+
+  @override
+  String get sfHoldLabel => 'طوارئ';
+
+  @override
+  String sfHoldHint(int seconds) {
+    return 'اضغط مطولاً لمدة $seconds ثانية لإرسال تنبيه';
+  }
+
+  @override
+  String get sfHolding => 'استمر بالضغط';
+
+  @override
+  String get sfSending => 'جارٍ إرسال تنبيهك…';
+
+  @override
+  String get sfSentTitle => 'تم إرسال التنبيه';
+
+  @override
+  String get sfFailedTitle => 'تعذّر إرسال التنبيه';
+
+  @override
+  String get sfFailedBody =>
+      'تحقق من اتصالك. إذا كنت في خطر فاتصل برقم الطوارئ أدناه الآن.';
+
+  @override
+  String get sfRetry => 'حاول مرة أخرى';
+
+  @override
+  String get sfNoJob =>
+      'يعمل زر الأمان أثناء المهمة. يمكنك الاتصال بأرقام الطوارئ أدناه في أي وقت.';
+
+  @override
+  String get sfNumbersTitle => 'أرقام الطوارئ المحلية';
+
+  @override
+  String sfCall(String name, String number) {
+    return 'اتصل بـ $name ($number)';
+  }
+
+  @override
+  String get sfNoDispatch =>
+      'هذا التطبيق لا يتصل بخدمات الطوارئ نيابةً عنك ولا يتم إرسال أحد تلقائيًا. إذا كنت في خطر فاتصل بالرقم بنفسك.';
+
+  @override
+  String get sfWhatWeDid => 'ما الذي تم';
+
+  @override
+  String get sfReport => 'الإبلاغ عن حادث';
+
+  @override
+  String get sfShareTrip => 'مشاركة الرحلة مع جهات الاتصال الموثوقة';
+
+  @override
+  String get sfContacts => 'جهات الاتصال الموثوقة';
+
+  @override
+  String get sfCallSupport => 'الاتصال بدعم المنصة';
+
+  @override
+  String get sfDone => 'تم';
+
+  @override
+  String get sfCancel => 'إلغاء';
+
+  @override
+  String get sfNumPolice => 'الشرطة';
+
+  @override
+  String get sfNumAmbulance => 'الإسعاف';
+
+  @override
+  String get sfNumFire => 'الإطفاء';
+
+  @override
+  String get sfNumTourist => 'شرطة السياحة';
+
+  @override
+  String get sfNumOther => 'الطوارئ';
+
+  @override
+  String get sfCatEmergency => 'طارئ';
+
+  @override
+  String get sfCatAccident => 'حادث';
+
+  @override
+  String get sfCatMedical => 'مشكلة صحية';
+
+  @override
+  String get sfCatThreat => 'تهديد أو عنف';
+
+  @override
+  String get sfCatHarassment => 'تحرش';
+
+  @override
+  String get sfCatUnsafeDriving => 'قيادة غير آمنة';
+
+  @override
+  String get sfCatTheft => 'سرقة أو فقدان أغراض';
+
+  @override
+  String get sfCatIdentityMismatch => 'السائق أو المركبة غير مطابقين';
+
+  @override
+  String get sfCatOther => 'مخاوف أخرى تتعلق بالسلامة';
+
+  @override
+  String get sfReportTitle => 'الإبلاغ عن حادث';
+
+  @override
+  String get sfReportCategory => 'ماذا حدث؟';
+
+  @override
+  String get sfReportNarrative => 'اشرح ما حدث';
+
+  @override
+  String get sfReportNarrativeHint =>
+      'المكان والأشخاص وأي تفاصيل تساعد فريق السلامة';
+
+  @override
+  String get sfReportTooShort => 'اكتب بضع كلمات على الأقل.';
+
+  @override
+  String get sfReportCallback => 'هاتف للاتصال بك (اختياري)';
+
+  @override
+  String get sfReportSubmit => 'إرسال البلاغ';
+
+  @override
+  String get sfReportSent => 'تم استلام البلاغ';
+
+  @override
+  String get sfReportUrgent =>
+      'إذا كنت في خطر وشيك فارجع واستخدم زر الطوارئ أو اتصل برقم الطوارئ.';
+
+  @override
+  String get sfIncidentsTitle => 'بلاغات السلامة';
+
+  @override
+  String get sfIncidentsEmpty => 'لم ترفع أي بلاغ سلامة.';
+
+  @override
+  String get sfStatusNew => 'تم الاستلام';
+
+  @override
+  String get sfStatusAcknowledged => 'قيد المعالجة';
+
+  @override
+  String get sfStatusInvestigating => 'قيد المراجعة';
+
+  @override
+  String get sfStatusEscalated => 'تم تصعيده إلى مسؤول أعلى';
+
+  @override
+  String get sfStatusResolved => 'تم الحل';
+
+  @override
+  String sfOutcome(String outcome) {
+    return 'النتيجة: $outcome';
+  }
+
+  @override
+  String get sfTimeline => 'ما جرى حتى الآن';
+
+  @override
+  String get sfIncidentContacts => 'جهات اتصالك الموثوقة';
+
+  @override
+  String get sfFiles => 'الملفات التي أضفتها';
+
+  @override
+  String get sfAddUpdate => 'إضافة تحديث';
+
+  @override
+  String get sfUpdateHint => 'أخبر فريق السلامة بالمزيد';
+
+  @override
+  String get sfSendUpdate => 'إرسال التحديث';
+
+  @override
+  String get sfAddFile => 'إضافة صورة';
+
+  @override
+  String get sfResolvedNote =>
+      'تم إغلاق هذا البلاغ. إذا تغيّر شيء فارفع بلاغاً جديداً.';
+
+  @override
+  String sfCaseNumber(String number) {
+    return 'البلاغ $number';
+  }
+
+  @override
+  String get sfActorYou => 'أنت';
+
+  @override
+  String get sfActorStaff => 'فريق السلامة';
+
+  @override
+  String get sfActorSystem => 'النظام';
+
+  @override
+  String get sfContactsTitle => 'جهات الاتصال الموثوقة';
+
+  @override
+  String get sfContactsIntro =>
+      'أشخاص قد نراسلهم برسالة نصية عند ضغطك على الطوارئ أو مشاركة رحلة. نراسلهم فقط وفق ما تسمح به أدناه وبعد تأكيدك أنهم وافقوا.';
+
+  @override
+  String get sfContactsEmpty => 'لا توجد جهات اتصال موثوقة بعد.';
+
+  @override
+  String get sfContactsAdd => 'إضافة جهة اتصال';
+
+  @override
+  String sfContactsLimit(int max) {
+    return 'يمكنك الاحتفاظ بحتى $max جهات اتصال.';
+  }
+
+  @override
+  String get sfContactName => 'الاسم';
+
+  @override
+  String get sfContactPhone => 'رقم الهاتف';
+
+  @override
+  String get sfContactPhoneHint => '+201001234567';
+
+  @override
+  String get sfContactRelationship => 'صلة القرابة (اختياري)';
+
+  @override
+  String get sfRelFamily => 'العائلة';
+
+  @override
+  String get sfRelPartner => 'الشريك';
+
+  @override
+  String get sfRelFriend => 'صديق';
+
+  @override
+  String get sfRelColleague => 'زميل';
+
+  @override
+  String get sfRelOther => 'آخر';
+
+  @override
+  String get sfConsentTitle => 'ماذا يمكننا أن نرسل لهذا الشخص؟';
+
+  @override
+  String get sfConsentSos => 'رسالة نصية عندما أضغط على الطوارئ';
+
+  @override
+  String get sfConsentTrip => 'رابط الرحلة المباشر عندما أشارك رحلة';
+
+  @override
+  String get sfConsentLocation => 'آخر موقع لي في رسالة الطوارئ';
+
+  @override
+  String get sfConsentConfirm =>
+      'أؤكد أن هذا الشخص وافق على استلام هذه الرسائل.';
+
+  @override
+  String get sfContactSave => 'حفظ';
+
+  @override
+  String get sfContactDelete => 'حذف جهة الاتصال';
+
+  @override
+  String get sfContactDeleteConfirm => 'حذف جهة الاتصال الموثوقة هذه؟';
+
+  @override
+  String get sfContactRequired => 'هذا الحقل مطلوب.';
+
+  @override
+  String get sfContactConsentRequired => 'أكّد أن هذا الشخص وافق.';
+
+  @override
+  String get sfShareTitle => 'مشاركة هذه الرحلة';
+
+  @override
+  String get sfShareBody =>
+      'نرسل رابط الرحلة المباشر برسالة نصية إلى جهات الاتصال الموثوقة التي وافقت على استلامه. يعرض الرابط الاسم الأول للسائق والمركبة والموقع المباشر، ويتوقف عند انتهاء الرحلة.';
+
+  @override
+  String get sfShareNoContacts =>
+      'أضف أولاً جهة اتصال موثوقة وافقت على استلام روابط الرحلة.';
+
+  @override
+  String get sfShareSend => 'إرسال إلى جهات الاتصال الموثوقة';
+
+  @override
+  String sfShareResult(int sent, int total) {
+    return 'أُرسل إلى $sent من $total جهات اتصال';
+  }
+
+  @override
+  String get sfShareCopy => 'نسخ الرابط';
+
+  @override
+  String get sfShareCopied => 'تم نسخ الرابط';
+
+  @override
+  String get sfShareStop => 'إيقاف المشاركة';
+
+  @override
+  String get sfShareStopped => 'تم إيقاف المشاركة. لم يعد الرابط يعمل.';
+
+  @override
+  String sfShareExpires(String time) {
+    return 'يعمل الرابط حتى $time';
+  }
+
+  @override
+  String get sfSettingsTile => 'جهات الاتصال الموثوقة والسلامة';
 }

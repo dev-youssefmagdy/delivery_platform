@@ -59,6 +59,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             onTap: () => context.push(Routes.savedPlaces),
           ),
           ListTile(
+            key: const Key('home-safety'),
+            minTileHeight: context.density.minTouchTarget,
+            leading: const Icon(Icons.shield_outlined),
+            title: Text(l10n.sfSettingsTile),
+            onTap: () => context.push(Routes.safetyContacts),
+          ),
+          ListTile(
             key: const Key('home-notifications'),
             minTileHeight: context.density.minTouchTarget,
             leading: Badge(

@@ -1405,5 +1405,140 @@
   "stpContactName": "اسم جهة الاتصال",
   "stpContactPhone": "هاتف جهة الاتصال",
   "stpNote": "ملاحظة للسائق",
-  "stpErrName": "اكتب اسم جهة الاتصال."
+  "stpErrName": "اكتب اسم جهة الاتصال.",
+  "sfTitle": "السلامة والمساعدة",
+  "sfHoldLabel": "طوارئ",
+  "sfHoldHint": "اضغط مطولاً لمدة {seconds} ثانية لإرسال تنبيه",
+  "@sfHoldHint": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "sfHolding": "استمر بالضغط",
+  "sfSending": "جارٍ إرسال تنبيهك…",
+  "sfSentTitle": "تم إرسال التنبيه",
+  "sfFailedTitle": "تعذّر إرسال التنبيه",
+  "sfFailedBody": "تحقق من اتصالك. إذا كنت في خطر فاتصل برقم الطوارئ أدناه الآن.",
+  "sfRetry": "حاول مرة أخرى",
+  "sfNoJob": "يعمل زر الأمان أثناء المهمة. يمكنك الاتصال بأرقام الطوارئ أدناه في أي وقت.",
+  "sfNumbersTitle": "أرقام الطوارئ المحلية",
+  "sfCall": "اتصل بـ {name} ({number})",
+  "@sfCall": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "number": {"type": "String"}
+    }
+  },
+  "sfNoDispatch": "هذا التطبيق لا يتصل بخدمات الطوارئ نيابةً عنك ولا يتم إرسال أحد تلقائيًا. إذا كنت في خطر فاتصل بالرقم بنفسك.",
+  "sfWhatWeDid": "ما الذي تم",
+  "sfReport": "الإبلاغ عن حادث",
+  "sfShareTrip": "مشاركة الرحلة مع جهات الاتصال الموثوقة",
+  "sfContacts": "جهات الاتصال الموثوقة",
+  "sfCallSupport": "الاتصال بدعم المنصة",
+  "sfDone": "تم",
+  "sfCancel": "إلغاء",
+  "sfNumPolice": "الشرطة",
+  "sfNumAmbulance": "الإسعاف",
+  "sfNumFire": "الإطفاء",
+  "sfNumTourist": "شرطة السياحة",
+  "sfNumOther": "الطوارئ",
+  "sfCatEmergency": "طارئ",
+  "sfCatAccident": "حادث",
+  "sfCatMedical": "مشكلة صحية",
+  "sfCatThreat": "تهديد أو عنف",
+  "sfCatHarassment": "تحرش",
+  "sfCatUnsafeDriving": "قيادة غير آمنة",
+  "sfCatTheft": "سرقة أو فقدان أغراض",
+  "sfCatIdentityMismatch": "السائق أو المركبة غير مطابقين",
+  "sfCatOther": "مخاوف أخرى تتعلق بالسلامة",
+  "sfReportTitle": "الإبلاغ عن حادث",
+  "sfReportCategory": "ماذا حدث؟",
+  "sfReportNarrative": "اشرح ما حدث",
+  "sfReportNarrativeHint": "المكان والأشخاص وأي تفاصيل تساعد فريق السلامة",
+  "sfReportTooShort": "اكتب بضع كلمات على الأقل.",
+  "sfReportCallback": "هاتف للاتصال بك (اختياري)",
+  "sfReportSubmit": "إرسال البلاغ",
+  "sfReportSent": "تم استلام البلاغ",
+  "sfReportUrgent": "إذا كنت في خطر وشيك فارجع واستخدم زر الطوارئ أو اتصل برقم الطوارئ.",
+  "sfIncidentsTitle": "بلاغات السلامة",
+  "sfIncidentsEmpty": "لم ترفع أي بلاغ سلامة.",
+  "sfStatusNew": "تم الاستلام",
+  "sfStatusAcknowledged": "قيد المعالجة",
+  "sfStatusInvestigating": "قيد المراجعة",
+  "sfStatusEscalated": "تم تصعيده إلى مسؤول أعلى",
+  "sfStatusResolved": "تم الحل",
+  "sfOutcome": "النتيجة: {outcome}",
+  "@sfOutcome": {
+    "placeholders": {
+      "outcome": {"type": "String"}
+    }
+  },
+  "sfTimeline": "ما جرى حتى الآن",
+  "sfIncidentContacts": "جهات اتصالك الموثوقة",
+  "sfFiles": "الملفات التي أضفتها",
+  "sfAddUpdate": "إضافة تحديث",
+  "sfUpdateHint": "أخبر فريق السلامة بالمزيد",
+  "sfSendUpdate": "إرسال التحديث",
+  "sfAddFile": "إضافة صورة",
+  "sfResolvedNote": "تم إغلاق هذا البلاغ. إذا تغيّر شيء فارفع بلاغاً جديداً.",
+  "sfCaseNumber": "البلاغ {number}",
+  "@sfCaseNumber": {
+    "placeholders": {
+      "number": {"type": "String"}
+    }
+  },
+  "sfActorYou": "أنت",
+  "sfActorStaff": "فريق السلامة",
+  "sfActorSystem": "النظام",
+  "sfContactsTitle": "جهات الاتصال الموثوقة",
+  "sfContactsIntro": "أشخاص قد نراسلهم برسالة نصية عند ضغطك على الطوارئ أو مشاركة رحلة. نراسلهم فقط وفق ما تسمح به أدناه وبعد تأكيدك أنهم وافقوا.",
+  "sfContactsEmpty": "لا توجد جهات اتصال موثوقة بعد.",
+  "sfContactsAdd": "إضافة جهة اتصال",
+  "sfContactsLimit": "يمكنك الاحتفاظ بحتى {max} جهات اتصال.",
+  "@sfContactsLimit": {
+    "placeholders": {
+      "max": {"type": "int"}
+    }
+  },
+  "sfContactName": "الاسم",
+  "sfContactPhone": "رقم الهاتف",
+  "sfContactPhoneHint": "+201001234567",
+  "sfContactRelationship": "صلة القرابة (اختياري)",
+  "sfRelFamily": "العائلة",
+  "sfRelPartner": "الشريك",
+  "sfRelFriend": "صديق",
+  "sfRelColleague": "زميل",
+  "sfRelOther": "آخر",
+  "sfConsentTitle": "ماذا يمكننا أن نرسل لهذا الشخص؟",
+  "sfConsentSos": "رسالة نصية عندما أضغط على الطوارئ",
+  "sfConsentTrip": "رابط الرحلة المباشر عندما أشارك رحلة",
+  "sfConsentLocation": "آخر موقع لي في رسالة الطوارئ",
+  "sfConsentConfirm": "أؤكد أن هذا الشخص وافق على استلام هذه الرسائل.",
+  "sfContactSave": "حفظ",
+  "sfContactDelete": "حذف جهة الاتصال",
+  "sfContactDeleteConfirm": "حذف جهة الاتصال الموثوقة هذه؟",
+  "sfContactRequired": "هذا الحقل مطلوب.",
+  "sfContactConsentRequired": "أكّد أن هذا الشخص وافق.",
+  "sfShareTitle": "مشاركة هذه الرحلة",
+  "sfShareBody": "نرسل رابط الرحلة المباشر برسالة نصية إلى جهات الاتصال الموثوقة التي وافقت على استلامه. يعرض الرابط الاسم الأول للسائق والمركبة والموقع المباشر، ويتوقف عند انتهاء الرحلة.",
+  "sfShareNoContacts": "أضف أولاً جهة اتصال موثوقة وافقت على استلام روابط الرحلة.",
+  "sfShareSend": "إرسال إلى جهات الاتصال الموثوقة",
+  "sfShareResult": "أُرسل إلى {sent} من {total} جهات اتصال",
+  "@sfShareResult": {
+    "placeholders": {
+      "sent": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "sfShareCopy": "نسخ الرابط",
+  "sfShareCopied": "تم نسخ الرابط",
+  "sfShareStop": "إيقاف المشاركة",
+  "sfShareStopped": "تم إيقاف المشاركة. لم يعد الرابط يعمل.",
+  "sfShareExpires": "يعمل الرابط حتى {time}",
+  "@sfShareExpires": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "sfSettingsTile": "جهات الاتصال الموثوقة والسلامة"
 }

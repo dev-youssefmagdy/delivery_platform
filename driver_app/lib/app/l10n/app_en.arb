@@ -1392,5 +1392,140 @@
   "dadjTypeStairs": "Extra stairs",
   "dadjHelpersCount": "Extra helpers",
   "dadjFloorsCount": "Extra floors",
-  "dadjReceiptRef": "Receipt number"
+  "dadjReceiptRef": "Receipt number",
+  "sfTitle": "Safety and help",
+  "sfHoldLabel": "SOS",
+  "sfHoldHint": "Press and hold for {seconds} seconds to send an alert",
+  "@sfHoldHint": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "sfHolding": "Keep holding",
+  "sfSending": "Sending your alert…",
+  "sfSentTitle": "Alert sent",
+  "sfFailedTitle": "The alert could not be sent",
+  "sfFailedBody": "Check your connection. If you are in danger, call the emergency number below now.",
+  "sfRetry": "Try again",
+  "sfNoJob": "The safety button works during a job. You can still call the emergency numbers below.",
+  "sfNumbersTitle": "Local emergency numbers",
+  "sfCall": "Call {name} ({number})",
+  "@sfCall": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "number": {"type": "String"}
+    }
+  },
+  "sfNoDispatch": "This app does not call emergency services for you and nobody is dispatched automatically. In danger, call the number yourself.",
+  "sfWhatWeDid": "What was done",
+  "sfReport": "Report an incident",
+  "sfShareTrip": "Share trip with trusted contacts",
+  "sfContacts": "Trusted contacts",
+  "sfCallSupport": "Call platform support",
+  "sfDone": "Done",
+  "sfCancel": "Cancel",
+  "sfNumPolice": "Police",
+  "sfNumAmbulance": "Ambulance",
+  "sfNumFire": "Fire brigade",
+  "sfNumTourist": "Tourist police",
+  "sfNumOther": "Emergency",
+  "sfCatEmergency": "Emergency",
+  "sfCatAccident": "Accident",
+  "sfCatMedical": "Medical problem",
+  "sfCatThreat": "Threat or violence",
+  "sfCatHarassment": "Harassment",
+  "sfCatUnsafeDriving": "Unsafe driving",
+  "sfCatTheft": "Theft or lost belongings",
+  "sfCatIdentityMismatch": "Driver or vehicle does not match",
+  "sfCatOther": "Other safety concern",
+  "sfReportTitle": "Report an incident",
+  "sfReportCategory": "What happened?",
+  "sfReportNarrative": "Describe it",
+  "sfReportNarrativeHint": "Where, who, and anything that helps the safety team",
+  "sfReportTooShort": "Write at least a few words.",
+  "sfReportCallback": "Phone to call you back (optional)",
+  "sfReportSubmit": "Send report",
+  "sfReportSent": "Report received",
+  "sfReportUrgent": "If you are in immediate danger, go back and use the SOS button or call the emergency number.",
+  "sfIncidentsTitle": "Safety cases",
+  "sfIncidentsEmpty": "You have not raised any safety case.",
+  "sfStatusNew": "Received",
+  "sfStatusAcknowledged": "Being handled",
+  "sfStatusInvestigating": "Being reviewed",
+  "sfStatusEscalated": "Escalated to a senior officer",
+  "sfStatusResolved": "Resolved",
+  "sfOutcome": "Outcome: {outcome}",
+  "@sfOutcome": {
+    "placeholders": {
+      "outcome": {"type": "String"}
+    }
+  },
+  "sfTimeline": "What happened so far",
+  "sfIncidentContacts": "Your trusted contacts",
+  "sfFiles": "Files you added",
+  "sfAddUpdate": "Add an update",
+  "sfUpdateHint": "Tell the safety team more",
+  "sfSendUpdate": "Send update",
+  "sfAddFile": "Add a photo",
+  "sfResolvedNote": "This case is closed. If something changed, report a new incident.",
+  "sfCaseNumber": "Case {number}",
+  "@sfCaseNumber": {
+    "placeholders": {
+      "number": {"type": "String"}
+    }
+  },
+  "sfActorYou": "You",
+  "sfActorStaff": "Safety team",
+  "sfActorSystem": "System",
+  "sfContactsTitle": "Trusted contacts",
+  "sfContactsIntro": "People we may text when you press SOS or share a trip. We only message them as you allow below, and only after you confirm they agreed.",
+  "sfContactsEmpty": "No trusted contacts yet.",
+  "sfContactsAdd": "Add contact",
+  "sfContactsLimit": "You can keep up to {max} contacts.",
+  "@sfContactsLimit": {
+    "placeholders": {
+      "max": {"type": "int"}
+    }
+  },
+  "sfContactName": "Name",
+  "sfContactPhone": "Phone number",
+  "sfContactPhoneHint": "+201001234567",
+  "sfContactRelationship": "Relationship (optional)",
+  "sfRelFamily": "Family",
+  "sfRelPartner": "Partner",
+  "sfRelFriend": "Friend",
+  "sfRelColleague": "Colleague",
+  "sfRelOther": "Other",
+  "sfConsentTitle": "What may we send this person?",
+  "sfConsentSos": "A text message when I press SOS",
+  "sfConsentTrip": "The live trip link when I share a trip",
+  "sfConsentLocation": "My last position in the SOS message",
+  "sfConsentConfirm": "I confirm this person agreed to receive these messages.",
+  "sfContactSave": "Save",
+  "sfContactDelete": "Remove contact",
+  "sfContactDeleteConfirm": "Remove this trusted contact?",
+  "sfContactRequired": "This field is required.",
+  "sfContactConsentRequired": "Confirm that this person agreed.",
+  "sfShareTitle": "Share this trip",
+  "sfShareBody": "We text a live trip link to the trusted contacts who agreed to receive it. The link shows the driver's first name, the vehicle and the live position, and stops when the trip ends.",
+  "sfShareNoContacts": "Add a trusted contact who agreed to receive trip links first.",
+  "sfShareSend": "Send to trusted contacts",
+  "sfShareResult": "Sent to {sent} of {total} contacts",
+  "@sfShareResult": {
+    "placeholders": {
+      "sent": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "sfShareCopy": "Copy link",
+  "sfShareCopied": "Link copied",
+  "sfShareStop": "Stop sharing",
+  "sfShareStopped": "Sharing stopped. The link no longer works.",
+  "sfShareExpires": "The link works until {time}",
+  "@sfShareExpires": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "sfSettingsTile": "Trusted contacts and safety"
 }

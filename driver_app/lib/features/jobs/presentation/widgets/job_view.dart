@@ -16,6 +16,7 @@ import 'delivery_section.dart';
 import 'job_texts.dart';
 import 'navigation.dart';
 import 'pin_sheet.dart';
+import '../../../safety/presentation/widgets/safety_sheet.dart';
 
 /// The active job (or a past one, read only): the status, what to do next as
 /// big buttons drawn from the server's `allowed_actions`, the route, the
@@ -340,6 +341,17 @@ class _JobViewState extends ConsumerState<JobView> {
                 ),
               JobAdjustmentsSection(job: job),
               const SizedBox(height: AppSpacing.sm),
+              if (!job.isFinished)
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+                  child: AppButton(
+                    key: const Key('job-safety'),
+                    label: l10n.sfTitle,
+                    icon: Icons.shield_outlined,
+                    secondary: true,
+                    onPressed: () => showSafetySheet(context, bookingId: job.id),
+                  ),
+                ),
               Row(
                 children: [
                   if (job.can(JobAction.cancel))

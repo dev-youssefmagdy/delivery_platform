@@ -5059,6 +5059,594 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'اكتب اسم جهة الاتصال.'**
   String get stpErrName;
+
+  /// No description provided for @sfTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'السلامة والمساعدة'**
+  String get sfTitle;
+
+  /// No description provided for @sfHoldLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'طوارئ'**
+  String get sfHoldLabel;
+
+  /// No description provided for @sfHoldHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط مطولاً لمدة {seconds} ثانية لإرسال تنبيه'**
+  String sfHoldHint(int seconds);
+
+  /// No description provided for @sfHolding.
+  ///
+  /// In ar, this message translates to:
+  /// **'استمر بالضغط'**
+  String get sfHolding;
+
+  /// No description provided for @sfSending.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ إرسال تنبيهك…'**
+  String get sfSending;
+
+  /// No description provided for @sfSentTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال التنبيه'**
+  String get sfSentTitle;
+
+  /// No description provided for @sfFailedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر إرسال التنبيه'**
+  String get sfFailedTitle;
+
+  /// No description provided for @sfFailedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحقق من اتصالك. إذا كنت في خطر فاتصل برقم الطوارئ أدناه الآن.'**
+  String get sfFailedBody;
+
+  /// No description provided for @sfRetry.
+  ///
+  /// In ar, this message translates to:
+  /// **'حاول مرة أخرى'**
+  String get sfRetry;
+
+  /// No description provided for @sfNoJob.
+  ///
+  /// In ar, this message translates to:
+  /// **'يعمل زر الأمان أثناء المهمة. يمكنك الاتصال بأرقام الطوارئ أدناه في أي وقت.'**
+  String get sfNoJob;
+
+  /// No description provided for @sfNumbersTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أرقام الطوارئ المحلية'**
+  String get sfNumbersTitle;
+
+  /// No description provided for @sfCall.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتصل بـ {name} ({number})'**
+  String sfCall(String name, String number);
+
+  /// No description provided for @sfNoDispatch.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا التطبيق لا يتصل بخدمات الطوارئ نيابةً عنك ولا يتم إرسال أحد تلقائيًا. إذا كنت في خطر فاتصل بالرقم بنفسك.'**
+  String get sfNoDispatch;
+
+  /// No description provided for @sfWhatWeDid.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما الذي تم'**
+  String get sfWhatWeDid;
+
+  /// No description provided for @sfReport.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإبلاغ عن حادث'**
+  String get sfReport;
+
+  /// No description provided for @sfShareTrip.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة الرحلة مع جهات الاتصال الموثوقة'**
+  String get sfShareTrip;
+
+  /// No description provided for @sfContacts.
+  ///
+  /// In ar, this message translates to:
+  /// **'جهات الاتصال الموثوقة'**
+  String get sfContacts;
+
+  /// No description provided for @sfCallSupport.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاتصال بدعم المنصة'**
+  String get sfCallSupport;
+
+  /// No description provided for @sfDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم'**
+  String get sfDone;
+
+  /// No description provided for @sfCancel.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء'**
+  String get sfCancel;
+
+  /// No description provided for @sfNumPolice.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشرطة'**
+  String get sfNumPolice;
+
+  /// No description provided for @sfNumAmbulance.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإسعاف'**
+  String get sfNumAmbulance;
+
+  /// No description provided for @sfNumFire.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإطفاء'**
+  String get sfNumFire;
+
+  /// No description provided for @sfNumTourist.
+  ///
+  /// In ar, this message translates to:
+  /// **'شرطة السياحة'**
+  String get sfNumTourist;
+
+  /// No description provided for @sfNumOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطوارئ'**
+  String get sfNumOther;
+
+  /// No description provided for @sfCatEmergency.
+  ///
+  /// In ar, this message translates to:
+  /// **'طارئ'**
+  String get sfCatEmergency;
+
+  /// No description provided for @sfCatAccident.
+  ///
+  /// In ar, this message translates to:
+  /// **'حادث'**
+  String get sfCatAccident;
+
+  /// No description provided for @sfCatMedical.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشكلة صحية'**
+  String get sfCatMedical;
+
+  /// No description provided for @sfCatThreat.
+  ///
+  /// In ar, this message translates to:
+  /// **'تهديد أو عنف'**
+  String get sfCatThreat;
+
+  /// No description provided for @sfCatHarassment.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحرش'**
+  String get sfCatHarassment;
+
+  /// No description provided for @sfCatUnsafeDriving.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيادة غير آمنة'**
+  String get sfCatUnsafeDriving;
+
+  /// No description provided for @sfCatTheft.
+  ///
+  /// In ar, this message translates to:
+  /// **'سرقة أو فقدان أغراض'**
+  String get sfCatTheft;
+
+  /// No description provided for @sfCatIdentityMismatch.
+  ///
+  /// In ar, this message translates to:
+  /// **'السائق أو المركبة غير مطابقين'**
+  String get sfCatIdentityMismatch;
+
+  /// No description provided for @sfCatOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'مخاوف أخرى تتعلق بالسلامة'**
+  String get sfCatOther;
+
+  /// No description provided for @sfReportTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإبلاغ عن حادث'**
+  String get sfReportTitle;
+
+  /// No description provided for @sfReportCategory.
+  ///
+  /// In ar, this message translates to:
+  /// **'ماذا حدث؟'**
+  String get sfReportCategory;
+
+  /// No description provided for @sfReportNarrative.
+  ///
+  /// In ar, this message translates to:
+  /// **'اشرح ما حدث'**
+  String get sfReportNarrative;
+
+  /// No description provided for @sfReportNarrativeHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'المكان والأشخاص وأي تفاصيل تساعد فريق السلامة'**
+  String get sfReportNarrativeHint;
+
+  /// No description provided for @sfReportTooShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب بضع كلمات على الأقل.'**
+  String get sfReportTooShort;
+
+  /// No description provided for @sfReportCallback.
+  ///
+  /// In ar, this message translates to:
+  /// **'هاتف للاتصال بك (اختياري)'**
+  String get sfReportCallback;
+
+  /// No description provided for @sfReportSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال البلاغ'**
+  String get sfReportSubmit;
+
+  /// No description provided for @sfReportSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم استلام البلاغ'**
+  String get sfReportSent;
+
+  /// No description provided for @sfReportUrgent.
+  ///
+  /// In ar, this message translates to:
+  /// **'إذا كنت في خطر وشيك فارجع واستخدم زر الطوارئ أو اتصل برقم الطوارئ.'**
+  String get sfReportUrgent;
+
+  /// No description provided for @sfIncidentsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'بلاغات السلامة'**
+  String get sfIncidentsTitle;
+
+  /// No description provided for @sfIncidentsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم ترفع أي بلاغ سلامة.'**
+  String get sfIncidentsEmpty;
+
+  /// No description provided for @sfStatusNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الاستلام'**
+  String get sfStatusNew;
+
+  /// No description provided for @sfStatusAcknowledged.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد المعالجة'**
+  String get sfStatusAcknowledged;
+
+  /// No description provided for @sfStatusInvestigating.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد المراجعة'**
+  String get sfStatusInvestigating;
+
+  /// No description provided for @sfStatusEscalated.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تصعيده إلى مسؤول أعلى'**
+  String get sfStatusEscalated;
+
+  /// No description provided for @sfStatusResolved.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الحل'**
+  String get sfStatusResolved;
+
+  /// No description provided for @sfOutcome.
+  ///
+  /// In ar, this message translates to:
+  /// **'النتيجة: {outcome}'**
+  String sfOutcome(String outcome);
+
+  /// No description provided for @sfTimeline.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما جرى حتى الآن'**
+  String get sfTimeline;
+
+  /// No description provided for @sfIncidentContacts.
+  ///
+  /// In ar, this message translates to:
+  /// **'جهات اتصالك الموثوقة'**
+  String get sfIncidentContacts;
+
+  /// No description provided for @sfFiles.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملفات التي أضفتها'**
+  String get sfFiles;
+
+  /// No description provided for @sfAddUpdate.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة تحديث'**
+  String get sfAddUpdate;
+
+  /// No description provided for @sfUpdateHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخبر فريق السلامة بالمزيد'**
+  String get sfUpdateHint;
+
+  /// No description provided for @sfSendUpdate.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال التحديث'**
+  String get sfSendUpdate;
+
+  /// No description provided for @sfAddFile.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة صورة'**
+  String get sfAddFile;
+
+  /// No description provided for @sfResolvedNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إغلاق هذا البلاغ. إذا تغيّر شيء فارفع بلاغاً جديداً.'**
+  String get sfResolvedNote;
+
+  /// No description provided for @sfCaseNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'البلاغ {number}'**
+  String sfCaseNumber(String number);
+
+  /// No description provided for @sfActorYou.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت'**
+  String get sfActorYou;
+
+  /// No description provided for @sfActorStaff.
+  ///
+  /// In ar, this message translates to:
+  /// **'فريق السلامة'**
+  String get sfActorStaff;
+
+  /// No description provided for @sfActorSystem.
+  ///
+  /// In ar, this message translates to:
+  /// **'النظام'**
+  String get sfActorSystem;
+
+  /// No description provided for @sfContactsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'جهات الاتصال الموثوقة'**
+  String get sfContactsTitle;
+
+  /// No description provided for @sfContactsIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'أشخاص قد نراسلهم برسالة نصية عند ضغطك على الطوارئ أو مشاركة رحلة. نراسلهم فقط وفق ما تسمح به أدناه وبعد تأكيدك أنهم وافقوا.'**
+  String get sfContactsIntro;
+
+  /// No description provided for @sfContactsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد جهات اتصال موثوقة بعد.'**
+  String get sfContactsEmpty;
+
+  /// No description provided for @sfContactsAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة جهة اتصال'**
+  String get sfContactsAdd;
+
+  /// No description provided for @sfContactsLimit.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكنك الاحتفاظ بحتى {max} جهات اتصال.'**
+  String sfContactsLimit(int max);
+
+  /// No description provided for @sfContactName.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسم'**
+  String get sfContactName;
+
+  /// No description provided for @sfContactPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم الهاتف'**
+  String get sfContactPhone;
+
+  /// No description provided for @sfContactPhoneHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'+201001234567'**
+  String get sfContactPhoneHint;
+
+  /// No description provided for @sfContactRelationship.
+  ///
+  /// In ar, this message translates to:
+  /// **'صلة القرابة (اختياري)'**
+  String get sfContactRelationship;
+
+  /// No description provided for @sfRelFamily.
+  ///
+  /// In ar, this message translates to:
+  /// **'العائلة'**
+  String get sfRelFamily;
+
+  /// No description provided for @sfRelPartner.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشريك'**
+  String get sfRelPartner;
+
+  /// No description provided for @sfRelFriend.
+  ///
+  /// In ar, this message translates to:
+  /// **'صديق'**
+  String get sfRelFriend;
+
+  /// No description provided for @sfRelColleague.
+  ///
+  /// In ar, this message translates to:
+  /// **'زميل'**
+  String get sfRelColleague;
+
+  /// No description provided for @sfRelOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر'**
+  String get sfRelOther;
+
+  /// No description provided for @sfConsentTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ماذا يمكننا أن نرسل لهذا الشخص؟'**
+  String get sfConsentTitle;
+
+  /// No description provided for @sfConsentSos.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسالة نصية عندما أضغط على الطوارئ'**
+  String get sfConsentSos;
+
+  /// No description provided for @sfConsentTrip.
+  ///
+  /// In ar, this message translates to:
+  /// **'رابط الرحلة المباشر عندما أشارك رحلة'**
+  String get sfConsentTrip;
+
+  /// No description provided for @sfConsentLocation.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر موقع لي في رسالة الطوارئ'**
+  String get sfConsentLocation;
+
+  /// No description provided for @sfConsentConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'أؤكد أن هذا الشخص وافق على استلام هذه الرسائل.'**
+  String get sfConsentConfirm;
+
+  /// No description provided for @sfContactSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ'**
+  String get sfContactSave;
+
+  /// No description provided for @sfContactDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف جهة الاتصال'**
+  String get sfContactDelete;
+
+  /// No description provided for @sfContactDeleteConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف جهة الاتصال الموثوقة هذه؟'**
+  String get sfContactDeleteConfirm;
+
+  /// No description provided for @sfContactRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الحقل مطلوب.'**
+  String get sfContactRequired;
+
+  /// No description provided for @sfContactConsentRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'أكّد أن هذا الشخص وافق.'**
+  String get sfContactConsentRequired;
+
+  /// No description provided for @sfShareTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة هذه الرحلة'**
+  String get sfShareTitle;
+
+  /// No description provided for @sfShareBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نرسل رابط الرحلة المباشر برسالة نصية إلى جهات الاتصال الموثوقة التي وافقت على استلامه. يعرض الرابط الاسم الأول للسائق والمركبة والموقع المباشر، ويتوقف عند انتهاء الرحلة.'**
+  String get sfShareBody;
+
+  /// No description provided for @sfShareNoContacts.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف أولاً جهة اتصال موثوقة وافقت على استلام روابط الرحلة.'**
+  String get sfShareNoContacts;
+
+  /// No description provided for @sfShareSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال إلى جهات الاتصال الموثوقة'**
+  String get sfShareSend;
+
+  /// No description provided for @sfShareResult.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل إلى {sent} من {total} جهات اتصال'**
+  String sfShareResult(int sent, int total);
+
+  /// No description provided for @sfShareCopy.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ الرابط'**
+  String get sfShareCopy;
+
+  /// No description provided for @sfShareCopied.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم نسخ الرابط'**
+  String get sfShareCopied;
+
+  /// No description provided for @sfShareStop.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف المشاركة'**
+  String get sfShareStop;
+
+  /// No description provided for @sfShareStopped.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إيقاف المشاركة. لم يعد الرابط يعمل.'**
+  String get sfShareStopped;
+
+  /// No description provided for @sfShareExpires.
+  ///
+  /// In ar, this message translates to:
+  /// **'يعمل الرابط حتى {time}'**
+  String sfShareExpires(String time);
+
+  /// No description provided for @sfSettingsTile.
+  ///
+  /// In ar, this message translates to:
+  /// **'جهات الاتصال الموثوقة والسلامة'**
+  String get sfSettingsTile;
 }
 
 class _AppLocalizationsDelegate

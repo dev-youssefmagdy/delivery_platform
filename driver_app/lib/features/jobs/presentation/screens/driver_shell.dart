@@ -121,6 +121,8 @@ class _DriverShellState extends ConsumerState<DriverShell>
             onSelected: (value) {
               if (value == 'language') {
                 context.go('${Routes.language}?from=settings');
+              } else if (value == 'safety') {
+                context.push(Routes.safetyContacts);
               } else if (value == 'support') {
                 context.push(Routes.support);
               } else if (value == 'logout') {
@@ -128,6 +130,11 @@ class _DriverShellState extends ConsumerState<DriverShell>
               }
             },
             itemBuilder: (_) => [
+              PopupMenuItem(
+                key: const Key('driver-safety'),
+                value: 'safety',
+                child: Text(l10n.sfSettingsTile),
+              ),
               PopupMenuItem(
                 key: const Key('driver-support'),
                 value: 'support',

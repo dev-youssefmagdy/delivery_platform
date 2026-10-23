@@ -16,6 +16,7 @@ import '../features/jobs/presentation/screens/application_status_screen.dart';
 import '../features/jobs/presentation/screens/cancel_job_screen.dart';
 import '../features/jobs/presentation/screens/job_screen.dart';
 import '../features/jobs/presentation/screens/report_job_screen.dart';
+import '../features/safety/presentation/screens/safety_screens.dart';
 import '../features/support/presentation/screens/appeal_screen.dart';
 import '../features/support/presentation/screens/chat_screen.dart';
 import '../features/support/presentation/screens/new_ticket_screen.dart';
@@ -56,6 +57,10 @@ abstract final class Routes {
   static const notifications = '/notifications';
   static const notificationSettings = '/notifications/settings';
   static const support = '/support';
+  static const safetyIncidents = '/safety/incidents';
+  static const safetyContacts = '/safety/contacts';
+  static String safetyIncident(String id) => '/safety/incidents/$id';
+  static String safetyReport(String bookingId) => '/safety/report/$bookingId';
   static const supportNew = '/support/new';
   static const earningLines = '/earnings/lines';
 
@@ -111,7 +116,8 @@ bool _isJobPage(String location) =>
     location == Routes.job ||
     location.startsWith('${Routes.job}/') ||
     location == Routes.support ||
-    location.startsWith('${Routes.support}/');
+    location.startsWith('${Routes.support}/') ||
+    location.startsWith('/safety/');
 
 bool _isSignedInOnly(String location) =>
     location == Routes.accountStatus ||
@@ -186,6 +192,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.notificationSettings,
         builder: (_, _) => const NotificationSettingsScreen(),
       ),
+      GoRoute(path: Routes.safetyContacts, builder: (_, _) => const SafetyContactsScreen()),
+      GoRoute(
+        path: Routes.safetyIncidents,
+        builder: (_, _) => const SafetyIncidentsScreen(),
+        routes: [GoRoute(path: ':id', builder: (_, state) => SafetyIncidentScreen(incidentId: state.pathParameters['id']!))],
+      ),
+      GoRoute(path: '/safety/report/:bookingId', builder: (_, state) => SafetyReportScreen(bookingId: state.pathParameters['bookingId']!)),
       GoRoute(
         path: Routes.support,
         builder: (_, _) => const TicketsScreen(),

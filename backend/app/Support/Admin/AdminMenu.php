@@ -3,6 +3,7 @@
 namespace App\Support\Admin;
 
 use App\Enums\Admin\AdminPermission;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -28,12 +29,12 @@ final class AdminMenu
             }
 
             $groupKey = (string) ($item['group'] ?? 'system');
-            $active = request()->routeIs(...explode('|', (string) ($item['active'] ?? $item['route'])));
+            $active = request()->routeIs(...explode('|', (string) ($item['active'] ?? $item['route']))) && $this->queryActive($item, $items);
 
             $tree[$groupKey][] = [
                 'key' => (string) $item['key'],
                 'label' => (string) __((string) $item['label']),
-                'url' => route((string) $item['route']),
+                'url' => route((string) $item['route'], (array) ($item['query'] ?? [])),
                 'icon' => (string) ($item['icon'] ?? 'cube'),
                 'active' => $active,
             ];
@@ -56,6 +57,39 @@ final class AdminMenu
         }
 
         return $visible;
+    }
+
+    /**
+     * Items that share a route and differ by `query` (e.g. pages / service pages / city pages): the one whose query
+     * matches the request is active; the item flagged `default` is active when none matches (create / show screens).
+     *
+     * @param array<string, mixed> $item
+     * @param list<array<string, mixed>> $items
+     */
+    private function queryActive(array $item, array $items): bool
+    {
+        if (! isset($item['query'])) {
+            return true;
+        }
+
+        $matches = static fn (array $candidate): bool => ($candidate['query'] ?? []) !== []
+            && collect(Arr::dot((array) $candidate['query']))->every(static fn (mixed $value, string $key): bool => in_array((string) $value, array_map('strval', Arr::wrap(request()->query(preg_replace('/\.\d+$/', '', $key)))), true));
+
+        if ($matches($item)) {
+            return true;
+        }
+
+        if (! ($item['default'] ?? false)) {
+            return false;
+        }
+
+        foreach ($items as $other) {
+            if (($other['route'] ?? null) === $item['route'] && $other !== $item && $matches($other)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

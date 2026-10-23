@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\Content\PublishScheduledContent;
 use App\Jobs\Customers\ReactivateExpiredSuspensions;
 use App\Jobs\Provider\ReactivateExpiredProviderSuspensions;
 use App\Jobs\Provider\SweepStaleProviders;
@@ -62,3 +63,5 @@ Schedule::job(new EvaluateRiskSignals)->name('risk:evaluate')->hourlyAt(10)->wit
 Schedule::command('metrics:aggregate-daily')->hourlyAt(20)->withoutOverlapping(30);
 
 Schedule::command('metrics:aggregate-daily', ['--nightly' => true])->dailyAt('01:40')->withoutOverlapping(60);
+
+Schedule::job(new PublishScheduledContent)->name('content:publish-scheduled')->everyMinute()->withoutOverlapping();

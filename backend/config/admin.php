@@ -82,6 +82,7 @@ return [
         'customers' => App\Support\Admin\Lookups\CustomerLookup::class,
         'finance-providers' => App\Support\Admin\Lookups\FinanceProviderLookup::class,
         'wallets' => App\Support\Admin\Lookups\WalletLookup::class,
+        'content-media' => App\Support\Admin\Lookups\ContentMediaLookup::class,
         // @admin-module:lookups
     ],
 

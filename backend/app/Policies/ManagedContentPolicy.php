@@ -50,7 +50,7 @@ class ManagedContentPolicy
     {
         $status = $this->status($content);
 
-        return $admin->can($action->permission()->value) && $status !== null && in_array($status, $action->from(), true);
+        return $admin->can($action->permission()->value) && $status !== null && in_array($status, $action->allowedFrom(), true);
     }
 
     private function status(Model $content): ?ContentWorkflowStatus

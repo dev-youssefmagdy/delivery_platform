@@ -40,7 +40,7 @@ enum WorkflowAction: string implements HasLabel
     /**
      * @return list<ContentWorkflowStatus>
      */
-    public function from(): array
+    public function allowedFrom(): array
     {
         return match ($this) {
             self::Submit => [ContentWorkflowStatus::Draft],
@@ -53,7 +53,7 @@ enum WorkflowAction: string implements HasLabel
         };
     }
 
-    public function to(): ContentWorkflowStatus
+    public function target(): ContentWorkflowStatus
     {
         return match ($this) {
             self::Submit => ContentWorkflowStatus::InReview,

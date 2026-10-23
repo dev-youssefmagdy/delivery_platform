@@ -55,7 +55,7 @@ final class ContentWorkflowService
             $locked = $this->repositories->for($type)->lockById($content->getKey()) ?? throw (new ModelNotFoundException)->setModel($type->modelClass());
             $from = $this->status($locked);
 
-            if (! in_array($from, $action->from(), true)) {
+            if (! in_array($from, $action->allowedFrom(), true)) {
                 throw BusinessRuleViolation::make('content_transition_invalid');
             }
 
@@ -141,7 +141,7 @@ final class ContentWorkflowService
     private function apply(ContentType $type, Model $locked, WorkflowAction $action, ?Admin $actor, ?string $reason, ?CarbonInterface $scheduledAt): void
     {
         $changes = [
-            'status' => $action->to(),
+            'status' => $action->target(),
             'lock_version' => (int) $locked->getAttribute('lock_version') + 1,
         ];
 

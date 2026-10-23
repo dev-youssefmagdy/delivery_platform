@@ -5,6 +5,7 @@ use App\Enums\Policy\PolicyType;
 use App\Http\Controllers\Api\V1\Auth\OtpController;
 use App\Http\Controllers\Api\V1\Auth\SessionController;
 use App\Http\Controllers\Api\V1\Common\CatalogController;
+use App\Http\Controllers\Api\V1\Content\ContentController;
 use App\Http\Controllers\Api\V1\Common\ConfigController;
 use App\Http\Controllers\Api\V1\Common\HealthController;
 use App\Http\Controllers\Api\V1\Common\MediaController;
@@ -103,6 +104,18 @@ Route::get('policies/{type}', [PolicyController::class, 'show'])
     ->whereIn('type', PolicyType::values())
     ->middleware('cache.headers:public;max_age=60;etag')
     ->name('policies.show');
+
+// CMS content (P5.4): published, localized, ETag-cached. The website reads the same data through ContentReadService.
+Route::prefix('content')->name('content.')->middleware('cache.headers:public;max_age=60;etag')->controller(ContentController::class)->group(function (): void {
+    Route::get('banners', 'banners')->name('banners');
+    Route::get('faqs', 'faqs')->name('faqs');
+    Route::get('pages/{slug}', 'page')->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('pages.show');
+    Route::get('articles', 'articles')->name('articles');
+    Route::get('articles/{slug}', 'article')->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('articles.show');
+    Route::get('menus', 'menus')->name('menus');
+    Route::get('app-links', 'appLinks')->name('app-links');
+    Route::get('legal/{type}', 'legal')->whereIn('type', PolicyType::values())->name('legal.show');
+});
 
 // Private profile photos behind a short-lived signed URL (built by MeResource).
 Route::get('media/users/{user}/photo', [MediaController::class, 'userPhoto'])

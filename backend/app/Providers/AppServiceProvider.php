@@ -122,6 +122,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::shouldBeStrict(! $this->app->isProduction());
 
+        // The public website's URL map (P5.5), available to every Blade view as $sitePaths.
+        \Illuminate\Support\Facades\View::composer('components.website.layouts.site', \App\View\Composers\SiteChromeComposer::class);
+        \Illuminate\Support\Facades\View::share('sitePaths', $this->app->make(\App\Support\Website\SitePaths::class));
+
         /*
          * Stable aliases are stored in polymorphic columns (audit logs, tokens, permissions) instead of class
          * names. Every model used polymorphically must be added here.
@@ -303,6 +307,9 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for(RateLimiterName::PaymentWebhooks->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::PaymentWebhooks))->by('ip:'.$request->ip()));
 
         RateLimiter::for(RateLimiterName::PublicForms->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::PublicForms))->by('ip:'.$request->ip()));
+
+        // Validate-before-submit calls of the public website forms (P5.5): separate and more generous than the real submit.
+        RateLimiter::for('website-precognition', static fn (Request $request): Limit => Limit::perMinute((int) config('website.forms.precognition_per_minute', 40))->by('ip:'.$request->ip()));
 
         // Validation-only (Precognition) calls are not login attempts, so they are not counted.
         RateLimiter::for(RateLimiterName::AdminLogin->value, static fn (Request $request): Limit => $request->isPrecognitive()

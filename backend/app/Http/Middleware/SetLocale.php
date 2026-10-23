@@ -31,7 +31,8 @@ final class SetLocale
         CarbonImmutable::setLocale($locale->value);
 
         $response = $next($request);
-        $response->headers->set('Content-Language', $locale->value);
+        // A later route middleware (the website's fixed per-URL locale) may have changed it.
+        $response->headers->set('Content-Language', app()->getLocale());
 
         return $response;
     }

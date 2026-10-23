@@ -13,6 +13,8 @@ return [
     'contact' => [
         'support_email' => env('WEBSITE_SUPPORT_EMAIL'),
         'support_phone' => env('WEBSITE_SUPPORT_PHONE'),
+        // Local numbers (01001234567) in website forms are read with this calling code.
+        'default_phone_code' => env('WEBSITE_DEFAULT_PHONE_CODE', '+20'),
         'placeholder_email' => 'website-contact@system.invalid',
         'max_per_email_per_day' => (int) env('WEBSITE_CONTACT_MAX_PER_EMAIL_PER_DAY', 3),
     ],

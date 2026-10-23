@@ -1,12 +1,148 @@
 @import 'tailwindcss';
 
 /*
-| Public website styles (P5.5). Independent from the admin panel (Plan §5.1).
+| Public website styles (P5.5). Independent from the admin panel (Plan §5.1): own entry, own tokens, no admin imports.
+| Font: IBM Plex Sans Arabic (SIL OFL 1.1, self-hosted through @fontsource), Arabic + Latin glyphs, only the weights used.
+| Logical properties only (ms-/me-/ps-/pe-/start-/end-/text-start), so the layout mirrors by `dir` and needs no RTL overrides.
 */
+@import '@fontsource/ibm-plex-sans-arabic/400.css';
+@import '@fontsource/ibm-plex-sans-arabic/600.css';
+@import '@fontsource/ibm-plex-sans-arabic/700.css';
+
 @source '../views/website/**/*.blade.php';
 @source '../views/components/website/**/*.blade.php';
-@source '../views/welcome.blade.php';
+@source '../js/website/**/*.js';
 
 @theme {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Original brand: deep teal (trust, route) with a warm amber accent (the fare offer). */
+    --color-brand-50: #effaf8;
+    --color-brand-100: #d3f3ee;
+    --color-brand-200: #a9e6de;
+    --color-brand-300: #74d2c9;
+    --color-brand-400: #3fb7ae;
+    --color-brand-500: #229c96;
+    --color-brand-600: #187d7b;
+    --color-brand-700: #0f766e;
+    --color-brand-800: #0f5f5a;
+    --color-brand-900: #114e4b;
+    --color-accent-400: #fbbf24;
+    --color-accent-500: #f59e0b;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Rich text coming from the CMS (sanitized HTML). */
+.prose-site {
+    line-height: 1.85;
+    color: var(--color-slate-700);
+    overflow-wrap: anywhere;
+}
+
+.prose-site > * + * {
+    margin-block-start: 1rem;
+}
+
+.prose-site h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-slate-900);
+    margin-block-start: 2rem;
+}
+
+.prose-site h3,
+.prose-site h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-slate-900);
+    margin-block-start: 1.5rem;
+}
+
+.prose-site ul,
+.prose-site ol {
+    padding-inline-start: 1.5rem;
+}
+
+.prose-site ul {
+    list-style: disc;
+}
+
+.prose-site ol {
+    list-style: decimal;
+}
+
+.prose-site a {
+    color: var(--color-brand-700);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.prose-site blockquote {
+    border-inline-start: 4px solid var(--color-brand-300);
+    padding-inline-start: 1rem;
+    color: var(--color-slate-600);
+}
+
+.prose-site img {
+    height: auto;
+    max-width: 100%;
+    border-radius: 0.75rem;
+}
+
+.prose-site table {
+    width: 100%;
+    border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+}
+
+.prose-site th,
+.prose-site td {
+    border: 1px solid var(--color-slate-200);
+    padding: 0.5rem 0.75rem;
+    text-align: start;
+}
+
+.prose-site code {
+    background: var(--color-slate-100);
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.9em;
+    direction: ltr;
+    unicode-bidi: isolate;
+}
+
+.prose-invert,
+.prose-invert a,
+.prose-invert h2,
+.prose-invert h3 {
+    color: inherit;
+}
+
+/* Plain legal text (policy_versions): escaped, line breaks kept. */
+.legal-text {
+    white-space: pre-line;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+/* Latin plates, phone numbers and codes inside Arabic text keep their own direction. */
+.ltr-isolate {
+    direction: ltr;
+    unicode-bidi: isolate;
 }

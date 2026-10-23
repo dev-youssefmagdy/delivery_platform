@@ -6,13 +6,13 @@ use App\DTOs\Payout\PayoutRequestData;
 use App\Enums\Common\AuditAction;
 use App\Enums\Finance\LedgerAccountType;
 use App\Enums\Payout\PayoutStatus;
+use App\Enums\Provider\ProviderStatus;
 use App\Exceptions\BusinessRuleViolation;
 use App\Exceptions\ConflictException;
 use App\Models\LedgerAccount;
 use App\Models\PayoutRequest;
 use App\Models\ProviderPayoutMethod;
 use App\Models\ProviderProfile;
-use App\Enums\Provider\ProviderStatus;
 use App\Repositories\Contracts\Finance\LedgerAccountRepositoryInterface;
 use App\Repositories\Contracts\Payout\PayoutRequestRepositoryInterface;
 use App\Repositories\Contracts\Payout\ProviderPayoutMethodRepositoryInterface;
@@ -23,6 +23,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\UniqueConstraintViolationException;
+use LogicException;
 
 /**
  * The provider side of payouts (SRS §12.3, Plan P3.4).
@@ -157,7 +158,7 @@ final class PayoutService
     private function wallet(LedgerAccount $locked): LedgerAccount
     {
         if ($locked->type !== LedgerAccountType::ProviderWallet) {
-            throw new \LogicException('A payout reserves a provider wallet.');
+            throw new LogicException('A payout reserves a provider wallet.');
         }
 
         return $locked;

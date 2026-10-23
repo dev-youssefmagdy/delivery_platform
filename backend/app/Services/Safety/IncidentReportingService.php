@@ -7,7 +7,6 @@ use App\DTOs\Safety\ReportIncidentData;
 use App\Enums\Booking\BookingStatus;
 use App\Enums\Common\ActorType;
 use App\Enums\Identity\ClientApp;
-use App\Enums\Safety\IncidentCategory;
 use App\Enums\Safety\IncidentEventType;
 use App\Enums\Safety\IncidentPriority;
 use App\Enums\Safety\IncidentSeverity;

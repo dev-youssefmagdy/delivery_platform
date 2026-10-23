@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\Coupon;
 
 use App\Models\Coupon;
+use Closure;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
 
@@ -28,7 +29,7 @@ class UpdateCouponRequest extends StoreCouponRequest
     }
 
     /**
-     * @return array<int, \Closure>
+     * @return array<int, Closure>
      */
     public function after(): array
     {

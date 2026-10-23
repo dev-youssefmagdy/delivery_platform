@@ -3,7 +3,6 @@
 namespace App\Repositories\Eloquent\Notification;
 
 use App\DTOs\Notification\NotificationTemplateFilterData;
-use App\Enums\Notification\NotificationCategory;
 use App\Enums\Notification\NotificationChannel;
 use App\Enums\Notification\NotificationEvent;
 use App\Models\NotificationTemplate;

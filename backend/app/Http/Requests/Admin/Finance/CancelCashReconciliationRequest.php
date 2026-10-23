@@ -18,5 +18,4 @@ class CancelCashReconciliationRequest extends ModelActionRequest
     {
         return 'cashReconciliation';
     }
-
 }

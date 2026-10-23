@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api\V1\Me;
 
 use App\Http\Controllers\Api\V1\Concerns\ResolvesClientApp;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\V1\Wallet\WalletResource;
-use App\Http\Resources\Api\V1\Wallet\WalletTransactionResource;
 use App\Http\Requests\Api\V1\Payment\StartPaymentRequest;
 use App\Http\Resources\Api\V1\Payment\PaymentResource;
+use App\Http\Resources\Api\V1\Wallet\WalletResource;
+use App\Http\Resources\Api\V1\Wallet\WalletTransactionResource;
 use App\Services\Finance\WalletStatementService;
 use App\Services\Payments\PaymentIntentService;
 use App\Support\Http\ApiResponse;

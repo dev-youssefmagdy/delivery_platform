@@ -24,6 +24,7 @@ use App\Repositories\Contracts\Reviews\RatingModerationRepositoryInterface;
 use App\Repositories\Contracts\Risk\RiskSignalRepositoryInterface;
 use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
 use App\Support\Reporting\ReportValueFormatter;
+use BackedEnum;
 use Carbon\CarbonInterface;
 
 /**
@@ -201,7 +202,7 @@ final class OperationsDashboardService
      */
     private function change(int|float|null $current, int|float|null $previous, bool $points): array
     {
-        if ($current === null || $previous === null || ($previous == 0 && ! $points)) {
+        if ($current === null || $previous === null || ($previous === 0 && ! $points)) {
             return [null, null];
         }
 
@@ -219,7 +220,7 @@ final class OperationsDashboardService
     {
         $created = ['created_at' => ['from' => $range->from->toDateString(), 'to' => $range->to->toDateString()]];
         $scope = array_filter(['city_ids' => $filters->cityIds, 'zone_ids' => $filters->zoneIds, 'service_category_ids' => $filters->categoryIds]);
-        $statuses = static fn (array $cases): array => array_map(static fn (\BackedEnum $case): string => (string) $case->value, $cases);
+        $statuses = static fn (array $cases): array => array_map(static fn (BackedEnum $case): string => (string) $case->value, $cases);
         $url = static fn (string $route, array $query): string => route($route, ['filters' => $query]);
 
         return match ($key) {

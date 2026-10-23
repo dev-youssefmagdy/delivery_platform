@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Website;
 
 use App\Enums\Policy\PolicyType;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
 
 /**
  * Legal pages from policy_versions (terms, privacy, cancellation, restricted goods, driver terms, coupon rules). The text is

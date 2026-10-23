@@ -6,6 +6,7 @@ use App\Enums\Identity\ClientApp;
 use App\Enums\Notification\NotificationEvent;
 use App\Models\Admin;
 use App\Models\User;
+use Closure;
 
 /**
  * What the domain asks the notification platform to tell a person: an event, who, and the facts the template needs.
@@ -14,7 +15,7 @@ use App\Models\User;
 final readonly class NotificationMessage
 {
     /**
-     * @param array<string, scalar|\Closure(string): string|null> $variables values for the template placeholders (never secrets or OTPs); a closure receives the recipient's language
+     * @param array<string, scalar|Closure(string): string|null> $variables values for the template placeholders (never secrets or OTPs); a closure receives the recipient's language
      * @param array<string, scalar|null> $data extra payload for the apps (ids only, no PII)
      * @param array{title: string, body: string}|null $content fixed text for a language-less campaign message
      */
@@ -33,7 +34,7 @@ final readonly class NotificationMessage
     /**
      * A message to a mobile user in the app the event addresses (the audience's own app unless `$app` says otherwise).
      *
-     * @param array<string, scalar|\Closure(string): string|null> $variables
+     * @param array<string, scalar|Closure(string): string|null> $variables
      */
     public static function toUser(NotificationEvent $event, User $user, ?ClientApp $app = null, array $variables = [], ?string $linkId = null, ?string $dedupeKey = null): self
     {

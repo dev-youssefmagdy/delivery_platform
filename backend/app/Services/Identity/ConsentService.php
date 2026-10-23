@@ -9,9 +9,9 @@ use App\Exceptions\BusinessRuleViolation;
 use App\Models\PolicyVersion;
 use App\Models\User;
 use App\Repositories\Contracts\Identity\CustomerProfileRepositoryInterface;
-use App\Services\Notification\NotificationPreferenceService;
 use App\Repositories\Contracts\Identity\UserConsentRepositoryInterface;
 use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
+use App\Services\Notification\NotificationPreferenceService;
 use Illuminate\Support\Facades\DB;
 
 /**

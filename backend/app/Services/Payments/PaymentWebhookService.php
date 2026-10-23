@@ -26,6 +26,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use LogicException;
 use Throwable;
 
 /**
@@ -120,7 +121,7 @@ final class PaymentWebhookService
                 $event = $this->events->insert($this->newEventAttributes($name, $verified, $hash, $now));
             } catch (UniqueConstraintViolationException) {
                 // A concurrent delivery of the same event inserted first: wait for its lock and read what it did.
-                $event = $this->events->lockByEventId($name, $verified->eventId) ?? throw new \LogicException('Webhook event vanished.');
+                $event = $this->events->lockByEventId($name, $verified->eventId) ?? throw new LogicException('Webhook event vanished.');
             }
         }
 

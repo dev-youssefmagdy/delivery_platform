@@ -2,7 +2,6 @@
 
 namespace App\Services\Growth;
 
-use App\Enums\Growth\CreditStatus;
 use App\Enums\Growth\IncentiveProgressStatus;
 use App\Enums\Growth\ReferralAudience;
 use App\Enums\Growth\RelationshipStatus;
@@ -20,7 +19,6 @@ use App\Repositories\Contracts\Growth\ReferralRepositoryInterface;
 use App\Services\Provider\ProviderOnboardingService;
 use App\Support\Money\CurrencyRegistry;
 use App\Support\Money\Money;
-use Carbon\CarbonInterface;
 use Illuminate\Support\Str;
 
 /**

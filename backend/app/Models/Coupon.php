@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Coupon\CouponStatus;
 use App\Enums\Coupon\DiscountType;
 use App\Enums\Coupon\FundingSource;
 use App\Support\Audit\Auditable;
@@ -10,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Spatie\Translatable\HasTranslations;
-use App\Enums\Coupon\CouponStatus;
 
 /**
  * A promotion (SRS §11.1). `code` is null for an automatic campaign. The financial terms are frozen per `version` in

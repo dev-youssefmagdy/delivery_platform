@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use LogicException;
 use Yajra\DataTables\EloquentDataTable;
 
 /**
@@ -61,7 +62,7 @@ class ReportsDataTable extends AdminDataTable
     {
         $bound = request()->route('report');
 
-        return $this->replayKey ?? ($bound instanceof ReportKey ? $bound : throw new \LogicException('No report selected.'));
+        return $this->replayKey ?? ($bound instanceof ReportKey ? $bound : throw new LogicException('No report selected.'));
     }
 
     public function filters(): ReportFilterData

@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Contracts\System;
 
+use DateTimeInterface;
+
 interface WebhookFailureRepositoryInterface
 {
     /**
@@ -9,5 +11,5 @@ interface WebhookFailureRepositoryInterface
      *
      * @return array{count: int, last_at: \Illuminate\Support\Carbon|null, last_gateway: string|null, last_outcome: string|null}
      */
-    public function summarySince(\DateTimeInterface $since): array;
+    public function summarySince(DateTimeInterface $since): array;
 }

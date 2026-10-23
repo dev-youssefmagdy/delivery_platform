@@ -67,7 +67,6 @@ Route::get('ar/{path?}', static fn (string $path = '') => redirect('/'.ltrim($pa
 Route::get('sitemap.xml', [SeoController::class, 'sitemap'])->name('website.sitemap');
 Route::get('robots.txt', [SeoController::class, 'robots'])->name('website.robots');
 
-
 // Public trip share (P2.5, SRS §13.1): the token is the only credential, so the endpoints are throttled per IP and every
 // failure looks the same. Pages are noindex and uncacheable (set by the controller).
 Route::middleware('throttle:60,1')->group(function (): void {

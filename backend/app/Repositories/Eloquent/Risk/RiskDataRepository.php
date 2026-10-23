@@ -146,7 +146,7 @@ final class RiskDataRepository implements RiskDataRepositoryInterface
         foreach ($counts as $subjectId => $row) {
             $entry = ['subject_id' => $subjectId, 'disputed' => $row['disputed'] ?? 0, 'refunds' => $row['refunds'] ?? 0, 'failed_payments' => $row['failed_payments'] ?? 0];
 
-            if ($entry['disputed'] + $entry['refunds'] + $entry['failed_payments'] >= $minEvents) {
+            if ($minEvents <= $entry['disputed'] + $entry['refunds'] + $entry['failed_payments']) {
                 $result[] = $entry;
             }
         }

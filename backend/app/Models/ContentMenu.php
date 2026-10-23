@@ -6,7 +6,6 @@ use App\Enums\Content\MenuLocation;
 use App\Models\Concerns\HasContentWorkflow;
 use App\Support\Audit\Auditable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Translatable\HasTranslations;
 
 /**

@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\Growth\ReferralCampaignController;
 use App\Http\Controllers\Admin\Growth\ReferralRelationshipController;
 use App\Http\Controllers\Admin\Growth\ReferralRewardController;
 use App\Models\IncentiveCampaign;
-use App\Models\IncentiveProgress;
 use App\Models\LoyaltyLevel;
 use App\Models\ReferralCampaign;
 use App\Models\ReferralRelationship;

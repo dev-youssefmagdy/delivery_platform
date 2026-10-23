@@ -31,7 +31,7 @@ return [
     'document.expired' => [
         'title' => 'Document expired', 'body' => 'A document expired. Upload a new one to go online again.',
         'sms' => 'A document on your driver account expired. Upload a new one in the app to go online again.',
-        'email_subject' => 'A document expired', 'email_body' => "Your document \"{document}\" expired and you cannot go online until you upload a valid one.",
+        'email_subject' => 'A document expired', 'email_body' => 'Your document "{document}" expired and you cannot go online until you upload a valid one.',
     ],
 
     'booking.search_expired' => ['title' => 'No driver found', 'body' => 'We could not find a driver for booking {code}. You can try again.'],

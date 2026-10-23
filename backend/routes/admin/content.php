@@ -2,8 +2,8 @@
 
 use App\Enums\Content\ContentType;
 use App\Enums\Content\WorkflowAction;
-use App\Http\Controllers\Admin\Content\ArticleController;
 use App\Http\Controllers\Admin\Content\AppLinkController;
+use App\Http\Controllers\Admin\Content\ArticleController;
 use App\Http\Controllers\Admin\Content\BannerController;
 use App\Http\Controllers\Admin\Content\CategoryController;
 use App\Http\Controllers\Admin\Content\ContentWorkflowController;

@@ -14,5 +14,4 @@ class ReopenIncidentRequest extends IncidentActionRequest
     {
         return true;
     }
-
 }

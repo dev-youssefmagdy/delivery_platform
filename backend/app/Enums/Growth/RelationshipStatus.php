@@ -33,5 +33,4 @@ enum RelationshipStatus: string implements HasColor, HasLabel
             self::Rejected => BadgeColor::Neutral,
         };
     }
-
 }

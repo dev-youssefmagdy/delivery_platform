@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Throwable;
 
 /**
  * Starts online payments (SRS §12.1, §6.7): the trip fare of a card / wallet booking and tips.
@@ -183,7 +184,7 @@ final class PaymentIntentService
         try {
             /** @var array<string, string|null> $action */
             $action = json_decode(Crypt::decryptString($stored), true) ?: [];
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return ['client_secret' => null, 'action_url' => null];
         }
 

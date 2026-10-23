@@ -6,7 +6,6 @@ use App\DataTables\Admin\AdminDataTable;
 use App\DataTables\Admin\Finance\Concerns\FormatsLedgerMoney;
 use App\DTOs\Finance\AdjustmentFilterData;
 use App\Models\FinancialAdjustmentRequest;
-use App\Models\LedgerAccount;
 use App\Models\ProviderProfile;
 use App\Models\User;
 use App\Repositories\Contracts\Finance\FinancialAdjustmentRepositoryInterface;

@@ -20,6 +20,7 @@ final class CatalogCache
 
     /**
      * @template T
+     *
      * @param Closure(): T $build
      * @return T
      */

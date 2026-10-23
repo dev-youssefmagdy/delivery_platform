@@ -18,5 +18,4 @@ class MarkPayoutFailedRequest extends ModelActionRequest
     {
         return 'payoutRequest';
     }
-
 }

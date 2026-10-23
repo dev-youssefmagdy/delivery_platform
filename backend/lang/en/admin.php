@@ -591,7 +591,7 @@ return [
         ],
         'errors' => [
             'ip_allowlist_invalid' => "':entry' is not a valid IP address or range.",
-            'ip_allowlist_lockout' => "The list must include your own address (:ip), otherwise you would lock yourself out.",
+            'ip_allowlist_lockout' => 'The list must include your own address (:ip), otherwise you would lock yourself out.',
         ],
         'keys' => [
             'default_country' => [
@@ -3411,7 +3411,6 @@ return [
         'settled_done' => 'Settlement recorded and posted to the ledger.',
         'cancelled' => 'Reconciliation cancelled.',
     ],
-
 
     'support_tickets' => [
         'menu' => 'Tickets',

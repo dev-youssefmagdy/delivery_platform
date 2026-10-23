@@ -9,6 +9,7 @@ use App\Models\ContentBanner;
 use App\Models\ContentFaq;
 use App\Models\ContentMenu;
 use App\Models\ContentPage;
+use InvalidArgumentException;
 
 /**
  * Content entities that go through the workflow (they share routes for transitions, preview and revisions).
@@ -61,6 +62,6 @@ enum ContentType: string implements HasLabel
             }
         }
 
-        throw new \InvalidArgumentException('Not a workflow content model: '.$model::class);
+        throw new InvalidArgumentException('Not a workflow content model: '.$model::class);
     }
 }

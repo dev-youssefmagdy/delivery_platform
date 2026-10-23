@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin\Finance;
 
 use App\DataTables\Admin\Finance\JournalEntriesDataTable;
 use App\Http\Controllers\Admin\AdminController;
-use App\Models\JournalEntry;
 use App\Models\Booking;
+use App\Models\JournalEntry;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
 use App\Repositories\Contracts\Finance\JournalLineRepositoryInterface;
 use Illuminate\Contracts\View\View;

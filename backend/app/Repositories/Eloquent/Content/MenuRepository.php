@@ -7,6 +7,7 @@ use App\Enums\Content\ContentWorkflowStatus;
 use App\Enums\Content\MenuLocation;
 use App\Models\ContentMenu;
 use App\Repositories\Contracts\Content\MenuRepositoryInterface;
+use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -23,7 +24,7 @@ final class MenuRepository extends ContentRepository implements MenuRepositoryIn
     public function datatableQuery(ContentFilterData $filters): Builder
     {
         return $this->applyCommonFilters($this->query(), $filters)
-            ->when($filters->locations !== [], static fn (Builder $query) => $query->whereIn('location', array_map(static fn (\BackedEnum $location): string => $location->value, $filters->locations)));
+            ->when($filters->locations !== [], static fn (Builder $query) => $query->whereIn('location', array_map(static fn (BackedEnum $location): string => $location->value, $filters->locations)));
     }
 
     protected function searchColumns(): array

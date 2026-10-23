@@ -15,6 +15,7 @@ use App\Services\Audit\AuditLogger;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
+use LogicException;
 
 /**
  * Admin configuration of coupons (SRS §11.1, §16.8): audited writes with optimistic locking and immutable versions.
@@ -77,7 +78,7 @@ final class CouponService
             }
 
             $locked->load('scopes');
-            $current = $this->coupons->currentVersion($locked) ?? throw new \LogicException('A coupon always has a current version.');
+            $current = $this->coupons->currentVersion($locked) ?? throw new LogicException('A coupon always has a current version.');
             $termsChanged = ! $current->termsObject()->equals($data->terms());
 
             if ($termsChanged && $locked->status->isLive() && $data->reason === null) {

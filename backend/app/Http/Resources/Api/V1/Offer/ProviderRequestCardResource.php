@@ -9,6 +9,7 @@ use App\Services\Scope\OfferScopeService;
 use App\Support\Booking\CounterOfferBounds;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use stdClass;
 
 /**
  * A request as a dispatched provider may see it BEFORE the customer chose anybody (staged disclosure, Plan I10, SRS
@@ -82,7 +83,7 @@ class ProviderRequestCardResource extends JsonResource
                     'volume_m3' => $booking->cargo_volume_m3 === null ? null : (float) $booking->cargo_volume_m3,
                 ],
                 'pickup_window' => $booking->pickup_window_start === null ? null : ['start' => $booking->pickup_window_start->toIso8601ZuluString(), 'end' => $booking->pickup_window_end?->toIso8601ZuluString()],
-                'requested_scope' => ($booking->requested_scope ?? []) === [] ? new \stdClass : $booking->requested_scope,
+                'requested_scope' => ($booking->requested_scope ?? []) === [] ? new stdClass : $booking->requested_scope,
                 'requested_scope_summary' => app(OfferScopeService::class)->summary($booking->requested_scope),
             ],
             'expires_at' => $booking->search_expires_at?->toIso8601ZuluString(),

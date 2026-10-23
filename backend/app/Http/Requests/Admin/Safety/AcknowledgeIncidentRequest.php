@@ -14,5 +14,4 @@ class AcknowledgeIncidentRequest extends IncidentActionRequest
     {
         return false;
     }
-
 }

@@ -42,7 +42,6 @@ final class CancellationFeePostingService
 
     /**
      * @param int|null $providerId the provider of the booking at the time of the decision (a re-dispatch clears it afterwards)
-     *
      * @return list<int> ids of the journal entries written (or found) for the decision
      */
     public function post(Booking $booking, CancellationDecision $decision, ?int $providerId, int $sequence): array

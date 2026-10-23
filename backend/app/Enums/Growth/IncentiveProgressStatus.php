@@ -33,5 +33,4 @@ enum IncentiveProgressStatus: string implements HasColor, HasLabel
             self::Rejected => BadgeColor::Neutral,
         };
     }
-
 }

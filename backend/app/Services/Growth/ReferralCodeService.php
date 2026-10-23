@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Repositories\Contracts\Growth\ReferralRepositoryInterface;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 /**
  * One permanent referral code per user and audience. The code uses an unambiguous alphabet (no 0/O/1/I) and is shared as a link.
@@ -39,7 +40,7 @@ final class ReferralCodeService
             }
         }
 
-        throw new \RuntimeException('Could not allocate a referral code.');
+        throw new RuntimeException('Could not allocate a referral code.');
     }
 
     public function link(ReferralCode $code): string

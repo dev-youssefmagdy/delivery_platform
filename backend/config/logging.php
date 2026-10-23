@@ -81,7 +81,7 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'max_files' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
-            'tap' => [\App\Logging\StructuredLogging::class],
+            'tap' => [App\Logging\StructuredLogging::class],
         ],
 
         'stderr_json' => [
@@ -90,7 +90,7 @@ return [
             'handler' => StreamHandler::class,
             'handler_with' => ['stream' => 'php://stderr'],
             'processors' => [PsrLogMessageProcessor::class],
-            'tap' => [\App\Logging\StructuredLogging::class],
+            'tap' => [App\Logging\StructuredLogging::class],
         ],
 
         'daily' => [

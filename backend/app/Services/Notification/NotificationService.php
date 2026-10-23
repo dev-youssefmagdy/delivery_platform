@@ -14,6 +14,7 @@ use App\Models\AppNotification;
 use App\Models\User;
 use App\Repositories\Contracts\Notification\AppNotificationRepositoryInterface;
 use App\Repositories\Contracts\Notification\NotificationDeliveryRepositoryInterface;
+use Closure;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -209,7 +210,7 @@ final class NotificationService
         $variables = [];
 
         foreach ($message->variables as $name => $value) {
-            $value = $value instanceof \Closure ? $value($locale) : $value;
+            $value = $value instanceof Closure ? $value($locale) : $value;
             $variables[$name] = $name === 'outcome' && is_string($value) ? $this->templates->variableValue($name, $value, $locale) : $value;
         }
 

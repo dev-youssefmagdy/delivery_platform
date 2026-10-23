@@ -5,7 +5,6 @@ namespace App\Services\Scope;
 use App\DTOs\Booking\BookingAdjustmentData;
 use App\DTOs\Scope\OfferScopeData;
 use App\Enums\Booking\BookingAdjustmentType;
-use App\Enums\Catalog\ServiceFamilyKind;
 use App\Enums\Scope\CostTreatment;
 use App\Enums\Scope\ScopeItem;
 use App\Exceptions\BusinessRuleViolation;

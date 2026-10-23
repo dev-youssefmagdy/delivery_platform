@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent\Content;
 use App\DTOs\Content\ContentFilterData;
 use App\Models\ContentArticle;
 use App\Repositories\Contracts\Content\ArticleRepositoryInterface;
+use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -20,7 +21,7 @@ final class ArticleRepository extends ContentRepository implements ArticleReposi
     public function datatableQuery(ContentFilterData $filters): Builder
     {
         return $this->applyCommonFilters($this->query(), $filters)
-            ->when($filters->articleTypes !== [], static fn (Builder $query) => $query->whereIn('type', array_map(static fn (\BackedEnum $type): string => $type->value, $filters->articleTypes)))
+            ->when($filters->articleTypes !== [], static fn (Builder $query) => $query->whereIn('type', array_map(static fn (BackedEnum $type): string => $type->value, $filters->articleTypes)))
             ->when($filters->categoryIds !== [], static fn (Builder $query) => $query->whereIn('category_id', $filters->categoryIds));
     }
 

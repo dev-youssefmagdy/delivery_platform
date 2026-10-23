@@ -15,10 +15,10 @@ use App\Support\Files\InspectedUpload;
 use App\Support\Files\PrivateFileStorage;
 use App\Support\Files\UploadInspector;
 use Carbon\CarbonImmutable;
-use Illuminate\Http\UploadedFile;
-use Throwable;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\UploadedFile;
+use Throwable;
 
 /**
  * After approval: processing, paid and failed (SRS §12.3), plus a paid transfer that came back (reversed).

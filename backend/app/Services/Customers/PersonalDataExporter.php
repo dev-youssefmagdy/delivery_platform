@@ -2,45 +2,38 @@
 
 namespace App\Services\Customers;
 
+use App\DTOs\Coupon\CouponActivityFilterData;
 use App\Models\AccountDeletionRequest;
 use App\Models\Booking;
-use App\Models\BookingMessage;
-use App\Models\SupportTicket;
-use App\Models\TicketMessage;
-use App\Models\BookingStatusEvent;
 use App\Models\BookingAttachment;
 use App\Models\BookingContact;
 use App\Models\BookingItem;
+use App\Models\BookingMessage;
 use App\Models\BookingProof;
+use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
-use App\Models\DeliveryAttempt;
-use App\DTOs\Coupon\CouponActivityFilterData;
 use App\Models\CouponAttempt;
 use App\Models\CouponReservation;
 use App\Models\CustomerMessage;
-use App\Models\SavedPlace;
-use App\Models\Payment;
-use App\Models\PaymentMethod;
+use App\Models\DeliveryAttempt;
 use App\Models\JournalLine;
 use App\Models\LedgerAccount;
+use App\Models\Payment;
+use App\Models\PaymentMethod;
+use App\Models\SavedPlace;
+use App\Models\SupportTicket;
+use App\Models\TicketMessage;
 use App\Models\User;
-use App\Services\Finance\WalletStatementService;
-use App\Repositories\Contracts\Payments\PaymentMethodRepositoryInterface;
-use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
 use App\Models\UserConsent;
 use App\Models\UserDevice;
-use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
-use App\Repositories\Contracts\Safety\TrustedContactRepositoryInterface;
-use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
-use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingAttachmentRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingContactRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingItemRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
-use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Coupon\CouponAttemptRepositoryInterface;
 use App\Repositories\Contracts\Coupon\CouponReservationRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerMessageRepositoryInterface;
@@ -49,6 +42,13 @@ use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterfac
 use App\Repositories\Contracts\Identity\CustomerProfileRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserConsentRepositoryInterface;
 use App\Repositories\Contracts\Identity\UserDeviceRepositoryInterface;
+use App\Repositories\Contracts\Payments\PaymentMethodRepositoryInterface;
+use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
+use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
+use App\Repositories\Contracts\Safety\TrustedContactRepositoryInterface;
+use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
+use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
+use App\Services\Finance\WalletStatementService;
 
 /**
  * Builds the machine-readable copy of everything the platform holds about one customer (data-subject access
@@ -242,6 +242,7 @@ final class PersonalDataExporter
     private function feedback(Booking $booking): array
     {
         $rating = $this->ratings->findForSide($booking->id, 'customer');
+
         return [
             'rating' => $rating === null ? null : ['stars' => $rating->stars, 'tags' => $rating->tags, 'comment' => $rating->comment],
         ];

@@ -9,6 +9,7 @@ use App\Repositories\Contracts\Growth\LoyaltyRepositoryInterface;
 use App\Repositories\Contracts\Growth\ReferralRepositoryInterface;
 use Carbon\CarbonInterface;
 use Illuminate\Database\DatabaseManager;
+use LogicException;
 use Throwable;
 
 /**
@@ -68,7 +69,7 @@ final class CreditExpiryService
                     $room -= $reclaim;
                 }
 
-                $model instanceof ReferralReward ? $this->referrals->updateReward($model, $attributes) : $this->loyalty->updateAward($model instanceof LoyaltyAward ? $model : throw new \LogicException, $attributes);
+                $model instanceof ReferralReward ? $this->referrals->updateReward($model, $attributes) : $this->loyalty->updateAward($model instanceof LoyaltyAward ? $model : throw new LogicException, $attributes);
                 $closed++;
             }
 

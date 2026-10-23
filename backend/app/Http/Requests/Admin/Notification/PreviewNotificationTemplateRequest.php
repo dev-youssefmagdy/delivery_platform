@@ -32,5 +32,4 @@ class PreviewNotificationTemplateRequest extends FormRequest
             'variables.*' => ['nullable', 'string', 'max:120'],
         ];
     }
-
 }

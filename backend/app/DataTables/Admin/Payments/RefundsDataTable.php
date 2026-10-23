@@ -8,7 +8,6 @@ use App\Models\PaymentRefund;
 use App\Repositories\Contracts\Payments\PaymentRefundRepositoryInterface;
 use App\Support\Admin\Tables\TableAction;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Yajra\DataTables\EloquentDataTable;
 

@@ -31,5 +31,4 @@ enum CreditStatus: string implements HasColor, HasLabel
             self::Reversed => BadgeColor::Warning,
         };
     }
-
 }

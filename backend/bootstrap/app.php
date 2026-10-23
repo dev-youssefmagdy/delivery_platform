@@ -89,10 +89,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 return;
             }
 
-            $requestId = \Illuminate\Support\Facades\Context::get('request_id');
+            $requestId = Illuminate\Support\Facades\Context::get('request_id');
             app()->terminating(static function () use ($e, $requestId): void {
                 try {
-                    app(\App\Integrations\Errors\Contracts\ErrorTracker::class)->report($e, is_string($requestId) ? $requestId : null);
+                    app(App\Integrations\Errors\Contracts\ErrorTracker::class)->report($e, is_string($requestId) ? $requestId : null);
                 } catch (Throwable) {
                     // Error tracking must never fail a request.
                 }

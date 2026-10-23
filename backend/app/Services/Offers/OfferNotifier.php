@@ -3,12 +3,12 @@
 namespace App\Services\Offers;
 
 use App\Enums\Booking\OfferStatus;
+use App\Enums\Notification\NotificationEvent;
 use App\Events\Realtime\BookingOfferExpired;
 use App\Events\Realtime\BookingOfferReceived;
 use App\Events\Realtime\BookingOfferUpdated;
 use App\Events\Realtime\BookingProviderSelected;
 use App\Http\Resources\Api\V1\Offer\CustomerOfferResource;
-use App\Enums\Notification\NotificationEvent;
 use App\Models\Booking;
 use App\Models\BookingOffer;
 use App\Repositories\Contracts\Booking\OfferRepositoryInterface;

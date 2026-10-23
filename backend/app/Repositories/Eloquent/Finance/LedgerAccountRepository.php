@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use LogicException;
 
 final class LedgerAccountRepository implements LedgerAccountRepositoryInterface
 {
@@ -56,7 +57,7 @@ final class LedgerAccountRepository implements LedgerAccountRepositoryInterface
             'updated_at' => $now,
         ]);
 
-        return $this->findByIdentity($type, $scopeKey, $currency) ?? throw new \LogicException('Ledger account could not be created.');
+        return $this->findByIdentity($type, $scopeKey, $currency) ?? throw new LogicException('Ledger account could not be created.');
     }
 
     public function lockInOrder(array $ids): Collection

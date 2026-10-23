@@ -6,7 +6,6 @@ use App\DTOs\Booking\CancellationDecision;
 use App\DTOs\Booking\CancellationPreviewData;
 use App\Enums\Booking\BookingStatus;
 use App\Enums\Booking\CancellationStage;
-use App\Enums\Common\ActorType;
 use App\Models\Booking;
 use App\Models\CancellationPolicy;
 use Carbon\CarbonImmutable;

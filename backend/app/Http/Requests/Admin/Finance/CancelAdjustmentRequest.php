@@ -18,5 +18,4 @@ class CancelAdjustmentRequest extends ModelActionRequest
     {
         return 'adjustmentRequest';
     }
-
 }

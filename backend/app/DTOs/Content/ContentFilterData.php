@@ -11,6 +11,7 @@ use App\Enums\Content\ContentWorkflowStatus;
 use App\Enums\Content\LocaleCompleteness;
 use App\Enums\Content\MenuLocation;
 use App\Enums\Content\PageKind;
+use BackedEnum;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 
@@ -78,7 +79,7 @@ final readonly class ContentFilterData implements FilterData
 
     public function toArray(): array
     {
-        $values = static fn (array $enums): array => array_map(static fn (\BackedEnum $case): string|int => $case->value, $enums);
+        $values = static fn (array $enums): array => array_map(static fn (BackedEnum $case): string|int => $case->value, $enums);
 
         return array_filter([
             'search' => $this->search,

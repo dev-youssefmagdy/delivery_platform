@@ -5,12 +5,13 @@ namespace App\Repositories\Eloquent\System;
 use App\Enums\Payments\WebhookOutcome;
 use App\Models\GatewayWebhookEvent;
 use App\Repositories\Contracts\System\WebhookFailureRepositoryInterface;
+use DateTimeInterface;
 
 final class WebhookFailureRepository implements WebhookFailureRepositoryInterface
 {
     private const FAILED = [WebhookOutcome::InvalidSignature, WebhookOutcome::ReplayWindow, WebhookOutcome::AmountMismatch, WebhookOutcome::Failed];
 
-    public function summarySince(\DateTimeInterface $since): array
+    public function summarySince(DateTimeInterface $since): array
     {
         $values = array_map(static fn (WebhookOutcome $o): string => $o->value, self::FAILED);
         $query = GatewayWebhookEvent::query()->whereIn('outcome', $values)->where('received_at', '>=', $since);

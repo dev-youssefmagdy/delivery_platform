@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent\Content;
 use App\DTOs\Content\ContentFilterData;
 use App\Models\ContentPage;
 use App\Repositories\Contracts\Content\PageRepositoryInterface;
+use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -20,7 +21,7 @@ final class PageRepository extends ContentRepository implements PageRepositoryIn
     public function datatableQuery(ContentFilterData $filters): Builder
     {
         return $this->applyCommonFilters($this->query(), $filters)
-            ->when($filters->pageKinds !== [], static fn (Builder $query) => $query->whereIn('kind', array_map(static fn (\BackedEnum $kind): string => $kind->value, $filters->pageKinds)));
+            ->when($filters->pageKinds !== [], static fn (Builder $query) => $query->whereIn('kind', array_map(static fn (BackedEnum $kind): string => $kind->value, $filters->pageKinds)));
     }
 
     protected function searchColumns(): array

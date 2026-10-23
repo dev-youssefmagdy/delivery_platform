@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Admin\Provider;
 
+use App\DataTables\Admin\Finance\ProviderWalletDataTable;
+use App\DataTables\Admin\Payout\ProviderPayoutsDataTable;
 use App\DataTables\Admin\Provider\ProviderAuditDataTable;
 use App\DataTables\Admin\Provider\ProviderDeletionRequestsDataTable;
 use App\DataTables\Admin\Provider\ProviderDocumentsDataTable;
+use App\DataTables\Admin\Provider\ProviderEarningsDataTable;
 use App\DataTables\Admin\Provider\ProviderHistoryDataTable;
 use App\DataTables\Admin\Provider\ProviderJobsDataTable;
 use App\DataTables\Admin\Provider\ProviderRatingsDataTable;
 use App\DataTables\Admin\Provider\ProviderServicesDataTable;
-use App\DataTables\Admin\Risk\ProviderRiskSignalsDataTable;
 use App\DataTables\Admin\Provider\ProviderVehiclesDataTable;
-use App\DataTables\Admin\Finance\ProviderWalletDataTable;
+use App\DataTables\Admin\Risk\ProviderRiskSignalsDataTable;
 use App\Http\Controllers\Admin\AdminController;
 use App\Models\ProviderProfile;
-use App\Services\Finance\WalletOverviewService;
-use App\DataTables\Admin\Payout\ProviderPayoutsDataTable;
-use App\DataTables\Admin\Provider\ProviderEarningsDataTable;
 use App\Services\Finance\ProviderEarningsService;
+use App\Services\Finance\WalletOverviewService;
 use App\Services\Payout\PayoutMethodService;
 
 /**

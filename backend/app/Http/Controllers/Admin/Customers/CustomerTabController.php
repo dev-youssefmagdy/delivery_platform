@@ -10,10 +10,10 @@ use App\DataTables\Admin\Customers\CustomerDevicesDataTable;
 use App\DataTables\Admin\Customers\CustomerMessagesDataTable;
 use App\DataTables\Admin\Customers\CustomerRatingsDataTable;
 use App\DataTables\Admin\Customers\CustomerSavedPlacesDataTable;
-use App\DataTables\Admin\Risk\CustomerRiskSignalsDataTable;
 use App\DataTables\Admin\Customers\CustomerTicketsDataTable;
-use App\Http\Controllers\Admin\AdminController;
 use App\DataTables\Admin\Finance\CustomerWalletDataTable;
+use App\DataTables\Admin\Risk\CustomerRiskSignalsDataTable;
+use App\Http\Controllers\Admin\AdminController;
 use App\Models\User;
 use App\Services\Finance\WalletOverviewService;
 

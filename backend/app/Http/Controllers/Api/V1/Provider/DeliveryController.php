@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Provider;
 
+use App\Enums\Common\ActorType;
 use App\Http\Controllers\Api\V1\Concerns\ResolvesClientApp;
 use App\Http\Controllers\Api\V1\Concerns\ResolvesProviderProfile;
 use App\Http\Controllers\Controller;
@@ -13,7 +14,6 @@ use App\Http\Requests\Api\V1\Courier\VerifyRecipientOtpRequest;
 use App\Http\Resources\Api\V1\Courier\BookingProofResource;
 use App\Http\Resources\Api\V1\Courier\DeliveryAttemptResource;
 use App\Http\Resources\Api\V1\Offer\ProviderAssignedBookingResource;
-use App\Enums\Common\ActorType;
 use App\Models\Booking;
 use App\Models\BookingProof;
 use App\Services\Booking\ProviderActionResolver;

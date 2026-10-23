@@ -2,23 +2,23 @@
 
 namespace App\Services\Booking;
 
+use App\Enums\Catalog\ProofType;
 use App\Enums\Common\ActorType;
 use App\Enums\Settings\SettingKey;
 use App\Models\Booking;
 use App\Models\BookingProof;
 use App\Models\BookingRating;
 use App\Models\BookingStatusEvent;
-use App\Enums\Catalog\ProofType;
 use App\Models\DeliveryAttempt;
 use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
+use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
+use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
+use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
+use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Services\Courier\CustodyService;
 use App\Services\Courier\DeliveryProofService;
 use App\Services\Courier\RecipientOtpService;
-use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
-use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
-use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
-use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
 use App\Services\Scope\BookingLoadPresenter;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonInterface;

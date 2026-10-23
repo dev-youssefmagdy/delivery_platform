@@ -9,7 +9,6 @@ use App\Models\CouponAttempt;
 use App\Repositories\Contracts\Coupon\CouponAttemptRepositoryInterface;
 use App\Support\Auth\PhoneNumber;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use LogicException;
 use Yajra\DataTables\EloquentDataTable;
 

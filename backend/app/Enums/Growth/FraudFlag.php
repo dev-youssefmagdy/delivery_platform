@@ -39,5 +39,4 @@ enum FraudFlag: string implements HasColor, HasLabel
             self::RiskSignalOpen => BadgeColor::Warning,
         };
     }
-
 }

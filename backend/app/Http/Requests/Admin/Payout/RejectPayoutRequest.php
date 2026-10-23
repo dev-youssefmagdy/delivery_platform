@@ -18,5 +18,4 @@ class RejectPayoutRequest extends ModelActionRequest
     {
         return 'payoutRequest';
     }
-
 }

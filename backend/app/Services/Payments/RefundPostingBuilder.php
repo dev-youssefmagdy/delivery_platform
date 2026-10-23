@@ -5,6 +5,7 @@ namespace App\Services\Payments;
 use App\DTOs\Finance\JournalLineData;
 use App\Enums\Finance\EntrySide;
 use App\Support\Money\Money;
+use LogicException;
 
 /**
  * Compensating lines of a refund (Plan §7.4, I5): the original settlement entry is never touched, a new entry moves
@@ -38,7 +39,7 @@ final class RefundPostingBuilder
         }
 
         if (! $gatewayLine instanceof JournalLineData) {
-            throw new \LogicException('The settlement entry has no gateway clearing line to refund against.');
+            throw new LogicException('The settlement entry has no gateway clearing line to refund against.');
         }
 
         foreach ($original as $line) {

@@ -4,7 +4,6 @@ namespace App\Services\Coupon;
 
 use App\DTOs\Coupon\CouponDefinition;
 use App\DTOs\Coupon\CouponTerms;
-use App\Enums\Coupon\CouponScopeType;
 use App\Enums\Coupon\CouponSegment;
 use App\Enums\Payments\PaymentMethodType;
 use App\Models\Coupon;

@@ -4,10 +4,10 @@ namespace App\Services\Booking;
 
 use App\DTOs\Booking\BookingCreationResult;
 use App\DTOs\Booking\BookingLocationData;
-use App\DTOs\Coupon\CouponPlan;
 use App\DTOs\Booking\CreateBookingData;
 use App\DTOs\Booking\TransitionContext;
 use App\DTOs\Booking\ValidatedBookingRequest;
+use App\DTOs\Coupon\CouponPlan;
 use App\Enums\Booking\BookingStatus;
 use App\Enums\Catalog\BookingType;
 use App\Enums\Payments\PaymentStatus;

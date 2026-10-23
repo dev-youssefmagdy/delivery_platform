@@ -10,8 +10,8 @@ use App\Http\Requests\Api\V1\Content\BannersRequest;
 use App\Http\Requests\Api\V1\Content\FaqsRequest;
 use App\Services\Content\ContentReadService;
 use App\Support\Http\ApiResponse;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 
 /**
  * Public CMS content for the apps (help center, banners, FAQs, pages). Published content only, localized

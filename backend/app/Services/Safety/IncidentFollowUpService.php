@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 /**
  * What the person can do with their own case after raising it: read it (public timeline only, never staff notes), add a
@@ -131,7 +132,7 @@ final class IncidentFollowUpService
                 'scan_status' => $scan->status,
             ]);
             $this->thread->recordEvent($incident, IncidentEventType::AttachmentAdded->value, $app->value, $user->id, null, false, ['attachment' => $attachment->uuid, 'mime' => $inspected->mime]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->storage->delete($path);
 
             throw $e;

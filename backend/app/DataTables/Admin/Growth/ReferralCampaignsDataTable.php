@@ -11,7 +11,6 @@ use App\Support\Money\CurrencyRegistry;
 use App\Support\Money\Money;
 use App\Support\Money\MoneyFormatter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Yajra\DataTables\EloquentDataTable;
 
 /**

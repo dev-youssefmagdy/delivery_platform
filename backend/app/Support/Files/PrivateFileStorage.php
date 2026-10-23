@@ -5,6 +5,7 @@ namespace App\Support\Files;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -109,7 +110,7 @@ final class PrivateFileStorage
         $stream = fopen($localPath, 'rb');
 
         if ($stream === false) {
-            throw new \RuntimeException('Attachment file is not readable.');
+            throw new RuntimeException('Attachment file is not readable.');
         }
 
         try {

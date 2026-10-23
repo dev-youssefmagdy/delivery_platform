@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Enums\Common\RateLimiterName;
+use App\Enums\Reporting\ReportKey;
 use App\Enums\Settings\SettingKey;
 use App\Models\AccountDeletionRequest;
 use App\Models\Admin;
@@ -11,7 +12,10 @@ use App\Models\AdminExport;
 use App\Models\Booking;
 use App\Models\BookingStatusEvent;
 use App\Models\BookingStop;
+use App\Models\CancellationPolicy;
 use App\Models\City;
+use App\Models\CommissionRule;
+use App\Models\CommissionRuleVersion;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\CustomerMessage;
@@ -20,22 +24,19 @@ use App\Models\DemoItem;
 use App\Models\DispatchRecipient;
 use App\Models\DocumentRequirement;
 use App\Models\DocumentType;
-use App\Models\CancellationPolicy;
-use App\Models\CommissionRule;
-use App\Models\CommissionRuleVersion;
 use App\Models\FarePolicy;
+use App\Models\GatewayWebhookEvent;
 use App\Models\IdempotencyKey;
 use App\Models\JournalEntry;
 use App\Models\JournalLine;
 use App\Models\LedgerAccount;
 use App\Models\LedgerReconciliationRun;
-use App\Models\GatewayWebhookEvent;
 use App\Models\OtpChallenge;
+use App\Models\OwnedDocument;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\PaymentReconciliationRun;
 use App\Models\PaymentRefund;
-use App\Models\OwnedDocument;
 use App\Models\PlatformSetting;
 use App\Models\PolicyVersion;
 use App\Models\ProviderDocument;
@@ -59,7 +60,6 @@ use App\Models\VehicleCategory;
 use App\Models\VehicleDocument;
 use App\Models\VehiclePhoto;
 use App\Models\ZoneServiceCategory;
-use App\Enums\Reporting\ReportKey;
 use App\Policies\DocumentPolicy;
 use App\Policies\ReportPolicy;
 use App\Services\Booking\DispatchableBookingSource;
@@ -83,6 +83,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use RuntimeException;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -123,7 +124,7 @@ class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict(! $this->app->isProduction());
 
         // Public catalog cache (P6.2): any change to a catalog model orphans every cached read.
-        foreach ([\App\Models\ServiceFamily::class, \App\Models\ServiceCategory::class, \App\Models\ServiceCategoryVersion::class, \App\Models\VehicleCategory::class, \App\Models\ZoneServiceCategory::class] as $catalogModel) {
+        foreach ([ServiceFamily::class, ServiceCategory::class, ServiceCategoryVersion::class, VehicleCategory::class, ZoneServiceCategory::class] as $catalogModel) {
             $bump = fn () => $this->app->make(\App\Support\Catalog\CatalogCache::class)->bump();
             $catalogModel::saved($bump);
             $catalogModel::deleted($bump);
@@ -143,7 +144,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Debug pages print environment values, stack frames and queries: never allowed in production (P6.1).
         if ($this->app->isProduction() && config('app.debug') === true && ! $this->app->runningInConsole()) {
-            throw new \RuntimeException('APP_DEBUG must be false when APP_ENV=production.');
+            throw new RuntimeException('APP_DEBUG must be false when APP_ENV=production.');
         }
 
         // The public website's URL map (P5.5), available to every Blade view as $sitePaths.

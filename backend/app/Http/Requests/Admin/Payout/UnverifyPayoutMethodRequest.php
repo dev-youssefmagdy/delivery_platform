@@ -18,5 +18,4 @@ class UnverifyPayoutMethodRequest extends ModelActionRequest
     {
         return 'payoutMethod';
     }
-
 }

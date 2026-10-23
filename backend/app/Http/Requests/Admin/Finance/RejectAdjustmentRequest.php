@@ -18,5 +18,4 @@ class RejectAdjustmentRequest extends ModelActionRequest
     {
         return 'adjustmentRequest';
     }
-
 }

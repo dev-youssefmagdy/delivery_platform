@@ -3,14 +3,14 @@
 namespace App\Services\Notification\Channels;
 
 use App\Enums\Notification\NotificationChannel;
+use App\Enums\System\HealthArea;
 use App\Mail\NotificationMail;
 use App\Models\Admin;
 use App\Models\NotificationDelivery;
 use App\Models\User;
 use App\Services\Notification\DeliveryOutcome;
-use Illuminate\Contracts\Mail\Mailer;
-use App\Enums\System\HealthArea;
 use App\Services\System\IntegrationStatusStore;
+use Illuminate\Contracts\Mail\Mailer;
 use Throwable;
 
 /**

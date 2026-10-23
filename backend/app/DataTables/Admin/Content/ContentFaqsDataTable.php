@@ -9,7 +9,6 @@ use App\Models\ContentFaq;
 use App\Repositories\Contracts\Content\FaqRepositoryInterface;
 use App\Support\Admin\Tables\TableAction;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Yajra\DataTables\EloquentDataTable;
 
 /**

@@ -591,7 +591,7 @@ return [
         ],
         'errors' => [
             'ip_allowlist_invalid' => "':entry' ليس عنوان IP أو نطاقاً صالحاً.",
-            'ip_allowlist_lockout' => "يجب أن تتضمن القائمة عنوانك الحالي (:ip) وإلا ستحجب نفسك عن اللوحة.",
+            'ip_allowlist_lockout' => 'يجب أن تتضمن القائمة عنوانك الحالي (:ip) وإلا ستحجب نفسك عن اللوحة.',
         ],
         'keys' => [
             'default_country' => [
@@ -3411,7 +3411,6 @@ return [
         'settled_done' => 'سُجلت التسوية وقُيدت في دفتر الأستاذ.',
         'cancelled' => 'أُلغيت التسوية.',
     ],
-
 
     'support_tickets' => [
         'menu' => 'التذاكر',

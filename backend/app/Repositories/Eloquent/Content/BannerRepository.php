@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent\Content;
 use App\DTOs\Content\ContentFilterData;
 use App\Models\ContentBanner;
 use App\Repositories\Contracts\Content\BannerRepositoryInterface;
+use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -20,7 +21,7 @@ final class BannerRepository extends ContentRepository implements BannerReposito
     public function datatableQuery(ContentFilterData $filters): Builder
     {
         return $this->applyCommonFilters($this->query(), $filters)
-            ->when($filters->placements !== [], static fn (Builder $query) => $query->whereIn('placement', array_map(static fn (\BackedEnum $placement): string => $placement->value, $filters->placements)));
+            ->when($filters->placements !== [], static fn (Builder $query) => $query->whereIn('placement', array_map(static fn (BackedEnum $placement): string => $placement->value, $filters->placements)));
     }
 
     protected function searchColumns(): array

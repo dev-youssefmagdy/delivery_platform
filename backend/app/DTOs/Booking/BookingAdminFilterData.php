@@ -124,6 +124,7 @@ final readonly class BookingAdminFilterData implements FilterData
             'cargo_weight_kg' => array_filter(['min' => $this->weightMin, 'max' => $this->weightMax], static fn (?int $value): bool => $value !== null),
         ], static fn (mixed $value): bool => $value !== null && $value !== []);
     }
+
     /**
      * Bookings of one provider (the Jobs tab of the provider page); not a user filter, so it is not in the URL.
      */

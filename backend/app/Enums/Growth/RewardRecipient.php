@@ -29,5 +29,4 @@ enum RewardRecipient: string implements HasColor, HasLabel
             self::Referee => BadgeColor::Info,
         };
     }
-
 }

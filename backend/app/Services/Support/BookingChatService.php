@@ -2,6 +2,7 @@
 
 namespace App\Services\Support;
 
+use App\DTOs\Notification\NotificationMessage;
 use App\DTOs\Support\ChatMessageData;
 use App\DTOs\Support\ChatPage;
 use App\Enums\Common\ActorType;
@@ -13,7 +14,6 @@ use App\Events\Realtime\BookingMessagesRead;
 use App\Exceptions\BusinessRuleViolation;
 use App\Exceptions\ForbiddenActionException;
 use App\Exceptions\ServiceUnavailableException;
-use App\DTOs\Notification\NotificationMessage;
 use App\Integrations\Files\Exceptions\FileScannerUnavailableException;
 use App\Integrations\Files\UploadScanner;
 use App\Models\Admin;

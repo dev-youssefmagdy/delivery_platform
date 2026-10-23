@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Content\AppKind;
 use App\Enums\Content\ArticleType;
 use App\Enums\Content\BodyFormat;
 use App\Enums\Content\CategoryKind;

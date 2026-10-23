@@ -300,7 +300,7 @@ final class OfferRepository extends BaseRepository implements OfferRepositoryInt
         $refLow = "CAST(JSON_UNQUOTE(JSON_EXTRACT(bookings.reference_estimate, '\$.low_minor')) AS UNSIGNED)";
         $refHigh = "CAST(JSON_UNQUOTE(JSON_EXTRACT(bookings.reference_estimate, '\$.high_minor')) AS UNSIGNED)";
 
-        return "CASE WHEN current_version.amount_minor IS NULL THEN NULL "
+        return 'CASE WHEN current_version.amount_minor IS NULL THEN NULL '
             ."WHEN {$refLow} IS NOT NULL AND current_version.amount_minor < {$refLow} * {$low} THEN '".OfferAnomaly::VeryLow->value."' "
             ."WHEN {$refHigh} IS NOT NULL AND current_version.amount_minor > {$refHigh} * {$high} THEN '".OfferAnomaly::VeryHigh->value."' "
             .'ELSE NULL END';

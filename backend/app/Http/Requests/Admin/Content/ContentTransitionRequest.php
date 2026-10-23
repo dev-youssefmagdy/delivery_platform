@@ -6,6 +6,7 @@ use App\Enums\Content\ContentType;
 use App\Enums\Content\WorkflowAction;
 use App\Http\Requests\Admin\Concerns\HasReason;
 use Carbon\CarbonImmutable;
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
@@ -32,7 +33,7 @@ class ContentTransitionRequest extends FormRequest
             'scheduled_at' => [
                 $this->action() === WorkflowAction::Schedule ? 'required' : 'prohibited',
                 'date',
-                function (string $attribute, mixed $value, \Closure $fail): void {
+                function (string $attribute, mixed $value, Closure $fail): void {
                     $at = CarbonImmutable::parse((string) $value, (string) config('admin.display_timezone'));
 
                     if ($at->lt(now()->addSeconds((int) config('content.schedule_min_lead_seconds', 60)))) {

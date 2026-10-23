@@ -18,5 +18,4 @@ class ReversePayoutRequest extends ModelActionRequest
     {
         return 'payoutRequest';
     }
-
 }

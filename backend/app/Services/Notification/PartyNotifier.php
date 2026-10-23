@@ -8,6 +8,7 @@ use App\Enums\Notification\NotificationEvent;
 use App\Models\Booking;
 use App\Models\ProviderProfile;
 use App\Models\User;
+use Closure;
 
 /**
  * Addresses notifications to the people behind a booking or a provider profile, so the domain services only say which
@@ -19,7 +20,7 @@ final class PartyNotifier
     public function __construct(private readonly NotificationService $notifications) {}
 
     /**
-     * @param array<string, scalar|\Closure(string): string|null> $variables `code` is added automatically
+     * @param array<string, scalar|Closure(string): string|null> $variables `code` is added automatically
      */
     public function customer(Booking $booking, NotificationEvent $event, string $discriminator, array $variables = []): void
     {
@@ -35,7 +36,7 @@ final class PartyNotifier
     }
 
     /**
-     * @param array<string, scalar|\Closure(string): string|null> $variables
+     * @param array<string, scalar|Closure(string): string|null> $variables
      */
     public function provider(Booking $booking, NotificationEvent $event, string $discriminator, array $variables = [], ?ProviderProfile $profile = null): void
     {
@@ -75,7 +76,7 @@ final class PartyNotifier
     /**
      * A notification about the provider account itself (application, documents, payouts).
      *
-     * @param array<string, scalar|\Closure(string): string|null> $variables
+     * @param array<string, scalar|Closure(string): string|null> $variables
      */
     public function providerAccount(ProviderProfile $profile, NotificationEvent $event, string $discriminator, array $variables = [], ?string $linkId = null): void
     {
@@ -91,7 +92,7 @@ final class PartyNotifier
     }
 
     /**
-     * @param array<string, scalar|\Closure(string): string|null> $variables
+     * @param array<string, scalar|Closure(string): string|null> $variables
      */
     public function user(User $user, ClientApp $app, NotificationEvent $event, string $discriminator, array $variables = [], ?string $linkId = null): void
     {

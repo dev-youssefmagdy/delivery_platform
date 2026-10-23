@@ -183,7 +183,6 @@ final class OfferSubmissionService
                 throw BusinessRuleViolation::make('offer_vehicle_missing');
             }
 
-
             $this->scopes->assertCapacity($locked, $offeringVehicle);
             $scope = $this->scopes->forOffer($locked, $offeringVehicle, $kind === OfferKind::CounterOffer, $data->scope);
 
@@ -192,7 +191,7 @@ final class OfferSubmissionService
                 $current = $existing->currentVersion;
 
                 if ($current !== null && $current->amount_minor === $amount && $current->note === $note // Loose comparison: the JSON column does not keep key order.
-                    && ($current->scope ?? []) == ($scope ?? [])) {
+                    && ($current->scope ?? []) === ($scope ?? [])) {
                     return $this->result($locked, $existing, $now, replayed: true, revision: false);
                 }
 

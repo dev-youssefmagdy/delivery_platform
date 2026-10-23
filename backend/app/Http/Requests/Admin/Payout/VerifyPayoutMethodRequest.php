@@ -18,5 +18,4 @@ class VerifyPayoutMethodRequest extends ModelActionRequest
     {
         return 'payoutMethod';
     }
-
 }

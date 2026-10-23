@@ -44,7 +44,7 @@
                         @endforeach
                     </p>
                 @endif
-                <p class="mt-3 text-sm whitespace-pre-line text-slate-800">{{ $rating->comment ?: '—' }}</p>
+                <p dir="auto" class="mt-3 text-sm whitespace-pre-line text-slate-800">{{ $rating->comment ?: '—' }}</p>
             </x-admin.card>
 
             <x-admin.card :title="__('reputation.admin.reviews.history')">

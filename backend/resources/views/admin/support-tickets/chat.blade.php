@@ -16,7 +16,7 @@
                 @if ($message->purged_at)
                     <p class="text-slate-400">{{ __('admin.support_tickets.chat.purged') }}</p>
                 @else
-                    @if ($message->body)<p class="whitespace-pre-line text-slate-900">{{ $message->body }}</p>@endif
+                    @if ($message->body)<p dir="auto" class="whitespace-pre-line text-slate-900">{{ $message->body }}</p>@endif
                     @if ($message->attachment_path)<p class="text-xs text-slate-500">{{ __('admin.support_tickets.chat.has_image') }}</p>@endif
                 @endif
             </li>

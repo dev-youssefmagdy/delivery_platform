@@ -84,7 +84,8 @@
         @apply outline-2 outline-offset-2 outline-brand-500;
     }
 
-    [dir='rtl'] .ltr-only {
+    /* Plates, phone numbers, codes and e-mail addresses keep their own direction (bidi isolate) in both locales. */
+    .ltr-only {
         direction: ltr;
         unicode-bidi: isolate;
     }

@@ -28,7 +28,7 @@
                     @endif
                     <span class="ms-auto">{{ $when($message->created_at) }}</span>
                 </div>
-                <p class="text-sm whitespace-pre-line text-slate-900">{{ $message->body }}</p>
+                <p dir="auto" class="text-sm whitespace-pre-line text-slate-900">{{ $message->body }}</p>
                 @if ($message->attachments->isNotEmpty())
                     <ul class="mt-3 flex flex-wrap gap-2">
                         @foreach ($message->attachments as $attachment)

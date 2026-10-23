@@ -490,3 +490,43 @@
         @apply text-slate-700;
     }
 }
+
+
+/*
+| Chart tokens (dataviz, P5.3). Categorical slots 1-8 in the validated order, with light and dark steps; quiet grid, text tokens for all
+| text. Dark values apply under `.dark` / `data-theme="dark"` only: the admin shell is light unless that class is set, so an OS-dark
+| preference must not darken a chart inside a white card.
+*/
+.admin-chart {
+    color-scheme: light;
+    --viz-surface: #fcfcfb;
+    --viz-text-secondary: #52514e;
+    --viz-grid: #e8e7e3;
+    --viz-tooltip-bg: #1a1a19;
+    --viz-tooltip-border: #383835;
+    --viz-1: #2a78d6;
+    --viz-2: #eb6834;
+    --viz-3: #1baf7a;
+    --viz-4: #eda100;
+    --viz-5: #e87ba4;
+    --viz-6: #008300;
+    --viz-7: #6250d6;
+    --viz-8: #e34948;
+}
+
+:root.dark .admin-chart,
+:root[data-theme='dark'] .admin-chart {
+    color-scheme: dark;
+    --viz-surface: #1a1a19;
+    --viz-text-secondary: #c3c2b7;
+    --viz-grid: #383835;
+    --viz-tooltip-bg: #2b2b29;
+    --viz-1: #3987e5;
+    --viz-2: #d95926;
+    --viz-3: #199e70;
+    --viz-4: #c98500;
+    --viz-5: #d55181;
+    --viz-6: #008300;
+    --viz-7: #9085e9;
+    --viz-8: #e66767;
+}

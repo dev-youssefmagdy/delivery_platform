@@ -7,8 +7,10 @@ use App\DTOs\Reporting\ReportFilterData;
 use App\Enums\Reporting\ReportKey;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Requests\Admin\Reporting\ReportExportRequest;
+use App\Repositories\Contracts\Common\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\Reporting\ReportingRepositoryInterface;
 use App\Services\Admin\AdminExportService;
+use App\Services\Reporting\ReportChartService;
 use App\Support\Http\AdminFormResponse;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
@@ -31,18 +33,21 @@ final class ReportController extends AdminController
         return view('admin.reports.index', ['groups' => $groups]);
     }
 
-    public function show(ReportKey $report, ReportsDataTable $table, ReportingRepositoryInterface $reporting): mixed
+    public function show(ReportKey $report, ReportsDataTable $table, ReportingRepositoryInterface $reporting, CurrencyRepositoryInterface $currencies, ReportChartService $charts): mixed
     {
         if ($report->isPlaceholder()) {
-            return view('admin.reports.show', ['report' => $report, 'dataTable' => null, 'filters' => ReportFilterData::fromRequest(request()), 'timezones' => [], 'asOf' => null]);
+            return view('admin.reports.show', ['report' => $report, 'dataTable' => null, 'filters' => ReportFilterData::fromRequest(request()), 'timezones' => [], 'asOf' => null, 'currencies' => []]);
         }
 
         $set = $report->metricSet();
 
         return $table->render('admin.reports.show', [
             'report' => $report,
+            'includesPii' => $table->includesPii(),
             'filters' => ReportFilterData::fromRequest(request()),
             'timezones' => $reporting->marketTimezones(),
+            'currencies' => $currencies->active()->pluck('code')->map(static fn (mixed $code): string => (string) $code)->all(),
+            'chart' => $charts->forReport($report, ReportFilterData::fromRequest(request())),
             'asOf' => $set === null ? null : $reporting->lastAggregatedAt($set),
         ]);
     }

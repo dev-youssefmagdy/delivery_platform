@@ -180,13 +180,14 @@ class ReportsDataTable extends AdminDataTable
 
     private function cell(ReportColumn $column, Model $row, bool $latinDigits): string
     {
-        $value = $row->getAttribute($column->key);
+        $attributes = $row->getAttributes();
+        $value = $attributes[$column->key] ?? null;
 
         if ($column->type === ReportColumnType::Text) {
             return $this->text($column->key, $value, $row);
         }
 
-        return $this->format->format($column->type, $value, (string) ($row->getAttribute('currency') ?? ''), $latinDigits);
+        return $this->format->format($column->type, $value, (string) ($attributes['currency'] ?? ''), $latinDigits);
     }
 
     private function text(string $key, mixed $value, Model $row): string

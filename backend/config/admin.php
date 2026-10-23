@@ -96,6 +96,8 @@ return [
         'link_ttl_minutes' => 60 * 24,
         'retention_days' => 7,
         'chunk' => 500,
+        // Reports are aggregated (no id to chunk by): one export reads at most this many rows.
+        'report_max_rows' => 100000,
     ],
 
     /*

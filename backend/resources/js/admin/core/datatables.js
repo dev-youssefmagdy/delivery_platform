@@ -89,8 +89,14 @@ export const AdminTables = {
         $(el).on('xhr.dt', (_event, _settings, json, xhr) => {
             if (json === null) {
                 handleXhrError(xhr);
-            } else if (json.stats) {
-                updateStats(el.id, json.stats);
+            } else {
+                if (json.stats) {
+                    updateStats(el.id, json.stats);
+                }
+
+                if (json.chart) {
+                    document.dispatchEvent(new CustomEvent('admin:chart-update', { detail: { tableId: el.id, chart: json.chart } }));
+                }
             }
         });
 

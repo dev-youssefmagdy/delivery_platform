@@ -9,6 +9,7 @@ import { toast } from './core/toast.js';
 import { initAjaxForms } from './core/ajax-form.js';
 import { AdminTables } from './core/datatables.js';
 import { filtersCard } from './core/filters-card.js';
+import { dashboardFilters } from './core/dashboard.js';
 import { initSelects } from './core/remote-select.js';
 import { initDatePickers } from './core/date-pickers.js';
 import { initMaps } from './core/maps.js';
@@ -53,6 +54,7 @@ window.Alpine = Alpine;
 
 Alpine.plugin(focus);
 Alpine.data('filtersCard', filtersCard);
+Alpine.data('dashboardFilters', dashboardFilters);
 Alpine.data('confirmDialog', confirmDialog);
 Alpine.data('adminModal', adminModal);
 Alpine.data('adminTabs', adminTabs);

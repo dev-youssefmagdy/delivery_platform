@@ -1243,3 +1243,45 @@ User A owns the resource, user B (same app) and user C (other app / role) call e
 - Create `delivery_platform_perf`, `perf:seed`, run the EXPLAINs, run the four k6 scripts (1 VU dry run first), fill the table in `docs/PERFORMANCE.md` section 6, decide on partitioning of `provider_locations`, worker counts and queue monitor thresholds, Reverb node count.
 - Verify with real workers that a 600 s export on `redis_long` is not executed twice, and that `queue:restart` drains cleanly.
 
+
+## P6.3 (localization, RTL, accessibility)
+
+Review was by code only: no browser or device was used and no test was written or run. The scanner scripts (`scripts/check-translations.php`, `scripts/check-arb-parity.php`, `scripts/check-contrast.mjs`) exist and run; the checks below should still exist as tests.
+
+### Translation parity (Laravel)
+- `backend/tests/Feature/Localization/TranslationParityTest.php` (`ar_and_en_lang_files_have_the_same_keys`): loads every `lang/ar/*.php` and `lang/en/*.php`, asserts the same files, the same flattened keys, non-empty values and the same `:placeholders` per key. Setup: none (reads files). Same rule as `scripts/check-translations.php`; the test can call the script and assert exit code 0.
+- `.../EnumLabelKeysTest` (`every_enum_label_has_ar_and_en_text`): for each enum with `label()` iterate `cases()` under `app()->setLocale('ar'|'en')` and assert the result is not the key (the scanner cannot see dynamic enum keys).
+- `.../NoRawKeyInAdminPagesTest`: with a seeded admin, GET every admin index and show page in ar and en and assert the body contains no string matching `/\b(admin|enums|growth|safety|site|system)\.[a-z_]+\.[a-z_.]+/` outside code blocks. Setup: `php artisan db:seed` with demo data, `actingAs` admin with all permissions.
+- `.../ListSeparatorTest`: a DataTable with a joined column renders `, ` in `en` and `، ` in `ar`.
+
+### Translation parity (Flutter)
+- `customer_app/test/l10n/arb_parity_test.dart` and `driver_app/test/l10n/arb_parity_test.dart` (`ar_and_en_have_same_keys_and_placeholders`): parse both ARB files, same keys, same placeholders, ICU `other` present. Setup: none. Equivalent to `scripts/check-arb-parity.php`.
+- `.../generated_l10n_up_to_date_test.dart`: `flutter gen-l10n` produces no diff (CI step rather than a test).
+
+### RTL golden tests (per key screen, `ar` RTL and `en` LTR, 360x640, 412x915, 800x1280)
+- Customer: `test/goldens/rtl_screens_test.dart` for language, auth/OTP, home, trip location panel, booking form (fare field with Arabic-Indic digits), offers list with `OfferTile` (money and rating), live trip view (PIN, provider card with plate), receipt, wallet, payment methods (masked card), trips list, notifications. Asserts: `matchesGoldenFile` per locale and size; plus `tester.getTopLeft` of the money widget is on the start edge of its column in RTL (regression for `IsolatedText`).
+- Driver: `test/goldens/rtl_screens_test.dart` for onboarding vehicle step (plate), availability card, request card tile, active job view, PIN sheet and keypad (LTR keypad inside RTL), counter-offer sheet, earnings tab, payouts, payout method form.
+- `platform_core/test/ui/isolated_text_test.dart`: `IsolatedText` keeps `TextDirection.ltr` and aligns to the right edge under `Directionality.rtl` and to the left edge under `ltr`; `ltrIsolate('+20 100 000 0000')` wraps with U+2066/U+2069; `MoneyText` renders left to right.
+- `platform_core/test/money/number_format_test.dart`: `MoneyFormatter.number(4.5, fractionDigits: 1)` gives `٤٫٥` for arabicIndic and `4.5` for western; `localizeDigits('12:30')` follows the style.
+- Mirroring: `Icons.chevron_right`, `Icons.send` mirror in RTL (`Directionality` + `Icon.matchTextDirection`); map, logo and media icons do not (widget test over `Icon` ancestors).
+
+### Text scale and touch targets
+- `customer_app/test/a11y/text_scale_test.dart` and `driver_app/test/a11y/text_scale_test.dart`: pump each key screen with `MediaQuery(textScaler: TextScaler.linear(2.0))` in ar and en on 360x640; assert `tester.takeException()` is null (no RenderFlex overflow) and the primary action is still tappable (`warnIfMissed`). Driver also at 1.15 x 2.0.
+- `driver_app/test/a11y/keypad_test.dart`: each key at scale 2.0 has height >= 72; PIN error message with a 3 line error does not overflow.
+- `.../touch_target_test.dart` (driver): every `IconButton`, `FilledButton`, `OutlinedButton`, `TextButton`, selectable chip and scope stepper on the active job, offers, PIN and earnings screens has a hit area of at least 64x64 dp (customer app: 48x48). Use `tester.getSize(find.byType(...))` or `meetsGuideline(androidTapTargetGuideline)` and `labeledTapTargetGuideline` for the label rule.
+- `.../semantics_test.dart`: `meetsGuideline(labeledTapTargetGuideline)` on every key screen; `my-location`, `swap-endpoints`, steppers have non-empty labels; fare, `StatusChip` and rating widgets expose text via `SemanticsNode` (`find.bySemanticsLabel`); the pin-adjust map has the instruction label.
+- `platform_core/test/ui/status_chip_contrast_test.dart`: chip text colour on its tint >= 4.5:1 for every `ChipTone` (mirror of `scripts/check-contrast.mjs`).
+
+### Admin and website (browser-smoke / Dusk / Playwright, or vitest + jsdom where noted)
+- `browser-smoke`: for ar and en load login, dashboard, bookings list, booking show, live operations, settings, reports; assert `html[dir]` and `lang`, no horizontal scroll at 1366, 1024 and 390 px, sidebar mirrors, DataTables paging and search render, no console errors. Takes screenshots for review.
+- Keyboard: Tab order reaches skip link, sidebar, filters card (Enter toggles, `aria-expanded` flips), a modal (focus trapped, Escape closes and returns focus), a tab list (arrow keys), a dropdown (Escape returns focus) in both directions (ArrowLeft/ArrowRight swap in RTL for tabs).
+- `resources/js/admin/core/operations-map.test.js` (vitest): `apply(snapshot)` fills `[data-ops-table]` rows with text only (no HTML injection), status text from labels, and the empty row; the list renders only while `<details>` is open.
+- `resources/js/admin/core/charts.test.js`: donut with more than 8 slices uses the translated "Other" label (`admin.js.charts.other`) in ar and en.
+- Axe (browser): no serious violations for admin dashboard, a form page, a DataTable page, the website home, contact and provider forms in ar and en; `color-contrast` rule on.
+- `scripts/check-contrast.mjs`, `scripts/check-translations.php`, `scripts/check-arb-parity.php` run as CI steps (exit code must be 0).
+
+### Manual (needs devices and a browser)
+- Read every screen in ar RTL and en LTR on a small phone, large phone, tablet (apps) and 1366/1024/390 px (admin, website): overflow, truncation, mirrored directional icons only, mixed-direction text (plates, phones, addresses, order of "plate · reason"), Arabic-Indic and Western digit preference.
+- TalkBack and VoiceOver pass over booking, offers, live trip, driver job flow, PIN entry: reading order, labels for map actions, fares and statuses.
+- Android font scale 200% and display size large on the driver job screens while driving posture (one hand, glare).
+- Arabic font check on Android (Noto), iOS (SF Arabic/Geeza), Windows and Linux desktop builds; decide whether to bundle a font.

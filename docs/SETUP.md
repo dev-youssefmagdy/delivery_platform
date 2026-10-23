@@ -150,3 +150,12 @@ Workers: add the `notifications` queue (`--queue=critical,default,notifications,
 - After every deploy run `php artisan migrate` and `php artisan admin:sync-role-permissions` (add `--dry-run` to preview): it grants permissions added to the code since the roles were stored, once per role and permission, never overriding what an administrator removed.
 - Route and authorization audit: `cd backend && php artisan route:list --json | php ../scripts/route-inventory.php > ../docs/ROUTE_INVENTORY.md` (exit code 1 when a route lacks authentication or authorization).
 - Production installs use `composer install --no-dev` (Laravel Boost registers a browser-log route in local environments).
+
+## Localization and accessibility scanners (P6.3)
+
+Run from the repository root; each exits 1 when it finds a problem (wire them into CI in P6.4):
+
+- `php scripts/check-translations.php [--verbose]`: keys used in `app/`, `resources/`, `routes/`, `config/`, `database/` against `backend/lang/ar` and `backend/lang/en`, ar/en parity (files, nested keys, empty values, `:placeholders`), dynamic key prefixes, and warnings for Arabic text hard-coded outside lang files.
+- `php scripts/check-arb-parity.php`: `app_ar.arb` vs `app_en.arb` for `customer_app`, `driver_app` and `packages/platform_core` (key sets, placeholders, ICU `other` case, declared placeholders). Run `flutter gen-l10n` in each app after changing an ARB.
+- `node scripts/check-contrast.mjs`: WCAG contrast of the design tokens (needs `npm install` in `backend/`). Documented waivers are listed in `docs/L10N_A11Y_REVIEW.md`.
+

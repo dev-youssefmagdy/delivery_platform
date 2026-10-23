@@ -47,8 +47,7 @@
 | P5.7 | Referrals, loyalty, provider incentives | P2 | 🟡 | gate not run (see section) |
 | P6.1 | Security, IDOR, race & webhook review | P0 | 🟡 | 2026-11-17 (gate not run) |
 | P6.2 | Performance, indexes, retention | P0 | 🟡 | 2026-11-18 (gate not run) |
-| P6.2 | Performance, indexes, retention | P0 | ❌ | — |
-| P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
+| P6.3 | Localization, RTL & accessibility review | P0 | 🟡 | 2026-11-19 (gate not run) |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
 
 ---
@@ -1219,6 +1218,22 @@ CSP never seen in a browser (admin keeps `unsafe-eval` for Alpine; start with `C
 
 ### Next (P6.2)
 Indexes for the hot paths named in the review (`admin_role_permission_grants` is tiny; `gateway_webhook_events` rejected rows, login events, sessions need retention), then P6.3 / P6.4: run the deferred test backlog (all MISSED_TESTS sections), a browser pass with the CSP, `composer install --no-dev` images, `TRUSTED_PROXIES`, run `admin:sync-role-permissions` on every deploy.
+
+## P6.3 — Localization, RTL & accessibility review · 🟡 2026-11-19 (gate NOT run)
+
+Committed directly on `main`. ADR-210. Code-level review only: **no browser, device or screenshot review was possible and, by user instruction, no test, pint, phpstan, flutter test, vitest, browser smoke or `scripts/check.sh` was written or run**, so the milestone is not marked done. Full record in `docs/L10N_A11Y_REVIEW.md`; the golden/parity/text-scale checks that should exist are in `MISSED_TESTS.md` (P6.3).
+
+### Built
+- **Scanners (CI-ready, exit 1 on problems)**: `scripts/check-translations.php` (Laravel keys used vs `lang/ar` + `lang/en`, ar/en parity, placeholders, dynamic prefixes, hard-coded Arabic warnings), `scripts/check-arb-parity.php` (both apps, plus `platform_core` once it has ARB files), `scripts/check-contrast.mjs` (WCAG ratios of admin, website, chart (light and dark) and Flutter tokens).
+- **Fixed from the scanners**: 3 admin keys and `validation.base64` missing in Arabic, two booking messages nested at the wrong level (so `__()` returned the key), a hard-coded Arabic comma and Arabic "Other" in English admin pages, contrast failures (success/warning buttons, muted `slate-400` text, placeholders, form control borders, StatusChip text, warning/success text colours).
+- **RTL / bidi**: `IsolatedText` and `ltrIsolate()` in `platform_core` (LTR glyph order, alignment still follows the ambient direction; Latin runs inside Arabic sentences get LRI/PDI isolates), 22 money/plate/phone `Text(textDirection: ltr)` sites converted to `IsolatedText` and 7 mixed-language sentences to `ltrIsolate()`, `MoneyText` really LTR now, localized sentences no longer forced LTR; `.ltr-only` isolates in both locales; `<bdi>`/`dir="auto"` for names and free text in admin.
+- **Accessibility**: pin adjust map label, +/- stepper tooltips, 64dp stepper buttons and chip padding in the driver profile, min-height instead of fixed height for keypad, PIN message and counter-offer hint (200% text), keyboard/screen-reader list for the live operations map, website global focus ring, Arabic font fallback list, ratings/distances follow the digit preference.
+
+### Not done
+No visual review of any screen; RTL golden tests, text-scale tests and the three scanners in CI are P6.4; ICU `int` placeholders in ARB still render Western digits regardless of the digit preference; chart series 3-5 (light) are below 3:1 against the surface (waived, legend + table carry the meaning). See the review document for the full list.
+
+### Next (P6.4)
+Run the three scripts in CI, run the deferred test backlog (all MISSED_TESTS sections incl. P6.3), a browser/device pass in ar and en at 200% text.
 
 ## P6.2 — Performance, indexes, retention · 🟡 2026-11-18 (gate NOT run)
 

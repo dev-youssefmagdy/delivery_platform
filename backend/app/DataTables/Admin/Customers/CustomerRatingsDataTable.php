@@ -6,6 +6,7 @@ use App\Enums\Common\ActorType;
 use App\Enums\Reviews\ModerationStatus;
 use App\Models\BookingRating;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
+use App\Support\Admin\Tables\TableAction;
 use App\View\Components\Admin\Badge;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ use Yajra\DataTables\EloquentDataTable;
 
 /**
  * Ratings tab of the customer page: ratings the customer RECEIVED from providers, with the booking they belong to and
- * their moderation status. Moderation itself arrives with the reviews module (P3.8).
+ * their moderation status; the action opens the review in the Reviews module (reviews.view) where it can be moderated.
  */
 final class CustomerRatingsDataTable extends CustomerTabDataTable
 {
@@ -51,12 +52,13 @@ final class CustomerRatingsDataTable extends CustomerTabDataTable
             $this->column('comment', __('admin.ratings.fields.comment')),
             $this->column('created_at', __('admin.ratings.fields.created'), orderable: true, name: 'booking_ratings.created_at'),
             $this->column('moderation_status', __('admin.ratings.fields.moderation')),
+            $this->actionsColumnDefinition(),
         ];
     }
 
     protected function configure(EloquentDataTable $table): void
     {
-        $table->only(['booking_code', 'stars', 'tags', 'comment', 'created_at', 'moderation_status']);
+        $table->only(['booking_code', 'stars', 'tags', 'comment', 'created_at', 'moderation_status', 'actions']);
 
         $table->editColumn('booking_code', static fn (Model $row): string => '<a href="'.e(route('admin.bookings.show', (string) $row->getAttribute('booking_uuid'))).'" class="font-medium text-brand-700 hover:underline ltr-only">'.e((string) $row->getAttribute('booking_code')).'</a>');
         $this->rawColumn('booking_code');
@@ -70,5 +72,6 @@ final class CustomerRatingsDataTable extends CustomerTabDataTable
             return Blade::renderComponent(new Badge(label: $status->label(), color: $status === ModerationStatus::Visible ? 'success' : 'warning'));
         });
         $this->rawColumn('moderation_status');
+        $this->actionsColumn($table, static fn (BookingRating $rating): array => [TableAction::view(route('admin.reviews.show', $rating), $rating)]);
     }
 }

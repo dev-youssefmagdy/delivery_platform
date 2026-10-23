@@ -6,6 +6,7 @@ use App\Enums\Admin\AdminRole;
 use App\Enums\Common\Locale;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\PermissionRegistrar;
 
 /**
@@ -36,6 +37,13 @@ class RoleSeeder extends Seeder
 
             if ($created) {
                 $role->syncPermissions(array_map(static fn ($permission): string => $permission->value, $case->defaultPermissions()));
+            }
+
+            // Every default is now "offered": admin:sync-role-permissions never grants it again after an administrator removes it.
+            foreach ($case->defaultPermissions() as $permission) {
+                if ($created) {
+                    DB::table('admin_role_permission_grants')->insertOrIgnore(['role' => $case->value, 'permission' => $permission->value, 'offered_at' => now()]);
+                }
             }
         }
 

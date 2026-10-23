@@ -130,3 +130,9 @@ Trip lifecycle (P2.5): the arrival radius that counts an arrival as GPS-verified
 ## Notifications and push (P3.6)
 
 Workers: add the `notifications` queue (`--queue=critical,default,notifications,low`). Locally set `PUSH_DRIVER=log` (pushes are written to the log, nothing is delivered) and `php artisan db:seed --class=NotificationTemplateSeeder` for the default ar/en templates. To try real push: create a Firebase project per app, download `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) into `customer_app` / `driver_app` (`android/app/`, `ios/Runner/`; git-ignored), set `PUSH_DRIVER=fcm`, `FIREBASE_PROJECT_ID`, `FIREBASE_CREDENTIALS`, and run on a device (emulators without Play services get no token). After pulling Flutter changes run `flutter pub get` in `packages/platform_core` and both apps.
+
+## System operations (P5.6)
+
+- Logs as JSON: set `LOG_STACK=json` (files) or `LOG_STACK=stderr_json` (containers) in `.env`. Every line carries `extra.request_id`; send the same id in `X-Request-Id` to follow a request.
+- Error tracking is off. To enable Sentry set `SENTRY_DSN` (and optionally `SENTRY_ENVIRONMENT`, `SENTRY_RELEASE`, `SENTRY_SAMPLE_RATE`); check the "Error tracking" row on Admin > Integration health.
+- The health page needs the scheduler (`schedule:run` every minute, heartbeat) and a queue worker; failed jobs are retried from Admin > Failed jobs with a reason. Run `php artisan migrate` for the `app_versions` and `feature_flags` tables, then add the store links in Admin > App versions.

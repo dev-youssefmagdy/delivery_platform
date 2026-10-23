@@ -43,7 +43,7 @@
 | P5.3 | Operations dashboard, reports, exports | P1 | 🟡 | gate not run (see section) |
 | P5.4 | CMS | P1 | 🟡 | gate not run (see section) |
 | P5.5 | Public website | P1 | 🟡 | gate not run (see section) |
-| P5.6 | Integration health, app versions, feature flags, system pages | P1 | ❌ | — |
+| P5.6 | Integration health, app versions, feature flags, system pages | P1 | 🟡 | gate not run (see section) |
 | P5.7 | Referrals, loyalty, provider incentives | P2 | ❌ | — |
 | P6.1 | Security, IDOR, race & webhook review | P0 | ❌ | — |
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
@@ -1157,3 +1157,22 @@ No browser pass (RTL layout, mobile menu, form script, QR scan, Lighthouse not s
 
 ### Next (P5.6)
 Integration health can list the website as a consumer of `ContentReadService`; the app-version / feature-flag screens are independent. `config/website.php` holds brand, contact, social and form tunables; the `website-precognition` limiter is defined in `AppServiceProvider`. Run the deferred test backlog (P5.1 to P5.5 lists) before Phase 5 closes.
+
+## P5.6 — Integration health, app versions, feature flags · 🟡 2026-11-15 (gate NOT run)
+
+Committed directly on `main`. ADR-193..196. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; the missing tests are in `MISSED_TESTS.md` (P5.6).
+
+### Built
+- **Health page** (`/admin/system/health`, `system.health`): database, redis, scheduler heartbeat age, queue depth per queue, failed jobs, Reverb, storage, maps / SMS / payments / push / upload scanner / email / error tracker (configured / not configured / failing + last error code) and payment webhook failures; `IntegrationHealthService`, `IntegrationStatusStore` (failures recorded by the SMS, email, push and payment-intent call sites). Failed jobs listing with audited, reason-required retry (`system.queues`).
+- **App versions** (`app_versions`, `system.app_versions`): per app and platform minimum, latest, force update, https store link; `/config/app` `apps.<app>.platforms` added, top level kept (strictest of rows and settings). **Feature flags** (`feature_flags`, `system.feature_flags`): `FeatureFlagKey`, targeting by app / city / percentage, `FeatureFlagService::isEnabled`, `/config/app` `features` + `flags`. Legacy `feature_*` settings stay as defaults (ADR-193).
+- Translations: no DB-driven strings exist, nothing built (ADR-196). JSON log channels `json` / `stderr_json` with redaction and the correlation id; optional Sentry adapter (`SENTRY_DSN`).
+- Admin: Tailwind pages, Yajra tables with collapsed filters cards, AJAX + Precognition forms, policies, menu entries, lang ar/en (`lang/*/system.php`).
+
+### Sanity checks run (suites not run)
+`php -l` on every new file; migrate / rollback / migrate; `route:list`; `view:cache`; rolled-back tinker scripts: health report with real services, flag save + 50% bucket evaluation (107/200) + app targeting, app version create + `/config/app` shape + duplicate / missing-store-url refusal, JSON log line with request id and redaction, Sentry send against `Http::fake`; in-process GET of the six new pages as a fully permitted admin (all 200).
+
+### Known gaps
+No browser pass; the Flutter forced-update screen does not read `store_url` / `platforms` yet and the apps do not evaluate `flags` (Dart work); the seeder gives the permissions to the existing roles only (`super_admin` / operations roles per `AdminRole`); no flag history screen (audit log has before / after); health page is not auto-refreshing; Reverb is probed by TCP only.
+
+### Next (P5.7)
+Use `FeatureFlagService::isEnabled(FeatureFlagKey::Referrals|Loyalty, new FlagContext(app, cityId, userUuid))` to gate referral and loyalty endpoints (both default off). Any new adapter should call `IntegrationStatusStore::failed/succeeded` and add a `HealthArea` case.

@@ -218,13 +218,19 @@ Public (no authentication, throttle `api`, `Cache-Control: public, max-age=30`, 
   "support": { "phone": null, "email": null, "whatsapp": null },
   "maintenance": false,
   "apps": {
-    "customer": { "min_version": "1.0.0", "force_update": false },
+    "customer": { "min_version": "1.0.0", "force_update": false, "platforms": { "android": { "min_version": "1.0.0", "latest_version": null, "force_update": false, "store_url": "https://..." } } },
     "provider": { "min_version": "1.0.0", "force_update": false }
   },
   "policies": { "terms": { "id": "<uuid>", "version": 3, "published_at": "2026-10-19T10:00:00Z" } },
-  "features": {}
+  "features": { "wallet": true, "offers": true, "referrals": false, "loyalty": false },
+  "flags": { "referrals": { "apps": ["customer"], "city_ids": [], "rollout_percent": 50 } }
 }
 ```
+
+P5.6: `apps.<app>.platforms` appears for every platform that has an app-version row (`min_version`, `latest_version`, `force_update`, `store_url`); a client should read its own platform entry and
+open `store_url` on the forced-update screen. `features.<key>` is the master switch (the legacy setting when no flag row exists); `flags.<key>` lists targeting for keys that have a row (`apps` empty = both,
+`city_ids` empty = all). Client evaluation: enabled, own app in `apps` (if any), own city in `city_ids` (if any), and when `rollout_percent` < 100 the bucket `crc32("<key>|<stable user or device id>") % 100`
+is below the percentage. The server's own check is authoritative.
 
 `digits_preference` is `auto` (follow the language), `western` or `arabic_indic`. A client must block only when `maintenance` is true, or when `apps.<own>.force_update`
 is true and its version is below `apps.<own>.min_version` (customer app = `customer`, driver app = `provider`). Unknown keys are ignored (Section 1).

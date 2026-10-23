@@ -1071,3 +1071,40 @@ Paths are under `backend/tests/`. Common setup for website Feature tests: `Conte
 - In a browser (ar RTL and en LTR, phone and desktop widths, keyboard only, screen reader): mobile menu, language switch keeps the page, forms (inline errors, blocked submit, success panel, preserved input after a stopped server), print of a legal page; scan an app-download QR with a phone; run Lighthouse (performance, accessibility, SEO, best practices) on home, a service page and the contact page and check for layout shift with and without CMS images.
 - Submit the provider and contact forms from a real browser behind the production proxy (trusted proxy / client IP for the throttle); check that staff receive the `lead.received` notification and that the website ticket can be answered by email from the shown contact.
 - Search Console: submit `sitemap.xml`, check hreflang and the structured-data report for Organization and FAQPage.
+
+## P5.6 — Integration health, app versions, feature flags (not written by instruction)
+
+### Unit
+- `Unit/Services/System/FeatureFlagServiceTest::evaluate`: dataset over the pure `FeatureFlagService::evaluate(key, rule, FlagContext)`: switch off -> false; apps `[customer]` with provider / null app -> false, customer -> true; `city_ids [1]` with city 2 / null -> false, 1 -> true; rollout 100 -> true even with no subject; rollout 0 -> false; rollout 50 with no subject -> false; same subject always gets the same answer; raising 30 -> 60 never turns an enabled subject off; over 10,000 subjects 50% is within 45-55%.
+- `FeatureFlagServiceTest::isEnabled`: no row -> `wallet` follows `feature_wallet_enabled` (true / false via settings), `referrals` is false; a row overrides the setting; saving busts the rules cache and the `/config/app` cache; `masterSwitches()` lists every enum key; `publicRules()` lists only keys with a row.
+- `Unit/Services/System/IntegrationStatusStoreTest`: `recordFailure` keeps only the class basename or a sanitized code (a message with a token is never stored), `recordSuccess` clears, entries expire after a day; the static helpers swallow a cache exception.
+- `Unit/Integrations/Errors/SentryErrorTrackerTest`: `endpoint()` accepts `https://key@host/42`, rejects http, missing key, non-numeric project; `report()` with `Http::fake` posts to `/api/42/store/` with the `X-Sentry-Auth` header, the `request_id` tag and no request data; a 500 or a connection exception records a failure for `HealthArea::ErrorTracker` and does not throw; sample rate 0 sends nothing.
+- `Unit/Logging/RedactingProcessorTest`: keys `token`, `password`, `otp`, `authorization`, nested `card_number` become `[redacted]`; other keys are untouched; `app` and `env` are added to `extra`.
+
+### Feature — health checks with failing fakes (`Feature/System/IntegrationHealthServiceTest`)
+- Bind a failing `HealthCheckService` / swap the DB connection to a wrong host / fake the cache to throw: the matching row is `failing`, carries the exception class only (no message), and the other rows are still reported (a throwing probe never aborts the report).
+- Queue depth at `health.queue_degraded_depth` -> `degraded`; failed jobs >= 1 -> `degraded` with the count; stale or missing scheduler heartbeat -> `failing`.
+- Storage with a disk fake whose `put` throws -> `failing`; Reverb: broadcasting `log` -> `not_configured`, `reverb` with a closed port -> `failing` (override `reachable()` in a subclass), open -> `ok`.
+- Adapters: driver null -> `not_configured`; `smsmisr`, `paymob`, `google`, `fcm` with missing credentials -> `not_configured` with `reason = credentials_missing`; `fcm` with a credentials path that is not a file -> `not_configured`; configured -> `ok`; after `IntegrationStatusStore::failed(Sms, ...)` the row is `failing` with the code and time, after the failure window or a later success it is `ok`; ClamAV with an unreachable host -> `failing`.
+- Payment webhooks: events with outcome `invalid_signature`, `replay_window`, `amount_mismatch`, `failed` inside the window count, `processed` / `duplicate` / older ones do not; last gateway and outcome are reported.
+- No row, detail or error ever contains a configured secret value (set distinctive secrets in config and assert they are absent from the rendered page and from `report()` output).
+- `overall()`: any failing -> failing, else any degraded -> degraded, `not_configured` alone -> ok.
+
+### Feature — Admin permissions and pages (`Feature/Admin/System/*`)
+- Guest redirected on every new route; admin without `system.health` gets 403 on `/system/health`; without `system.queues` 403 on the failed-jobs page, its datatable JSON and the retry route; without `system.app_versions` / `system.feature_flags` 403 on page, create, store, edit, update, datatable JSON. Roles from `AdminRole` that hold each permission can open the page.
+- `FailedJobRetryTest`: POST retry without a reason -> 422 `failed_job_reason_required` (page and Precognition), with a reason -> job is pushed back (`queue:retry`), the failed row is gone, one audit row `reprocessed` with reason, queue, uuid and exception class and no payload; unknown uuid -> 404; a second retry -> 404. Datatable JSON honours the queue and failed-range filters, never contains the payload or exception text; filters card collapsed by default.
+- `AppVersionTest`: precognitive POST with a bad version (`1.2`), a non-https store URL, duplicate app + platform, force update without a store link -> 422 and creates nothing; valid -> 204 without persisting; store and update persist, write an audit row with before / after, bust `/config/app`, stale `lock_version` -> 409; app and platform cannot be changed on update. Datatable JSON honours app, platform, force-update filters.
+- `FeatureFlagTest`: precognitive 422 for unknown key, duplicate key, rollout 101 / -1, unknown app, unknown city; 204 valid; store / update persist with empty lists stored as null, audit with before / after, stale `lock_version` -> 409, key not editable. Datatable JSON honours key and enabled filters.
+
+### Feature — public config (`Feature/Api/Config/AppConfigTest` additions)
+- With no `app_versions` rows `apps.customer` and `apps.provider` equal the settings values and have no `platforms`; with rows the top level is the strictest of settings and rows, `platforms.android.store_url` is present, `force_update` is true if any platform forces it; `features` holds `wallet`, `offers`, `referrals`, `loyalty`; `flags` is `{}` when empty and carries `apps`, `city_ids`, `rollout_percent` for keys with a row; no secret keys anywhere in the payload.
+- Existing `SettingsServiceTest` cache-bust assertion still passes with the new cache key (`app_config.payload.v2`).
+
+### Feature — logging and database
+- `Feature/Logging/JsonLogChannelTest`: logging through the `json` channel inside a request writes one JSON object per line with `extra.request_id` equal to the response `X-Request-Id`, and secret-looking context keys redacted.
+- `Feature/Bootstrap/ErrorTrackerReportTest`: with `SENTRY_DSN` set and `Http::fake`, an unhandled exception in a route is posted once after the response with the request id; a `DomainException` is not reported; with no DSN nothing is sent and `ErrorTracker` is not resolved.
+- `Feature/Database/SystemMigrationTest`: `app_versions` (unique app + platform) and `feature_flags` (unique key) migrate up and down.
+- Notification call sites: `SmsChannelSender`, `EmailChannelSender`, `PushChannelSender`, `PaymentIntentService` record a failure on a provider error and clear it on success.
+
+### Manual / live
+- Open the health page with Redis stopped, the queue worker stopped (scheduler heartbeat stale), a wrong SMS credential, and Reverb down; check the row states, that no secret appears in the page source, and RTL / LTR layout. Retry a real failed job from the page. Trigger a real forced update from a device after setting a store link.

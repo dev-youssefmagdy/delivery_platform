@@ -2,6 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'tokens.dart';
 
+/// Platform Arabic faces tried, in order, after the primary font (P6.3).
+const arabicFontFallback = <String>[
+  'Noto Sans Arabic',
+  'Noto Naskh Arabic',
+  'Geeza Pro',
+  'SF Arabic',
+  'Segoe UI',
+  'Tahoma',
+  'sans-serif',
+];
+
 /// Light Material 3 theme shared by both apps.
 abstract final class AppTheme {
   static ThemeData light({UiDensity density = UiDensity.standard}) {
@@ -10,7 +21,13 @@ abstract final class AppTheme {
       secondary: AppColors.accent,
       brightness: Brightness.light,
     );
-    final base = ThemeData(useMaterial3: true, colorScheme: scheme);
+    final base = ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      // No font is bundled: platform fonts are used on purpose. The fallback list makes sure Arabic glyphs come from a
+      // proper Arabic face (Noto on Android and Linux, Geeza/SF Arabic on Apple, Segoe on Windows) when the primary face lacks them.
+      fontFamilyFallback: arabicFontFallback,
+    );
     final text = Typography.englishLike2021
         .merge(base.textTheme)
         .apply(
@@ -48,6 +65,13 @@ abstract final class AppTheme {
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
           minimumSize: Size.square(density.minTouchTarget),
+        ),
+      ),
+      // Selectable chips are real controls: the driver profile (64dp target) grows them vertically.
+      chipTheme: ChipThemeData(
+        padding: EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: density.minTouchTarget > 48 ? 16 : 4,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(

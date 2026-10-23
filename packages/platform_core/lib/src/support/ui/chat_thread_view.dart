@@ -183,7 +183,6 @@ class _ChatThreadViewState extends State<ChatThreadView> {
                             child: IconButton.filledTonal(
                               key: const Key('chat-remove-image'),
                               tooltip: s.removeAttachment,
-                              visualDensity: VisualDensity.compact,
                               icon: const Icon(Icons.close, size: 16),
                               onPressed: () => setState(() => _imagePath = null),
                             ),

@@ -15,6 +15,7 @@ use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
 use App\Services\Courier\CustodyService;
 use App\Services\Courier\DeliveryProofService;
 use App\Services\Courier\RecipientOtpService;
+use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
@@ -33,6 +34,7 @@ final class BookingDetailTabsService
         private readonly BookingStatusEventRepositoryInterface $events,
         private readonly BookingProofRepositoryInterface $proofs,
         private readonly SupportTicketRepositoryInterface $tickets,
+        private readonly SafetyIncidentRepositoryInterface $incidents,
         private readonly RatingRepositoryInterface $ratings,
         private readonly SettingsService $settings,
         private readonly DeliveryAttemptRepositoryInterface $attempts,
@@ -107,9 +109,9 @@ final class BookingDetailTabsService
     }
 
     /**
-     * PIN status (never the PIN), support flag, proofs and the reports filed on the booking.
+     * PIN status (never the PIN), support flag, safety cases and the reports filed on the booking. Proofs and the delivery summary live in the "Delivery and load" tab (P4.4) only.
      *
-     * @return array{pin: array<string, mixed>, delivery: array<string, mixed>|null, proofs: list<array<string, mixed>>, reports: list<array<string, string>>, flag: array{at: string, reason: string|null}|null}
+     * @return array{pin: array<string, mixed>, incidents: list<array<string, mixed>>, reports: list<array<string, string>>, flag: array{at: string, reason: string|null}|null}
      */
     public function safety(Booking $booking, bool $canViewPii = false): array
     {
@@ -124,14 +126,18 @@ final class BookingDetailTabsService
                 'attempts' => $booking->pin_attempts,
                 'max_attempts' => $max,
             ],
-            'proofs' => $this->proofs->forBooking($booking->id)->map(fn (BookingProof $proof): array => [
-                'type' => $proof->proof_type->label(),
-                'stage' => $proof->stage->label(),
-                'detail' => $this->proofDetail($proof),
-                'actor' => ActorType::tryFrom($proof->actor_type)?->label() ?? $proof->actor_type,
-                'time' => $this->time($proof->created_at),
+            // Safety cases raised from the apps (P5.1): structure only; the case itself is in the Safety Center.
+            'incidents' => $this->incidents->forBooking($booking->id)->map(fn ($incident): array => [
+                'uuid' => $incident->uuid,
+                'number' => $incident->number,
+                'category' => $incident->category->label(),
+                'trigger' => $incident->trigger->label(),
+                'severity' => $incident->severity,
+                'status' => $incident->status,
+                'reporter' => $incident->reporter_type->label(),
+                'time' => $this->time($incident->created_at),
+                'model' => $incident,
             ])->values()->all(),
-            'delivery' => $this->delivery($booking, $canViewPii),
             'reports' => $this->tickets->forBooking($booking->id)->map(fn ($ticket): array => [
                 'category' => $ticket->number.' · '.$ticket->category->label(),
                 'status' => $ticket->status->label(),

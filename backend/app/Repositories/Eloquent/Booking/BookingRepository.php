@@ -273,8 +273,8 @@ final class BookingRepository extends BaseRepository implements BookingRepositor
                 $filters->hasTicket ? $query->whereExists($ticket) : $query->whereNotExists($ticket);
             })
             ->when($filters->hasIncident !== null, static function (Builder $query) use ($filters): void {
-                // Reports are tickets since P3.7 (`source = report`).
-                $incident = static fn ($sub) => $sub->select(DB::raw(1))->from('support_tickets')->whereColumn('support_tickets.booking_id', 'bookings.id')->where('support_tickets.source', 'report');
+                // Safety cases raised from the apps (P5.1); reports filed before it are tickets (`source = report`).
+                $incident = static fn ($sub) => $sub->select(DB::raw(1))->from('safety_incidents')->whereColumn('safety_incidents.booking_id', 'bookings.id');
 
                 $filters->hasIncident
                     ? $query->where(static fn (Builder $inner) => $inner->whereNotNull('bookings.support_flagged_at')->orWhereExists($incident))

@@ -22,6 +22,8 @@ use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleDocumentRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehiclePhotoRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
+use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
+use App\Repositories\Contracts\Safety\TrustedContactRepositoryInterface;
 use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Services\Audit\AuditLogger;
@@ -60,6 +62,8 @@ final class ProviderDeletionService
         private readonly ProviderPayoutMethodRepositoryInterface $payoutMethods,
         private readonly SupportTicketRepositoryInterface $tickets,
         private readonly BookingMessageRepositoryInterface $chat,
+        private readonly SafetyIncidentRepositoryInterface $safetyIncidents,
+        private readonly TrustedContactRepositoryInterface $trustedContacts,
         private readonly PrivateFileStorage $storage,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -136,7 +140,10 @@ final class ProviderDeletionService
             // chat message they sent (text and image) are removed, exactly like the customer path; ticket rows and staff notes stay.
             $ticketFiles = $this->tickets->scrubOfUser($user->id);
             $chatFiles = $this->chat->scrubSentBy($user->id);
-            $paths = [...$paths, ...$ticketFiles, ...$chatFiles];
+            // Safety (P5.1): same rule as customers, a legal hold keeps the case whole.
+            $this->trustedContacts->purgeForUser($user->id);
+            $safety = $this->safetyIncidents->scrubOfUser($user->id);
+            $paths = [...$paths, ...$ticketFiles, ...$chatFiles, ...$safety['files']];
             $paths[] = $this->scrubber->scrub($user);
 
             $this->requests->update($request, [

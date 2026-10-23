@@ -450,6 +450,15 @@ return [
             'icon' => 'document',
             'permission' => App\Enums\Admin\AdminPermission::MacrosManage,
         ],
+        [
+            'key' => 'safety_incidents',
+            'group' => 'safety',
+            'label' => 'safety.admin.menu',
+            'route' => 'admin.safety-incidents.index',
+            'active' => 'admin.safety-incidents.*',
+            'icon' => 'shield',
+            'permission' => App\Enums\Admin\AdminPermission::IncidentsView,
+        ],
         // @admin-module:menu
     ],
 ];

@@ -29,6 +29,8 @@ use App\Repositories\Contracts\Payments\PaymentMethodRepositoryInterface;
 use App\Repositories\Contracts\Payments\PaymentRepositoryInterface;
 use App\Models\UserConsent;
 use App\Models\UserDevice;
+use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
+use App\Repositories\Contracts\Safety\TrustedContactRepositoryInterface;
 use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingAttachmentRepositoryInterface;
@@ -77,6 +79,8 @@ final class PersonalDataExporter
         private readonly DeliveryAttemptRepositoryInterface $deliveryAttempts,
         private readonly BookingItemRepositoryInterface $items,
         private readonly BookingAttachmentRepositoryInterface $attachments,
+        private readonly SafetyIncidentRepositoryInterface $safetyIncidents,
+        private readonly TrustedContactRepositoryInterface $trustedContacts,
     ) {}
 
     /**
@@ -88,6 +92,7 @@ final class PersonalDataExporter
 
         return [
             'exported_at' => now()->toIso8601String(),
+            'safety' => $this->safety($customer),
             'account' => [
                 'uuid' => $customer->uuid,
                 'name' => $customer->name,
@@ -334,6 +339,44 @@ final class PersonalDataExporter
                 'to' => $event->to_status->value,
                 'actor' => $event->actor_type,
                 'at' => $event->created_at->toIso8601String(),
+            ])->all(),
+        ];
+    }
+
+    /**
+     * Trusted contacts (with the phone, as the person entered it), the safety cases the person raised and what the platform did
+     * towards the contacts. Staff notes are NOT part of it (internal); the person's own words and the public messages are.
+     *
+     * @return array<string, mixed>
+     */
+    private function safety(User $customer): array
+    {
+        return [
+            'trusted_contacts' => $this->trustedContacts->forUser($customer->id)->map(static fn (\App\Models\TrustedContact $contact): array => [
+                'name' => $contact->name,
+                'phone' => $contact->phone(),
+                'relationship' => $contact->relationship?->value,
+                'notify_on_sos' => $contact->notify_on_sos,
+                'share_trip' => $contact->share_trip,
+                'share_location_on_sos' => $contact->share_location_on_sos,
+                'consent_confirmed_at' => $contact->consent_confirmed_at->toIso8601String(),
+            ])->all(),
+            'incidents' => $this->safetyIncidents->allOfUser($customer->id)->map(static fn (\App\Models\SafetyIncident $incident): array => [
+                'number' => $incident->number,
+                'booking' => $incident->booking?->code,
+                'trigger' => $incident->trigger->value,
+                'category' => $incident->category->value,
+                'status' => $incident->status->value,
+                'occurred_at' => $incident->occurred_at->toIso8601String(),
+                'narrative' => $incident->narrative,
+                'outcome' => $incident->outcome?->value,
+                'legal_hold' => $incident->legal_hold,
+            ])->all(),
+            'trusted_contact_actions' => $this->trustedContacts->actionsOfUser($customer->id)->map(static fn (\App\Models\TrustedContactAction $action): array => [
+                'action' => $action->action->value,
+                'status' => $action->status->value,
+                'contact' => $action->contact_name,
+                'at' => $action->created_at->toIso8601String(),
             ])->all(),
         ];
     }

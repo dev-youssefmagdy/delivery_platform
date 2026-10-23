@@ -202,12 +202,28 @@ class AppServiceProvider extends ServiceProvider
             'rating_report' => \App\Models\RatingReport::class,
             'rating_appeal' => \App\Models\RatingAppeal::class,
             'risk_signal' => \App\Models\RiskSignal::class,
+            'content_page' => \App\Models\ContentPage::class,
+            'content_article' => \App\Models\ContentArticle::class,
+            'content_faq' => \App\Models\ContentFaq::class,
+            'content_banner' => \App\Models\ContentBanner::class,
+            'content_menu' => \App\Models\ContentMenu::class,
+            'content_category' => \App\Models\ContentCategory::class,
+            'content_app_link' => \App\Models\ContentAppLink::class,
+            'content_media' => \App\Models\ContentMedia::class,
             // @admin-module:morph-map
         ]);
 
         // The shared base class of provider/vehicle documents: one policy covers both subclasses.
         Gate::policy(OwnedDocument::class, DocumentPolicy::class);
         Gate::policy(ReportKey::class, ReportPolicy::class);
+
+        foreach ([\App\Models\ContentPage::class, \App\Models\ContentArticle::class, \App\Models\ContentFaq::class, \App\Models\ContentBanner::class, \App\Models\ContentMenu::class] as $managed) {
+            Gate::policy($managed, \App\Policies\ManagedContentPolicy::class);
+        }
+
+        foreach ([\App\Models\ContentCategory::class, \App\Models\ContentAppLink::class, \App\Models\ContentMedia::class] as $asset) {
+            Gate::policy($asset, \App\Policies\ContentAssetPolicy::class);
+        }
 
         // Super Admin passes every ability check (Plan Appendix B); every other admin is checked by Spatie.
         Gate::before(static fn (Authorizable $user): ?bool => $user instanceof Admin && $user->isSuperAdmin() ? true : null);

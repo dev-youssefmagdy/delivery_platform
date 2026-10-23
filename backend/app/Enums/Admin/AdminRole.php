@@ -59,6 +59,7 @@ enum AdminRole: string implements HasLabel
                 $p::ServicesManage, $p::VehicleCategoriesManage, $p::ServiceAreasManage, $p::FarePoliciesManage, $p::CancellationPoliciesManage, $p::PoliciesManage,
                 $p::SupportView, $p::IncidentsView, $p::ReportsView,
                 $p::ReviewsView, $p::ReviewsModerate, $p::RiskView, $p::RiskManage, $p::LeadsView, $p::LeadsManage,
+                $p::ReferralsView, $p::ReferralsReview, $p::LoyaltyView, $p::IncentivesView, $p::IncentivesReview,
             ],
             self::DispatchAgent => [
                 $p::DashboardView, $p::BookingsView, $p::BookingsManage, $p::BookingsCancel, $p::OffersView, $p::DriversView, $p::CustomersView,
@@ -77,11 +78,12 @@ enum AdminRole: string implements HasLabel
                 $p::FinanceView, $p::FinanceReconcile, $p::PaymentsView, $p::RefundsApprove,
                 $p::PayoutsView, $p::PayoutsReview, $p::PayoutsApprove,
                 $p::WalletsView, $p::WalletsAdjust, $p::WalletsApproveAdjustment, $p::LedgerView,
-                $p::CommissionRulesManage, $p::ReportsView, $p::ReportsExport,
+                $p::CommissionRulesManage, $p::ReportsView, $p::ReportsExport, $p::IncentivesView,
             ],
             self::FinancePayoutOfficer => [$p::PayoutsView, $p::PayoutsReview, $p::WalletsView, $p::LedgerView],
             self::MarketingCouponManager => [
                 $p::CouponsView, $p::CouponsManage, $p::CouponsExport, $p::CampaignsManage, $p::PushCampaignsManage, $p::ReportsView,
+                $p::ReferralsView, $p::ReferralsManage, $p::LoyaltyView, $p::LoyaltyManage, $p::IncentivesView, $p::IncentivesManage,
             ],
             self::ContentCmsEditor => [$p::ContentManage, $p::TranslationsManage, $p::LeadsView, $p::LeadsManage],
             self::ReadOnlyAuditor => array_values(array_filter(

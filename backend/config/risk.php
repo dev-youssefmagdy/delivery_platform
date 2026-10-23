@@ -39,8 +39,8 @@ return [
     'payment_dispute' => [
         'min_events' => (int) env('RISK_PAYMENT_DISPUTE_MIN_EVENTS', 3),
     ],
-    // Filled by P5.7 (referrals); the detector exists and returns nothing until then.
+    // P5.7: flagged referrals and held quest progress become review tasks. With every growth flag off nothing is flagged.
     'referral_abuse' => [
-        'enabled' => false,
+        'enabled' => (bool) env('RISK_REFERRAL_ABUSE_ENABLED', true),
     ],
 ];

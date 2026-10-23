@@ -158,8 +158,9 @@ class AdminMfaTest extends TestCase
         $this->get(route('admin.security.mfa'))->assertOk();
 
         AdminTotp::enable($admin);
-        // Enrolled: the panel opens (this role has no module yet, so the empty home page shows).
-        $this->get(route('admin.home'))->assertOk();
+        // Enrolled: the panel opens (home sends this role on to its first module instead of the enrolment screen).
+        $home = $this->get(route('admin.home'))->assertRedirect();
+        $this->assertNotSame(route('admin.security.mfa'), $home->headers->get('Location'));
     }
 
     public function test_mfa_can_be_turned_off_with_the_password_unless_a_role_requires_it(): void

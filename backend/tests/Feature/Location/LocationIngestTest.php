@@ -4,7 +4,8 @@ namespace Tests\Feature\Location;
 
 use App\Enums\Location\LocationAnomaly;
 use App\Enums\Settings\SettingKey;
-use App\Events\Realtime\BookingLocationUpdated;
+use App\Events\Realtime\TripLocationUpdated;
+use App\Models\Booking;
 use App\Models\ProviderLastLocation;
 use App\Models\ProviderLocation;
 use App\Services\Location\LocationIngestService;
@@ -195,22 +196,25 @@ class LocationIngestTest extends TestCase
         $this->upload([$this->samplePayload()])->assertStatus(429);
     }
 
-    public function test_a_provider_serving_a_booking_broadcasts_to_the_booking_channel_and_is_tracked_while_offline(): void
+    public function test_a_provider_serving_a_booking_broadcasts_to_the_customer_channel_and_is_tracked_while_offline(): void
     {
-        Event::fake([BookingLocationUpdated::class]);
+        Event::fake([TripLocationUpdated::class]);
         ['category' => $category] = $this->cairo();
         $provider = $this->onlineProviderFor($category);
-        $this->fakeWorkload($this->busy('33333333-3333-4333-8333-333333333333'));
+        $uuid = '33333333-3333-4333-8333-333333333333';
+        $this->fakeWorkload($this->busy($uuid));
+        $customerUuid = Booking::query()->where('uuid', $uuid)->firstOrFail()->customer->uuid;
         $provider->forceFill(['is_online' => false])->save();
         $this->actingAsProvider($provider);
 
         $this->upload([$this->samplePayload(30.051, 31.25, CarbonImmutable::now()->addSeconds(30))])
             ->assertOk()->assertJsonPath('data.tracking.state', 'active')->assertJsonPath('data.tracking.interval_seconds', 5);
 
-        Event::assertDispatched(BookingLocationUpdated::class, static fn (BookingLocationUpdated $event): bool => $event->bookingUuid === '33333333-3333-4333-8333-333333333333'
+        // Only the customer's own channel receives the position, never the booking channel other dispatched providers can join (ADR-98).
+        Event::assertDispatched(TripLocationUpdated::class, static fn (TripLocationUpdated $event): bool => $event->bookingUuid === $uuid
             && $event->sequence >= 1
             && abs($event->payload['lat'] - 30.051) < 1e-6
-            && $event->broadcastOn()[0]->name === 'private-booking.33333333-3333-4333-8333-333333333333'
+            && $event->broadcastOn()[0]->name === 'private-customer.'.$customerUuid
             && $event->broadcastAs() === 'booking.location_updated');
         $this->assertSame(1, ProviderLocation::query()->whereNotNull('booking_id')->count());
     }

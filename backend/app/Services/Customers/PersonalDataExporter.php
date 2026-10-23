@@ -53,7 +53,7 @@ use App\Services\Finance\WalletStatementService;
 /**
  * Builds the machine-readable copy of everything the platform holds about one customer (data-subject access
  * request, SRS §16.2 / §13.3). Push tokens and secrets are never included. Modules that store customer data later
- * (payments, tickets, ratings) add their section here; until then `sections_pending` says so honestly.
+ * add their section here; until then `sections_pending` lists what is not covered yet (nothing at the moment: ratings and reports are inside each booking).
  */
 final class PersonalDataExporter
 {
@@ -211,7 +211,7 @@ final class PersonalDataExporter
                 'has_image' => $message->attachment_path !== null,
                 'at' => $message->created_at->toIso8601String(),
             ])->all(),
-            'sections_pending' => ['ratings'],
+            'sections_pending' => [],
         ];
     }
 

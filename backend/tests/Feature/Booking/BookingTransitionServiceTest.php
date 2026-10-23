@@ -5,6 +5,7 @@ namespace Tests\Feature\Booking;
 use App\DTOs\Booking\TransitionContext;
 use App\Enums\Booking\BookingStatus;
 use App\Enums\Common\ActorType;
+use App\Enums\Provider\VehicleStatus;
 use App\Enums\Settings\SettingKey;
 use App\Events\Booking\BookingEnteredSearch;
 use App\Events\Realtime\BookingStatusChanged;
@@ -16,12 +17,15 @@ use App\Models\BookingStatusEvent;
 use App\Models\City;
 use App\Models\ProviderProfile;
 use App\Models\ServiceCategory;
+use App\Models\Vehicle;
 use App\Services\Booking\BookingTransitionService;
 use App\Services\Settings\SettingsService;
 use App\Support\Booking\BookingStatusGate;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Str;
 use LogicException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -67,14 +71,40 @@ class BookingTransitionServiceTest extends TestCase
     {
         $assigned = $status->isAssigned();
 
-        return Booking::factory()->forCategory($this->category)->status($status)->state($state + [
+        $booking = Booking::factory()->forCategory($this->category)->status($status)->state($state + [
             'customer_id' => $this->customerId,
             'city_id' => $this->city->id,
             'provider_id' => $assigned ? $this->provider->id : null,
-            'selected_offer_id' => $assigned || in_array($status, [BookingStatus::CompletedPendingPayment, BookingStatus::Completed, BookingStatus::Disputed], true) ? 77 : null,
             'search_expires_at' => $status->isSearching() ? now()->subMinute() : null,
             'policy_snapshot' => ['dispatch' => ['search_ttl_seconds' => 300, 'auto_redispatch' => true], 'safety' => ['pin_required' => true, 'pickup_proof_required' => true, 'delivery_proof_types' => ['photo']]],
         ])->create();
+
+        if (! array_key_exists('selected_offer_id', $state) && ($assigned || in_array($status, [BookingStatus::CompletedPendingPayment, BookingStatus::Completed, BookingStatus::Disputed], true))) {
+            $booking->forceFill(['selected_offer_id' => $this->offerFor($booking), 'agreed_fare_minor' => 5000])->save();
+        }
+
+        return $booking;
+    }
+
+    /**
+     * A real offer row of the booking (selected_offer_id is a foreign key), made by the provider of the test.
+     */
+    private function offerFor(Booking $booking): int
+    {
+        $vehicleId = Vehicle::query()->where('provider_profile_id', $this->provider->id)->value('id')
+            ?? $this->vehicleFor($this->provider, VehicleStatus::Approved, ['vehicle_category_id' => $this->category->vehicleCategories()->firstOrFail()->id])->id;
+
+        return (int) DB::table('booking_offers')->insertGetId([
+            'uuid' => (string) Str::uuid(),
+            'booking_id' => $booking->id,
+            'provider_profile_id' => $this->provider->id,
+            'vehicle_id' => $vehicleId,
+            'kind' => 'accept',
+            'status' => 'accepted',
+            'expires_at' => now()->addHour(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     /**
@@ -83,11 +113,12 @@ class BookingTransitionServiceTest extends TestCase
     private function satisfying(Booking $booking, BookingStatus $to): TransitionContext
     {
         return match ($to) {
-            BookingStatus::ProviderSelected => new TransitionContext(ActorType::System, providerId: $this->provider->id, offerId: 99),
+            BookingStatus::ProviderSelected => new TransitionContext(ActorType::System, providerId: $this->provider->id, offerId: $this->offerFor($booking)),
             BookingStatus::ProviderHeadingToPickup, BookingStatus::ProviderArrived, BookingStatus::InProgress, BookingStatus::CompletedPendingPayment, BookingStatus::Completed => new TransitionContext(ActorType::Provider, $booking->provider_id, pinVerified: true, proofsSatisfied: true),
             BookingStatus::CancelledByCustomer => new TransitionContext(ActorType::Customer, $booking->customer_id),
             BookingStatus::CancelledByProvider => new TransitionContext(ActorType::Provider, $booking->provider_id, 'Vehicle broke down'),
             BookingStatus::CancelledByOperations => new TransitionContext(ActorType::Admin, 1, 'Fraud suspected'),
+            BookingStatus::SearchingOffers, BookingStatus::DeliveryAttemptFailed => $booking->provider_id !== null ? new TransitionContext(ActorType::Provider, $booking->provider_id) : TransitionContext::system('test'),
             default => TransitionContext::system('test'),
         };
     }
@@ -161,7 +192,7 @@ class BookingTransitionServiceTest extends TestCase
         Event::assertDispatched(BookingEnteredSearch::class, static fn (BookingEnteredSearch $event): bool => $event->restart === false);
 
         $assigned = $this->bookingIn(BookingStatus::ProviderSelected);
-        $this->service()->transition($assigned, BookingStatus::SearchingOffers, new TransitionContext(ActorType::System));
+        $this->service()->transition($assigned, BookingStatus::SearchingOffers, new TransitionContext(ActorType::Provider, $assigned->provider_id));
         Event::assertDispatched(BookingEnteredSearch::class, static fn (BookingEnteredSearch $event): bool => $event->restart === true);
         $this->assertNull($assigned->fresh()->provider_id);
         $this->assertNull($assigned->fresh()->selected_offer_id);
@@ -198,7 +229,9 @@ class BookingTransitionServiceTest extends TestCase
     {
         $booking = $this->bookingIn(BookingStatus::SearchingOffers);
 
-        foreach ([[null, 99], [$this->provider->id, null]] as [$provider, $offer]) {
+        $offerId = $this->offerFor($booking);
+
+        foreach ([[null, $offerId], [$this->provider->id, null]] as [$provider, $offer]) {
             try {
                 $this->service()->transition($booking, BookingStatus::ProviderSelected, new TransitionContext(ActorType::System, providerId: $provider, offerId: $offer));
                 $this->fail('incomplete selection must be refused');
@@ -210,15 +243,15 @@ class BookingTransitionServiceTest extends TestCase
         $ineligible = $this->makeProvider();
 
         try {
-            $this->service()->transition($booking, BookingStatus::ProviderSelected, new TransitionContext(ActorType::System, providerId: $ineligible->id, offerId: 99));
+            $this->service()->transition($booking, BookingStatus::ProviderSelected, new TransitionContext(ActorType::System, providerId: $ineligible->id, offerId: $offerId));
             $this->fail('an ineligible provider must be refused');
         } catch (BusinessRuleViolation $exception) {
             $this->assertSame('booking_provider_not_eligible', $exception->errorCode);
         }
 
-        $selected = $this->service()->transition($booking, BookingStatus::ProviderSelected, new TransitionContext(ActorType::System, providerId: $this->provider->id, offerId: 99));
+        $selected = $this->service()->transition($booking, BookingStatus::ProviderSelected, new TransitionContext(ActorType::System, providerId: $this->provider->id, offerId: $offerId));
         $this->assertSame($this->provider->id, $selected->provider_id);
-        $this->assertSame(99, $selected->selected_offer_id);
+        $this->assertSame($offerId, $selected->selected_offer_id);
 
         // A booking that already has a provider is a conflict, whatever its status says.
         $racing = $this->bookingIn(BookingStatus::SearchingOffers, ['provider_id' => $this->provider->id]);
@@ -327,7 +360,7 @@ class BookingTransitionServiceTest extends TestCase
         $booking = $this->bookingIn(BookingStatus::ProviderSelected, ['policy_snapshot' => ['dispatch' => ['search_ttl_seconds' => 300, 'auto_redispatch' => false]]]);
 
         $this->expectExceptionObject(BusinessRuleViolation::make('booking_redispatch_not_allowed'));
-        $this->service()->transition($booking, BookingStatus::SearchingOffers, TransitionContext::system());
+        $this->service()->transition($booking, BookingStatus::SearchingOffers, new TransitionContext(ActorType::Provider, $booking->provider_id));
     }
 
     public function test_the_setting_independent_ttl_comes_from_the_booking_snapshot_not_from_settings(): void

@@ -217,7 +217,7 @@ class ProviderAdminTest extends TestCase
         $this->datatable(route('admin.providers.tabs.services', $provider))->assertOk()->assertJsonPath('recordsTotal', 1);
     }
 
-    public function test_every_tab_is_served_as_its_own_datatable_and_job_tabs_say_when_they_arrive(): void
+    public function test_every_tab_is_served_as_its_own_datatable_and_the_page_lists_the_tabs(): void
     {
         $this->actingAsAdmin([AdminPermission::DriversView]);
         $provider = $this->makeProvider(ProviderStatus::Approved);
@@ -230,6 +230,10 @@ class ProviderAdminTest extends TestCase
 
         $this->datatable(route('admin.providers.tabs.vehicles', $provider))->assertJsonPath('recordsTotal', 1);
         $this->datatable(route('admin.providers.tabs.documents', $provider))->assertJsonPath('recordsTotal', 1);
-        $this->get(route('admin.providers.show', $provider))->assertOk()->assertSee('P2.5')->assertSee('P3.4');
+        $page = $this->get(route('admin.providers.show', $provider))->assertOk();
+
+        foreach (['services', 'vehicles', 'documents', 'history', 'jobs', 'earnings', 'ratings', 'deletion-requests', 'audit'] as $tab) {
+            $page->assertSee(route('admin.providers.tabs.'.$tab, $provider), false);
+        }
     }
 }

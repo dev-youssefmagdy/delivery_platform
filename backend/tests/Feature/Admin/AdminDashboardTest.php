@@ -29,21 +29,22 @@ class AdminDashboardTest extends TestCase
         $this->get(route('admin.home'))->assertRedirect(route('admin.audit-logs.index'));
 
         $this->actingAsAdmin([AdminPermission::BookingsView]);
+        $this->get(route('admin.home'))->assertRedirect(route('admin.bookings.index'));
+
+        $this->actingAsAdmin();
         $this->get(route('admin.home'), ['Accept-Language' => 'en'])->assertOk()->assertSee('Nothing to show yet');
     }
 
-    public function test_it_shows_only_permitted_sections_as_honest_empty_states_with_no_fake_numbers(): void
+    public function test_it_links_only_to_what_the_admin_may_open(): void
     {
         $this->actingAsAdmin([AdminPermission::DashboardView, AdminPermission::BookingsView, AdminPermission::AuditLogsView]);
 
         $page = $this->get(route('admin.dashboard'), ['Accept-Language' => 'en'])->assertOk();
 
-        $page->assertSee('Bookings and live operations')
-            ->assertSee('Available after the booking and dispatch module.')
+        $page->assertSee(route('admin.bookings.index'))
             ->assertSee(route('admin.audit-logs.index'))
-            ->assertDontSee('Finance and payouts')
-            ->assertDontSee('Drivers and providers')
-            ->assertDontSee(route('admin.admins.index'));
+            ->assertDontSee(route('admin.admins.index'))
+            ->assertDontSee(route('admin.cash-reconciliations.index'));
     }
 
     public function test_the_menu_only_lists_items_the_admin_may_open(): void

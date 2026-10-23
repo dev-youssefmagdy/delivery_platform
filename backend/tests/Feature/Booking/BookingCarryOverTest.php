@@ -125,12 +125,18 @@ class BookingCarryOverTest extends TestCase
         $selected = $this->makeProvider();
         $outsider = $this->makeProvider();
         DispatchRecipient::query()->create(['booking_id' => $booking->id, 'provider_profile_id' => $dispatched->id, 'wave' => 1, 'distance_m' => 100, 'notified_at' => now()]);
+
+        // Before a provider is selected, every dispatched provider may follow the booking.
+        $this->assertTrue($repository->isProviderOf($booking->uuid, $dispatched->id));
+        $this->assertFalse($repository->isProviderOf($booking->uuid, $selected->id));
+
         $booking->forceFill(['provider_id' => $selected->id])->save();
 
         $this->assertTrue($repository->isCustomerOf($booking->uuid, $this->customer->id));
         $this->assertFalse($repository->isCustomerOf($booking->uuid, $this->customer->id + 1));
         $this->assertFalse($repository->isCustomerOf('00000000-0000-4000-8000-000000000000', $this->customer->id));
-        $this->assertTrue($repository->isProviderOf($booking->uuid, $dispatched->id));
+        // Once selected, the stream belongs to the selected provider alone.
+        $this->assertFalse($repository->isProviderOf($booking->uuid, $dispatched->id));
         $this->assertTrue($repository->isProviderOf($booking->uuid, $selected->id));
         $this->assertFalse($repository->isProviderOf($booking->uuid, $outsider->id));
         $this->assertFalse($repository->isProviderOf('00000000-0000-4000-8000-000000000000', $dispatched->id));
@@ -151,7 +157,7 @@ class BookingCarryOverTest extends TestCase
         $this->assertFalse($policy->joinBooking($as($outsider->user, 'provider'), $booking->uuid));
     }
 
-    public function test_the_workload_reads_assigned_bookings_and_the_money_seam_is_neutral_until_the_ledger_exists(): void
+    public function test_the_money_seam_reads_the_ledger_and_is_neutral_for_a_party_without_entries(): void
     {
         $provider = $this->makeProvider();
         $finances = app(FinancialPositionRepositoryInterface::class);
@@ -159,7 +165,7 @@ class BookingCarryOverTest extends TestCase
         $this->assertSame(0, $finances->cashDebtMinor($provider));
         $this->assertSame(0, $finances->openItemsForProvider($provider));
         $this->assertSame(0, $finances->openItemsForCustomer($this->customer));
-        $this->assertInstanceOf(\App\Repositories\Eloquent\Finance\PreLedgerFinancialPositionRepository::class, $finances);
+        $this->assertInstanceOf(\App\Repositories\Eloquent\Finance\LedgerFinancialPositionRepository::class, $finances);
     }
 
     // ---- deletion ---------------------------------------------------------------------------------------------------

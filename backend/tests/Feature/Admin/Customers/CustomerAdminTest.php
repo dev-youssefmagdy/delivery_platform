@@ -103,7 +103,7 @@ class CustomerAdminTest extends TestCase
         $this->assertStringContainsString('4567', $response->getContent());
     }
 
-    public function test_show_page_masks_contact_details_and_marks_modules_that_are_not_built_yet(): void
+    public function test_show_page_masks_contact_details_and_lists_only_the_tabs_the_admin_may_open(): void
     {
         $this->actingAsAdmin([AdminPermission::CustomersView]);
         $customer = $this->customer(['name' => 'Mona Ali', 'phone_e164' => '+201001234567', 'email' => 'mona@example.test']);
@@ -112,7 +112,9 @@ class CustomerAdminTest extends TestCase
         $response = $this->get(route('admin.customers.show', $customer))->assertOk()->assertSee('Mona Ali');
 
         $response->assertDontSee('+201001234567')->assertDontSee('mona@example.test')->assertDontSee('+201112223333');
-        $response->assertSee('P3.2')->assertSee('P3.3')->assertSee('P3.7')->assertSee('P2.5');
+        // Money tabs need their own permissions; the tickets tab says so instead of hiding why.
+        $response->assertDontSee(route('admin.customers.tabs.wallet', $customer), false)->assertDontSee(route('admin.customers.tabs.payments', $customer), false)->assertDontSee(route('admin.customers.tabs.coupons', $customer), false);
+        $response->assertSee(route('admin.customers.tabs.ratings', $customer), false)->assertSee(route('admin.customers.tabs.messages', $customer), false);
         $response->assertSee(route('admin.customers.tabs.bookings', $customer), false);
         $response->assertDontSee('adminReveal(', false);
         $response->assertDontSee(route('admin.customers.tabs.saved-places', $customer), false);

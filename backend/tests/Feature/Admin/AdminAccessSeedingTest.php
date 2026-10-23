@@ -67,7 +67,7 @@ class AdminAccessSeedingTest extends TestCase
 
         $this->assertSame([], $permissions(AdminRole::SuperAdmin));
         $this->assertEqualsCanonicalizing(['payouts.view', 'payouts.review', 'wallets.view', 'ledger.view'], $permissions(AdminRole::FinancePayoutOfficer));
-        $this->assertEqualsCanonicalizing(['content.manage', 'translations.manage', 'leads.view'], $permissions(AdminRole::ContentCmsEditor));
+        $this->assertEqualsCanonicalizing(['content.manage', 'translations.manage', 'leads.view', 'leads.manage'], $permissions(AdminRole::ContentCmsEditor));
         $this->assertContains('wallets.adjust', $permissions(AdminRole::FinanceManager));
         $this->assertContains('wallets.approve_adjustment', $permissions(AdminRole::FinanceManager));
         $this->assertNotContains('content.publish', $permissions(AdminRole::ContentCmsEditor));

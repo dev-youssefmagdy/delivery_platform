@@ -36,7 +36,9 @@ class RoutingTest extends TestCase
     public function test_website_home_renders(): void
     {
         $this->get('/')->assertOk();
-        $this->assertNotNull(Route::getRoutes()->getByName('website.home'));
+        foreach (['site.ar.home', 'site.en.home'] as $name) {
+            $this->assertNotNull(Route::getRoutes()->getByName($name), $name);
+        }
     }
 
     public function test_every_response_carries_a_request_id(): void

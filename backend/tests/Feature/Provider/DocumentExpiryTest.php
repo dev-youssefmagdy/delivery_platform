@@ -3,14 +3,16 @@
 namespace Tests\Feature\Provider;
 
 use App\Enums\Common\AuditAction;
+use App\Enums\Notification\NotificationEvent;
 use App\Enums\Provider\DocumentStatus;
 use App\Enums\Provider\EligibilityReason;
 use App\Models\AdminAuditLog;
+use App\Models\AppNotification;
 use App\Services\Provider\ProviderEligibilityService;
 use App\Services\Provider\ProviderNotifier;
+use Database\Seeders\NotificationTemplateSeeder;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Log;
 use Mockery;
 use Tests\Concerns\BuildsProviders;
 use Tests\TestCase;
@@ -83,15 +85,16 @@ class DocumentExpiryTest extends TestCase
         $this->assertSame(7, $far->refresh()->expiry_reminder_days);
     }
 
-    public function test_the_notification_hook_only_logs_and_says_nothing_was_sent(): void
+    public function test_the_notification_hook_sends_an_in_app_notification_once_per_reminder(): void
     {
-        Log::spy();
+        $this->seed(NotificationTemplateSeeder::class);
         $provider = $this->makeProvider();
         $document = $this->providerDocument($provider, $this->documentType(['code' => 'licence', 'requires_expiry' => true], null), DocumentStatus::Approved, now()->addDays(3)->toDateString());
 
         app(ProviderNotifier::class)->documentExpiring($provider, $document, 3);
+        app(ProviderNotifier::class)->documentExpiring($provider, $document, 3);
 
-        Log::shouldHaveReceived('info')->withArgs(fn (string $message): bool => str_contains($message, 'notification stub, nothing sent'))->once();
+        $this->assertSame(1, AppNotification::query()->where('recipient_id', $provider->user_id)->where('event_key', NotificationEvent::DocumentExpiring->value)->count());
     }
 
     public function test_documents_without_an_expiry_date_never_expire(): void

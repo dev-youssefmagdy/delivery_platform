@@ -72,7 +72,7 @@ class ServiceFormValidatorTest extends TestCase
         $details = [
             't' => 'hello', 'ta' => 'long text', 'i' => 3, 'd' => '1.25', 'b' => false, 's' => 'x', 'm' => ['x', 'y'],
             'dt' => '2026-10-20', 'tm' => '09:30', 'dtt' => '2026-10-20T09:30',
-            'c' => ['name' => 'Ali', 'phone' => '+201001234567'], 'p' => ['upload-1'],
+            'c' => ['name' => 'Ali', 'phone' => '+201001234567'], 'p' => ['9b1f7c1e-52a4-4e57-9a53-1a2b3c4d5e6f'],
             'ic' => [['item' => 'sofa', 'quantity' => 2]], 'dim' => ['length' => 100, 'width' => 50, 'height' => 40], 'w' => 12.5,
         ];
 

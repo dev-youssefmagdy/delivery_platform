@@ -63,7 +63,7 @@ class BookingReadApiTest extends TestCase
             ->assertJsonPath('data.dropoff.address.line', '2 Dropoff St')
             ->assertJsonPath('data.stops.0.position', 1)
             ->assertJsonPath('data.reference_estimate.available', true)
-            ->assertJsonPath('data.allowed_actions', ['update_request'])
+            ->assertJsonPath('data.allowed_actions', ['update_request', 'cancel'])
             ->assertJsonPath('data.timeline.0.status', 'draft')
             ->assertJsonPath('data.timeline.1.status', 'searching_offers')
             ->assertJsonPath('data.timeline.1.previous_status', 'draft')
@@ -75,12 +75,12 @@ class BookingReadApiTest extends TestCase
             ->assertJsonMissingPath('data.customer_id');
     }
 
-    public function test_allowed_actions_are_empty_once_the_search_phase_is_over(): void
+    public function test_only_the_receipt_remains_once_the_trip_is_completed(): void
     {
         $this->actingAsCustomer($this->customer);
         $booking = Booking::factory()->forCustomer($this->customer)->forCategory($this->category)->status(BookingStatus::Completed)->create();
 
-        $this->getJson("/api/v1/bookings/{$booking->uuid}")->assertOk()->assertJsonPath('data.allowed_actions', []);
+        $this->getJson("/api/v1/bookings/{$booking->uuid}")->assertOk()->assertJsonPath('data.allowed_actions', ['view_receipt']);
     }
 
     public function test_the_timeline_hides_internal_reasons(): void

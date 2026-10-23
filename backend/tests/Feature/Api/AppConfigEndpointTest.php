@@ -12,6 +12,7 @@ use App\Services\Settings\SettingsService;
 use Database\Seeders\CountrySeeder;
 use Database\Seeders\CurrencySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Arr;
 use Tests\TestCase;
 
 /**
@@ -43,6 +44,8 @@ class AppConfigEndpointTest extends TestCase
                 'maintenance',
                 'apps' => ['customer' => ['min_version', 'force_update'], 'provider' => ['min_version', 'force_update']],
                 'policies', 'features',
+                'safety' => ['emergency_numbers', 'sos_hold_seconds', 'trusted_contacts_max', 'emergency_dispatch'],
+                'flags',
             ],
             'meta', 'errors',
         ]);
@@ -61,11 +64,17 @@ class AppConfigEndpointTest extends TestCase
             ],
             'policies' => [],
             'features' => [],
-        ], $response->json('data'));
+            'flags' => [],
+        ], Arr::except($response->json('data'), ['safety']));
+
+        // The platform shows local emergency numbers; it never dispatches an emergency call itself (SRS 13.2).
+        $this->assertFalse($response->json('data.safety.emergency_dispatch'));
+        $this->assertSame((int) config('safety.sos.hold_seconds'), $response->json('data.safety.sos_hold_seconds'));
 
         // Empty maps are JSON objects, never lists.
         $this->assertStringContainsString('"policies":{}', (string) $response->getContent());
         $this->assertStringContainsString('"features":{}', (string) $response->getContent());
+        $this->assertStringContainsString('"flags":{}', (string) $response->getContent());
     }
 
     public function test_it_is_public_and_exposes_no_secrets(): void

@@ -70,7 +70,7 @@ class CreateBookingApiTest extends TestCase
             ->assertJsonPath('data.payment.status', 'pending')
             ->assertJsonPath('data.passengers', 2)
             ->assertJsonPath('data.reference_estimate.available', true)
-            ->assertJsonPath('data.allowed_actions', ['update_request'])
+            ->assertJsonPath('data.allowed_actions', ['update_request', 'cancel'])
             ->assertJsonPath('data.offers.active_count', 0)
             ->assertJsonPath('data.provider', null)
             ->assertJsonPath('meta.replayed', false);

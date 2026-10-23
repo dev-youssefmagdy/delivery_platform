@@ -219,8 +219,9 @@ class CustomerDeletionAndExportTest extends TestCase
         $this->assertCount(1, $data['consents']);
         $this->assertCount(1, $data['saved_places']);
         $this->assertCount(1, $data['deletion_requests']);
-        $this->assertNotContains('bookings', $data['sections_pending']);
-        $this->assertContains('payments', $data['sections_pending']);
+        $this->assertSame([], $data['sections_pending']);
+        $this->assertArrayHasKey('payments', $data);
+        $this->assertArrayHasKey('wallet', $data);
         $this->assertCount(1, $data['bookings']);
         $this->assertSame('Secret street', $data['bookings'][0]['pickup']['address']['line']);
         $this->assertSame(5000, $data['bookings'][0]['proposed_fare_minor']);

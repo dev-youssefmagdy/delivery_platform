@@ -16,6 +16,7 @@ use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Testing\TestResponse;
 use Tests\Concerns\InteractsWithAdmin;
 use Tests\Support\AdminTotp;
 use Tests\TestCase;
@@ -35,20 +36,26 @@ class ConfigMovedToSettingsTest extends TestCase
         $admin = $this->actingAsAdmin();
         $admin->assignRole(AdminRole::FinanceManager->value);
 
-        // Config default: nobody is forced (phpunit empties ADMIN_MFA_REQUIRED_ROLES).
-        $this->get(route('admin.home'))->assertOk();
+        // Config default: nobody is forced (phpunit empties ADMIN_MFA_REQUIRED_ROLES): home sends the role on to its first module.
+        $this->assertNotMfaRedirect($this->get(route('admin.home')));
 
         // The stored setting wins over config.
         app(SettingsService::class)->set(SettingKey::AdminMfaRequiredRoles, [AdminRole::FinanceManager->value]);
         $this->get(route('admin.home'))->assertRedirect(route('admin.security.mfa'));
 
         AdminTotp::enable($admin);
-        $this->get(route('admin.home'))->assertOk();
+        $this->assertNotMfaRedirect($this->get(route('admin.home')));
 
         // Removing the role from the setting lifts the requirement again.
         app(SettingsService::class)->set(SettingKey::AdminMfaRequiredRoles, []);
         config(['admin.auth.mfa.required_roles' => [AdminRole::FinanceManager->value]]);
         $this->assertSame([], app(SettingsService::class)->list(SettingKey::AdminMfaRequiredRoles));
+    }
+
+    private function assertNotMfaRedirect(TestResponse $response): void
+    {
+        $response->assertRedirect();
+        $this->assertNotSame(route('admin.security.mfa'), $response->headers->get('Location'));
     }
 
     public function test_rate_limits_are_read_from_settings(): void

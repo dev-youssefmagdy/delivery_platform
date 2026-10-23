@@ -25,7 +25,10 @@ class SosNotifier extends Notifier<SosState> {
   @override
   SosState build() => const SosState();
 
-  Future<void> trigger(String bookingId, Future<SafetyFix?> Function() locate) async {
+  Future<void> trigger(
+    String bookingId,
+    Future<SafetyFix?> Function() locate,
+  ) async {
     if (state.phase == SosPhase.sending) return;
     state = const SosState(phase: SosPhase.sending);
     SafetyFix? fix;
@@ -35,7 +38,9 @@ class SosNotifier extends Notifier<SosState> {
       fix = null;
     }
     try {
-      final incident = await ref.read(_repository).sos(bookingId: bookingId, fix: fix);
+      final incident = await ref
+          .read(_repository)
+          .sos(bookingId: bookingId, fix: fix);
       state = SosState(phase: SosPhase.sent, incident: incident);
     } on ApiException catch (e) {
       state = SosState(phase: SosPhase.failed, error: e);
@@ -84,7 +89,9 @@ class SafetyActionsNotifier extends Notifier<bool> {
   @override
   bool build() => false;
 
-  Future<T> _run<T>(Future<T> Function(SafetyRepository repository) action) async {
+  Future<T> _run<T>(
+    Future<T> Function(SafetyRepository repository) action,
+  ) async {
     state = true;
     try {
       return await action(ref.read(_repository));
@@ -99,31 +106,65 @@ class SafetyActionsNotifier extends Notifier<bool> {
     required String narrative,
     SafetyFix? fix,
     String? callbackPhone,
-  }) => _run((r) => r.report(bookingId: bookingId, category: category, narrative: narrative, fix: fix, callbackPhone: callbackPhone));
+  }) => _run(
+    (r) => r.report(
+      bookingId: bookingId,
+      category: category,
+      narrative: narrative,
+      fix: fix,
+      callbackPhone: callbackPhone,
+    ),
+  );
 
-  Future<SafetyIncident> addUpdate(String id, {required String key, required String body}) => _run((r) => r.addUpdate(id, key: key, body: body));
+  Future<SafetyIncident> addUpdate(
+    String id, {
+    required String key,
+    required String body,
+  }) => _run((r) => r.addUpdate(id, key: key, body: body));
 
-  Future<void> addFile(String id, {required String key, required String path}) => _run((r) => r.addAttachment(id, key: key, path: path));
+  Future<void> addFile(
+    String id, {
+    required String key,
+    required String path,
+  }) => _run((r) => r.addAttachment(id, key: key, path: path));
 
-  Future<TripShareResult> shareTrip(String bookingId) => _run((r) => r.shareTrip(bookingId));
+  Future<TripShareResult> shareTrip(String bookingId) =>
+      _run((r) => r.shareTrip(bookingId));
 
-  Future<void> stopShare(String bookingId) => _run((r) => r.stopTripShare(bookingId));
+  Future<void> stopShare(String bookingId) =>
+      _run((r) => r.stopTripShare(bookingId));
 }
 
 /// The providers of the safety feature of one app, built from its [SafetyRepository] provider. Screens in this package receive
 /// the bundle, so both apps share the UI while each keeps its own dependency graph.
 class SafetyProviders {
   SafetyProviders(this.repository)
-    : sos = NotifierProvider<SosNotifier, SosState>(() => SosNotifier(repository)),
-      contacts = AsyncNotifierProvider<TrustedContactsNotifier, TrustedContactList>(() => TrustedContactsNotifier(repository)),
-      actions = NotifierProvider<SafetyActionsNotifier, bool>(() => SafetyActionsNotifier(repository)),
-      config = FutureProvider<SafetyConfig?>((ref) => ref.watch(repository).config()),
-      incidents = FutureProvider.autoDispose<IncidentPage>((ref) => ref.watch(repository).incidents()),
-      incident = FutureProvider.autoDispose.family<SafetyIncident, String>((ref, id) => ref.watch(repository).incident(id)).call;
+    : sos = NotifierProvider<SosNotifier, SosState>(
+        () => SosNotifier(repository),
+      ),
+      contacts =
+          AsyncNotifierProvider<TrustedContactsNotifier, TrustedContactList>(
+            () => TrustedContactsNotifier(repository),
+          ),
+      actions = NotifierProvider<SafetyActionsNotifier, bool>(
+        () => SafetyActionsNotifier(repository),
+      ),
+      config = FutureProvider<SafetyConfig?>(
+        (ref) => ref.watch(repository).config(),
+      ),
+      incidents = FutureProvider.autoDispose<IncidentPage>(
+        (ref) => ref.watch(repository).incidents(),
+      ),
+      incident = FutureProvider.autoDispose
+          .family<SafetyIncident, String>(
+            (ref, id) => ref.watch(repository).incident(id),
+          )
+          .call;
 
   final Provider<SafetyRepository> repository;
   final NotifierProvider<SosNotifier, SosState> sos;
-  final AsyncNotifierProvider<TrustedContactsNotifier, TrustedContactList> contacts;
+  final AsyncNotifierProvider<TrustedContactsNotifier, TrustedContactList>
+  contacts;
   final NotifierProvider<SafetyActionsNotifier, bool> actions;
   final FutureProvider<SafetyConfig?> config;
   final FutureProvider<IncidentPage> incidents;

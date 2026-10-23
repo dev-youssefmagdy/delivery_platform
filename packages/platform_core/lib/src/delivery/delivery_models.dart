@@ -118,7 +118,8 @@ class ProofRequirements {
   factory ProofRequirements.fromJson(Object? json) {
     final m = _map(json);
     List<ProofType> types(Object? v) => [
-      if (v is List) for (final e in v) ProofType.parse('$e'),
+      if (v is List)
+        for (final e in v) ProofType.parse('$e'),
     ];
     final present = _map(m['present']);
     return ProofRequirements(
@@ -141,7 +142,8 @@ class ProofRequirements {
   /// Types the current stage still lacks, in the order the server lists them.
   List<ProofType> missingFor(String stage) {
     final needed = switch (stage) {
-      'pickup' => pickupRequired ? const [ProofType.photo] : const <ProofType>[],
+      'pickup' =>
+        pickupRequired ? const [ProofType.photo] : const <ProofType>[],
       'delivery' => deliveryRequired,
       'return' => returnRequired,
       _ => const <ProofType>[],
@@ -316,7 +318,9 @@ class DeliveryState {
       recipientOtp: RecipientOtpState.fromJson(m['recipient_otp']),
       attempts: AttemptsState.fromJson(m['attempts']),
       awaitingResolution: m['awaiting_resolution'] == true,
-      restrictedGoodsAcknowledgedAt: _time(m['restricted_goods_acknowledged_at']),
+      restrictedGoodsAcknowledgedAt: _time(
+        m['restricted_goods_acknowledged_at'],
+      ),
     );
   }
 

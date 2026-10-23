@@ -70,7 +70,9 @@ class AppNotification {
       createdAt:
           DateTime.tryParse(json['created_at'] as String? ?? '') ??
           DateTime.fromMillisecondsSinceEpoch(0),
-      link: link is Map ? NotificationLink.fromJson(Map<String, dynamic>.from(link)) : null,
+      link: link is Map
+          ? NotificationLink.fromJson(Map<String, dynamic>.from(link))
+          : null,
     );
   }
 }

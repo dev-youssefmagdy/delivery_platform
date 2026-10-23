@@ -137,4 +137,5 @@ class IncentiveStrings {
 }
 
 /// Formats an optional [Money] with a fallback dash.
-String moneyOrDash(Money? money, String Function(Money) format) => money == null ? '—' : format(money);
+String moneyOrDash(Money? money, String Function(Money) format) =>
+    money == null ? '—' : format(money);

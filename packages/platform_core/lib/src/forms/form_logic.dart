@@ -204,13 +204,17 @@ abstract final class FormLogic {
     if (note.isNotEmpty) extras['note'] = note;
     final weight = row['weight_kg'] == null
         ? null
-        : (row['weight_kg'] is num ? row['weight_kg'] as num : parseNumber('${row['weight_kg']}'));
+        : (row['weight_kg'] is num
+              ? row['weight_kg'] as num
+              : parseNumber('${row['weight_kg']}'));
     if (weight != null) extras['weight_kg'] = weight;
     final dims = row['dimensions'];
     if (dims is Map) {
       final parsed = {
         for (final side in dimensionSides)
-          side: dims[side] is num ? dims[side] as num : parseNumber('${dims[side] ?? ''}'),
+          side: dims[side] is num
+              ? dims[side] as num
+              : parseNumber('${dims[side] ?? ''}'),
       };
       if (parsed.values.every((v) => v != null)) extras['dimensions'] = parsed;
     }

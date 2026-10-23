@@ -11,7 +11,9 @@ abstract interface class NotificationRepository {
   Future<AppNotification> markRead(String id);
   Future<void> markAllRead();
   Future<NotificationPreferences> preferences();
-  Future<NotificationPreferences> updatePreferences(List<PreferenceChange> changes);
+  Future<NotificationPreferences> updatePreferences(
+    List<PreferenceChange> changes,
+  );
   Future<void> registerDevice({
     required String deviceId,
     required String platform,
@@ -41,8 +43,9 @@ class NotificationRemoteDataSource {
   Future<ApiResult<Object?>> preferences() =>
       api.get('/me/notification-preferences');
 
-  Future<ApiResult<Object?>> updatePreferences(List<Map<String, dynamic>> changes) =>
-      api.put('/me/notification-preferences', body: {'preferences': changes});
+  Future<ApiResult<Object?>> updatePreferences(
+    List<Map<String, dynamic>> changes,
+  ) => api.put('/me/notification-preferences', body: {'preferences': changes});
 
   Future<ApiResult<Object?>> registerDevice(Map<String, dynamic> body) =>
       api.post('/me/devices', body: body);
@@ -75,8 +78,12 @@ class ApiNotificationRepository implements NotificationRepository {
         for (final item in (data is List ? data : const []))
           AppNotification.fromJson(Map<String, dynamic>.from(item as Map)),
       ],
-      currentPage: pagination is Map ? (pagination['current_page'] as int? ?? page) : page,
-      lastPage: pagination is Map ? (pagination['last_page'] as int? ?? page) : page,
+      currentPage: pagination is Map
+          ? (pagination['current_page'] as int? ?? page)
+          : page,
+      lastPage: pagination is Map
+          ? (pagination['last_page'] as int? ?? page)
+          : page,
       unreadCount: r.meta['unread_count'] as int? ?? 0,
     );
   }
@@ -98,7 +105,9 @@ class ApiNotificationRepository implements NotificationRepository {
   Future<NotificationPreferences> updatePreferences(
     List<PreferenceChange> changes,
   ) async => NotificationPreferences.fromJson(
-    _map(await _remote.updatePreferences([for (final c in changes) c.toJson()])),
+    _map(
+      await _remote.updatePreferences([for (final c in changes) c.toJson()]),
+    ),
   );
 
   @override

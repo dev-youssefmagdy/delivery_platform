@@ -58,7 +58,12 @@ class TicketListView extends StatelessWidget {
             children: [
               SizedBox(
                 height: 320,
-                child: EmptyState(key: const Key('tickets-empty'), icon: Icons.support_agent, title: strings.emptyTitle, message: strings.emptyBody),
+                child: EmptyState(
+                  key: const Key('tickets-empty'),
+                  icon: Icons.support_agent,
+                  title: strings.emptyTitle,
+                  message: strings.emptyBody,
+                ),
               ),
             ],
           )
@@ -72,7 +77,11 @@ class TicketListView extends StatelessWidget {
                 return Center(
                   child: loadingMore
                       ? const CircularProgressIndicator(strokeWidth: 2)
-                      : TextButton(key: const Key('tickets-load-more'), onPressed: onLoadMore, child: Text(strings.loadMore)),
+                      : TextButton(
+                          key: const Key('tickets-load-more'),
+                          onPressed: onLoadMore,
+                          child: Text(strings.loadMore),
+                        ),
                 );
               }
               final ticket = tickets[index];
@@ -80,13 +89,24 @@ class TicketListView extends StatelessWidget {
                 margin: EdgeInsets.zero,
                 child: ListTile(
                   key: Key('ticket-${ticket.id}'),
-                  title: Text(ticket.subject, maxLines: 2, overflow: TextOverflow.ellipsis),
+                  title: Text(
+                    ticket.subject,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   subtitle: Padding(
-                    padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
-                    child: Text('${strings.ticketNumber(ticket.number)} · ${ticket.categoryLabel}\n${strings.openedOn(_day(context, ticket.createdAt))}'),
+                    padding: const EdgeInsetsDirectional.only(
+                      top: AppSpacing.xs,
+                    ),
+                    child: Text(
+                      '${strings.ticketNumber(ticket.number)} · ${ticket.categoryLabel}\n${strings.openedOn(_day(context, ticket.createdAt))}',
+                    ),
                   ),
                   isThreeLine: true,
-                  trailing: StatusChip(label: ticket.statusLabel, tone: _tone(ticket.status)),
+                  trailing: StatusChip(
+                    label: ticket.statusLabel,
+                    tone: _tone(ticket.status),
+                  ),
                   onTap: () => onOpen(ticket),
                 ),
               );
@@ -96,20 +116,31 @@ class TicketListView extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsetsDirectional.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
           child: SegmentedButton<String>(
             key: const Key('tickets-filter'),
             showSelectedIcon: false,
             segments: [
               ButtonSegment(value: 'active', label: Text(strings.filterActive)),
-              ButtonSegment(value: 'finished', label: Text(strings.filterFinished)),
+              ButtonSegment(
+                value: 'finished',
+                label: Text(strings.filterFinished),
+              ),
               ButtonSegment(value: 'all', label: Text(strings.filterAll)),
             ],
             selected: {filter ?? 'all'},
-            onSelectionChanged: (s) => onFilter(s.first == 'all' ? null : s.first),
+            onSelectionChanged: (s) =>
+                onFilter(s.first == 'all' ? null : s.first),
           ),
         ),
-        Expanded(child: onRefresh == null ? list : RefreshIndicator(onRefresh: onRefresh!, child: list)),
+        Expanded(
+          child: onRefresh == null
+              ? list
+              : RefreshIndicator(onRefresh: onRefresh!, child: list),
+        ),
       ],
     );
   }
@@ -130,7 +161,8 @@ class TicketDetailView extends StatefulWidget {
 
   final SupportTicket ticket;
   final SupportStrings strings;
-  final Future<bool> Function(String body, List<String> attachmentPaths) onReply;
+  final Future<bool> Function(String body, List<String> attachmentPaths)
+  onReply;
   final Future<Uint8List> Function(String url) loadImage;
   final bool sending;
   final String? error;
@@ -177,17 +209,30 @@ class _TicketDetailViewState extends State<TicketDetailView> {
             children: [
               Row(
                 children: [
-                  Expanded(child: Text(s.ticketNumber(ticket.number), style: theme.textTheme.titleMedium)),
-                  StatusChip(label: ticket.statusLabel, tone: _tone(ticket.status)),
+                  Expanded(
+                    child: Text(
+                      s.ticketNumber(ticket.number),
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                  StatusChip(
+                    label: ticket.statusLabel,
+                    tone: _tone(ticket.status),
+                  ),
                 ],
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(ticket.subject, style: theme.textTheme.titleLarge),
               Text(
-                [ticket.categoryLabel, if (ticket.bookingCode != null) s.booking(ticket.bookingCode!)].join(' · '),
+                [
+                  ticket.categoryLabel,
+                  if (ticket.bookingCode != null)
+                    s.booking(ticket.bookingCode!),
+                ].join(' · '),
                 style: theme.textTheme.bodySmall,
               ),
-              if (ticket.status.isFinished && (ticket.resolution ?? '').isNotEmpty)
+              if (ticket.status.isFinished &&
+                  (ticket.resolution ?? '').isNotEmpty)
                 Card(
                   key: const Key('ticket-resolution'),
                   color: theme.colorScheme.secondaryContainer,
@@ -205,7 +250,12 @@ class _TicketDetailViewState extends State<TicketDetailView> {
                   ),
                 ),
               const SizedBox(height: AppSpacing.md),
-              for (final message in messages) _MessageCard(message: message, strings: s, loadImage: widget.loadImage),
+              for (final message in messages)
+                _MessageCard(
+                  message: message,
+                  strings: s,
+                  loadImage: widget.loadImage,
+                ),
             ],
           ),
         ),
@@ -220,8 +270,14 @@ class _TicketDetailViewState extends State<TicketDetailView> {
                 children: [
                   if (widget.error != null)
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.xs),
-                      child: Text(widget.error!, key: const Key('ticket-reply-error'), style: TextStyle(color: theme.colorScheme.error)),
+                      padding: const EdgeInsetsDirectional.only(
+                        bottom: AppSpacing.xs,
+                      ),
+                      child: Text(
+                        widget.error!,
+                        key: const Key('ticket-reply-error'),
+                        style: TextStyle(color: theme.colorScheme.error),
+                      ),
                     ),
                   AttachmentPicker(
                     files: _files,
@@ -245,14 +301,25 @@ class _TicketDetailViewState extends State<TicketDetailView> {
                           controller: _controller,
                           minLines: 1,
                           maxLines: 5,
-                          decoration: InputDecoration(hintText: s.replyHint, border: const OutlineInputBorder(), isDense: true),
+                          decoration: InputDecoration(
+                            hintText: s.replyHint,
+                            border: const OutlineInputBorder(),
+                            isDense: true,
+                          ),
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       IconButton.filled(
                         key: const Key('ticket-reply-send'),
                         tooltip: s.replySend,
-                        icon: widget.sending ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.send),
+                        icon: widget.sending
+                            ? const SizedBox.square(
+                                dimension: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.send),
                         onPressed: widget.sending ? null : _send,
                       ),
                     ],
@@ -266,7 +333,11 @@ class _TicketDetailViewState extends State<TicketDetailView> {
             top: false,
             child: Padding(
               padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-              child: Text(s.replyClosed, key: const Key('ticket-reply-closed'), style: theme.textTheme.bodySmall),
+              child: Text(
+                s.replyClosed,
+                key: const Key('ticket-reply-closed'),
+                style: theme.textTheme.bodySmall,
+              ),
             ),
           ),
       ],
@@ -275,7 +346,11 @@ class _TicketDetailViewState extends State<TicketDetailView> {
 }
 
 class _MessageCard extends StatelessWidget {
-  const _MessageCard({required this.message, required this.strings, required this.loadImage});
+  const _MessageCard({
+    required this.message,
+    required this.strings,
+    required this.loadImage,
+  });
 
   final TicketMessage message;
   final SupportStrings strings;
@@ -287,21 +362,30 @@ class _MessageCard extends StatelessWidget {
     final support = message.fromSupport;
 
     return Align(
-      alignment: support ? AlignmentDirectional.centerStart : AlignmentDirectional.centerEnd,
+      alignment: support
+          ? AlignmentDirectional.centerStart
+          : AlignmentDirectional.centerEnd,
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.85),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.sizeOf(context).width * 0.85,
+        ),
         child: Container(
           key: Key('ticket-message-${message.id}'),
           margin: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
           padding: const EdgeInsetsDirectional.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: support ? theme.colorScheme.surfaceContainerHighest : theme.colorScheme.primaryContainer,
+            color: support
+                ? theme.colorScheme.surfaceContainerHighest
+                : theme.colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(support ? strings.fromSupport : strings.fromMe, style: theme.textTheme.labelMedium),
+              Text(
+                support ? strings.fromSupport : strings.fromMe,
+                style: theme.textTheme.labelMedium,
+              ),
               const SizedBox(height: AppSpacing.xs),
               Text(message.body),
               if (message.attachments.isNotEmpty)
@@ -313,14 +397,30 @@ class _MessageCard extends StatelessWidget {
                     children: [
                       for (final a in message.attachments)
                         if (a.isImage)
-                          SecureImage(cacheKey: a.id, load: () => loadImage(a.url), errorLabel: strings.imageFailed, size: 96)
+                          SecureImage(
+                            cacheKey: a.id,
+                            load: () => loadImage(a.url),
+                            errorLabel: strings.imageFailed,
+                            size: 96,
+                          )
                         else
-                          Chip(avatar: const Icon(Icons.description_outlined, size: 16), label: Text(a.name ?? strings.attachmentLabel)),
+                          Chip(
+                            avatar: const Icon(
+                              Icons.description_outlined,
+                              size: 16,
+                            ),
+                            label: Text(a.name ?? strings.attachmentLabel),
+                          ),
                     ],
                   ),
                 ),
               const SizedBox(height: AppSpacing.xs),
-              Text(DateFormat.yMMMd(Localizations.localeOf(context).toString()).add_Hm().format(message.createdAt), style: theme.textTheme.labelSmall),
+              Text(
+                DateFormat.yMMMd(Localizations.localeOf(context).toString())
+                    .add_Hm()
+                    .format(message.createdAt),
+                style: theme.textTheme.labelSmall,
+              ),
             ],
           ),
         ),
@@ -345,7 +445,13 @@ class NewTicketForm extends StatefulWidget {
 
   final List<TicketCategoryOption> categories;
   final SupportStrings strings;
-  final Future<void> Function(String category, String subject, String body, List<String> attachmentPaths) onSubmit;
+  final Future<void> Function(
+    String category,
+    String subject,
+    String body,
+    List<String> attachmentPaths,
+  )
+  onSubmit;
   final String? bookingCode;
   final String? initialCategory;
   final String? initialSubject;
@@ -366,7 +472,9 @@ class _NewTicketFormState extends State<NewTicketForm> {
   @override
   void initState() {
     super.initState();
-    _category = widget.categories.any((c) => c.value == widget.initialCategory) ? widget.initialCategory : null;
+    _category = widget.categories.any((c) => c.value == widget.initialCategory)
+        ? widget.initialCategory
+        : null;
   }
 
   @override
@@ -388,13 +496,23 @@ class _NewTicketFormState extends State<NewTicketForm> {
         padding: const EdgeInsetsDirectional.all(AppSpacing.md),
         children: [
           if (widget.bookingCode != null)
-            Padding(padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md), child: Chip(label: Text(s.booking(widget.bookingCode!)))),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
+              child: Chip(label: Text(s.booking(widget.bookingCode!))),
+            ),
           DropdownButtonFormField<String>(
             key: const Key('new-ticket-category'),
             initialValue: _category,
             isExpanded: true,
-            decoration: InputDecoration(labelText: s.category, hintText: s.categoryHint, border: const OutlineInputBorder()),
-            items: [for (final c in widget.categories) DropdownMenuItem(value: c.value, child: Text(c.label))],
+            decoration: InputDecoration(
+              labelText: s.category,
+              hintText: s.categoryHint,
+              border: const OutlineInputBorder(),
+            ),
+            items: [
+              for (final c in widget.categories)
+                DropdownMenuItem(value: c.value, child: Text(c.label)),
+            ],
             onChanged: (v) => setState(() => _category = v),
             validator: (v) => v == null ? s.required : null,
           ),
@@ -403,7 +521,11 @@ class _NewTicketFormState extends State<NewTicketForm> {
             key: const Key('new-ticket-subject'),
             controller: _subject,
             maxLength: 160,
-            decoration: InputDecoration(labelText: s.subject, hintText: s.subjectHint, border: const OutlineInputBorder()),
+            decoration: InputDecoration(
+              labelText: s.subject,
+              hintText: s.subjectHint,
+              border: const OutlineInputBorder(),
+            ),
             validator: (v) {
               final t = (v ?? '').trim();
               if (t.isEmpty) return s.required;
@@ -417,7 +539,12 @@ class _NewTicketFormState extends State<NewTicketForm> {
             minLines: 4,
             maxLines: 8,
             maxLength: 4000,
-            decoration: InputDecoration(labelText: s.body, hintText: s.bodyHint, border: const OutlineInputBorder(), alignLabelWithHint: true),
+            decoration: InputDecoration(
+              labelText: s.body,
+              hintText: s.bodyHint,
+              border: const OutlineInputBorder(),
+              alignLabelWithHint: true,
+            ),
             validator: (v) {
               final t = (v ?? '').trim();
               if (t.isEmpty) return s.required;
@@ -441,7 +568,11 @@ class _NewTicketFormState extends State<NewTicketForm> {
           if (widget.error != null)
             Padding(
               padding: const EdgeInsetsDirectional.only(top: AppSpacing.md),
-              child: Text(widget.error!, key: const Key('new-ticket-error'), style: TextStyle(color: theme.colorScheme.error)),
+              child: Text(
+                widget.error!,
+                key: const Key('new-ticket-error'),
+                style: TextStyle(color: theme.colorScheme.error),
+              ),
             ),
           const SizedBox(height: AppSpacing.lg),
           AppButton(
@@ -450,7 +581,12 @@ class _NewTicketFormState extends State<NewTicketForm> {
             loading: widget.submitting,
             onPressed: () {
               if (_formKey.currentState?.validate() != true) return;
-              widget.onSubmit(_category!, _subject.text.trim(), _body.text.trim(), [for (final f in _files) f.path]);
+              widget.onSubmit(
+                _category!,
+                _subject.text.trim(),
+                _body.text.trim(),
+                [for (final f in _files) f.path],
+              );
             },
           ),
         ],

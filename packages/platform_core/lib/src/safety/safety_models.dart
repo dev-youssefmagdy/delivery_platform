@@ -2,11 +2,19 @@
 /// and never crashes a screen that a person may be using in an emergency.
 library;
 
-int _int(Object? v, [int fallback = 0]) => v is num ? v.toInt() : int.tryParse('$v') ?? fallback;
-DateTime? _date(Object? v) => v is String ? DateTime.tryParse(v)?.toLocal() : null;
+int _int(Object? v, [int fallback = 0]) =>
+    v is num ? v.toInt() : int.tryParse('$v') ?? fallback;
+DateTime? _date(Object? v) =>
+    v is String ? DateTime.tryParse(v)?.toLocal() : null;
 String? _str(Object? v) => v is String && v.isNotEmpty ? v : null;
-Map<String, dynamic> _map(Object? v) => v is Map ? Map<String, dynamic>.from(v) : <String, dynamic>{};
-List<Map<String, dynamic>> _list(Object? v) => v is List ? [for (final e in v) if (e is Map) Map<String, dynamic>.from(e)] : const [];
+Map<String, dynamic> _map(Object? v) =>
+    v is Map ? Map<String, dynamic>.from(v) : <String, dynamic>{};
+List<Map<String, dynamic>> _list(Object? v) => v is List
+    ? [
+        for (final e in v)
+          if (e is Map) Map<String, dynamic>.from(e),
+      ]
+    : const [];
 
 /// Incident categories the apps offer (backend `IncidentCategory`); the label comes from the app's ARB.
 const incidentCategories = <String>[
@@ -22,7 +30,13 @@ const incidentCategories = <String>[
 ];
 
 /// Relationships offered for a trusted contact (backend `TrustedContactRelationship`).
-const contactRelationships = <String>['family', 'partner', 'friend', 'colleague', 'other'];
+const contactRelationships = <String>[
+  'family',
+  'partner',
+  'friend',
+  'colleague',
+  'other',
+];
 
 class EmergencyNumber {
   const EmergencyNumber({required this.key, required this.number, this.label});
@@ -33,14 +47,23 @@ class EmergencyNumber {
   final String? label;
 
   factory EmergencyNumber.fromJson(Map<String, dynamic> json) =>
-      EmergencyNumber(key: _str(json['key']) ?? 'other', number: _str(json['number']) ?? '', label: _str(json['label']));
+      EmergencyNumber(
+        key: _str(json['key']) ?? 'other',
+        number: _str(json['number']) ?? '',
+        label: _str(json['label']),
+      );
 
   Map<String, dynamic> toJson() => {'key': key, 'number': number};
 }
 
 /// `safety` block of `GET /config/app`. The platform never dispatches emergency services: [emergencyDispatch] is false.
 class SafetyConfig {
-  const SafetyConfig({this.numbers = const [], this.holdSeconds = 2, this.contactsMax = 5, this.emergencyDispatch = false});
+  const SafetyConfig({
+    this.numbers = const [],
+    this.holdSeconds = 2,
+    this.contactsMax = 5,
+    this.emergencyDispatch = false,
+  });
 
   final List<EmergencyNumber> numbers;
   final int holdSeconds;
@@ -48,7 +71,10 @@ class SafetyConfig {
   final bool emergencyDispatch;
 
   factory SafetyConfig.fromJson(Map<String, dynamic> json) => SafetyConfig(
-    numbers: [for (final n in _list(json['emergency_numbers'])) EmergencyNumber.fromJson(n)].where((n) => n.number.isNotEmpty).toList(),
+    numbers: [
+      for (final n in _list(json['emergency_numbers']))
+        EmergencyNumber.fromJson(n),
+    ].where((n) => n.number.isNotEmpty).toList(),
     holdSeconds: _int(json['sos_hold_seconds'], 2).clamp(1, 5),
     contactsMax: _int(json['trusted_contacts_max'], 5),
     emergencyDispatch: json['emergency_dispatch'] == true,
@@ -64,7 +90,11 @@ class SafetyConfig {
 
 /// One line of "what was done" returned by the server, shown as received.
 class SafetyAction {
-  const SafetyAction({required this.code, required this.status, required this.message});
+  const SafetyAction({
+    required this.code,
+    required this.status,
+    required this.message,
+  });
 
   /// `incident_recorded`, `location_captured`, `safety_team`, `trusted_contacts`, `emergency_services`.
   final String code;
@@ -75,12 +105,21 @@ class SafetyAction {
 
   bool get isPositive => status == 'done';
 
-  factory SafetyAction.fromJson(Map<String, dynamic> json) =>
-      SafetyAction(code: _str(json['code']) ?? '', status: _str(json['status']) ?? '', message: _str(json['message']) ?? '');
+  factory SafetyAction.fromJson(Map<String, dynamic> json) => SafetyAction(
+    code: _str(json['code']) ?? '',
+    status: _str(json['status']) ?? '',
+    message: _str(json['message']) ?? '',
+  );
 }
 
 class SafetyEvent {
-  const SafetyEvent({required this.type, required this.label, required this.actor, this.message, this.at});
+  const SafetyEvent({
+    required this.type,
+    required this.label,
+    required this.actor,
+    this.message,
+    this.at,
+  });
 
   final String type;
   final String label;
@@ -100,7 +139,13 @@ class SafetyEvent {
 }
 
 class ContactActionView {
-  const ContactActionView({required this.name, required this.action, required this.status, required this.statusLabel, this.at});
+  const ContactActionView({
+    required this.name,
+    required this.action,
+    required this.status,
+    required this.statusLabel,
+    this.at,
+  });
 
   final String? name;
   final String action;
@@ -108,17 +153,23 @@ class ContactActionView {
   final String statusLabel;
   final DateTime? at;
 
-  factory ContactActionView.fromJson(Map<String, dynamic> json) => ContactActionView(
-    name: _str(json['name']),
-    action: _str(json['action']) ?? '',
-    status: _str(json['status']) ?? '',
-    statusLabel: _str(json['status_label']) ?? '',
-    at: _date(json['at']),
-  );
+  factory ContactActionView.fromJson(Map<String, dynamic> json) =>
+      ContactActionView(
+        name: _str(json['name']),
+        action: _str(json['action']) ?? '',
+        status: _str(json['status']) ?? '',
+        statusLabel: _str(json['status_label']) ?? '',
+        at: _date(json['at']),
+      );
 }
 
 class IncidentFile {
-  const IncidentFile({required this.id, required this.mime, required this.sizeBytes, required this.url});
+  const IncidentFile({
+    required this.id,
+    required this.mime,
+    required this.sizeBytes,
+    required this.url,
+  });
 
   final String id;
   final String mime;
@@ -129,8 +180,12 @@ class IncidentFile {
 
   bool get isImage => mime.startsWith('image/');
 
-  factory IncidentFile.fromJson(Map<String, dynamic> json) =>
-      IncidentFile(id: _str(json['id']) ?? '', mime: _str(json['mime']) ?? '', sizeBytes: _int(json['size_bytes']), url: _str(json['url']) ?? '');
+  factory IncidentFile.fromJson(Map<String, dynamic> json) => IncidentFile(
+    id: _str(json['id']) ?? '',
+    mime: _str(json['mime']) ?? '',
+    sizeBytes: _int(json['size_bytes']),
+    url: _str(json['url']) ?? '',
+  );
 }
 
 class SafetyIncident {
@@ -202,7 +257,8 @@ class SafetyIncident {
       number: _str(json['number']) ?? '',
       trigger: _str(json['trigger']) ?? 'report',
       category: _str(json['category']) ?? 'other',
-      categoryLabel: _str(json['category_label']) ?? _str(json['category']) ?? '',
+      categoryLabel:
+          _str(json['category_label']) ?? _str(json['category']) ?? '',
       status: _str(json['status']) ?? 'new',
       statusLabel: _str(json['status_label']) ?? _str(json['status']) ?? '',
       occurredAt: _date(json['occurred_at']) ?? DateTime.now(),
@@ -213,11 +269,23 @@ class SafetyIncident {
       resolvedAt: _date(json['resolved_at']),
       outcomeLabel: _str(json['outcome_label']),
       narrative: _str(json['narrative']),
-      timeline: [for (final e in _list(json['timeline'])) SafetyEvent.fromJson(e)],
-      trustedContacts: [for (final e in _list(json['trusted_contacts'])) ContactActionView.fromJson(e)],
-      files: [for (final e in _list(json['attachments'])) IncidentFile.fromJson(e)],
-      actions: [for (final e in _list(json['actions'])) SafetyAction.fromJson(e)],
-      emergencyNumbers: [for (final e in _list(json['emergency_numbers'])) EmergencyNumber.fromJson(e)],
+      timeline: [
+        for (final e in _list(json['timeline'])) SafetyEvent.fromJson(e),
+      ],
+      trustedContacts: [
+        for (final e in _list(json['trusted_contacts']))
+          ContactActionView.fromJson(e),
+      ],
+      files: [
+        for (final e in _list(json['attachments'])) IncidentFile.fromJson(e),
+      ],
+      actions: [
+        for (final e in _list(json['actions'])) SafetyAction.fromJson(e),
+      ],
+      emergencyNumbers: [
+        for (final e in _list(json['emergency_numbers']))
+          EmergencyNumber.fromJson(e),
+      ],
       emergencyNotice: _str(json['emergency_notice']),
       joinedExisting: json['joined_existing'] == true,
       detailed: json.containsKey('timeline'),
@@ -226,7 +294,11 @@ class SafetyIncident {
 }
 
 class IncidentPage {
-  const IncidentPage({required this.items, required this.currentPage, required this.lastPage});
+  const IncidentPage({
+    required this.items,
+    required this.currentPage,
+    required this.lastPage,
+  });
 
   final List<SafetyIncident> items;
   final int currentPage;
@@ -306,7 +378,14 @@ class TrustedContactInput {
 }
 
 class TripShareResult {
-  const TripShareResult({required this.url, required this.expiresAt, required this.total, required this.sent, required this.failed, required this.skipped});
+  const TripShareResult({
+    required this.url,
+    required this.expiresAt,
+    required this.total,
+    required this.sent,
+    required this.failed,
+    required this.skipped,
+  });
 
   final String url;
   final DateTime? expiresAt;
@@ -330,7 +409,12 @@ class TripShareResult {
 
 /// A GPS position for an alert.
 class SafetyFix {
-  const SafetyFix({required this.latitude, required this.longitude, this.accuracyMeters, this.capturedAt});
+  const SafetyFix({
+    required this.latitude,
+    required this.longitude,
+    this.accuracyMeters,
+    this.capturedAt,
+  });
 
   final double latitude;
   final double longitude;

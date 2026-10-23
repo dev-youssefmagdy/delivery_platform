@@ -1,6 +1,7 @@
 import '../money/money.dart';
 
-Map<String, dynamic> _map(Object? v) => v is Map ? Map<String, dynamic>.from(v) : const {};
+Map<String, dynamic> _map(Object? v) =>
+    v is Map ? Map<String, dynamic>.from(v) : const {};
 
 List<Map<String, dynamic>> _maps(Object? v) => [
   if (v is List)
@@ -8,11 +9,14 @@ List<Map<String, dynamic>> _maps(Object? v) => [
       if (e is Map) Map<String, dynamic>.from(e),
 ];
 
-int _int(Object? v) => v is num ? v.toInt() : (v is String ? int.tryParse(v) ?? 0 : 0);
+int _int(Object? v) =>
+    v is num ? v.toInt() : (v is String ? int.tryParse(v) ?? 0 : 0);
 
-DateTime? _time(Object? v) => v is String ? DateTime.tryParse(v)?.toLocal() : null;
+DateTime? _time(Object? v) =>
+    v is String ? DateTime.tryParse(v)?.toLocal() : null;
 
-Money? _money(Object? v) => v is Map ? Money.fromJson(Map<String, dynamic>.from(v)) : null;
+Money? _money(Object? v) =>
+    v is Map ? Money.fromJson(Map<String, dynamic>.from(v)) : null;
 
 /// Status of one referral as the referrer sees it. A flagged referral is shown
 /// as pending: the app never reveals fraud review. Unknown values degrade to [unknown].
@@ -41,14 +45,19 @@ class ReferralCampaignInfo {
     this.endsAt,
   });
 
-  factory ReferralCampaignInfo.fromJson(Map<String, dynamic> j) => ReferralCampaignInfo(
-    name: (j['name'] as String?) ?? '',
-    referrerReward: _money(j['referrer_reward']),
-    refereeReward: _money(j['referee_reward']),
-    milestoneJobs: _int(j['milestone_jobs']) == 0 ? 1 : _int(j['milestone_jobs']),
-    creditValidDays: j['credit_valid_days'] is num ? _int(j['credit_valid_days']) : null,
-    endsAt: _time(j['ends_at']),
-  );
+  factory ReferralCampaignInfo.fromJson(Map<String, dynamic> j) =>
+      ReferralCampaignInfo(
+        name: (j['name'] as String?) ?? '',
+        referrerReward: _money(j['referrer_reward']),
+        refereeReward: _money(j['referee_reward']),
+        milestoneJobs: _int(j['milestone_jobs']) == 0
+            ? 1
+            : _int(j['milestone_jobs']),
+        creditValidDays: j['credit_valid_days'] is num
+            ? _int(j['credit_valid_days'])
+            : null,
+        endsAt: _time(j['ends_at']),
+      );
 
   final String name;
   final Money? referrerReward;
@@ -61,10 +70,17 @@ class ReferralCampaignInfo {
 }
 
 class ReferralStats {
-  const ReferralStats({this.referred = 0, this.qualified = 0, this.pending = 0});
+  const ReferralStats({
+    this.referred = 0,
+    this.qualified = 0,
+    this.pending = 0,
+  });
 
-  factory ReferralStats.fromJson(Map<String, dynamic> j) =>
-      ReferralStats(referred: _int(j['referred']), qualified: _int(j['qualified']), pending: _int(j['pending']));
+  factory ReferralStats.fromJson(Map<String, dynamic> j) => ReferralStats(
+    referred: _int(j['referred']),
+    qualified: _int(j['qualified']),
+    pending: _int(j['pending']),
+  );
 
   final int referred;
   final int qualified;
@@ -72,7 +88,13 @@ class ReferralStats {
 }
 
 class ReferralEntry {
-  const ReferralEntry({required this.id, required this.status, required this.jobsCompleted, this.name, this.createdAt});
+  const ReferralEntry({
+    required this.id,
+    required this.status,
+    required this.jobsCompleted,
+    this.name,
+    this.createdAt,
+  });
 
   factory ReferralEntry.fromJson(Map<String, dynamic> j) => ReferralEntry(
     id: (j['id'] as String?) ?? '',
@@ -106,9 +128,13 @@ class ReferralOverview {
     link: (j['link'] as String?) ?? '',
     shareText: (j['share_text'] as String?) ?? '',
     canApplyCode: j['can_apply_code'] == true,
-    campaign: j['campaign'] is Map ? ReferralCampaignInfo.fromJson(_map(j['campaign'])) : null,
+    campaign: j['campaign'] is Map
+        ? ReferralCampaignInfo.fromJson(_map(j['campaign']))
+        : null,
     stats: ReferralStats.fromJson(_map(j['stats'])),
-    referrals: [for (final e in _maps(j['referrals'])) ReferralEntry.fromJson(e)],
+    referrals: [
+      for (final e in _maps(j['referrals'])) ReferralEntry.fromJson(e),
+    ],
   );
 
   final String code;
@@ -147,7 +173,14 @@ enum CreditState {
 }
 
 class CreditEntry {
-  const CreditEntry({required this.source, required this.state, this.amount, this.remaining, this.grantedAt, this.expiresAt});
+  const CreditEntry({
+    required this.source,
+    required this.state,
+    this.amount,
+    this.remaining,
+    this.grantedAt,
+    this.expiresAt,
+  });
 
   factory CreditEntry.fromJson(Map<String, dynamic> j) => CreditEntry(
     source: CreditSource.parse(j['source']),
@@ -170,8 +203,11 @@ class CreditEntry {
 class CreditsOverview {
   const CreditsOverview({required this.credits, this.available, this.note});
 
-  factory CreditsOverview.fromJson(Map<String, dynamic> j) =>
-      CreditsOverview(available: _money(j['available']), note: j['note'] as String?, credits: [for (final e in _maps(j['credits'])) CreditEntry.fromJson(e)]);
+  factory CreditsOverview.fromJson(Map<String, dynamic> j) => CreditsOverview(
+    available: _money(j['available']),
+    note: j['note'] as String?,
+    credits: [for (final e in _maps(j['credits'])) CreditEntry.fromJson(e)],
+  );
 
   final Money? available;
   final String? note;
@@ -179,7 +215,13 @@ class CreditsOverview {
 }
 
 class LoyaltyLevelInfo {
-  const LoyaltyLevelInfo({required this.id, required this.name, required this.minCompletedJobs, this.reward, this.reached = false});
+  const LoyaltyLevelInfo({
+    required this.id,
+    required this.name,
+    required this.minCompletedJobs,
+    this.reward,
+    this.reached = false,
+  });
 
   factory LoyaltyLevelInfo.fromJson(Map<String, dynamic> j) => LoyaltyLevelInfo(
     id: _int(j['id']),
@@ -198,13 +240,25 @@ class LoyaltyLevelInfo {
 
 /// `GET /me/loyalty`: completed jobs, current and next level.
 class LoyaltyStatus {
-  const LoyaltyStatus({required this.completedJobs, required this.levels, this.level, this.nextLevel, this.jobsToNextLevel});
+  const LoyaltyStatus({
+    required this.completedJobs,
+    required this.levels,
+    this.level,
+    this.nextLevel,
+    this.jobsToNextLevel,
+  });
 
   factory LoyaltyStatus.fromJson(Map<String, dynamic> j) => LoyaltyStatus(
     completedJobs: _int(j['completed_jobs']),
-    level: j['level'] is Map ? LoyaltyLevelInfo.fromJson(_map(j['level'])) : null,
-    nextLevel: j['next_level'] is Map ? LoyaltyLevelInfo.fromJson(_map(j['next_level'])) : null,
-    jobsToNextLevel: j['jobs_to_next_level'] is num ? _int(j['jobs_to_next_level']) : null,
+    level: j['level'] is Map
+        ? LoyaltyLevelInfo.fromJson(_map(j['level']))
+        : null,
+    nextLevel: j['next_level'] is Map
+        ? LoyaltyLevelInfo.fromJson(_map(j['next_level']))
+        : null,
+    jobsToNextLevel: j['jobs_to_next_level'] is num
+        ? _int(j['jobs_to_next_level'])
+        : null,
     levels: [for (final e in _maps(j['levels'])) LoyaltyLevelInfo.fromJson(e)],
   );
 
@@ -279,5 +333,6 @@ class IncentiveQuest {
   final int awards;
   final QuestState state;
 
-  double get fraction => targetJobs <= 0 ? 0 : (jobsInCycle / targetJobs).clamp(0, 1).toDouble();
+  double get fraction =>
+      targetJobs <= 0 ? 0 : (jobsInCycle / targetJobs).clamp(0, 1).toDouble();
 }

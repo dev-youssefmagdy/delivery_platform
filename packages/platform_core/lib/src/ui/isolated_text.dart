@@ -28,14 +28,16 @@ class IsolatedText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ambientRtl = Directionality.of(context) == TextDirection.rtl;
-    return IsolatedText(
+    return Text(
       data,
+      textDirection: TextDirection.ltr,
       style: style,
       textAlign: textAlign ?? (ambientRtl ? TextAlign.right : TextAlign.left),
       maxLines: maxLines,
       overflow: overflow,
       softWrap: softWrap,
-      semanticsLabel: semanticsLabel,);
+      semanticsLabel: semanticsLabel,
+    );
   }
 }
 

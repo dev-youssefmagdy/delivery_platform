@@ -76,7 +76,11 @@ class BlockingNotice extends StatelessWidget {
                   ),
                 ],
                 if (actionLabel != null && onAction != null) ...[
-                  SizedBox(height: primaryActionLabel != null ? AppSpacing.sm : AppSpacing.lg),
+                  SizedBox(
+                    height: primaryActionLabel != null
+                        ? AppSpacing.sm
+                        : AppSpacing.lg,
+                  ),
                   AppButton(
                     label: actionLabel!,
                     onPressed: onAction,

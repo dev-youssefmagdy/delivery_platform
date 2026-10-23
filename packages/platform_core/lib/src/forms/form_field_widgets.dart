@@ -342,7 +342,8 @@ class _DateTimeAnswer extends StatelessWidget {
       ),
       child: IsolatedText(
         value == null ? '' : value!.replaceFirst('T', ' '),
-        textAlign: TextAlign.start),
+        textAlign: TextAlign.start,
+      ),
     ),
   );
 }
@@ -521,7 +522,14 @@ class _PhotoAnswer extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   child: Image.file(
-                    File((handler is PhotoPreviewSource ? (handler! as PhotoPreviewSource).localPathOf(ref) : null) ?? ref),
+                    File(
+                      (handler is PhotoPreviewSource
+                              ? (handler! as PhotoPreviewSource).localPathOf(
+                                  ref,
+                                )
+                              : null) ??
+                          ref,
+                    ),
                     width: 72,
                     height: 72,
                     fit: BoxFit.cover,
@@ -662,8 +670,7 @@ class _ChecklistAnswer extends StatelessWidget {
                           key: ValueKey('${field.key}-plus-${o.value}'),
                           tooltip: '${strings.quantity} +',
                           icon: const Icon(Icons.add_circle_outline),
-                          onPressed:
-                              quantityOf(o.value) < FormLogic.quantityMax
+                          onPressed: quantityOf(o.value) < FormLogic.quantityMax
                               ? () => _emit({
                                   ...rows,
                                   o.value: {
@@ -740,7 +747,9 @@ class _ItemDetailsState extends State<_ItemDetails> {
     final note = _note.text.trim();
     if (note.isNotEmpty) row['note'] = note;
     final weight = FormLogic.parseNumber(_weight.text);
-    if (_weight.text.trim().isNotEmpty) row['weight_kg'] = weight ?? _weight.text;
+    if (_weight.text.trim().isNotEmpty) {
+      row['weight_kg'] = weight ?? _weight.text;
+    }
     final dims = {
       for (final side in FormLogic.dimensionSides)
         side: FormLogic.parseNumber(_dims[side]!.text),

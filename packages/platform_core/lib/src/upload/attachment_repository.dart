@@ -5,7 +5,12 @@ import '../api/api_exception.dart';
 
 /// An upload that no booking references yet (`POST /bookings/attachments`).
 class UploadedAttachment {
-  const UploadedAttachment({required this.id, required this.kind, this.mime, this.sizeBytes});
+  const UploadedAttachment({
+    required this.id,
+    required this.kind,
+    this.mime,
+    this.sizeBytes,
+  });
 
   final String id;
   final String kind;
@@ -48,10 +53,16 @@ class BookingAttachmentRepository {
       }),
     );
     _keys.remove('$path|${kind.value}');
-    final m = r.data is Map ? Map<String, dynamic>.from(r.data! as Map) : const <String, dynamic>{};
+    final m = r.data is Map
+        ? Map<String, dynamic>.from(r.data! as Map)
+        : const <String, dynamic>{};
     final id = m['id'];
     if (id == null) {
-      throw const ApiException(kind: ApiFailureKind.server, code: 'invalid_response', message: null);
+      throw const ApiException(
+        kind: ApiFailureKind.server,
+        code: 'invalid_response',
+        message: null,
+      );
     }
     return UploadedAttachment(
       id: '$id',
@@ -62,7 +73,8 @@ class BookingAttachmentRepository {
   }
 
   /// Forgets the kept key after a final refusal (a different file may reuse the path).
-  void forget(String path, AttachmentKind kind) => _keys.remove('$path|${kind.value}');
+  void forget(String path, AttachmentKind kind) =>
+      _keys.remove('$path|${kind.value}');
 
   /// Removes an upload nothing references yet.
   Future<void> discard(String id) async {

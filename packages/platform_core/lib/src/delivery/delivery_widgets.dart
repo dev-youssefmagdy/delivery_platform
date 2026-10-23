@@ -112,14 +112,19 @@ class CustodyTimelineView extends StatelessWidget {
       key: const Key('custody-timeline'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(strings.custodyTitle, style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          strings.custodyTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Timeline(
           steps: [
             for (var i = 0; i < path.length; i++)
               TimelineStep(
                 title: strings.custody(path[i]),
-                subtitle: times[path[i]] == null ? null : _time(context, times[path[i]]),
+                subtitle: times[path[i]] == null
+                    ? null
+                    : _time(context, times[path[i]]),
                 done: current >= 0 && i <= current,
               ),
           ],
@@ -172,19 +177,33 @@ class RecipientOtpCard extends StatelessWidget {
               children: [
                 Icon(icon),
                 const SizedBox(width: AppSpacing.sm),
-                Expanded(child: Text(strings.otpTitle, style: theme.textTheme.titleMedium)),
+                Expanded(
+                  child: Text(
+                    strings.otpTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
                 StatusChip(label: text, tone: tone),
               ],
             ),
-            if (!state.verified && !state.locked && left != null && state.issued)
+            if (!state.verified &&
+                !state.locked &&
+                left != null &&
+                state.issued)
               Padding(
                 padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
-                child: Text(strings.otpAttemptsLeft(left), style: theme.textTheme.bodySmall),
+                child: Text(
+                  strings.otpAttemptsLeft(left),
+                  style: theme.textTheme.bodySmall,
+                ),
               ),
             if (showShareHint && !state.verified)
               Padding(
                 padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
-                child: Text(strings.otpShareHint, style: theme.textTheme.bodyMedium),
+                child: Text(
+                  strings.otpShareHint,
+                  style: theme.textTheme.bodyMedium,
+                ),
               ),
           ],
         ),
@@ -214,7 +233,11 @@ class ProofGallery extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     if (proofs.isEmpty) {
-      return Text(strings.noProofs, key: const Key('proofs-empty'), style: theme.textTheme.bodyMedium);
+      return Text(
+        strings.noProofs,
+        key: const Key('proofs-empty'),
+        style: theme.textTheme.bodyMedium,
+      );
     }
     return Column(
       key: const Key('proof-gallery'),
@@ -234,7 +257,11 @@ class ProofGallery extends StatelessWidget {
                         style: theme.textTheme.titleSmall,
                       ),
                     ),
-                    if (p.takenAt != null) Text(_time(context, p.takenAt), style: theme.textTheme.bodySmall),
+                    if (p.takenAt != null)
+                      Text(
+                        _time(context, p.takenAt),
+                        style: theme.textTheme.bodySmall,
+                      ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xs),
@@ -248,9 +275,15 @@ class ProofGallery extends StatelessWidget {
                 else if (p.type == ProofType.checklist)
                   for (final e in (p.details['items'] as List? ?? const []))
                     if (e is Map)
-                      Text(strings.checklistItem('${e['code']}', e['checked'] == true))
-                else if (p.type == ProofType.weight && p.details['weight_kg'] != null)
-                  Text(strings.weightValue('${p.details['weight_kg']}')),
+                      Text(
+                        strings.checklistItem(
+                          '${e['code']}',
+                          e['checked'] == true,
+                        ),
+                      )
+                    else if (p.type == ProofType.weight &&
+                        p.details['weight_kg'] != null)
+                      Text(strings.weightValue('${p.details['weight_kg']}')),
               ],
             ),
           ),
@@ -261,7 +294,11 @@ class ProofGallery extends StatelessWidget {
 
 /// Failed delivery attempts, newest last, with what was decided.
 class AttemptsList extends StatelessWidget {
-  const AttemptsList({super.key, required this.attempts, required this.strings});
+  const AttemptsList({
+    super.key,
+    required this.attempts,
+    required this.strings,
+  });
 
   final AttemptsState attempts;
   final DeliveryStrings strings;
@@ -293,24 +330,35 @@ class AttemptsList extends StatelessWidget {
                         ),
                       ),
                       StatusChip(
-                        label: a.resolution == null ? strings.pending : strings.resolution(a.resolution!),
-                        tone: a.resolution == null ? ChipTone.warning : ChipTone.neutral,
+                        label: a.resolution == null
+                            ? strings.pending
+                            : strings.resolution(a.resolution!),
+                        tone: a.resolution == null
+                            ? ChipTone.warning
+                            : ChipTone.neutral,
                       ),
                     ],
                   ),
                   if (a.reason != null && a.reason!.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+                      padding: const EdgeInsetsDirectional.only(
+                        top: AppSpacing.xs,
+                      ),
                       child: Text(a.reason!),
                     ),
                   if (a.hasEvidence)
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+                      padding: const EdgeInsetsDirectional.only(
+                        top: AppSpacing.xs,
+                      ),
                       child: Row(
                         children: [
                           const Icon(Icons.photo_camera_outlined, size: 16),
                           const SizedBox(width: AppSpacing.xs),
-                          Text(strings.attemptEvidence, style: theme.textTheme.bodySmall),
+                          Text(
+                            strings.attemptEvidence,
+                            style: theme.textTheme.bodySmall,
+                          ),
                         ],
                       ),
                     ),

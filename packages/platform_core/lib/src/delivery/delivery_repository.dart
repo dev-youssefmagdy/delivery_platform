@@ -83,7 +83,9 @@ class DeliveryRepository {
   Future<Uint8List> fileBytes(String url) => _api.getBytes(url);
 
   Future<List<AttachmentInfo>> attachments(String bookingId) async => [
-    for (final e in _maps((await _api.get('${_b(bookingId)}/attachments')).data))
+    for (final e in _maps(
+      (await _api.get('${_b(bookingId)}/attachments')).data,
+    ))
       ?AttachmentInfo.fromJson(e),
   ];
 
@@ -120,7 +122,9 @@ class DeliveryRepository {
       body: body,
       idempotencyKey: key,
     );
-    final data = r.data is Map ? Map<String, dynamic>.from(r.data! as Map) : const <String, dynamic>{};
+    final data = r.data is Map
+        ? Map<String, dynamic>.from(r.data! as Map)
+        : const <String, dynamic>{};
     return ProofResult(
       proof: BookingProof.fromJson(data['proof']),
       booking: data['booking'],
@@ -129,23 +133,34 @@ class DeliveryRepository {
   }
 
   /// `in_transit` or `arrived_dropoff` (driver). Returns the booking `data`.
-  Future<Object?> custody(String bookingId, CustodyStatus event, {required String key}) async =>
-      (await _api.post(
-        '${_b(bookingId)}/custody',
-        body: {'event': event.value},
-        idempotencyKey: key,
-      )).data;
+  Future<Object?> custody(
+    String bookingId,
+    CustodyStatus event, {
+    required String key,
+  }) async => (await _api.post(
+    '${_b(bookingId)}/custody',
+    body: {'event': event.value},
+    idempotencyKey: key,
+  )).data;
 
   /// Enters the code the recipient read out (driver). Returns the booking.
-  Future<Object?> verifyRecipientOtp(String bookingId, String code, {required String key}) async =>
-      (await _api.post(
-        '${_b(bookingId)}/verify-recipient-otp',
-        body: {'code': code},
-        idempotencyKey: key,
-      )).data;
+  Future<Object?> verifyRecipientOtp(
+    String bookingId,
+    String code, {
+    required String key,
+  }) async => (await _api.post(
+    '${_b(bookingId)}/verify-recipient-otp',
+    body: {'code': code},
+    idempotencyKey: key,
+  )).data;
 
-  Future<Object?> resendRecipientOtp(String bookingId, {required String key}) async =>
-      (await _api.post('${_b(bookingId)}/recipient-otp/resend', idempotencyKey: key)).data;
+  Future<Object?> resendRecipientOtp(
+    String bookingId, {
+    required String key,
+  }) async => (await _api.post(
+    '${_b(bookingId)}/recipient-otp/resend',
+    idempotencyKey: key,
+  )).data;
 
   /// Reports a failed attempt with an optional evidence picture (driver).
   Future<AttemptResult> reportAttempt(
@@ -158,11 +173,13 @@ class DeliveryRepository {
     final Object body = evidencePath == null
         ? {
             'outcome': outcome.value,
-            if (reason != null && reason.trim().isNotEmpty) 'reason': reason.trim(),
+            if (reason != null && reason.trim().isNotEmpty)
+              'reason': reason.trim(),
           }
         : FormData.fromMap({
             'outcome': outcome.value,
-            if (reason != null && reason.trim().isNotEmpty) 'reason': reason.trim(),
+            if (reason != null && reason.trim().isNotEmpty)
+              'reason': reason.trim(),
             'evidence': await MultipartFile.fromFile(evidencePath),
           });
     final r = await _api.post(
@@ -170,7 +187,9 @@ class DeliveryRepository {
       body: body,
       idempotencyKey: key,
     );
-    final data = r.data is Map ? Map<String, dynamic>.from(r.data! as Map) : const <String, dynamic>{};
+    final data = r.data is Map
+        ? Map<String, dynamic>.from(r.data! as Map)
+        : const <String, dynamic>{};
     return AttemptResult(
       attempt: DeliveryAttempt.fromJson(data['attempt']),
       booking: data['booking'],

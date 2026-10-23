@@ -12,7 +12,15 @@ import 'safety_strings.dart';
 /// no confirmation dialog. TalkBack / VoiceOver users activate it with the standard long-press gesture (exposed as a semantic
 /// action). Large (at least 120 dp) and high contrast.
 class SosHoldButton extends StatefulWidget {
-  const SosHoldButton({super.key, required this.label, required this.hint, required this.holdingLabel, required this.holdSeconds, required this.onActivated, this.enabled = true});
+  const SosHoldButton({
+    super.key,
+    required this.label,
+    required this.hint,
+    required this.holdingLabel,
+    required this.holdSeconds,
+    required this.onActivated,
+    this.enabled = true,
+  });
 
   final String label;
   final String hint;
@@ -25,11 +33,15 @@ class SosHoldButton extends StatefulWidget {
   State<SosHoldButton> createState() => _SosHoldButtonState();
 }
 
-class _SosHoldButtonState extends State<SosHoldButton> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: Duration(seconds: widget.holdSeconds))
-    ..addStatusListener((status) {
-      if (status == AnimationStatus.completed) _activate();
-    });
+class _SosHoldButtonState extends State<SosHoldButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller =
+      AnimationController(
+        vsync: this,
+        duration: Duration(seconds: widget.holdSeconds),
+      )..addStatusListener((status) {
+        if (status == AnimationStatus.completed) _activate();
+      });
   bool _holding = false;
 
   @override
@@ -83,22 +95,50 @@ class _SosHoldButtonState extends State<SosHoldButton> with SingleTickerProvider
                   children: [
                     SizedBox.square(
                       dimension: 150,
-                      child: CircularProgressIndicator(value: _controller.value, strokeWidth: 8, color: Colors.white, backgroundColor: AppColors.danger.withValues(alpha: 0.25)),
+                      child: CircularProgressIndicator(
+                        value: _controller.value,
+                        strokeWidth: 8,
+                        color: Colors.white,
+                        backgroundColor: AppColors.danger.withValues(
+                          alpha: 0.25,
+                        ),
+                      ),
                     ),
                     Container(
                       width: 124,
                       height: 124,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: widget.enabled ? AppColors.danger : scheme.disabledColor,
-                        boxShadow: [BoxShadow(color: AppColors.danger.withValues(alpha: _holding ? 0.55 : 0.25), blurRadius: _holding ? 24 : 10)],
+                        color: widget.enabled
+                            ? AppColors.danger
+                            : scheme.disabledColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.danger.withValues(
+                              alpha: _holding ? 0.55 : 0.25,
+                            ),
+                            blurRadius: _holding ? 24 : 10,
+                          ),
+                        ],
                       ),
                       alignment: Alignment.center,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.sos_rounded, color: Colors.white, size: 44),
-                          Text(_holding ? widget.holdingLabel : widget.label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15), textAlign: TextAlign.center),
+                          const Icon(
+                            Icons.sos_rounded,
+                            color: Colors.white,
+                            size: 44,
+                          ),
+                          Text(
+                            _holding ? widget.holdingLabel : widget.label,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 15,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ],
                       ),
                     ),
@@ -109,7 +149,11 @@ class _SosHoldButtonState extends State<SosHoldButton> with SingleTickerProvider
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        Text(widget.hint, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
+        Text(
+          widget.hint,
+          style: Theme.of(context).textTheme.bodySmall,
+          textAlign: TextAlign.center,
+        ),
       ],
     );
   }
@@ -117,7 +161,12 @@ class _SosHoldButtonState extends State<SosHoldButton> with SingleTickerProvider
 
 /// Local emergency numbers with a call button each. Calling opens the phone's dialler; the platform never calls for the person.
 class EmergencyNumbersCard extends StatelessWidget {
-  const EmergencyNumbersCard({super.key, required this.numbers, required this.strings, this.onCall});
+  const EmergencyNumbersCard({
+    super.key,
+    required this.numbers,
+    required this.strings,
+    this.onCall,
+  });
 
   final List<EmergencyNumber> numbers;
   final SafetyStrings strings;
@@ -140,20 +189,30 @@ class EmergencyNumbersCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(strings.emergencyNumbersTitle, style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              strings.emergencyNumbersTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: AppSpacing.sm),
             for (final n in numbers)
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: AppButton(
                   key: Key('call-${n.key}'),
-                  label: strings.callNumber(n.label ?? strings.emergencyNumberName(n.key), n.number),
+                  label: strings.callNumber(
+                    n.label ?? strings.emergencyNumberName(n.key),
+                    n.number,
+                  ),
                   icon: Icons.call,
                   secondary: true,
                   onPressed: () => _call(n.number),
                 ),
               ),
-            Text(strings.noDispatchNotice, key: const Key('no-dispatch-notice'), style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              strings.noDispatchNotice,
+              key: const Key('no-dispatch-notice'),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ],
         ),
       ),
@@ -163,7 +222,11 @@ class EmergencyNumbersCard extends StatelessWidget {
 
 /// The honest list of what happened after an alert or a report, exactly as the server reported it.
 class SafetyActionList extends StatelessWidget {
-  const SafetyActionList({super.key, required this.actions, required this.title});
+  const SafetyActionList({
+    super.key,
+    required this.actions,
+    required this.title,
+  });
 
   final List<SafetyAction> actions;
   final String title;

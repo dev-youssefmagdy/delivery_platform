@@ -99,10 +99,13 @@ class FirebasePushGateway implements PushGateway {
     }
   }
 
+  // The backend pushes to FCM registration tokens, so the token API stays; firebase_messaging 17's register()/onRegistered
+  // hand out a Firebase Installation ID (direct send), a different identifier the server does not use. Revisit with the push driver.
   @override
   Future<String?> token() async {
     if (!_ready) return null;
     try {
+      // ignore: deprecated_member_use
       return await _messaging!.getToken();
     } on Object {
       return null;
@@ -111,6 +114,7 @@ class FirebasePushGateway implements PushGateway {
 
   @override
   Stream<String> get tokenRefreshes => _ready
+      // ignore: deprecated_member_use
       ? _messaging!.onTokenRefresh
       : const Stream<String>.empty();
 
@@ -161,6 +165,7 @@ class FirebasePushGateway implements PushGateway {
   Future<void> deleteToken() async {
     if (!_ready) return;
     try {
+      // ignore: deprecated_member_use
       await _messaging!.deleteToken();
     } on Object {
       // Best effort: the server also clears the token on logout.

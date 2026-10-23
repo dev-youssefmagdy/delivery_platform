@@ -53,7 +53,11 @@ class _SecureImageState extends State<SecureImage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.broken_image_outlined),
-                  Text(widget.errorLabel, style: Theme.of(context).textTheme.labelSmall, textAlign: TextAlign.center),
+                  Text(
+                    widget.errorLabel,
+                    style: Theme.of(context).textTheme.labelSmall,
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ),
             ),
@@ -62,18 +66,29 @@ class _SecureImageState extends State<SecureImage> {
       }
       final bytes = snapshot.data;
       if (bytes == null) {
-        return SizedBox.square(dimension: box, child: const Center(child: CircularProgressIndicator(strokeWidth: 2)));
+        return SizedBox.square(
+          dimension: box,
+          child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        );
       }
       return GestureDetector(
         onTap: () => showDialog<void>(
           context: context,
           builder: (_) => Dialog(
-            child: InteractiveViewer(child: Image.memory(bytes, fit: BoxFit.contain)),
+            child: InteractiveViewer(
+              child: Image.memory(bytes, fit: BoxFit.contain),
+            ),
           ),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.sm),
-          child: Image.memory(bytes, width: box, height: box, fit: BoxFit.cover, gaplessPlayback: true),
+          child: Image.memory(
+            bytes,
+            width: box,
+            height: box,
+            fit: BoxFit.cover,
+            gaplessPlayback: true,
+          ),
         ),
       );
     },

@@ -27,7 +27,11 @@ abstract interface class SupportRepository {
   });
 
   /// Opens a ticket that disputes the cancellation fee of a booking.
-  Future<SupportTicket> appeal(String bookingId, {required String key, required String reason});
+  Future<SupportTicket> appeal(
+    String bookingId, {
+    required String key,
+    required String reason,
+  });
 
   Future<Uint8List> loadImage(String url);
 }
@@ -45,33 +49,50 @@ class SupportRemoteDataSource {
   Future<ApiResult<Object?>> tickets(int page, String? status) =>
       api.get('/support/tickets', query: {'page': page, 'status': ?status});
 
-  Future<ApiResult<Object?>> ticket(String id) => api.get('/support/tickets/$id');
+  Future<ApiResult<Object?>> ticket(String id) =>
+      api.get('/support/tickets/$id');
 
-  Future<ApiResult<Object?>> open(NewTicketInput input, String key) async => api.post(
-    '/support/tickets',
-    idempotencyKey: key,
-    body: FormData.fromMap({
-      'category': input.category,
-      'subject': input.subject,
-      'body': input.body,
-      if (input.bookingId != null) 'booking_id': input.bookingId,
-      if (input.paymentId != null) 'payment_id': input.paymentId,
-      if (input.payoutId != null) 'payout_id': input.payoutId,
-      if (input.attachmentPaths.isNotEmpty)
-        'attachments[]': [for (final p in input.attachmentPaths) await MultipartFile.fromFile(p)],
-    }),
-  );
+  Future<ApiResult<Object?>> open(NewTicketInput input, String key) async =>
+      api.post(
+        '/support/tickets',
+        idempotencyKey: key,
+        body: FormData.fromMap({
+          'category': input.category,
+          'subject': input.subject,
+          'body': input.body,
+          if (input.bookingId != null) 'booking_id': input.bookingId,
+          if (input.paymentId != null) 'payment_id': input.paymentId,
+          if (input.payoutId != null) 'payout_id': input.payoutId,
+          if (input.attachmentPaths.isNotEmpty)
+            'attachments[]': [
+              for (final p in input.attachmentPaths)
+                await MultipartFile.fromFile(p),
+            ],
+        }),
+      );
 
-  Future<ApiResult<Object?>> reply(String id, String key, String body, List<String> paths) async => api.post(
+  Future<ApiResult<Object?>> reply(
+    String id,
+    String key,
+    String body,
+    List<String> paths,
+  ) async => api.post(
     '/support/tickets/$id/messages',
     idempotencyKey: key,
     body: FormData.fromMap({
       'body': body,
-      if (paths.isNotEmpty) 'attachments[]': [for (final p in paths) await MultipartFile.fromFile(p)],
+      if (paths.isNotEmpty)
+        'attachments[]': [
+          for (final p in paths) await MultipartFile.fromFile(p),
+        ],
     }),
   );
 
-  Future<ApiResult<Object?>> appeal(String bookingId, String key, String reason) => api.post(
+  Future<ApiResult<Object?>> appeal(
+    String bookingId,
+    String key,
+    String reason,
+  ) => api.post(
     '$bookingPrefix/$bookingId/cancellation-appeal',
     idempotencyKey: key,
     body: {'reason': reason},
@@ -88,7 +109,11 @@ class ApiSupportRepository implements SupportRepository {
   Map<String, dynamic> _map(ApiResult<Object?> r) {
     final data = r.data;
     if (data is! Map) {
-      throw const ApiException(kind: ApiFailureKind.server, code: 'invalid_response', message: null);
+      throw const ApiException(
+        kind: ApiFailureKind.server,
+        code: 'invalid_response',
+        message: null,
+      );
     }
     return Map<String, dynamic>.from(data);
   }
@@ -112,17 +137,24 @@ class ApiSupportRepository implements SupportRepository {
         for (final item in (data is List ? data : const []))
           SupportTicket.fromJson(Map<String, dynamic>.from(item as Map)),
       ],
-      currentPage: pagination is Map ? (pagination['current_page'] as int? ?? page) : page,
-      lastPage: pagination is Map ? (pagination['last_page'] as int? ?? page) : page,
+      currentPage: pagination is Map
+          ? (pagination['current_page'] as int? ?? page)
+          : page,
+      lastPage: pagination is Map
+          ? (pagination['last_page'] as int? ?? page)
+          : page,
     );
   }
 
   @override
-  Future<SupportTicket> ticket(String id) async => SupportTicket.fromJson(_map(await _remote.ticket(id)));
+  Future<SupportTicket> ticket(String id) async =>
+      SupportTicket.fromJson(_map(await _remote.ticket(id)));
 
   @override
-  Future<SupportTicket> open(NewTicketInput input, {required String key}) async =>
-      SupportTicket.fromJson(_map(await _remote.open(input, key)));
+  Future<SupportTicket> open(
+    NewTicketInput input, {
+    required String key,
+  }) async => SupportTicket.fromJson(_map(await _remote.open(input, key)));
 
   @override
   Future<SupportTicket> reply(
@@ -130,11 +162,18 @@ class ApiSupportRepository implements SupportRepository {
     required String key,
     required String body,
     List<String> attachmentPaths = const [],
-  }) async => SupportTicket.fromJson(_map(await _remote.reply(ticketId, key, body, attachmentPaths)));
+  }) async => SupportTicket.fromJson(
+    _map(await _remote.reply(ticketId, key, body, attachmentPaths)),
+  );
 
   @override
-  Future<SupportTicket> appeal(String bookingId, {required String key, required String reason}) async =>
-      SupportTicket.fromJson(_map(await _remote.appeal(bookingId, key, reason)));
+  Future<SupportTicket> appeal(
+    String bookingId, {
+    required String key,
+    required String reason,
+  }) async => SupportTicket.fromJson(
+    _map(await _remote.appeal(bookingId, key, reason)),
+  );
 
   @override
   Future<Uint8List> loadImage(String url) => _remote.bytes(url);

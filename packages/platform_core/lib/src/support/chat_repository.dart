@@ -11,7 +11,11 @@ import 'support_models.dart';
 /// contract; [ApiChatRepository] implements it over [ChatRemoteDataSource].
 abstract interface class ChatRepository {
   /// The latest page, or messages newer than [afterId] / older than [beforeId].
-  Future<ChatSnapshot> messages(String bookingId, {String? afterId, String? beforeId});
+  Future<ChatSnapshot> messages(
+    String bookingId, {
+    String? afterId,
+    String? beforeId,
+  });
 
   /// Sends text and/or one image. [clientKey] is the Idempotency-Key: reuse it
   /// when retrying the same message so it is stored once.
@@ -37,24 +41,32 @@ class ChatRemoteDataSource {
   final ApiClient api;
   final String prefix;
 
-  Future<ApiResult<Object?>> messages(String bookingId, String? afterId, String? beforeId) => api.get(
+  Future<ApiResult<Object?>> messages(
+    String bookingId,
+    String? afterId,
+    String? beforeId,
+  ) => api.get(
     '$prefix/$bookingId/messages',
     query: {'after': ?afterId, 'before': ?beforeId},
   );
 
-  Future<ApiResult<Object?>> send(String bookingId, String key, String? body, String? imagePath) async => api.post(
+  Future<ApiResult<Object?>> send(
+    String bookingId,
+    String key,
+    String? body,
+    String? imagePath,
+  ) async => api.post(
     '$prefix/$bookingId/messages',
     idempotencyKey: key,
     body: FormData.fromMap({
       if (body != null && body.isNotEmpty) 'body': body,
-      if (imagePath != null) 'attachment': await MultipartFile.fromFile(imagePath),
+      if (imagePath != null)
+        'attachment': await MultipartFile.fromFile(imagePath),
     }),
   );
 
-  Future<ApiResult<Object?>> markRead(String bookingId, String? upToId) => api.post(
-    '$prefix/$bookingId/messages/read',
-    body: {'up_to': ?upToId},
-  );
+  Future<ApiResult<Object?>> markRead(String bookingId, String? upToId) =>
+      api.post('$prefix/$bookingId/messages/read', body: {'up_to': ?upToId});
 
   Future<Uint8List> bytes(String url) => api.getBytes(url);
 }
@@ -65,7 +77,11 @@ class ApiChatRepository implements ChatRepository {
   final ChatRemoteDataSource _remote;
 
   @override
-  Future<ChatSnapshot> messages(String bookingId, {String? afterId, String? beforeId}) async {
+  Future<ChatSnapshot> messages(
+    String bookingId, {
+    String? afterId,
+    String? beforeId,
+  }) async {
     final r = await _remote.messages(bookingId, afterId, beforeId);
     final data = r.data;
     return ChatSnapshot(
@@ -78,7 +94,9 @@ class ApiChatRepository implements ChatRepository {
       unread: r.meta['unread'] as int? ?? 0,
       hasMore: r.meta['has_more'] as bool? ?? false,
       maxChars: r.meta['max_chars'] as int? ?? 1000,
-      closesAt: r.meta['closes_at'] is String ? DateTime.tryParse(r.meta['closes_at'] as String)?.toLocal() : null,
+      closesAt: r.meta['closes_at'] is String
+          ? DateTime.tryParse(r.meta['closes_at'] as String)?.toLocal()
+          : null,
     );
   }
 
@@ -92,7 +110,11 @@ class ApiChatRepository implements ChatRepository {
     final r = await _remote.send(bookingId, clientKey, body, imagePath);
     final data = r.data;
     if (data is! Map) {
-      throw const ApiException(kind: ApiFailureKind.server, code: 'invalid_response', message: null);
+      throw const ApiException(
+        kind: ApiFailureKind.server,
+        code: 'invalid_response',
+        message: null,
+      );
     }
     return ChatMessage.fromJson(Map<String, dynamic>.from(data));
   }

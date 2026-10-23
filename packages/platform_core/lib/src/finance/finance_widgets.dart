@@ -17,7 +17,12 @@ String formatFinanceTime(BuildContext context, DateTime? value) {
 /// One wallet statement line. Texts come from the server (already in the
 /// person's language); credits are green, debits red.
 class WalletLineTile extends StatelessWidget {
-  const WalletLineTile({super.key, required this.line, required this.formatter, this.balanceLabel});
+  const WalletLineTile({
+    super.key,
+    required this.line,
+    required this.formatter,
+    this.balanceLabel,
+  });
 
   final WalletLine line;
   final MoneyFormatter formatter;
@@ -36,12 +41,19 @@ class WalletLineTile extends StatelessWidget {
       subtitle: Text(
         [
           formatFinanceTime(context, line.postedAt),
-          if (balanceLabel != null) balanceLabel!(formatter.format(line.balanceAfter)),
+          if (balanceLabel != null)
+            balanceLabel!(formatter.format(line.balanceAfter)),
         ].where((s) => s.isNotEmpty).join(' - '),
       ),
       trailing: IsolatedText(
-        credit ? '+${formatter.format(line.change)}' : formatter.format(line.change),
-        style: theme.textTheme.titleSmall?.copyWith(color: color, fontWeight: FontWeight.w700)),
+        credit
+            ? '+${formatter.format(line.change)}'
+            : formatter.format(line.change),
+        style: theme.textTheme.titleSmall?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 }
@@ -115,17 +127,29 @@ class AdjustmentCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(child: Text(adjustment.typeLabel, style: theme.textTheme.titleMedium)),
+                Expanded(
+                  child: Text(
+                    adjustment.typeLabel,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
                 StatusChip(label: adjustment.statusLabel, tone: _tone),
               ],
             ),
             const SizedBox(height: AppSpacing.xs),
             IsolatedText(
               formatter.format(adjustment.amount),
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             if (detail != null && detail!.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.xs),
-              Text(detail!, key: Key('adjustment-detail-${adjustment.id}'), style: theme.textTheme.labelLarge),
+              Text(
+                detail!,
+                key: Key('adjustment-detail-${adjustment.id}'),
+                style: theme.textTheme.labelLarge,
+              ),
             ],
             if (adjustment.reason.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.xs),
@@ -133,16 +157,30 @@ class AdjustmentCard extends StatelessWidget {
             ],
             if (adjustment.newTotal != null) ...[
               const SizedBox(height: AppSpacing.xs),
-              Text(strings.newTotal(formatter.format(adjustment.newTotal!)), style: theme.textTheme.bodySmall),
+              Text(
+                strings.newTotal(formatter.format(adjustment.newTotal!)),
+                style: theme.textTheme.bodySmall,
+              ),
             ],
             Text(
-              adjustment.requestedByMe ? strings.requestedByYou : strings.requestedByOther,
+              adjustment.requestedByMe
+                  ? strings.requestedByYou
+                  : strings.requestedByOther,
               style: theme.textTheme.bodySmall,
             ),
             if (adjustment.isPending && adjustment.expiresAt != null)
-              Text(strings.expires(formatFinanceTime(context, adjustment.expiresAt)), style: theme.textTheme.bodySmall),
-            if (adjustment.decisionNote != null && adjustment.decisionNote!.isNotEmpty)
-              Text('${strings.note}: ${adjustment.decisionNote}', style: theme.textTheme.bodySmall),
+              Text(
+                strings.expires(
+                  formatFinanceTime(context, adjustment.expiresAt),
+                ),
+                style: theme.textTheme.bodySmall,
+              ),
+            if (adjustment.decisionNote != null &&
+                adjustment.decisionNote!.isNotEmpty)
+              Text(
+                '${strings.note}: ${adjustment.decisionNote}',
+                style: theme.textTheme.bodySmall,
+              ),
             if (adjustment.canAnswer || adjustment.canWithdraw) ...[
               const SizedBox(height: AppSpacing.sm),
               Row(
@@ -188,7 +226,13 @@ class AdjustmentCard extends StatelessWidget {
 
 /// Label/value row used by the receipt and the earnings breakdown.
 class AmountRow extends StatelessWidget {
-  const AmountRow({super.key, required this.label, required this.value, this.bold = false, this.color});
+  const AmountRow({
+    super.key,
+    required this.label,
+    required this.value,
+    this.bold = false,
+    this.color,
+  });
 
   final String label;
   final String value;
@@ -198,7 +242,9 @@ class AmountRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = (bold ? theme.textTheme.titleMedium : theme.textTheme.bodyMedium)?.copyWith(color: color);
+    final style =
+        (bold ? theme.textTheme.titleMedium : theme.textTheme.bodyMedium)
+            ?.copyWith(color: color);
     return Padding(
       padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
       child: Row(

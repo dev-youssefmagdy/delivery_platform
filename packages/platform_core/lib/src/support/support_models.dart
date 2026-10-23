@@ -22,7 +22,11 @@ enum ChatRole {
 }
 
 class ChatAttachment {
-  const ChatAttachment({required this.mime, required this.sizeBytes, required this.url});
+  const ChatAttachment({
+    required this.mime,
+    required this.sizeBytes,
+    required this.url,
+  });
 
   final String mime;
   final int sizeBytes;
@@ -70,20 +74,22 @@ class ChatMessage {
   /// The Idempotency-Key of a local message: a retry reuses it.
   final String? clientKey;
 
-  bool get isLocal => delivery == ChatDelivery.sending || delivery == ChatDelivery.failed;
+  bool get isLocal =>
+      delivery == ChatDelivery.sending || delivery == ChatDelivery.failed;
 
-  ChatMessage copyWith({ChatDelivery? delivery, DateTime? readAt}) => ChatMessage(
-    id: id,
-    mine: mine,
-    body: body,
-    createdAt: createdAt,
-    attachment: attachment,
-    readAt: readAt ?? this.readAt,
-    purged: purged,
-    delivery: delivery ?? this.delivery,
-    localAttachmentPath: localAttachmentPath,
-    clientKey: clientKey,
-  );
+  ChatMessage copyWith({ChatDelivery? delivery, DateTime? readAt}) =>
+      ChatMessage(
+        id: id,
+        mine: mine,
+        body: body,
+        createdAt: createdAt,
+        attachment: attachment,
+        readAt: readAt ?? this.readAt,
+        purged: purged,
+        delivery: delivery ?? this.delivery,
+        localAttachmentPath: localAttachmentPath,
+        clientKey: clientKey,
+      );
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
     final attachment = json['attachment'];
@@ -93,7 +99,9 @@ class ChatMessage {
       mine: json['mine'] as bool? ?? false,
       body: json['body'] as String?,
       createdAt: _date(json['created_at']),
-      attachment: attachment is Map ? ChatAttachment.fromJson(Map<String, dynamic>.from(attachment)) : null,
+      attachment: attachment is Map
+          ? ChatAttachment.fromJson(Map<String, dynamic>.from(attachment))
+          : null,
       readAt: readAt,
       purged: json['purged'] as bool? ?? false,
       delivery: readAt != null ? ChatDelivery.read : ChatDelivery.sent,
@@ -148,10 +156,11 @@ class TicketCategoryOption {
   final String value;
   final String label;
 
-  factory TicketCategoryOption.fromJson(Map<String, dynamic> json) => TicketCategoryOption(
-    value: json['value'] as String? ?? 'other',
-    label: json['label'] as String? ?? '',
-  );
+  factory TicketCategoryOption.fromJson(Map<String, dynamic> json) =>
+      TicketCategoryOption(
+        value: json['value'] as String? ?? 'other',
+        label: json['label'] as String? ?? '',
+      );
 }
 
 class TicketAttachment {
@@ -171,13 +180,14 @@ class TicketAttachment {
 
   bool get isImage => mime.startsWith('image/');
 
-  factory TicketAttachment.fromJson(Map<String, dynamic> json) => TicketAttachment(
-    id: json['id'] as String? ?? '',
-    mime: json['mime'] as String? ?? '',
-    sizeBytes: json['size_bytes'] as int? ?? 0,
-    url: json['url'] as String? ?? '',
-    name: json['name'] as String?,
-  );
+  factory TicketAttachment.fromJson(Map<String, dynamic> json) =>
+      TicketAttachment(
+        id: json['id'] as String? ?? '',
+        mime: json['mime'] as String? ?? '',
+        sizeBytes: json['size_bytes'] as int? ?? 0,
+        url: json['url'] as String? ?? '',
+        name: json['name'] as String?,
+      );
 }
 
 class TicketMessage {
@@ -201,7 +211,10 @@ class TicketMessage {
     body: json['body'] as String? ?? '',
     createdAt: _date(json['created_at']),
     attachments: [
-      for (final a in (json['attachments'] is List ? json['attachments'] as List : const []))
+      for (final a
+          in (json['attachments'] is List
+              ? json['attachments'] as List
+              : const []))
         TicketAttachment.fromJson(Map<String, dynamic>.from(a as Map)),
     ],
   );
@@ -219,8 +232,8 @@ enum TicketStatusView {
   const TicketStatusView(this.value);
   final String value;
 
-  static TicketStatusView parse(String? raw) =>
-      TicketStatusView.values.firstWhere((s) => s.value == raw, orElse: () => TicketStatusView.open);
+  static TicketStatusView parse(String? raw) => TicketStatusView.values
+      .firstWhere((s) => s.value == raw, orElse: () => TicketStatusView.open);
 
   bool get isFinished => this == resolved || this == closed;
 }
@@ -277,14 +290,21 @@ class SupportTicket {
       resolution: json['resolution'] as String?,
       lastMessageAt: _dateOrNull(json['last_message_at']),
       messages: messages is List
-          ? [for (final m in messages) TicketMessage.fromJson(Map<String, dynamic>.from(m as Map))]
+          ? [
+              for (final m in messages)
+                TicketMessage.fromJson(Map<String, dynamic>.from(m as Map)),
+            ]
           : null,
     );
   }
 }
 
 class TicketPage {
-  const TicketPage({required this.items, required this.currentPage, required this.lastPage});
+  const TicketPage({
+    required this.items,
+    required this.currentPage,
+    required this.lastPage,
+  });
 
   final List<SupportTicket> items;
   final int currentPage;

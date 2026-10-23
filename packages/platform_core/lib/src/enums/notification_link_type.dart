@@ -20,6 +20,9 @@ enum NotificationLinkType implements ApiEnum {
   @override
   final String value;
 
-  static NotificationLinkType parse(String? raw) =>
-      parseApiEnum(NotificationLinkType.values, raw, NotificationLinkType.unknown);
+  static NotificationLinkType parse(String? raw) => parseApiEnum(
+    NotificationLinkType.values,
+    raw,
+    NotificationLinkType.unknown,
+  );
 }

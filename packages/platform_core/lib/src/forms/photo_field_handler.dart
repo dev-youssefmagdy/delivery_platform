@@ -130,16 +130,34 @@ class AttachmentPhotoHandler implements PhotoFieldHandler, PhotoPreviewSource {
     );
     if (choice == null) return null;
     final XFile? file = switch (choice) {
-      _Choice.camera => await _picker.pickImage(source: ImageSource.camera, imageQuality: 85, maxWidth: 2048),
-      _Choice.gallery => await _picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxWidth: 2048),
-      _Choice.video => await _picker.pickVideo(source: ImageSource.gallery, maxDuration: const Duration(minutes: 2)),
+      _Choice.camera => await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+        maxWidth: 2048,
+      ),
+      _Choice.gallery => await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+        maxWidth: 2048,
+      ),
+      _Choice.video => await _picker.pickVideo(
+        source: ImageSource.gallery,
+        maxDuration: const Duration(minutes: 2),
+      ),
     };
     if (file == null || !context.mounted) return null;
     final messenger = ScaffoldMessenger.of(context);
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(uploadingLabel), duration: const Duration(minutes: 1)));
-    final kind = choice == _Choice.video ? AttachmentKind.video : AttachmentKind.photo;
+      ..showSnackBar(
+        SnackBar(
+          content: Text(uploadingLabel),
+          duration: const Duration(minutes: 1),
+        ),
+      );
+    final kind = choice == _Choice.video
+        ? AttachmentKind.video
+        : AttachmentKind.photo;
     try {
       final uploaded = await repository.upload(file.path, kind, newKey: newKey);
       _paths[uploaded.id] = file.path;
@@ -147,7 +165,9 @@ class AttachmentPhotoHandler implements PhotoFieldHandler, PhotoPreviewSource {
     } on ApiException catch (e) {
       // A transport failure keeps the key (the same file can be retried safely);
       // a refusal frees it.
-      if (!e.isOffline && e.kind != ApiFailureKind.server) repository.forget(file.path, kind);
+      if (!e.isOffline && e.kind != ApiFailureKind.server) {
+        repository.forget(file.path, kind);
+      }
       if (context.mounted) onError(context, e);
       return null;
     } finally {

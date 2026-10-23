@@ -3,7 +3,11 @@ import '../api/api_exception.dart';
 import '../api/api_result.dart';
 import 'growth_models.dart';
 
-ApiException _invalid() => const ApiException(kind: ApiFailureKind.server, code: 'invalid_response', message: null);
+ApiException _invalid() => const ApiException(
+  kind: ApiFailureKind.server,
+  code: 'invalid_response',
+  message: null,
+);
 
 Map<String, dynamic> _obj(ApiResult<Object?> r) {
   final data = r.data;
@@ -34,7 +38,8 @@ class GrowthRemoteDataSource {
 
   Future<ApiResult<Object?>> referral() => api.get('/me/referral');
 
-  Future<ApiResult<Object?>> apply(String code, String key) => api.post('/me/referral/apply', body: {'code': code}, idempotencyKey: key);
+  Future<ApiResult<Object?>> apply(String code, String key) =>
+      api.post('/me/referral/apply', body: {'code': code}, idempotencyKey: key);
 
   Future<ApiResult<Object?>> credits() => api.get('/me/credits');
 
@@ -49,7 +54,8 @@ class ApiGrowthRepository implements GrowthRepository {
   final GrowthRemoteDataSource _remote;
 
   @override
-  Future<ReferralOverview> referral() async => ReferralOverview.fromJson(_obj(await _remote.referral()));
+  Future<ReferralOverview> referral() async =>
+      ReferralOverview.fromJson(_obj(await _remote.referral()));
 
   @override
   Future<void> applyReferral(String code, {required String key}) async {
@@ -57,10 +63,12 @@ class ApiGrowthRepository implements GrowthRepository {
   }
 
   @override
-  Future<CreditsOverview> credits() async => CreditsOverview.fromJson(_obj(await _remote.credits()));
+  Future<CreditsOverview> credits() async =>
+      CreditsOverview.fromJson(_obj(await _remote.credits()));
 
   @override
-  Future<LoyaltyStatus> loyalty() async => LoyaltyStatus.fromJson(_obj(await _remote.loyalty()));
+  Future<LoyaltyStatus> loyalty() async =>
+      LoyaltyStatus.fromJson(_obj(await _remote.loyalty()));
 
   @override
   Future<List<IncentiveQuest>> incentives() async {

@@ -162,12 +162,11 @@ class StatusChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: Theme.of(context).textTheme.labelMedium
-            ?.copyWith(
-              // Darkened so the text keeps 4.5:1 on its own 12% tint (scripts/check-contrast.mjs).
-              color: Color.lerp(_color, Colors.black, 0.25),
-              fontWeight: FontWeight.w600,
-            ),
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+          // Darkened so the text keeps 4.5:1 on its own 12% tint (scripts/check-contrast.mjs).
+          color: Color.lerp(_color, Colors.black, 0.25),
+          fontWeight: FontWeight.w600,
+        ),
       ),
     ),
   );

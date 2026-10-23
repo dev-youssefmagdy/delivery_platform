@@ -20,7 +20,11 @@ List<String> _strings(Object? v) => [
 
 /// One translated line of a server summary (`[{key, label, value}]`).
 class ScopeLine {
-  const ScopeLine({required this.key, required this.label, required this.value});
+  const ScopeLine({
+    required this.key,
+    required this.label,
+    required this.value,
+  });
 
   factory ScopeLine.fromJson(Map<String, dynamic> json) => ScopeLine(
     key: '${json['key'] ?? ''}',
@@ -117,7 +121,11 @@ class ScopeTemplate {
       'straps_blankets',
       'pallet_jack',
     ],
-    this.treatmentOptions = const ['included', 'at_cost_with_evidence', 'excluded'],
+    this.treatmentOptions = const [
+      'included',
+      'at_cost_with_evidence',
+      'excluded',
+    ],
   });
 
   /// `data` of `GET /provider/offer-scope`.
@@ -139,9 +147,21 @@ class ScopeTemplate {
       vehicleClass: m['vehicle_class'] as String?,
       helpersMax: bound(props['helpers'], 'maximum', base.helpersMax),
       floorsMax: bound(stairs['included_floors'], 'maximum', base.floorsMax),
-      waitingMax: bound(props['waiting_allowance_minutes'], 'maximum', base.waitingMax),
-      extraStopsMax: bound(props['extra_stops_included'], 'maximum', base.extraStopsMax),
-      exclusionsMax: bound(props['exclusions'], 'maxLength', base.exclusionsMax),
+      waitingMax: bound(
+        props['waiting_allowance_minutes'],
+        'maximum',
+        base.waitingMax,
+      ),
+      extraStopsMax: bound(
+        props['extra_stops_included'],
+        'maximum',
+        base.extraStopsMax,
+      ),
+      exclusionsMax: bound(
+        props['exclusions'],
+        'maxLength',
+        base.exclusionsMax,
+      ),
       packingOptions: enumOf(props['packing'], base.packingOptions),
       stairsOptions: enumOf(stairs['handling'], base.stairsOptions),
       assemblyOptions: enumOf(props['assembly'], base.assemblyOptions),
@@ -168,7 +188,14 @@ class ScopeTemplate {
 }
 
 /// Why one field of a scope draft cannot be sent.
-enum ScopeIssue { required, outOfRange, invalidChoice, floorsNeeded, tooLong, duplicate }
+enum ScopeIssue {
+  required,
+  outOfRange,
+  invalidChoice,
+  floorsNeeded,
+  tooLong,
+  duplicate,
+}
 
 /// The scope a provider offers (the body `scope` of a counter-offer).
 class OfferScope {
@@ -188,7 +215,10 @@ class OfferScope {
   });
 
   /// Reads a stored / requested scope (server canonical form).
-  factory OfferScope.fromJson(Map<String, dynamic> json, {String? vehicleClass}) {
+  factory OfferScope.fromJson(
+    Map<String, dynamic> json, {
+    String? vehicleClass,
+  }) {
     final stairs = _map(json['stairs']);
     return OfferScope(
       vehicleClass: vehicleClass ?? '${json['vehicle_class'] ?? ''}',
@@ -271,7 +301,9 @@ class OfferScope {
   /// keys the server uses in `meta.scope_errors`.
   Map<String, ScopeIssue> validate(ScopeTemplate template) {
     final issues = <String, ScopeIssue>{};
-    if (vehicleClass.trim().isEmpty) issues['vehicle_class'] = ScopeIssue.required;
+    if (vehicleClass.trim().isEmpty) {
+      issues['vehicle_class'] = ScopeIssue.required;
+    }
     if (helpers < 0 || helpers > template.helpersMax) {
       issues['helpers'] = ScopeIssue.outOfRange;
     }

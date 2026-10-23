@@ -15,24 +15,46 @@ abstract interface class SafetyRepository {
   Future<SafetyConfig?> config();
 
   /// Raises the SOS on an active job. No idempotency key: a repeated press joins the open case on the server.
-  Future<SafetyIncident> sos({required String bookingId, SafetyFix? fix, String? category, bool notifyContacts = true});
+  Future<SafetyIncident> sos({
+    required String bookingId,
+    SafetyFix? fix,
+    String? category,
+    bool notifyContacts = true,
+  });
 
   /// Opens an incident report (needs a category and a text).
-  Future<SafetyIncident> report({required String bookingId, required String category, required String narrative, SafetyFix? fix, String? callbackPhone});
+  Future<SafetyIncident> report({
+    required String bookingId,
+    required String category,
+    required String narrative,
+    SafetyFix? fix,
+    String? callbackPhone,
+  });
 
   Future<IncidentPage> incidents({int page = 1});
 
   Future<SafetyIncident> incident(String id);
 
-  Future<SafetyIncident> addUpdate(String id, {required String key, required String body});
+  Future<SafetyIncident> addUpdate(
+    String id, {
+    required String key,
+    required String body,
+  });
 
-  Future<void> addAttachment(String id, {required String key, required String path});
+  Future<void> addAttachment(
+    String id, {
+    required String key,
+    required String path,
+  });
 
   Future<Uint8List> loadFile(String url);
 
   Future<TrustedContactList> contacts();
 
-  Future<TrustedContact> addContact(TrustedContactInput input, {required String key});
+  Future<TrustedContact> addContact(
+    TrustedContactInput input, {
+    required String key,
+  });
 
   Future<TrustedContact> updateContact(String id, TrustedContactInput input);
 
@@ -63,27 +85,62 @@ class SafetyRemoteDataSource {
           'lat': fix.latitude,
           'lng': fix.longitude,
           'accuracy_m': ?fix.accuracyMeters,
-          if (fix.capturedAt != null) 'captured_at': fix.capturedAt!.toUtc().toIso8601String(),
+          if (fix.capturedAt != null)
+            'captured_at': fix.capturedAt!.toUtc().toIso8601String(),
         };
 
-  Future<ApiResult<Object?>> sos(String bookingId, SafetyFix? fix, String? category, bool notify) => api.post(
+  Future<ApiResult<Object?>> sos(
+    String bookingId,
+    SafetyFix? fix,
+    String? category,
+    bool notify,
+  ) => api.post(
     '/safety/incidents',
-    body: {'booking_id': bookingId, 'trigger': 'sos', 'category': ?category, 'notify_trusted_contacts': notify, ..._fix(fix)},
+    body: {
+      'booking_id': bookingId,
+      'trigger': 'sos',
+      'category': ?category,
+      'notify_trusted_contacts': notify,
+      ..._fix(fix),
+    },
   );
 
-  Future<ApiResult<Object?>> report(String bookingId, String category, String narrative, SafetyFix? fix, String? callback) => api.post(
+  Future<ApiResult<Object?>> report(
+    String bookingId,
+    String category,
+    String narrative,
+    SafetyFix? fix,
+    String? callback,
+  ) => api.post(
     '/safety/incidents',
-    body: {'booking_id': bookingId, 'trigger': 'report', 'category': category, 'narrative': narrative, 'callback_phone': ?callback, ..._fix(fix)},
+    body: {
+      'booking_id': bookingId,
+      'trigger': 'report',
+      'category': category,
+      'narrative': narrative,
+      'callback_phone': ?callback,
+      ..._fix(fix),
+    },
   );
 
-  Future<ApiResult<Object?>> incidents(int page) => api.get('/safety/incidents', query: {'page': page});
+  Future<ApiResult<Object?>> incidents(int page) =>
+      api.get('/safety/incidents', query: {'page': page});
 
-  Future<ApiResult<Object?>> incident(String id) => api.get('/safety/incidents/$id');
+  Future<ApiResult<Object?>> incident(String id) =>
+      api.get('/safety/incidents/$id');
 
   Future<ApiResult<Object?>> addUpdate(String id, String key, String body) =>
-      api.post('/safety/incidents/$id/updates', idempotencyKey: key, body: {'body': body});
+      api.post(
+        '/safety/incidents/$id/updates',
+        idempotencyKey: key,
+        body: {'body': body},
+      );
 
-  Future<ApiResult<Object?>> addAttachment(String id, String key, String path) async => api.post(
+  Future<ApiResult<Object?>> addAttachment(
+    String id,
+    String key,
+    String path,
+  ) async => api.post(
     '/safety/incidents/$id/attachments',
     idempotencyKey: key,
     body: FormData.fromMap({'file': await MultipartFile.fromFile(path)}),
@@ -93,16 +150,28 @@ class SafetyRemoteDataSource {
 
   Future<ApiResult<Object?>> contacts() => api.get('/safety/trusted-contacts');
 
-  Future<ApiResult<Object?>> addContact(TrustedContactInput input, String key) =>
-      api.post('/safety/trusted-contacts', idempotencyKey: key, body: input.toJson());
+  Future<ApiResult<Object?>> addContact(
+    TrustedContactInput input,
+    String key,
+  ) => api.post(
+    '/safety/trusted-contacts',
+    idempotencyKey: key,
+    body: input.toJson(),
+  );
 
-  Future<ApiResult<Object?>> updateContact(String id, TrustedContactInput input) => api.patch('/safety/trusted-contacts/$id', body: input.toJson());
+  Future<ApiResult<Object?>> updateContact(
+    String id,
+    TrustedContactInput input,
+  ) => api.patch('/safety/trusted-contacts/$id', body: input.toJson());
 
-  Future<ApiResult<Object?>> removeContact(String id) => api.delete('/safety/trusted-contacts/$id');
+  Future<ApiResult<Object?>> removeContact(String id) =>
+      api.delete('/safety/trusted-contacts/$id');
 
-  Future<ApiResult<Object?>> shareTrip(String bookingId) => api.post('/safety/bookings/$bookingId/share');
+  Future<ApiResult<Object?>> shareTrip(String bookingId) =>
+      api.post('/safety/bookings/$bookingId/share');
 
-  Future<ApiResult<Object?>> stopTripShare(String bookingId) => api.delete('/safety/bookings/$bookingId/share');
+  Future<ApiResult<Object?>> stopTripShare(String bookingId) =>
+      api.delete('/safety/bookings/$bookingId/share');
 }
 
 class ApiSafetyRepository implements SafetyRepository {
@@ -114,7 +183,11 @@ class ApiSafetyRepository implements SafetyRepository {
   Map<String, dynamic> _map(ApiResult<Object?> r) {
     final data = r.data;
     if (data is! Map) {
-      throw const ApiException(kind: ApiFailureKind.server, code: 'invalid_response', message: null);
+      throw const ApiException(
+        kind: ApiFailureKind.server,
+        code: 'invalid_response',
+        message: null,
+      );
     }
     return Map<String, dynamic>.from(data);
   }
@@ -134,19 +207,36 @@ class ApiSafetyRepository implements SafetyRepository {
     final stored = cache?.read();
     if (stored == null) return null;
     try {
-      return SafetyConfig.fromJson(Map<String, dynamic>.from(jsonDecode(stored) as Map));
+      return SafetyConfig.fromJson(
+        Map<String, dynamic>.from(jsonDecode(stored) as Map),
+      );
     } on Object {
       return null;
     }
   }
 
   @override
-  Future<SafetyIncident> sos({required String bookingId, SafetyFix? fix, String? category, bool notifyContacts = true}) async =>
-      SafetyIncident.fromJson(_map(await _remote.sos(bookingId, fix, category, notifyContacts)));
+  Future<SafetyIncident> sos({
+    required String bookingId,
+    SafetyFix? fix,
+    String? category,
+    bool notifyContacts = true,
+  }) async => SafetyIncident.fromJson(
+    _map(await _remote.sos(bookingId, fix, category, notifyContacts)),
+  );
 
   @override
-  Future<SafetyIncident> report({required String bookingId, required String category, required String narrative, SafetyFix? fix, String? callbackPhone}) async =>
-      SafetyIncident.fromJson(_map(await _remote.report(bookingId, category, narrative, fix, callbackPhone)));
+  Future<SafetyIncident> report({
+    required String bookingId,
+    required String category,
+    required String narrative,
+    SafetyFix? fix,
+    String? callbackPhone,
+  }) async => SafetyIncident.fromJson(
+    _map(
+      await _remote.report(bookingId, category, narrative, fix, callbackPhone),
+    ),
+  );
 
   @override
   Future<IncidentPage> incidents({int page = 1}) async {
@@ -154,21 +244,37 @@ class ApiSafetyRepository implements SafetyRepository {
     final data = r.data;
     final pagination = r.meta['pagination'];
     return IncidentPage(
-      items: [for (final item in (data is List ? data : const [])) SafetyIncident.fromJson(Map<String, dynamic>.from(item as Map))],
-      currentPage: pagination is Map ? (pagination['current_page'] as int? ?? page) : page,
-      lastPage: pagination is Map ? (pagination['last_page'] as int? ?? page) : page,
+      items: [
+        for (final item in (data is List ? data : const []))
+          SafetyIncident.fromJson(Map<String, dynamic>.from(item as Map)),
+      ],
+      currentPage: pagination is Map
+          ? (pagination['current_page'] as int? ?? page)
+          : page,
+      lastPage: pagination is Map
+          ? (pagination['last_page'] as int? ?? page)
+          : page,
     );
   }
 
   @override
-  Future<SafetyIncident> incident(String id) async => SafetyIncident.fromJson(_map(await _remote.incident(id)));
+  Future<SafetyIncident> incident(String id) async =>
+      SafetyIncident.fromJson(_map(await _remote.incident(id)));
 
   @override
-  Future<SafetyIncident> addUpdate(String id, {required String key, required String body}) async =>
+  Future<SafetyIncident> addUpdate(
+    String id, {
+    required String key,
+    required String body,
+  }) async =>
       SafetyIncident.fromJson(_map(await _remote.addUpdate(id, key, body)));
 
   @override
-  Future<void> addAttachment(String id, {required String key, required String path}) async {
+  Future<void> addAttachment(
+    String id, {
+    required String key,
+    required String path,
+  }) async {
     await _remote.addAttachment(id, key, path);
   }
 
@@ -180,16 +286,27 @@ class ApiSafetyRepository implements SafetyRepository {
     final data = _map(await _remote.contacts());
     final items = data['items'];
     return TrustedContactList(
-      items: [for (final item in (items is List ? items : const [])) TrustedContact.fromJson(Map<String, dynamic>.from(item as Map))],
+      items: [
+        for (final item in (items is List ? items : const []))
+          TrustedContact.fromJson(Map<String, dynamic>.from(item as Map)),
+      ],
       max: (data['max'] as num?)?.toInt() ?? 5,
     );
   }
 
   @override
-  Future<TrustedContact> addContact(TrustedContactInput input, {required String key}) async => TrustedContact.fromJson(_map(await _remote.addContact(input, key)));
+  Future<TrustedContact> addContact(
+    TrustedContactInput input, {
+    required String key,
+  }) async =>
+      TrustedContact.fromJson(_map(await _remote.addContact(input, key)));
 
   @override
-  Future<TrustedContact> updateContact(String id, TrustedContactInput input) async => TrustedContact.fromJson(_map(await _remote.updateContact(id, input)));
+  Future<TrustedContact> updateContact(
+    String id,
+    TrustedContactInput input,
+  ) async =>
+      TrustedContact.fromJson(_map(await _remote.updateContact(id, input)));
 
   @override
   Future<void> removeContact(String id) async {
@@ -197,7 +314,8 @@ class ApiSafetyRepository implements SafetyRepository {
   }
 
   @override
-  Future<TripShareResult> shareTrip(String bookingId) async => TripShareResult.fromJson(_map(await _remote.shareTrip(bookingId)));
+  Future<TripShareResult> shareTrip(String bookingId) async =>
+      TripShareResult.fromJson(_map(await _remote.shareTrip(bookingId)));
 
   @override
   Future<void> stopTripShare(String bookingId) async {

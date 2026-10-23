@@ -12,7 +12,8 @@ import 'growth_models.dart';
 import 'growth_strings.dart';
 import '../ui/isolated_text.dart';
 
-String _date(BuildContext context, DateTime? at) => at == null ? '—' : MaterialLocalizations.of(context).formatMediumDate(at);
+String _date(BuildContext context, DateTime? at) =>
+    at == null ? '—' : MaterialLocalizations.of(context).formatMediumDate(at);
 
 /// The referral screen body: the user's code with copy and share, the active
 /// offer, a field to enter a code received from someone else (only while the
@@ -112,18 +113,32 @@ class _ReferralShareViewState extends State<ReferralShareView> {
                     o.code,
                     key: const Key('referral-code'),
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 2),
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2,
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Row(
                   children: [
                     Expanded(
-                      child: AppButton(key: const Key('referral-copy'), label: s.copyCode, icon: Icons.copy_outlined, secondary: true, onPressed: _copy),
+                      child: AppButton(
+                        key: const Key('referral-copy'),
+                        label: s.copyCode,
+                        icon: Icons.copy_outlined,
+                        secondary: true,
+                        onPressed: _copy,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
-                      child: AppButton(key: const Key('referral-share'), label: s.share, icon: Icons.ios_share, onPressed: _share),
+                      child: AppButton(
+                        key: const Key('referral-share'),
+                        label: s.share,
+                        icon: Icons.ios_share,
+                        onPressed: _share,
+                      ),
                     ),
                   ],
                 ),
@@ -145,13 +160,20 @@ class _ReferralShareViewState extends State<ReferralShareView> {
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         s.offerLine(
-                          moneyOrDash(campaign.referrerReward, widget.formatter.format),
-                          moneyOrDash(campaign.refereeReward, widget.formatter.format),
+                          moneyOrDash(
+                            campaign.referrerReward,
+                            widget.formatter.format,
+                          ),
+                          moneyOrDash(
+                            campaign.refereeReward,
+                            widget.formatter.format,
+                          ),
                         ),
                         key: const Key('referral-offer'),
                       ),
                       Text(s.milestoneLine(campaign.milestoneJobs)),
-                      if (campaign.creditValidDays != null) Text(s.validityLine(campaign.creditValidDays!)),
+                      if (campaign.creditValidDays != null)
+                        Text(s.validityLine(campaign.creditValidDays!)),
                     ],
                   ),
           ),
@@ -177,7 +199,12 @@ class _ReferralShareViewState extends State<ReferralShareView> {
                     onSubmitted: (_) => unawaited(_apply()),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  AppButton(key: const Key('referral-apply'), label: s.apply, loading: _busy, onPressed: _apply),
+                  AppButton(
+                    key: const Key('referral-apply'),
+                    label: s.apply,
+                    loading: _busy,
+                    onPressed: _apply,
+                  ),
                 ],
               ),
             ),
@@ -195,7 +222,12 @@ class _ReferralShareViewState extends State<ReferralShareView> {
         Text(s.listTitle, style: theme.textTheme.titleMedium),
         const SizedBox(height: AppSpacing.sm),
         if (o.referrals.isEmpty)
-          Padding(padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md), child: Text(s.listEmpty, key: const Key('referral-empty')))
+          Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              vertical: AppSpacing.md,
+            ),
+            child: Text(s.listEmpty, key: const Key('referral-empty')),
+          )
         else
           for (final r in o.referrals)
             ListTile(
@@ -230,8 +262,16 @@ class _Stat extends StatelessWidget {
   Widget build(BuildContext context) => Expanded(
     child: Column(
       children: [
-        Text('$value', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
-        Text(label, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+        Text(
+          '$value',
+          style: Theme.of(context).textTheme.headlineSmall
+              ?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       ],
     ),
   );
@@ -240,7 +280,12 @@ class _Stat extends StatelessWidget {
 /// Promotional credit in the wallet: available amount and every credit with its
 /// expiry.
 class CreditsView extends StatelessWidget {
-  const CreditsView({super.key, required this.overview, required this.formatter, required this.strings});
+  const CreditsView({
+    super.key,
+    required this.overview,
+    required this.formatter,
+    required this.strings,
+  });
 
   final CreditsOverview overview;
   final MoneyFormatter formatter;
@@ -265,8 +310,14 @@ class CreditsView extends StatelessWidget {
                 IsolatedText(
                   moneyOrDash(overview.available, formatter.format),
                   key: const Key('credits-available'),
-                  style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
-                if (overview.note != null) ...[const SizedBox(height: AppSpacing.sm), Text(overview.note!, style: theme.textTheme.bodySmall)],
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                if (overview.note != null) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(overview.note!, style: theme.textTheme.bodySmall),
+                ],
               ],
             ),
           ),
@@ -275,12 +326,21 @@ class CreditsView extends StatelessWidget {
         Text(strings.historyTitle, style: theme.textTheme.titleMedium),
         const SizedBox(height: AppSpacing.sm),
         if (overview.credits.isEmpty)
-          Padding(padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md), child: Text(strings.none, key: const Key('credits-empty')))
+          Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              vertical: AppSpacing.md,
+            ),
+            child: Text(strings.none, key: const Key('credits-empty')),
+          )
         else
           for (final c in overview.credits)
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(c.source == CreditSource.loyalty ? strings.sourceLoyalty : strings.sourceReferral),
+              title: Text(
+                c.source == CreditSource.loyalty
+                    ? strings.sourceLoyalty
+                    : strings.sourceReferral,
+              ),
               subtitle: Text(
                 c.state == CreditState.active
                     ? '${strings.remaining(moneyOrDash(c.remaining, formatter.format))} · ${strings.expiresOn(_date(context, c.expiresAt))}'
@@ -297,7 +357,9 @@ class CreditsView extends StatelessWidget {
                       CreditState.reversed => strings.stateReversed,
                       _ => strings.stateActive,
                     },
-                    tone: c.state == CreditState.active ? ChipTone.success : ChipTone.neutral,
+                    tone: c.state == CreditState.active
+                        ? ChipTone.success
+                        : ChipTone.neutral,
                   ),
                 ],
               ),
@@ -310,7 +372,12 @@ class CreditsView extends StatelessWidget {
 /// Loyalty status: completed jobs, the current level, progress to the next and
 /// the ladder of levels.
 class LoyaltyView extends StatelessWidget {
-  const LoyaltyView({super.key, required this.status, required this.formatter, required this.strings});
+  const LoyaltyView({
+    super.key,
+    required this.status,
+    required this.formatter,
+    required this.strings,
+  });
 
   final LoyaltyStatus status;
   final MoneyFormatter formatter;
@@ -321,7 +388,9 @@ class LoyaltyView extends StatelessWidget {
     final theme = Theme.of(context);
     final next = status.nextLevel;
     final current = status.level;
-    final progress = next == null || next.minCompletedJobs == 0 ? 1.0 : (status.completedJobs / next.minCompletedJobs).clamp(0, 1).toDouble();
+    final progress = next == null || next.minCompletedJobs == 0
+        ? 1.0
+        : (status.completedJobs / next.minCompletedJobs).clamp(0, 1).toDouble();
     return ListView(
       key: const Key('loyalty-list'),
       physics: const AlwaysScrollableScrollPhysics(),
@@ -335,13 +404,31 @@ class LoyaltyView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(strings.currentLevel, style: theme.textTheme.bodyMedium),
-                Text(current?.name ?? strings.noLevel, key: const Key('loyalty-level'), style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+                Text(
+                  current?.name ?? strings.noLevel,
+                  key: const Key('loyalty-level'),
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(strings.completedJobs(status.completedJobs)),
                 const SizedBox(height: AppSpacing.md),
-                LinearProgressIndicator(value: progress, minHeight: 8, borderRadius: BorderRadius.circular(AppRadius.sm)),
+                LinearProgressIndicator(
+                  value: progress,
+                  minHeight: 8,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
                 const SizedBox(height: AppSpacing.xs),
-                Text(next == null ? strings.topLevel : strings.toNextLevel(status.jobsToNextLevel ?? 0, next.name), style: theme.textTheme.bodySmall),
+                Text(
+                  next == null
+                      ? strings.topLevel
+                      : strings.toNextLevel(
+                          status.jobsToNextLevel ?? 0,
+                          next.name,
+                        ),
+                  style: theme.textTheme.bodySmall,
+                ),
               ],
             ),
           ),
@@ -352,12 +439,21 @@ class LoyaltyView extends StatelessWidget {
         for (final level in status.levels)
           ListTile(
             contentPadding: EdgeInsets.zero,
-            leading: Icon(level.reached ? Icons.check_circle : Icons.radio_button_unchecked, color: level.reached ? AppColors.success : null),
+            leading: Icon(
+              level.reached ? Icons.check_circle : Icons.radio_button_unchecked,
+              color: level.reached ? AppColors.success : null,
+            ),
             title: Text(level.name),
             subtitle: Text(
-              [strings.levelJobs(level.minCompletedJobs), if (level.reward != null) strings.levelReward(formatter.format(level.reward!))].join(' · '),
+              [
+                strings.levelJobs(level.minCompletedJobs),
+                if (level.reward != null)
+                  strings.levelReward(formatter.format(level.reward!)),
+              ].join(' · '),
             ),
-            trailing: level.reached ? Text(strings.reached, style: theme.textTheme.labelMedium) : null,
+            trailing: level.reached
+                ? Text(strings.reached, style: theme.textTheme.labelMedium)
+                : null,
           ),
       ],
     );
@@ -366,7 +462,12 @@ class LoyaltyView extends StatelessWidget {
 
 /// The provider's open incentive campaigns with quest progress.
 class IncentivesView extends StatelessWidget {
-  const IncentivesView({super.key, required this.quests, required this.formatter, required this.strings});
+  const IncentivesView({
+    super.key,
+    required this.quests,
+    required this.formatter,
+    required this.strings,
+  });
 
   final List<IncentiveQuest> quests;
   final MoneyFormatter formatter;
@@ -378,7 +479,16 @@ class IncentivesView extends StatelessWidget {
     if (quests.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        children: [SizedBox(height: 320, child: EmptyState(key: const Key('incentives-empty'), icon: Icons.emoji_events_outlined, title: strings.none))],
+        children: [
+          SizedBox(
+            height: 320,
+            child: EmptyState(
+              key: const Key('incentives-empty'),
+              icon: Icons.emoji_events_outlined,
+              title: strings.none,
+            ),
+          ),
+        ],
       );
     }
     return ListView(
@@ -396,7 +506,9 @@ class IncentivesView extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Expanded(child: Text(q.name, style: theme.textTheme.titleMedium)),
+                      Expanded(
+                        child: Text(q.name, style: theme.textTheme.titleMedium),
+                      ),
                       StatusChip(
                         label: switch (q.state) {
                           QuestState.completed => strings.stateCompleted,
@@ -414,14 +526,37 @@ class IncentivesView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  Text(strings.questLine(q.targetJobs, moneyOrDash(q.bonus, formatter.format))),
+                  Text(
+                    strings.questLine(
+                      q.targetJobs,
+                      moneyOrDash(q.bonus, formatter.format),
+                    ),
+                  ),
                   const SizedBox(height: AppSpacing.sm),
-                  LinearProgressIndicator(value: q.fraction, minHeight: 8, borderRadius: BorderRadius.circular(AppRadius.sm)),
+                  LinearProgressIndicator(
+                    value: q.fraction,
+                    minHeight: 8,
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                  ),
                   const SizedBox(height: AppSpacing.xs),
-                  Text(strings.progress(q.jobsInCycle, q.targetJobs), style: theme.textTheme.bodySmall),
-                  if (q.maxAwards > 1) Text(strings.awardsLine(q.awards, q.maxAwards), style: theme.textTheme.bodySmall),
-                  if (q.minRating != null) Text(strings.minRating(q.minRating!), style: theme.textTheme.bodySmall),
-                  Text(strings.endsOn(_date(context, q.endsAt)), style: theme.textTheme.bodySmall),
+                  Text(
+                    strings.progress(q.jobsInCycle, q.targetJobs),
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  if (q.maxAwards > 1)
+                    Text(
+                      strings.awardsLine(q.awards, q.maxAwards),
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  if (q.minRating != null)
+                    Text(
+                      strings.minRating(q.minRating!),
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  Text(
+                    strings.endsOn(_date(context, q.endsAt)),
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),
@@ -434,4 +569,5 @@ class IncentivesView extends StatelessWidget {
 }
 
 /// True when [error] is the server's "feature switched off" answer.
-bool isFeatureDisabled(Object error) => error is ApiException && error.code == 'feature_disabled';
+bool isFeatureDisabled(Object error) =>
+    error is ApiException && error.code == 'feature_disabled';

@@ -19,6 +19,9 @@ enum NotificationCategory implements ApiEnum {
   @override
   final String value;
 
-  static NotificationCategory parse(String? raw) =>
-      parseApiEnum(NotificationCategory.values, raw, NotificationCategory.unknown);
+  static NotificationCategory parse(String? raw) => parseApiEnum(
+    NotificationCategory.values,
+    raw,
+    NotificationCategory.unknown,
+  );
 }

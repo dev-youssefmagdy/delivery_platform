@@ -38,7 +38,8 @@ class ChatState {
   }
 
   /// The other side wrote something that has not been marked read yet.
-  bool get hasUnreadFromOther => messages.any((m) => !m.mine && m.readAt == null && !m.isLocal);
+  bool get hasUnreadFromOther =>
+      messages.any((m) => !m.mine && m.readAt == null && !m.isLocal);
 
   ChatState copyWith({
     List<ChatMessage>? messages,
@@ -76,10 +77,15 @@ class ChatState {
     final freshIds = {for (final m in fresh.messages) m.id};
     final firstFresh = fresh.messages.isEmpty
         ? null
-        : fresh.messages.map((m) => m.createdAt).reduce((a, b) => a.isBefore(b) ? a : b);
+        : fresh.messages
+              .map((m) => m.createdAt)
+              .reduce((a, b) => a.isBefore(b) ? a : b);
     final older = [
       for (final m in messages)
-        if (!m.isLocal && !freshIds.contains(m.id) && (firstFresh == null || m.createdAt.isBefore(firstFresh))) m,
+        if (!m.isLocal &&
+            !freshIds.contains(m.id) &&
+            (firstFresh == null || m.createdAt.isBefore(firstFresh)))
+          m,
     ];
     final confirmedKeys = {for (final m in fresh.messages) m.id};
     final locals = [
@@ -111,7 +117,8 @@ class ChatState {
     );
   }
 
-  ChatState withLocal(ChatMessage local) => copyWith(messages: [...messages, local], clearSendError: true);
+  ChatState withLocal(ChatMessage local) =>
+      copyWith(messages: [...messages, local], clearSendError: true);
 
   /// The server stored a local message: swap it for the confirmed one (unless a refresh already added it).
   ChatState withConfirmed(String clientKey, ChatMessage confirmed) {
@@ -127,21 +134,33 @@ class ChatState {
   }
 
   ChatState withFailed(String clientKey, {String? error}) => copyWith(
-    messages: [for (final m in messages) m.clientKey == clientKey ? m.failed() : m],
+    messages: [
+      for (final m in messages) m.clientKey == clientKey ? m.failed() : m,
+    ],
     sendError: error,
   );
 
   ChatState withSending(String clientKey) => copyWith(
-    messages: [for (final m in messages) m.clientKey == clientKey ? m.sending() : m],
+    messages: [
+      for (final m in messages) m.clientKey == clientKey ? m.sending() : m,
+    ],
     clearSendError: true,
   );
 
   ChatState without(String clientKey) => copyWith(
-    messages: [for (final m in messages) if (m.clientKey != clientKey) m],
+    messages: [
+      for (final m in messages)
+        if (m.clientKey != clientKey) m,
+    ],
     clearSendError: true,
   );
 
   ChatState markOwnRead(DateTime at) => copyWith(
-    messages: [for (final m in messages) m.mine && !m.isLocal && m.readAt == null ? m.copyWith(delivery: ChatDelivery.read, readAt: at) : m],
+    messages: [
+      for (final m in messages)
+        m.mine && !m.isLocal && m.readAt == null
+            ? m.copyWith(delivery: ChatDelivery.read, readAt: at)
+            : m,
+    ],
   );
 }

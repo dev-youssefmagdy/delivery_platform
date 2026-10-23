@@ -89,7 +89,11 @@ class _ChatThreadViewState extends State<ChatThreadView> {
       ),
     );
     if (source == null) return;
-    final picked = await ImagePicker().pickImage(source: source, imageQuality: 85, maxWidth: 1600);
+    final picked = await ImagePicker().pickImage(
+      source: source,
+      imageQuality: 85,
+      maxWidth: 1600,
+    );
     if (picked != null && mounted) setState(() => _imagePath = picked.path);
   }
 
@@ -122,15 +126,26 @@ class _ChatThreadViewState extends State<ChatThreadView> {
           )
         else if (widget.closesAt != null)
           Padding(
-            padding: const EdgeInsetsDirectional.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xs,
+            ),
             child: Text(
-              s.closesSoon(DateFormat.Hm(Localizations.localeOf(context).toString()).format(widget.closesAt!)),
+              s.closesSoon(
+                DateFormat.Hm(Localizations.localeOf(context).toString())
+                    .format(widget.closesAt!),
+              ),
               style: theme.textTheme.labelSmall,
             ),
           ),
         Expanded(
           child: items.isEmpty
-              ? EmptyState(key: const Key('chat-empty'), icon: Icons.chat_bubble_outline, title: s.empty, message: s.emptyHint)
+              ? EmptyState(
+                  key: const Key('chat-empty'),
+                  icon: Icons.chat_bubble_outline,
+                  title: s.empty,
+                  message: s.emptyHint,
+                )
               : ListView.builder(
                   key: const Key('chat-list'),
                   controller: _scroll,
@@ -141,8 +156,17 @@ class _ChatThreadViewState extends State<ChatThreadView> {
                     if (index == items.length) {
                       return Center(
                         child: widget.loadingMore
-                            ? const Padding(padding: EdgeInsets.all(AppSpacing.md), child: CircularProgressIndicator(strokeWidth: 2))
-                            : TextButton(key: const Key('chat-load-older'), onPressed: widget.onLoadOlder, child: Text(s.loadOlder)),
+                            ? const Padding(
+                                padding: EdgeInsets.all(AppSpacing.md),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : TextButton(
+                                key: const Key('chat-load-older'),
+                                onPressed: widget.onLoadOlder,
+                                child: Text(s.loadOlder),
+                              ),
                       );
                     }
                     final message = items[items.length - 1 - index];
@@ -160,23 +184,49 @@ class _ChatThreadViewState extends State<ChatThreadView> {
           SafeArea(
             top: false,
             child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(AppSpacing.sm, AppSpacing.xs, AppSpacing.sm, AppSpacing.sm),
+              padding: const EdgeInsetsDirectional.fromSTEB(
+                AppSpacing.sm,
+                AppSpacing.xs,
+                AppSpacing.sm,
+                AppSpacing.sm,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(s.phoneNotice, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.outline)),
+                  Text(
+                    s.phoneNotice,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
                   if (widget.sendError != null)
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
-                      child: Text(widget.sendError!, key: const Key('chat-send-error'), style: TextStyle(color: theme.colorScheme.error)),
+                      padding: const EdgeInsetsDirectional.only(
+                        top: AppSpacing.xs,
+                      ),
+                      child: Text(
+                        widget.sendError!,
+                        key: const Key('chat-send-error'),
+                        style: TextStyle(color: theme.colorScheme.error),
+                      ),
                     ),
                   if (_imagePath != null)
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+                      padding: const EdgeInsetsDirectional.only(
+                        top: AppSpacing.xs,
+                      ),
                       child: Stack(
                         children: [
-                          ClipRRect(borderRadius: BorderRadius.circular(AppRadius.sm), child: Image.file(File(_imagePath!), width: 72, height: 72, fit: BoxFit.cover)),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
+                            child: Image.file(
+                              File(_imagePath!),
+                              width: 72,
+                              height: 72,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                           PositionedDirectional(
                             top: 0,
                             end: 0,
@@ -184,7 +234,8 @@ class _ChatThreadViewState extends State<ChatThreadView> {
                               key: const Key('chat-remove-image'),
                               tooltip: s.removeAttachment,
                               icon: const Icon(Icons.close, size: 16),
-                              onPressed: () => setState(() => _imagePath = null),
+                              onPressed: () =>
+                                  setState(() => _imagePath = null),
                             ),
                           ),
                         ],
@@ -193,7 +244,12 @@ class _ChatThreadViewState extends State<ChatThreadView> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      IconButton(key: const Key('chat-attach'), tooltip: s.attach, icon: const Icon(Icons.attach_file), onPressed: _pick),
+                      IconButton(
+                        key: const Key('chat-attach'),
+                        tooltip: s.attach,
+                        icon: const Icon(Icons.attach_file),
+                        onPressed: _pick,
+                      ),
                       Expanded(
                         child: TextField(
                           key: const Key('chat-input'),
@@ -204,13 +260,20 @@ class _ChatThreadViewState extends State<ChatThreadView> {
                           onChanged: (_) => setState(() {}),
                           decoration: InputDecoration(
                             hintText: s.inputHint,
-                            errorText: tooLong ? s.tooLong(widget.maxChars) : null,
+                            errorText: tooLong
+                                ? s.tooLong(widget.maxChars)
+                                : null,
                             border: const OutlineInputBorder(),
                             isDense: true,
                           ),
                         ),
                       ),
-                      IconButton.filled(key: const Key('chat-send'), tooltip: s.send, icon: const Icon(Icons.send), onPressed: tooLong ? null : _submit),
+                      IconButton.filled(
+                        key: const Key('chat-send'),
+                        tooltip: s.send,
+                        icon: const Icon(Icons.send),
+                        onPressed: tooLong ? null : _submit,
+                      ),
                     ],
                   ),
                 ],
@@ -241,42 +304,73 @@ class _Bubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final mine = message.mine;
-    final background = mine ? theme.colorScheme.primaryContainer : theme.colorScheme.surfaceContainerHighest;
-    final time = DateFormat.Hm(Localizations.localeOf(context).toString()).format(message.createdAt);
+    final background = mine
+        ? theme.colorScheme.primaryContainer
+        : theme.colorScheme.surfaceContainerHighest;
+    final time = DateFormat.Hm(Localizations.localeOf(context).toString())
+        .format(message.createdAt);
     final attachment = message.attachment;
 
     return Align(
-      alignment: mine ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
+      alignment: mine
+          ? AlignmentDirectional.centerEnd
+          : AlignmentDirectional.centerStart,
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.78),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.sizeOf(context).width * 0.78,
+        ),
         child: Container(
           key: Key('chat-message-${message.id}'),
-          margin: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.xs),
+          margin: const EdgeInsetsDirectional.symmetric(
+            vertical: AppSpacing.xs,
+          ),
           padding: const EdgeInsetsDirectional.all(AppSpacing.sm + 2),
-          decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(AppRadius.md)),
+          decoration: BoxDecoration(
+            color: background,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (message.purged)
-                Text(strings.removedByRetention, style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic))
+                Text(
+                  strings.removedByRetention,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
+                )
               else ...[
                 if (attachment != null)
                   Padding(
-                    padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.xs),
+                    padding: const EdgeInsetsDirectional.only(
+                      bottom: AppSpacing.xs,
+                    ),
                     child: Semantics(
                       label: strings.imageLabel,
-                      child: SecureImage(cacheKey: message.id, load: () => loadImage(attachment.url), errorLabel: strings.imageFailed),
+                      child: SecureImage(
+                        cacheKey: message.id,
+                        load: () => loadImage(attachment.url),
+                        errorLabel: strings.imageFailed,
+                      ),
                     ),
                   )
                 else if (message.localAttachmentPath != null)
                   Padding(
-                    padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.xs),
+                    padding: const EdgeInsetsDirectional.only(
+                      bottom: AppSpacing.xs,
+                    ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(AppRadius.sm),
-                      child: Image.file(File(message.localAttachmentPath!), width: 160, height: 160, fit: BoxFit.cover),
+                      child: Image.file(
+                        File(message.localAttachmentPath!),
+                        width: 160,
+                        height: 160,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                if (message.body != null && message.body!.isNotEmpty) Text(message.body!),
+                if (message.body != null && message.body!.isNotEmpty)
+                  Text(message.body!),
               ],
               const SizedBox(height: AppSpacing.xs),
               Row(
@@ -286,18 +380,39 @@ class _Bubble extends StatelessWidget {
                   if (mine) ...[
                     const SizedBox(width: AppSpacing.xs),
                     switch (message.delivery) {
-                      ChatDelivery.sending => Text(strings.sending, style: theme.textTheme.labelSmall),
-                      ChatDelivery.failed => Text(strings.failed, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.error)),
-                      ChatDelivery.read => Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.done_all, size: 14, color: theme.colorScheme.primary),
-                        const SizedBox(width: 2),
-                        Text(strings.read, style: theme.textTheme.labelSmall),
-                      ]),
-                      ChatDelivery.sent => Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(Icons.done, size: 14),
-                        const SizedBox(width: 2),
-                        Text(strings.delivered, style: theme.textTheme.labelSmall),
-                      ]),
+                      ChatDelivery.sending => Text(
+                        strings.sending,
+                        style: theme.textTheme.labelSmall,
+                      ),
+                      ChatDelivery.failed => Text(
+                        strings.failed,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.error,
+                        ),
+                      ),
+                      ChatDelivery.read => Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.done_all,
+                            size: 14,
+                            color: theme.colorScheme.primary,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(strings.read, style: theme.textTheme.labelSmall),
+                        ],
+                      ),
+                      ChatDelivery.sent => Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.done, size: 14),
+                          const SizedBox(width: 2),
+                          Text(
+                            strings.delivered,
+                            style: theme.textTheme.labelSmall,
+                          ),
+                        ],
+                      ),
                     },
                   ],
                 ],
@@ -306,8 +421,16 @@ class _Bubble extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextButton(key: Key('chat-retry-${message.id}'), onPressed: onRetry, child: Text(strings.retry)),
-                    TextButton(key: Key('chat-discard-${message.id}'), onPressed: onDiscard, child: Text(strings.discard)),
+                    TextButton(
+                      key: Key('chat-retry-${message.id}'),
+                      onPressed: onRetry,
+                      child: Text(strings.retry),
+                    ),
+                    TextButton(
+                      key: Key('chat-discard-${message.id}'),
+                      onPressed: onDiscard,
+                      child: Text(strings.discard),
+                    ),
                   ],
                 ),
             ],

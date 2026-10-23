@@ -55,7 +55,10 @@ class PendingUpload {
       if (json['checklist'] is List)
         for (final e in json['checklist'] as List)
           if (e is Map)
-            ChecklistAnswer(code: '${e['code']}', checked: e['checked'] == true),
+            ChecklistAnswer(
+              code: '${e['code']}',
+              checked: e['checked'] == true,
+            ),
     ],
     weightKg: (json['weight_kg'] as num?)?.toDouble(),
     attempts: (json['attempts'] as num?)?.toInt() ?? 0,
@@ -149,19 +152,20 @@ bool isTransientUploadFailure(ApiException e) =>
 class ProofUploadQueue extends ChangeNotifier {
   ProofUploadQueue({
     required UploadQueueStore store,
-    required ProofSender sender,
+    required this._sender,
     DateTime Function()? now,
     this.baseDelay = const Duration(seconds: 5),
     this.maxDelay = const Duration(minutes: 5),
     this.onUploaded,
   }) : _store = store,
-       _sender = sender,
        _now = now ?? DateTime.now {
     for (final raw in store.read()) {
       try {
         final decoded = jsonDecode(raw);
         if (decoded is Map) {
-          _items.add(PendingUpload.fromJson(Map<String, dynamic>.from(decoded)));
+          _items.add(
+            PendingUpload.fromJson(Map<String, dynamic>.from(decoded)),
+          );
         }
       } on FormatException {
         // A corrupt entry is dropped; nothing else depends on it.

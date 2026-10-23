@@ -8,7 +8,8 @@ import '../enums/enums.dart';
 import '../forms/form_schema.dart';
 import '../money/money.dart';
 
-Map<String, dynamic> asMap(Object? v) => v is Map ? Map<String, dynamic>.from(v) : const {};
+Map<String, dynamic> asMap(Object? v) =>
+    v is Map ? Map<String, dynamic>.from(v) : const {};
 
 List<Map<String, dynamic>> asMapList(Object? v) => [
   if (v is List)
@@ -16,9 +17,12 @@ List<Map<String, dynamic>> asMapList(Object? v) => [
       if (e is Map) Map<String, dynamic>.from(e),
 ];
 
-DateTime? asTime(Object? v) => v is String ? DateTime.tryParse(v)?.toLocal() : null;
+DateTime? asTime(Object? v) =>
+    v is String ? DateTime.tryParse(v)?.toLocal() : null;
 
-int asInt(Object? v, [int fallback = 0]) => v is num ? v.toInt() : (v is String ? int.tryParse(v) ?? fallback : fallback);
+int asInt(Object? v, [int fallback = 0]) => v is num
+    ? v.toInt()
+    : (v is String ? int.tryParse(v) ?? fallback : fallback);
 
 /// `{amount_minor | minor, currency}` -> [Money], or null when absent.
 Money? moneyOrNull(Object? v) {
@@ -29,13 +33,19 @@ Money? moneyOrNull(Object? v) {
   return Money(minor: minor.toInt(), currency: currency);
 }
 
-Money moneyOf(Object? v, String currency) => moneyOrNull(v) ?? Money(minor: 0, currency: currency);
+Money moneyOf(Object? v, String currency) =>
+    moneyOrNull(v) ?? Money(minor: 0, currency: currency);
 
 /// An integer minor-unit field of a flat map ("..._minor") as [Money].
-Money minorOf(Object? minor, String currency) => Money(minor: asInt(minor), currency: currency);
+Money minorOf(Object? minor, String currency) =>
+    Money(minor: asInt(minor), currency: currency);
 
 class PagedList<T> {
-  const PagedList({required this.items, required this.currentPage, required this.lastPage});
+  const PagedList({
+    required this.items,
+    required this.currentPage,
+    required this.lastPage,
+  });
 
   final List<T> items;
   final int currentPage;
@@ -43,7 +53,11 @@ class PagedList<T> {
 
   bool get hasMore => currentPage < lastPage;
 
-  static PagedList<T> parse<T>(Object? data, Map<String, dynamic> meta, T Function(Map<String, dynamic>) map) {
+  static PagedList<T> parse<T>(
+    Object? data,
+    Map<String, dynamic> meta,
+    T Function(Map<String, dynamic>) map,
+  ) {
     final pagination = asMap(meta['pagination']);
     return PagedList(
       items: [for (final e in asMapList(data)) map(e)],
@@ -67,7 +81,10 @@ class PaymentAction {
   static PaymentAction? parse(Object? v) {
     final m = asMap(v);
     if (m.isEmpty) return null;
-    return PaymentAction(clientSecret: m['client_secret'] as String?, url: m['url'] as String?);
+    return PaymentAction(
+      clientSecret: m['client_secret'] as String?,
+      url: m['url'] as String?,
+    );
   }
 }
 
@@ -81,7 +98,8 @@ enum PaymentKindType {
   const PaymentKindType(this.value);
   final String value;
 
-  static PaymentKindType parse(String? raw) => values.firstWhere((k) => k.value == raw, orElse: () => unknown);
+  static PaymentKindType parse(String? raw) =>
+      values.firstWhere((k) => k.value == raw, orElse: () => unknown);
 }
 
 class PaymentInfo {
@@ -114,12 +132,15 @@ class PaymentInfo {
       method: PaymentMethodType.parse(json['method'] as String?),
       status: PaymentStatus.parse(status['code'] as String?),
       statusLabel: status['label'] as String?,
-      amount: moneyOrNull(json['amount']) ?? const Money(minor: 0, currency: ''),
+      amount:
+          moneyOrNull(json['amount']) ?? const Money(minor: 0, currency: ''),
       refundedMinor: asInt(json['refunded_minor']),
       attempt: asInt(json['attempt'], 1),
       failureCode: json['failure_code'] as String?,
       savedMethodId: saved['id'] as String?,
-      savedMethodLabel: saved.isEmpty ? null : '${saved['brand'] ?? ''} ${saved['last4'] ?? ''}'.trim(),
+      savedMethodLabel: saved.isEmpty
+          ? null
+          : '${saved['brand'] ?? ''} ${saved['last4'] ?? ''}'.trim(),
       expiresAt: asTime(json['expires_at']),
       paidAt: asTime(json['paid_at']),
       createdAt: asTime(json['created_at']),
@@ -145,7 +166,10 @@ class PaymentInfo {
   final PaymentAction? action;
 
   /// Only the server's verified answer makes a payment paid; the app just displays it.
-  bool get isPaid => status == PaymentStatus.paid || status == PaymentStatus.partiallyRefunded || status == PaymentStatus.refunded;
+  bool get isPaid =>
+      status == PaymentStatus.paid ||
+      status == PaymentStatus.partiallyRefunded ||
+      status == PaymentStatus.refunded;
 
   bool get isFailed => status == PaymentStatus.failed;
 
@@ -153,7 +177,10 @@ class PaymentInfo {
   bool get needsReview => status == PaymentStatus.reconciliationRequired;
 
   /// Still waiting for the gateway (customer may be on the gateway page).
-  bool get isWaiting => status == PaymentStatus.pending || status == PaymentStatus.requiresAction || status == PaymentStatus.authorized;
+  bool get isWaiting =>
+      status == PaymentStatus.pending ||
+      status == PaymentStatus.requiresAction ||
+      status == PaymentStatus.authorized;
 }
 
 class SavedPaymentMethod {
@@ -166,14 +193,15 @@ class SavedPaymentMethod {
     this.isDefault = false,
   });
 
-  factory SavedPaymentMethod.fromJson(Map<String, dynamic> json) => SavedPaymentMethod(
-    id: '${json['id']}',
-    type: PaymentMethodType.parse(json['type'] as String?),
-    status: '${json['status'] ?? ''}',
-    brand: json['brand'] as String?,
-    last4: json['last4'] as String?,
-    isDefault: json['is_default'] == true,
-  );
+  factory SavedPaymentMethod.fromJson(Map<String, dynamic> json) =>
+      SavedPaymentMethod(
+        id: '${json['id']}',
+        type: PaymentMethodType.parse(json['type'] as String?),
+        status: '${json['status'] ?? ''}',
+        brand: json['brand'] as String?,
+        last4: json['last4'] as String?,
+        isDefault: json['is_default'] == true,
+      );
 
   final String id;
   final PaymentMethodType type;
@@ -190,11 +218,19 @@ class SavedPaymentMethod {
 // Wallet
 
 class WalletInfo {
-  const WalletInfo({required this.id, required this.currency, required this.balance});
+  const WalletInfo({
+    required this.id,
+    required this.currency,
+    required this.balance,
+  });
 
   factory WalletInfo.fromJson(Map<String, dynamic> json) {
     final currency = '${json['currency'] ?? ''}';
-    return WalletInfo(id: '${json['id']}', currency: currency, balance: moneyOf(json['balance'], currency));
+    return WalletInfo(
+      id: '${json['id']}',
+      currency: currency,
+      balance: moneyOf(json['balance'], currency),
+    );
   }
 
   final String id;
@@ -204,7 +240,8 @@ class WalletInfo {
   final Money balance;
 
   bool get inDebt => balance.minor < 0;
-  Money get debt => Money(minor: balance.minor < 0 ? -balance.minor : 0, currency: currency);
+  Money get debt =>
+      Money(minor: balance.minor < 0 ? -balance.minor : 0, currency: currency);
 }
 
 class WalletLine {
@@ -225,8 +262,11 @@ class WalletLine {
       typeCode: '${type['code'] ?? ''}',
       typeLabel: '${type['label'] ?? ''}',
       description: '${json['description'] ?? ''}',
-      change: moneyOrNull(json['change']) ?? const Money(minor: 0, currency: ''),
-      balanceAfter: moneyOrNull(json['balance_after']) ?? const Money(minor: 0, currency: ''),
+      change:
+          moneyOrNull(json['change']) ?? const Money(minor: 0, currency: ''),
+      balanceAfter:
+          moneyOrNull(json['balance_after']) ??
+          const Money(minor: 0, currency: ''),
       postedAt: asTime(json['posted_at']),
     );
   }
@@ -285,7 +325,13 @@ class CouponSummary {
 
 /// The server's answer to "would this coupon apply?" - never a client decision.
 class CouponQuote {
-  const CouponQuote({required this.valid, required this.reasonCode, required this.discount, this.message, this.coupon});
+  const CouponQuote({
+    required this.valid,
+    required this.reasonCode,
+    required this.discount,
+    this.message,
+    this.coupon,
+  });
 
   factory CouponQuote.fromJson(Map<String, dynamic> json) {
     final discount = moneyOrNull(json['discount']);
@@ -294,7 +340,9 @@ class CouponQuote {
       reasonCode: '${json['reason_code'] ?? ''}',
       message: json['message'] as String?,
       discount: discount ?? const Money(minor: 0, currency: ''),
-      coupon: json['coupon'] is Map ? CouponSummary.fromJson(asMap(json['coupon'])) : null,
+      coupon: json['coupon'] is Map
+          ? CouponSummary.fromJson(asMap(json['coupon']))
+          : null,
     );
   }
 
@@ -349,8 +397,12 @@ class MyCoupons {
   const MyCoupons({required this.available, required this.history});
 
   factory MyCoupons.fromJson(Map<String, dynamic> json) => MyCoupons(
-    available: [for (final e in asMapList(json['available'])) CouponSummary.fromJson(e)],
-    history: [for (final e in asMapList(json['history'])) CouponUsage.fromJson(e)],
+    available: [
+      for (final e in asMapList(json['available'])) CouponSummary.fromJson(e),
+    ],
+    history: [
+      for (final e in asMapList(json['history'])) CouponUsage.fromJson(e),
+    ],
   );
 
   final List<CouponSummary> available;
@@ -372,13 +424,21 @@ enum AdjustmentType {
   const AdjustmentType(this.value);
   final String value;
 
-  static AdjustmentType parse(String? raw) => values.firstWhere((t) => t.value == raw, orElse: () => unknown);
+  static AdjustmentType parse(String? raw) =>
+      values.firstWhere((t) => t.value == raw, orElse: () => unknown);
 
   /// The types a person can ask for.
   static const choices = [extraStop, waiting, tollParking, scopeChange];
 
   /// Moving / freight bookings add two scope-bound types (P4.2).
-  static const scopedChoices = [extraHelper, stairs, extraStop, waiting, tollParking, scopeChange];
+  static const scopedChoices = [
+    extraHelper,
+    stairs,
+    extraStop,
+    waiting,
+    tollParking,
+    scopeChange,
+  ];
 }
 
 int? _detailInt(Object? details, String key) {
@@ -424,7 +484,9 @@ class Adjustment {
     expiresAt: asTime(json['expires_at']),
     decisionNote: json['decision_note'] as String?,
     createdAt: asTime(json['created_at']),
-    scopeItem: (json['details'] is Map ? (json['details'] as Map)['scope_item'] : null) as String?,
+    scopeItem:
+        (json['details'] is Map ? (json['details'] as Map)['scope_item'] : null)
+            as String?,
     helpers: _detailInt(json['details'], 'helpers'),
     floors: _detailInt(json['details'], 'floors'),
   );
@@ -488,7 +550,11 @@ class NewAdjustmentInput {
 }
 
 class ReceiptAdjustmentLine {
-  const ReceiptAdjustmentLine({required this.type, required this.reason, required this.amount});
+  const ReceiptAdjustmentLine({
+    required this.type,
+    required this.reason,
+    required this.amount,
+  });
 
   final String type;
   final String reason;
@@ -531,7 +597,8 @@ class TripReceipt {
     final parties = asMap(json['parties']);
     final counterpart = asMap(parties['provider'] ?? parties['customer']);
     final earnings = asMap(json['earnings']);
-    Money? opt(String key) => fare.containsKey(key) ? minorOf(fare[key], currency) : null;
+    Money? opt(String key) =>
+        fare.containsKey(key) ? minorOf(fare[key], currency) : null;
     return TripReceipt(
       number: '${json['number'] ?? ''}',
       currency: currency,
@@ -546,7 +613,11 @@ class TripReceipt {
       agreed: minorOf(fare['agreed_minor'], currency),
       adjustments: [
         for (final a in asMapList(fare['adjustments']))
-          ReceiptAdjustmentLine(type: '${a['type'] ?? ''}', reason: '${a['reason'] ?? ''}', amount: minorOf(a['amount_minor'], currency)),
+          ReceiptAdjustmentLine(
+            type: '${a['type'] ?? ''}',
+            reason: '${a['reason'] ?? ''}',
+            amount: minorOf(a['amount_minor'], currency),
+          ),
       ],
       adjustmentsTotal: minorOf(fare['adjustments_total_minor'], currency),
       subtotal: minorOf(fare['subtotal_minor'], currency),
@@ -556,7 +627,9 @@ class TripReceipt {
       tax: opt('tax_minor'),
       tip: opt('tip_minor'),
       total: opt('total_minor'),
-      earnings: earnings.isEmpty ? null : ReceiptEarnings.fromJson(earnings, currency),
+      earnings: earnings.isEmpty
+          ? null
+          : ReceiptEarnings.fromJson(earnings, currency),
       htmlUrl: json['html_url'] as String?,
     );
   }
@@ -600,7 +673,10 @@ class ReceiptEarnings {
     required this.earning,
   });
 
-  factory ReceiptEarnings.fromJson(Map<String, dynamic> json, String currency) => ReceiptEarnings(
+  factory ReceiptEarnings.fromJson(
+    Map<String, dynamic> json,
+    String currency,
+  ) => ReceiptEarnings(
     gross: minorOf(json['gross_minor'], currency),
     commission: minorOf(json['commission_minor'], currency),
     discountProvider: minorOf(json['discount_provider_minor'], currency),
@@ -628,9 +704,18 @@ enum EarningsPeriod {
 }
 
 class CategoryEarnings {
-  const CategoryEarnings({required this.name, required this.jobs, required this.gross, required this.earnings, this.code});
+  const CategoryEarnings({
+    required this.name,
+    required this.jobs,
+    required this.gross,
+    required this.earnings,
+    this.code,
+  });
 
-  factory CategoryEarnings.fromJson(Map<String, dynamic> json, String currency) => CategoryEarnings(
+  factory CategoryEarnings.fromJson(
+    Map<String, dynamic> json,
+    String currency,
+  ) => CategoryEarnings(
     code: json['code'] as String?,
     name: LocalizedText.fromJson(json['name']),
     jobs: asInt(json['jobs']),
@@ -646,7 +731,11 @@ class CategoryEarnings {
 }
 
 class EarningsDay {
-  const EarningsDay({required this.date, required this.jobs, required this.earnings});
+  const EarningsDay({
+    required this.date,
+    required this.jobs,
+    required this.earnings,
+  });
 
   final String date;
   final int jobs;
@@ -665,7 +754,10 @@ class ProviderWalletPosition {
     required this.maxPayout,
   });
 
-  factory ProviderWalletPosition.fromJson(Map<String, dynamic> json, String currency) => ProviderWalletPosition(
+  factory ProviderWalletPosition.fromJson(
+    Map<String, dynamic> json,
+    String currency,
+  ) => ProviderWalletPosition(
     balance: minorOf(json['balance_minor'], currency),
     reserved: minorOf(json['reserved_minor'], currency),
     available: minorOf(json['available_minor'], currency),
@@ -713,7 +805,10 @@ class EarningsSummary {
     final currency = '${json['currency'] ?? ''}';
     final t = asMap(json['totals']);
     return EarningsSummary(
-      period: EarningsPeriod.values.firstWhere((p) => p.value == json['period'], orElse: () => EarningsPeriod.month),
+      period: EarningsPeriod.values.firstWhere(
+        (p) => p.value == json['period'],
+        orElse: () => EarningsPeriod.month,
+      ),
       currency: currency,
       from: asTime(json['from']),
       to: asTime(json['to']),
@@ -726,10 +821,17 @@ class EarningsSummary {
       cashCollected: minorOf(t['cash_collected_minor'], currency),
       discountProvider: minorOf(t['discount_provider_minor'], currency),
       discountPlatform: minorOf(t['discount_platform_minor'], currency),
-      byCategory: [for (final c in asMapList(json['by_category'])) CategoryEarnings.fromJson(c, currency)],
+      byCategory: [
+        for (final c in asMapList(json['by_category']))
+          CategoryEarnings.fromJson(c, currency),
+      ],
       series: [
         for (final d in asMapList(json['series']))
-          EarningsDay(date: '${d['date']}', jobs: asInt(d['jobs']), earnings: minorOf(d['earnings_minor'], currency)),
+          EarningsDay(
+            date: '${d['date']}',
+            jobs: asInt(d['jobs']),
+            earnings: minorOf(d['earnings_minor'], currency),
+          ),
       ],
       wallet: ProviderWalletPosition.fromJson(asMap(json['wallet']), currency),
     );
@@ -784,8 +886,10 @@ class EarningLine {
       completedAt: asTime(json['completed_at']),
       grossFare: moneyOrNull(json['gross_fare']) ?? zero,
       commission: moneyOrNull(json['commission']) ?? zero,
-      discountPlatformFunded: moneyOrNull(json['discount_platform_funded']) ?? zero,
-      discountProviderFunded: moneyOrNull(json['discount_provider_funded']) ?? zero,
+      discountPlatformFunded:
+          moneyOrNull(json['discount_platform_funded']) ?? zero,
+      discountProviderFunded:
+          moneyOrNull(json['discount_provider_funded']) ?? zero,
       tax: moneyOrNull(json['tax']) ?? zero,
       tip: moneyOrNull(json['tip']) ?? zero,
       providerNet: moneyOrNull(json['provider_net']) ?? zero,
@@ -823,7 +927,8 @@ enum PayoutMethodKind {
   const PayoutMethodKind(this.value);
   final String value;
 
-  static PayoutMethodKind parse(String? raw) => values.firstWhere((k) => k.value == raw, orElse: () => unknown);
+  static PayoutMethodKind parse(String? raw) =>
+      values.firstWhere((k) => k.value == raw, orElse: () => unknown);
 }
 
 class PayoutMethod {
@@ -882,7 +987,11 @@ class NewPayoutMethodInput {
     'type': kind.value,
     'label': label,
     'details': kind == PayoutMethodKind.bankAccount
-        ? {'holder_name': holderName, 'bank_name': bankName, 'account_number': accountNumber}
+        ? {
+            'holder_name': holderName,
+            'bank_name': bankName,
+            'account_number': accountNumber,
+          }
         : {'holder_name': holderName, 'wallet_number': walletNumber},
     'is_default': isDefault,
   };
@@ -919,7 +1028,10 @@ class PayoutRequest {
       fee: moneyOrNull(json['fee']) ?? zero,
       net: moneyOrNull(json['net']) ?? zero,
       cancellable: json['cancellable'] == true,
-      methodLabel: [method['label'], method['last4']].whereType<String>().where((s) => s.isNotEmpty).join(' '),
+      methodLabel: [
+        method['label'],
+        method['last4'],
+      ].whereType<String>().where((s) => s.isNotEmpty).join(' '),
       transferReference: json['transfer_reference'] as String?,
       rejectionReason: json['rejection_reason'] as String?,
       failureReason: json['failure_reason'] as String?,
@@ -947,13 +1059,24 @@ class PayoutRequest {
   final DateTime? closedAt;
 
   /// Money is back in the wallet.
-  bool get returned => const {PayoutStatus.rejected, PayoutStatus.failed, PayoutStatus.cancelled, PayoutStatus.reversed}.contains(status);
+  bool get returned => const {
+    PayoutStatus.rejected,
+    PayoutStatus.failed,
+    PayoutStatus.cancelled,
+    PayoutStatus.reversed,
+  }.contains(status);
 
   bool get isFinal => status == PayoutStatus.paid || returned;
 }
 
 class PayoutBalance {
-  const PayoutBalance({required this.wallet, required this.reserved, required this.available, required this.min, required this.max});
+  const PayoutBalance({
+    required this.wallet,
+    required this.reserved,
+    required this.available,
+    required this.min,
+    required this.max,
+  });
 
   factory PayoutBalance.fromJson(Map<String, dynamic> json) {
     final currency = '${json['currency'] ?? ''}';

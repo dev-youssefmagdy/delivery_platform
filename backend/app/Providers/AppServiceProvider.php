@@ -122,6 +122,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::shouldBeStrict(! $this->app->isProduction());
 
+        // Debug pages print environment values, stack frames and queries: never allowed in production (P6.1).
+        if ($this->app->isProduction() && config('app.debug') === true && ! $this->app->runningInConsole()) {
+            throw new \RuntimeException('APP_DEBUG must be false when APP_ENV=production.');
+        }
+
         // The public website's URL map (P5.5), available to every Blade view as $sitePaths.
         \Illuminate\Support\Facades\View::composer('components.website.layouts.site', \App\View\Composers\SiteChromeComposer::class);
         \Illuminate\Support\Facades\View::share('sitePaths', $this->app->make(\App\Support\Website\SitePaths::class));

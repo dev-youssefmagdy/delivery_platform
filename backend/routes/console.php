@@ -58,3 +58,7 @@ Schedule::command('support:maintain')->everyFiveMinutes()->withoutOverlapping();
 Schedule::command('safety:maintain')->everyMinute()->withoutOverlapping();
 
 Schedule::job(new EvaluateRiskSignals)->name('risk:evaluate')->hourlyAt(10)->withoutOverlapping();
+
+Schedule::command('metrics:aggregate-daily')->hourlyAt(20)->withoutOverlapping(30);
+
+Schedule::command('metrics:aggregate-daily', ['--nightly' => true])->dailyAt('01:40')->withoutOverlapping(60);

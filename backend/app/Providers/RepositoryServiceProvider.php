@@ -181,6 +181,9 @@ use App\Repositories\Contracts\Notification\NotificationPreferenceRepositoryInte
 use App\Repositories\Contracts\Notification\NotificationTemplateRepositoryInterface;
 use App\Repositories\Contracts\Notification\PushCampaignRepositoryInterface;
 use App\Repositories\Contracts\Reviews\RatingModerationRepositoryInterface;
+use App\Repositories\Contracts\Reporting\MetricsAggregationRepositoryInterface;
+use App\Repositories\Contracts\Reporting\ReportingRepositoryInterface;
+use App\Repositories\Contracts\Reporting\ReportQueryRepositoryInterface;
 use App\Repositories\Contracts\Risk\RiskDataRepositoryInterface;
 use App\Repositories\Contracts\Risk\RiskSignalRepositoryInterface;
 use App\Repositories\Contracts\Safety\IncidentThreadRepositoryInterface;
@@ -191,6 +194,9 @@ use App\Repositories\Contracts\Support\SupportMacroRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Support\TicketThreadRepositoryInterface;
 use App\Repositories\Eloquent\Reviews\RatingModerationRepository;
+use App\Repositories\Eloquent\Reporting\MetricsAggregationRepository;
+use App\Repositories\Eloquent\Reporting\ReportingRepository;
+use App\Repositories\Eloquent\Reporting\ReportQueryRepository;
 use App\Repositories\Eloquent\Risk\RiskDataRepository;
 use App\Repositories\Eloquent\Risk\RiskSignalRepository;
 use App\Repositories\Eloquent\Safety\IncidentThreadRepository;
@@ -278,6 +284,9 @@ class RepositoryServiceProvider extends ServiceProvider
         RatingModerationRepositoryInterface::class => RatingModerationRepository::class,
         RiskSignalRepositoryInterface::class => RiskSignalRepository::class,
         RiskDataRepositoryInterface::class => RiskDataRepository::class,
+        MetricsAggregationRepositoryInterface::class => MetricsAggregationRepository::class,
+        ReportingRepositoryInterface::class => ReportingRepository::class,
+        ReportQueryRepositoryInterface::class => ReportQueryRepository::class,
         // @admin-module:bindings
         ProviderWorkloadRepositoryInterface::class => ProviderWorkloadRepository::class,
         ProviderLocationRepositoryInterface::class => ProviderLocationRepository::class,

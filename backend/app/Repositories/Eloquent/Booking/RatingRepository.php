@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Eloquent\Booking;
 
+use App\DTOs\Reviews\ReviewFilterData;
 use App\Enums\Common\ActorType;
+use App\Enums\Reviews\RatingReportStatus;
 use App\Enums\Reviews\ModerationStatus;
 use App\Models\BookingRating;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
@@ -54,5 +56,47 @@ final class RatingRepository implements RatingRepositoryInterface
             ->selectRaw('bookings.code as booking_code, bookings.uuid as booking_uuid')
             ->where('booking_ratings.ratee_type', $rateeType)
             ->where('booking_ratings.ratee_id', $rateeId);
+    }
+
+    public function findByUuid(string $uuid): ?BookingRating
+    {
+        return BookingRating::query()->where('uuid', $uuid)->first();
+    }
+
+    public function lockById(int $id): ?BookingRating
+    {
+        return BookingRating::query()->whereKey($id)->lockForUpdate()->first();
+    }
+
+    public function setModeration(BookingRating $rating, ModerationStatus $status): BookingRating
+    {
+        $rating->forceFill(['moderation_status' => $status, 'moderated_at' => now()])->save();
+
+        return $rating;
+    }
+
+    public function syncReportsCount(BookingRating $rating): int
+    {
+        $count = $rating->reports()->where('status', RatingReportStatus::Open->value)->count();
+        $rating->forceFill(['reports_count' => $count])->saveQuietly();
+
+        return $count;
+    }
+
+    public function datatableQuery(ReviewFilterData $filters): Builder
+    {
+        return BookingRating::query()
+            ->join('bookings', 'bookings.id', '=', 'booking_ratings.booking_id')
+            ->select('booking_ratings.*')
+            ->selectRaw('bookings.code as booking_code, bookings.uuid as booking_uuid')
+            ->when($filters->starsMin !== null, static fn (Builder $q) => $q->where('booking_ratings.stars', '>=', (int) $filters->starsMin))
+            ->when($filters->starsMax !== null, static fn (Builder $q) => $q->where('booking_ratings.stars', '<=', (int) $filters->starsMax))
+            ->when($filters->statuses !== [], static fn (Builder $q) => $q->whereIn('booking_ratings.moderation_status', array_map(static fn (ModerationStatus $case): string => $case->value, $filters->statuses)))
+            ->when($filters->reportedOnly === true, static fn (Builder $q) => $q->where('booking_ratings.reports_count', '>', 0))
+            ->when($filters->reportedOnly === false, static fn (Builder $q) => $q->where('booking_ratings.reports_count', 0))
+            ->when($filters->rateeType !== null, static fn (Builder $q) => $q->where('booking_ratings.ratee_type', $filters->rateeType?->value))
+            ->when($filters->bookingCode !== null, static fn (Builder $q) => $q->where('bookings.code', 'like', '%'.$filters->bookingCode.'%'))
+            ->when($filters->from !== null, static fn (Builder $q) => $q->where('booking_ratings.created_at', '>=', $filters->from?->startOfDay()))
+            ->when($filters->to !== null, static fn (Builder $q) => $q->where('booking_ratings.created_at', '<=', $filters->to?->endOfDay()));
     }
 }

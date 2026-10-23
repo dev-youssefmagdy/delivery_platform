@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Contracts\Booking;
 
+use App\DTOs\Reviews\ReviewFilterData;
+use App\Enums\Reviews\ModerationStatus;
 use App\Models\BookingRating;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -40,4 +42,28 @@ interface RatingRepositoryInterface
      * @return Builder<BookingRating>
      */
     public function datatableQueryForRatee(string $rateeType, int $rateeId): Builder;
+
+    public function findByUuid(string $uuid): ?BookingRating;
+
+    /**
+     * Row lock for a moderation change (the whole decision runs in one transaction).
+     */
+    public function lockById(int $id): ?BookingRating;
+
+    /**
+     * Changes the visibility only. The text, stars and tags are never written here (SRS §16.12).
+     */
+    public function setModeration(BookingRating $rating, ModerationStatus $status): BookingRating;
+
+    /**
+     * Recounts the open reports of the rating from the rows and stores the number (idempotent).
+     */
+    public function syncReportsCount(BookingRating $rating): int;
+
+    /**
+     * Reviews listing of the admin (Appendix C filters), with booking code and the rater's and ratee's display names resolved by the table.
+     *
+     * @return Builder<BookingRating>
+     */
+    public function datatableQuery(ReviewFilterData $filters): Builder;
 }

@@ -180,6 +180,9 @@ use App\Repositories\Contracts\Notification\NotificationDeliveryRepositoryInterf
 use App\Repositories\Contracts\Notification\NotificationPreferenceRepositoryInterface;
 use App\Repositories\Contracts\Notification\NotificationTemplateRepositoryInterface;
 use App\Repositories\Contracts\Notification\PushCampaignRepositoryInterface;
+use App\Repositories\Contracts\Reviews\RatingModerationRepositoryInterface;
+use App\Repositories\Contracts\Risk\RiskDataRepositoryInterface;
+use App\Repositories\Contracts\Risk\RiskSignalRepositoryInterface;
 use App\Repositories\Contracts\Safety\IncidentThreadRepositoryInterface;
 use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
 use App\Repositories\Contracts\Safety\TrustedContactRepositoryInterface;
@@ -187,6 +190,9 @@ use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportMacroRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Support\TicketThreadRepositoryInterface;
+use App\Repositories\Eloquent\Reviews\RatingModerationRepository;
+use App\Repositories\Eloquent\Risk\RiskDataRepository;
+use App\Repositories\Eloquent\Risk\RiskSignalRepository;
 use App\Repositories\Eloquent\Safety\IncidentThreadRepository;
 use App\Repositories\Eloquent\Safety\SafetyIncidentRepository;
 use App\Repositories\Eloquent\Safety\TrustedContactRepository;
@@ -269,6 +275,9 @@ class RepositoryServiceProvider extends ServiceProvider
         SupportMacroRepositoryInterface::class => SupportMacroRepository::class,
         SupportTicketRepositoryInterface::class => SupportTicketRepository::class,
         TicketThreadRepositoryInterface::class => TicketThreadRepository::class,
+        RatingModerationRepositoryInterface::class => RatingModerationRepository::class,
+        RiskSignalRepositoryInterface::class => RiskSignalRepository::class,
+        RiskDataRepositoryInterface::class => RiskDataRepository::class,
         // @admin-module:bindings
         ProviderWorkloadRepositoryInterface::class => ProviderWorkloadRepository::class,
         ProviderLocationRepositoryInterface::class => ProviderLocationRepository::class,

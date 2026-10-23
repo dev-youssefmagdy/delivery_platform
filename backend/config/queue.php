@@ -29,6 +29,9 @@ return [
     |
     */
 
+    // Connection for long-running jobs; null (the default) keeps them on the default connection (sync/database in dev and tests).
+    'long_connection' => env('QUEUE_LONG_CONNECTION'),
+
     'connections' => [
 
         'sync' => [
@@ -69,6 +72,18 @@ return [
             'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
             'queue' => env('REDIS_QUEUE', 'default'),
             'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
+        // P6.2: for jobs that may run longer than the 90 s retry window of `redis` (exports, daily metrics, push campaigns, up to 900 s).
+        // `retry_after` MUST exceed the longest job timeout, otherwise a still-running job is released and executed twice. Worker for
+        // this connection: `queue:work redis_long --queue=low --timeout=900`.
+        'redis_long' => [
+            'driver' => 'redis',
+            'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
+            'queue' => env('REDIS_QUEUE', 'default'),
+            'retry_after' => (int) env('REDIS_LONG_QUEUE_RETRY_AFTER', 960),
             'block_for' => null,
             'after_commit' => false,
         ],

@@ -21,6 +21,7 @@ class GenerateAdminExport implements ShouldQueue
     public function __construct(public readonly int $exportId)
     {
         $this->onQueue(QueueName::Low->value);
+        $this->onConnection(config('queue.long_connection')); // timeout above the default retry_after
     }
 
     public function handle(AdminExportService $exports): void

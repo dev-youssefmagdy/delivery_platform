@@ -129,6 +129,18 @@ class AppServiceProvider extends ServiceProvider
             $catalogModel::deleted($bump);
         }
 
+        // Failed-job alerting (P6.2): one CRITICAL log line per final failure and per backed-up queue (`queue:monitor`, scheduled). Ship
+        // the `critical` channel to the pager/Sentry in P6.4. Only class, queue, attempts and the exception class: payloads hold PII.
+        \Illuminate\Support\Facades\Queue::failing(static function (\Illuminate\Queue\Events\JobFailed $event): void {
+            \Illuminate\Support\Facades\Log::critical('queue.job_failed', [
+                'job' => $event->job->resolveName(), 'queue' => $event->job->getQueue(), 'connection' => $event->connectionName,
+                'attempts' => $event->job->attempts(), 'exception' => $event->exception::class,
+            ]);
+        });
+        \Illuminate\Support\Facades\Event::listen(static function (\Illuminate\Queue\Events\QueueBusy $event): void {
+            \Illuminate\Support\Facades\Log::critical('queue.backed_up', ['queue' => $event->queue, 'size' => $event->size, 'connection' => $event->connectionName]);
+        });
+
         // Debug pages print environment values, stack frames and queries: never allowed in production (P6.1).
         if ($this->app->isProduction() && config('app.debug') === true && ! $this->app->runningInConsole()) {
             throw new \RuntimeException('APP_DEBUG must be false when APP_ENV=production.');

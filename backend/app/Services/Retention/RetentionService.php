@@ -66,6 +66,8 @@ final class RetentionService
         $query = static fn (): Builder => DB::table('gateway_webhook_events')
             ->where('signature_valid', true)
             ->whereNotNull('payload')
+            // An event that was never processed can still be reprocessed by an admin, which replays the stored payload: keep it.
+            ->whereNotNull('processed_at')
             ->where('received_at', '<', $before)
             ->where(static fn (Builder $q) => $q->whereNull('payment_id')->orWhereNotIn('payment_id', $held));
 

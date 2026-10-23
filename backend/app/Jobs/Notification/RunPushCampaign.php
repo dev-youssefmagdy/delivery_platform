@@ -22,6 +22,7 @@ class RunPushCampaign implements ShouldQueue
     public function __construct(public readonly int $campaignId)
     {
         $this->onQueue(QueueName::Notifications->value);
+        $this->onConnection(config('queue.long_connection')); // timeout above the default retry_after
     }
 
     public function handle(PushCampaignService $campaigns): void

@@ -1214,3 +1214,32 @@ User A owns the resource, user B (same app) and user C (other app / role) call e
 - Browser pass of admin and website with the CSP enforced (`CSP_MODE=report-only` first): maps, charts, DataTables, file previews, the CKEditor-less rich text fields, Precognition forms; fix or extend `CSP_EXTRA_IMG_SRC`.
 - Run `gitleaks detect` (not installed here) over the repository and history; run `flutter pub outdated` and `npm audit` again at release.
 - Behind the real load balancer: `TRUSTED_PROXIES` set, client IP in the audit log and allowlist correct, HSTS present, cookies `Secure`.
+
+## P6.2 (performance, indexes, retention, queues)
+
+### Feature: retention (`Tests/Feature/Retention`)
+- `RetentionServiceTest`: each step deletes only rows older than its configured age (boundary day on both sides), `--dry-run` changes nothing and reports the same counts, a second run affects 0 rows (idempotent), chunking works past `chunk` rows and `max_chunks_per_step` leaves the rest for the next run, `--only` limits to the named steps, never touches `notification_deliveries` still `queued` / `sending`.
+- Legal hold: a booking with a `legal_hold` safety incident keeps its expired share links, the payload of its payments' webhook events, its old location samples (both 30 and 90 day rules) and its chat; releasing the hold lets the next run remove them; an open ticket on the booking has the same effect and closing it releases; rows of other bookings in the same run are still removed.
+- Webhooks: rejected rows (`signature_valid = 0`) older than 30 days are deleted; accepted rows keep every column but `payload` (NULL after 90 days) and events never processed (`processed_at` NULL, still reprocess-able, replay uses the payload) keep their payload; the unique `(gateway, event_id)` still blocks a replay after the payload is gone.
+- Never-delete guard: after running every retention job on a seeded database `journal_entries`, `journal_lines`, `ledger_accounts`, `payments`, `payment_refunds`, `payout_requests`, `bookings`, `admin_audit_logs`, `user_consents` counts and checksums are unchanged (architecture-style test that no retention class references those tables).
+- Schedule: `schedule:list` contains `retention:run`, `locations:prune`, `chat:purge-expired`, `model:prune` (idempotency keys, exports, OTP, inbox), `queue:monitor`, `queue:prune-failed`; every retention window is configurable by env.
+
+### Feature: cache
+- `CatalogCacheTest`: second `GET /service-families`, `/service-categories`, `/vehicle-categories` issues no query; per locale and per filter keys do not mix (ar and en, `booking_type`, `service_family_id`); saving, deactivating, publishing or deleting a family, category, category version or vehicle category, a zone/category link and the category/vehicle pivot sync each show the change on the next request; a position-based category request is never cached; empty translation maps still serialise as `{}`; with `cache.serializable_classes = false` no model is stored.
+- `AppConfigCacheTest` (addition): each writer (settings, countries, currencies, policies, flags, app versions) forgets the cache.
+- Negative tests: no cache key is created for wallet balances, permissions or token abilities (grep-style test over `Cache::` usages).
+
+### Index and query checks (database-level)
+- `IndexPresenceTest`: each index added by `2026_11_18_090000_add_performance_and_retention_indexes` exists after `migrate` and is gone after `migrate:rollback --step=1`; the migration is rerunnable.
+- `ExplainTest` on the perf database (`perf:seed`, not CI): the admin bookings listing default, per status, per payment status and per city use an index (no `Using filesort` on the ordered `LIMIT 25`); provider offers, customer offers, inbox and ledger-line queries use their indexes; record plans and times in `docs/PERFORMANCE.md` section 6.
+- `DataTableColumnsTest`: the gateway webhook events listing does not select `payload`; every DataTable renders and exports with strict models (no `MissingAttributeException`, no lazy loading) with a seeded row (smoke over all admin tables).
+- `perf:seed`: refuses a database not ending in `_perf`, seeds the requested counts on a `_perf` database, is rerunnable.
+
+### Queue
+- `QueueConfigTest`: `redis_long.retry_after` is greater than every job `$timeout` and than the long worker timeout; `GenerateAdminExport`, `AggregateDailyMetrics` and `RunPushCampaign` use `queue.long_connection`; critical jobs have `tries = 3` and `backoff [2, 10]`.
+- A failing job logs `queue.job_failed` at critical level without its payload; `QueueBusy` logs `queue.backed_up`.
+
+### Manual / live (needs the perf environment)
+- Create `delivery_platform_perf`, `perf:seed`, run the EXPLAINs, run the four k6 scripts (1 VU dry run first), fill the table in `docs/PERFORMANCE.md` section 6, decide on partitioning of `provider_locations`, worker counts and queue monitor thresholds, Reverb node count.
+- Verify with real workers that a 600 s export on `redis_long` is not executed twice, and that `queue:restart` drains cleanly.
+

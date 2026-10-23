@@ -46,6 +46,7 @@
 | P5.6 | Integration health, app versions, feature flags, system pages | P1 | 🟡 | gate not run (see section) |
 | P5.7 | Referrals, loyalty, provider incentives | P2 | 🟡 | gate not run (see section) |
 | P6.1 | Security, IDOR, race & webhook review | P0 | 🟡 | 2026-11-17 (gate not run) |
+| P6.2 | Performance, indexes, retention | P0 | 🟡 | 2026-11-18 (gate not run) |
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
@@ -1218,3 +1219,24 @@ CSP never seen in a browser (admin keeps `unsafe-eval` for Alpine; start with `C
 
 ### Next (P6.2)
 Indexes for the hot paths named in the review (`admin_role_permission_grants` is tiny; `gateway_webhook_events` rejected rows, login events, sessions need retention), then P6.3 / P6.4: run the deferred test backlog (all MISSED_TESTS sections), a browser pass with the CSP, `composer install --no-dev` images, `TRUSTED_PROXIES`, run `admin:sync-role-permissions` on every deploy.
+
+## P6.2 — Performance, indexes, retention · 🟡 2026-11-18 (gate NOT run)
+
+Committed directly on `main`. ADR-207..209. **By user instruction no test, pint, phpstan, `php artisan test`, flutter, vitest, browser smoke, `scripts/check.sh` or load test was written or run, so the milestone is not marked done**; the checks that should exist are in `MISSED_TESTS.md` (P6.2). Details: `docs/PERFORMANCE.md`, `docs/OPERATIONS.md`, `loadtest/README.md`.
+
+### Built
+- **Indexes** (`2026_11_18_090000`, additive): bookings by `created_at`, `(status|payment_status|booking_type, created_at)` for the admin listing; offers monitor; retention-by-age indexes on share links, admin sessions, webhook events, notification deliveries, coupon attempts. Gateway webhook listing no longer selects `payload`.
+- **Retention**: `retention:run` (daily 04:30, `--dry-run`, `--only`) for share links, rejected webhooks, webhook payload blanking, login events, admin sessions, notification deliveries, coupon attempts; legal-hold / open-ticket exceptions also added to `locations:prune` and `chat:purge-expired`; archive strategy documented (not implemented).
+- **Cache**: `CatalogCache` (JSON text, versioned key, model-event invalidation) behind the public catalog endpoints; app config cache already existed; nothing authorization- or money-related cached.
+- **Queues**: `redis_long` connection (`QUEUE_LONG_CONNECTION`) for the 600-900 s jobs (the 90 s `retry_after` would have run them twice), critical job backoff, CRITICAL logs for failed jobs and backed-up queues, `queue:monitor` and prune schedules, worker table and Reverb scaling notes.
+- **Perf tooling**: `perf:seed` (refuses databases not ending `_perf`), k6 scripts in `loadtest/` (location ingest, booking flow, offers/accept) with README.
+
+### Checks run (cheap only)
+`php -l`; `migrate` / `migrate:rollback --step=1` / `migrate`; `schedule:list`; `retention:run --dry-run`; rolled-back tinker runs of the retention steps (share links, webhooks, idempotent rerun), of the seed SQL (5 rows, rolled back) and of the cached catalog endpoints (0 queries on a hit, invalidation on save); EXPLAIN on the development database only to show the new indexes are chosen.
+
+### Known gaps
+**No measurement of any kind exists**: the application MySQL user cannot create `delivery_platform_perf`, so no volume EXPLAIN and no load test ran. Legal-hold branches were not exercised with real incident rows. Tickets, incidents, audit, delivery and content listings still select `table.*`. Partitioning of `provider_locations`, worker counts and monitor thresholds wait for measurements.
+
+### Next (P6.3 / P6.4)
+Add `QUEUE_LONG_CONNECTION=redis_long` and the supervisor units to the deployment, route CRITICAL logs to the pager, create the perf database and fill PERFORMANCE.md section 6.
+

@@ -72,3 +72,8 @@ Schedule::job(new PublishScheduledContent)->name('content:publish-scheduled')->e
 // growth feature flags are off (there are no credits or waiting rewards then).
 Schedule::command('growth:expire-credits')->hourly()->withoutOverlapping();
 Schedule::command('growth:settle')->everyTenMinutes()->withoutOverlapping();
+
+// Queue health (P6.2): alert (QueueBusy -> CRITICAL log) when a queue backs up beyond its threshold; keep the failed-job table bounded.
+Schedule::command('queue:monitor redis:critical,redis:default,redis:notifications,redis:low --max=200')->everyMinute()->when(static fn (): bool => config('queue.default') === 'redis');
+Schedule::command('queue:prune-failed', ['--hours' => 720])->dailyAt('05:15');
+Schedule::command('queue:prune-batches', ['--hours' => 48, '--unfinished' => 72, '--cancelled' => 72])->dailyAt('05:20');

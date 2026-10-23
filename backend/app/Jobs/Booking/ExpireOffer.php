@@ -19,6 +19,9 @@ class ExpireOffer implements ShouldQueue
 
     public int $tries = 3;
 
+    /** @var list<int> seconds before attempts 2 and 3 (short: these are latency sensitive) */
+    public array $backoff = [2, 10];
+
     public function __construct(public readonly int $offerId)
     {
         $this->onQueue(QueueName::Critical->value);

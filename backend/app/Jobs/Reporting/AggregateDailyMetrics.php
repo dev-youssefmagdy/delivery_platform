@@ -21,6 +21,7 @@ class AggregateDailyMetrics implements ShouldQueue
     public function __construct(public readonly int $days = MetricsAggregationService::HOURLY_DAYS, public readonly ?int $cityId = null)
     {
         $this->onQueue(QueueName::Low->value);
+        $this->onConnection(config('queue.long_connection')); // timeout above the default retry_after
     }
 
     public function handle(MetricsAggregationService $aggregation): void

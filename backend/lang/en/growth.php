@@ -98,6 +98,8 @@ return [
     // Short texts of the app responses (referral share text, status labels).
     'app' => [
         'share_text' => 'Join me on the app and get a reward. Use my code :code or open :link',
+        'credits_note' => 'Promotional credit is used first when you pay from your wallet. Unused credit expires on the date shown.',
+        'applied' => 'Referral code applied.',
         'level_none' => 'No level yet',
     ],
 ];

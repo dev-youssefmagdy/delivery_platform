@@ -56,6 +56,10 @@ use App\Http\Controllers\Api\V1\Provider\TripController;
 use App\Http\Controllers\Api\V1\Provider\TripFeedbackController;
 use App\Http\Controllers\Api\V1\Provider\RequestController;
 use App\Http\Controllers\Api\V1\Provider\VehicleController;
+use App\Http\Controllers\Api\V1\Growth\CreditController;
+use App\Http\Controllers\Api\V1\Growth\IncentiveController;
+use App\Http\Controllers\Api\V1\Growth\LoyaltyController;
+use App\Http\Controllers\Api\V1\Growth\ReferralController;
 use App\Http\Controllers\Api\V1\Support\BookingChatController;
 use App\Http\Controllers\Api\V1\Support\SupportTicketController;
 use App\Http\Controllers\Api\V1\Webhooks\PaymentWebhookController;
@@ -398,3 +402,19 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
 Route::post('broadcasting/auth', static fn (Request $request) => Broadcast::auth($request))
     ->middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen', 'account.active'])
     ->name('broadcasting.auth');
+
+// Growth (P5.7): referral share / apply (both apps), customer credits and loyalty, provider incentive progress. Every endpoint is behind
+// its server feature flag (referrals / loyalty / incentives, default off) and answers 404 `feature_disabled` when off.
+Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen', 'throttle:60,1'])->prefix('me')->name('me.')->group(function (): void {
+    Route::get('referral', [ReferralController::class, 'show'])->name('referral.show');
+    Route::post('referral/apply', [ReferralController::class, 'apply'])->middleware(['account.active', 'idempotent'])->name('referral.apply');
+});
+
+Route::middleware(['auth:sanctum', 'ability:customer', 'user.seen', 'throttle:60,1'])->prefix('me')->name('me.')->group(function (): void {
+    Route::get('credits', [CreditController::class, 'index'])->name('credits.index');
+    Route::get('loyalty', [LoyaltyController::class, 'show'])->name('loyalty.show');
+});
+
+Route::middleware(['auth:sanctum', 'ability:provider', 'user.seen', 'throttle:60,1'])->prefix('provider')->name('provider.')->group(function (): void {
+    Route::get('incentives', [IncentiveController::class, 'index'])->name('incentives.index');
+});

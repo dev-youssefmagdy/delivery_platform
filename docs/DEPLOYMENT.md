@@ -173,10 +173,12 @@ Create the schema and user as in `docs/SETUP.md` section 2 (without the testing 
 
 ## 7. Private storage on S3-compatible object storage
 
-Provider documents, vehicle photos, chat attachments, payout evidence, proof pictures and admin exports use private disks (`FILESYSTEM_DISK`, `PROVIDER_DOCUMENTS_DISK`, `ADMIN_EXPORTS_DISK`).
-Set `s3` for each, `AWS_*` credentials, `AWS_USE_PATH_STYLE_ENDPOINT=true` and `AWS_ENDPOINT` for non-AWS providers (MinIO, Spaces, Wasabi). The bucket must be **private** (block public access), with
-server-side encryption, versioning and a lifecycle rule for old versions. The application only serves these files through authorised routes or short-lived signed URLs. CMS images that must be
-public belong on a separate public bucket/CDN whose origin is added to `CSP_EXTRA_IMG_SRC`. Verify the disk configuration names in `config/filesystems.php` before first use; uploads to S3 were never exercised.
+The env-switchable disks are `PROVIDER_DOCUMENTS_DISK` (provider documents and vehicle photos; default `private` = `storage/app/private-files`, root `PRIVATE_FILES_ROOT`),
+`ADMIN_EXPORTS_DISK` (admin exports and customer data exports; default `local`) and `FILESYSTEM_DISK`. Set each of these to `s3` with the `AWS_*` credentials
+(`AWS_ENDPOINT` and `AWS_USE_PATH_STYLE_ENDPOINT=true` for MinIO, Spaces, Wasabi). **Not every upload path was audited for its disk**: chat attachments, support attachments, payout evidence, proof pictures,
+CMS media (`CONTENT_MEDIA_DISK`, default `public`) and profile photos (`identity.photo.disk`) may still write to the local disk. Before go-live, `grep -rn "Storage::disk\|->store(" backend/app` and either
+mount a shared network volume at `shared/storage` (all nodes) or confirm each path honours its disk. The bucket must be **private** (block public access), server-side encrypted, versioned, with a lifecycle rule for old versions;
+files are served only through authorised routes or short-lived signed URLs. A public CMS bucket/CDN origin goes into `CSP_EXTRA_IMG_SRC`. Uploads to S3 were never exercised.
 
 ## 8. Zero-downtime deploy
 

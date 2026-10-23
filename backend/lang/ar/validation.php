@@ -22,6 +22,7 @@ return [
     'ascii' => 'يجب أن يحتوي حقل :attribute على حروف وأرقام ورموز إنجليزية أحادية البايت فقط.',
     'before' => 'يجب أن يكون حقل :attribute تاريخًا قبل :date.',
     'before_or_equal' => 'يجب أن يكون حقل :attribute تاريخًا قبل :date أو مساويًا له.',
+    'base64' => 'يجب أن يكون حقل :attribute نصًا صالحًا بترميز Base64.',
     'between' => [
         'array' => 'يجب أن يحتوي حقل :attribute على عدد عناصر بين :min و :max.',
         'file' => 'يجب أن يكون حجم ملف :attribute بين :min و :max كيلوبايت.',

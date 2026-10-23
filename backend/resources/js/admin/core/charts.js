@@ -8,6 +8,8 @@
  * RTL: the time axis runs right to left, the value axis sits on the right, tooltips and legends are right to left, numbers use the
  * viewer's locale digits. A DataTable-bound chart (data-chart-for) is redrawn from `json.chart` after every table reload.
  */
+import { t } from './config.js';
+
 const instances = new WeakMap();
 let ChartLib = null;
 
@@ -66,7 +68,8 @@ function prepareDonut(payload) {
         const rest = data.slice(7).reduce((sum, value) => sum + (value ?? 0), 0);
         labels.splice(7);
         data.splice(7);
-        labels.push(document.documentElement.lang === 'ar' ? 'أخرى' : 'Other');
+        const other = t('charts.other');
+        labels.push(other === 'charts.other' ? 'Other' : other);
         data.push(rest);
     }
 

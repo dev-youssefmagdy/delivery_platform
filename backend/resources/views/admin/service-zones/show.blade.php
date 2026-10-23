@@ -21,7 +21,7 @@
         <x-admin.alert type="warning" class="mb-6">{{ __('admin.service_zones.draft_notice') }}</x-admin.alert>
     @endif
     @if ($overlaps->isNotEmpty())
-        <x-admin.alert type="warning" class="mb-6">{{ __('admin.service_zones.overlap_warning', ['zones' => $overlaps->map(fn ($other) => $other->name)->implode('، ')]) }}</x-admin.alert>
+        <x-admin.alert type="warning" class="mb-6">{{ __('admin.service_zones.overlap_warning', ['zones' => $overlaps->map(fn ($other) => $other->name)->implode(__('admin.list_separator'))]) }}</x-admin.alert>
     @endif
 
     <x-admin.card :padding="false" class="p-5">

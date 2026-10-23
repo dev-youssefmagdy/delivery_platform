@@ -46,8 +46,8 @@
                     <x-admin.detail-list.item :label="__('growth.incentive.fields.min_rating')" :value="$campaign->min_rating ?? '—'" />
                     <x-admin.detail-list.item :label="__('growth.fields.min_order')"><x-admin.money :minor="$campaign->min_order_minor" :currency="$campaign->currency" /></x-admin.detail-list.item>
                     <x-admin.detail-list.item :label="__('growth.incentive.fields.max_per_customer')" :value="$campaign->max_jobs_per_customer" />
-                    <x-admin.detail-list.item :label="__('growth.fields.categories')" :value="implode('، ', $scope->categories($campaign->service_category_ids)) ?: __('growth.fields.all')" />
-                    <x-admin.detail-list.item :label="__('growth.fields.cities')" :value="implode('، ', $scope->cities($campaign->city_ids)) ?: __('growth.fields.all')" />
+                    <x-admin.detail-list.item :label="__('growth.fields.categories')" :value="implode(__('admin.list_separator'), $scope->categories($campaign->service_category_ids)) ?: __('growth.fields.all')" />
+                    <x-admin.detail-list.item :label="__('growth.fields.cities')" :value="implode(__('admin.list_separator'), $scope->cities($campaign->city_ids)) ?: __('growth.fields.all')" />
                     <x-admin.detail-list.item :label="__('growth.fields.starts_at')" :value="$when($campaign->starts_at)" />
                     <x-admin.detail-list.item :label="__('growth.fields.ends_at')" :value="$when($campaign->ends_at)" />
                     <x-admin.detail-list.item :label="__('growth.fields.status_reason')" :value="$campaign->status_reason ?? '—'" />

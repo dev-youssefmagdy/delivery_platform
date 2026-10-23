@@ -61,7 +61,7 @@ final class ServiceCategoriesDataTable extends AdminDataTable
         $this->boolColumn($table, 'negotiation_enabled');
         $table->addColumn('family', static fn (ServiceCategory $category): string => (string) $category->family->getTranslation('name', app()->getLocale(), true));
         $table->addColumn('published_version', static fn (ServiceCategory $category): string => $category->publishedVersion === null ? '—' : 'v'.$category->publishedVersion->version);
-        $table->editColumn('allowed_booking_types', static fn (ServiceCategory $category): string => implode('، ', array_map(
+        $table->editColumn('allowed_booking_types', static fn (ServiceCategory $category): string => implode(__('admin.list_separator'), array_map(
             static fn (string $type): string => BookingType::tryFrom($type)?->label() ?? $type,
             $category->allowed_booking_types,
         )));

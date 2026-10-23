@@ -143,6 +143,7 @@ return [
     ],
 
     'js' => [
+        'charts' => ['other' => 'أخرى'],
         'realtime' => [
             'connected' => 'مباشر',
             'connecting' => 'جارٍ الاتصال…',
@@ -330,6 +331,8 @@ return [
             'ignore' => 'إذا لم تكن تتوقع هذه الرسالة فيمكنك تجاهلها.',
         ],
     ],
+
+    'list_separator' => '، ',
 
     'security' => [
         'title' => 'حسابي',

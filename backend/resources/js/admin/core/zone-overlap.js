@@ -10,7 +10,7 @@ export function overlapMessage(label, zones) {
         return '';
     }
 
-    return `${label} ${zones.map((zone) => `${zone.name} (${zone.city})`).join('، ')}`;
+    return `${label} ${zones.map((zone) => `${zone.name} (${zone.city})`).join(document.documentElement.lang === 'en' ? ', ' : '، ')}`;
 }
 
 export function initZoneOverlap(root = document) {

@@ -5,7 +5,7 @@
     $money = app(\App\Support\Money\MoneyFormatter::class);
     $currency = app(\App\Support\Money\CurrencyRegistry::class)->get((string) config('admin.default_currency'));
     $fare = static fn (?int $minor): ?string => $minor === null ? null : $money->format(\App\Support\Money\Money::of($minor, $currency));
-    $labels = static fn (array $values, string $enum): string => implode('، ', array_map(static fn (string $value): string => $enum::tryFrom($value)?->label() ?? $value, $values));
+    $labels = static fn (array $values, string $enum): string => implode(__('admin.list_separator'), array_map(static fn (string $value): string => $enum::tryFrom($value)?->label() ?? $value, $values));
 @endphp
 <x-admin.layouts.app :title="__('admin.service_categories.show_title')">
     <x-admin.page-header

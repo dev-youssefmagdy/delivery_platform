@@ -132,7 +132,7 @@ final class ServiceZoneController extends AdminController
             return $base;
         }
 
-        return $base.' '.__('admin.service_zones.overlap_warning', ['zones' => $result->overlaps->map(static fn (ServiceZone $zone): string => (string) $zone->name)->implode('، ')]);
+        return $base.' '.__('admin.service_zones.overlap_warning', ['zones' => $result->overlaps->map(static fn (ServiceZone $zone): string => (string) $zone->name)->implode(__('admin.list_separator'))]);
     }
 
     private function afterStateChange(bool $fromShow, string $message, string $showUrl): AdminFormResponse

@@ -5,7 +5,7 @@
     $state = \App\Enums\Booking\CancellationPolicyState::of($policy);
     $tz = (string) config('admin.display_timezone', 'UTC');
     $when = static fn (?\Carbon\CarbonInterface $at): ?string => $at?->copy()->setTimezone($tz)->translatedFormat('Y-m-d H:i');
-    $reasonLabels = static fn (array $codes): string => implode('، ', array_map(static fn (string $code): string => \App\Enums\Booking\CancellationReason::tryFrom($code)?->label() ?? $code, $codes));
+    $reasonLabels = static fn (array $codes): string => implode(__('admin.list_separator'), array_map(static fn (string $code): string => \App\Enums\Booking\CancellationReason::tryFrom($code)?->label() ?? $code, $codes));
     $ruleValue = static function (array $rule) use ($amount): string {
         $type = \App\Enums\Booking\CancellationFeeType::tryFrom((string) $rule['fee_type']);
 

@@ -64,7 +64,7 @@ final class IncentiveProgressDataTable extends AdminDataTable
         $this->rawColumn('provider');
         $table->addColumn('progress', static fn (IncentiveProgress $row): string => e(($row->completed_jobs % max(1, $row->campaign->target_jobs)).' / '.$row->campaign->target_jobs));
         $this->enumBadgeColumn($table, 'status');
-        $table->addColumn('flags', static fn (IncentiveProgress $row): string => e(implode('، ', array_map(static fn (array $flag): string => FraudFlag::tryFrom($flag['flag'])?->label() ?? $flag['flag'], $row->flags ?? [])) ?: '—'));
+        $table->addColumn('flags', static fn (IncentiveProgress $row): string => e(implode(__('admin.list_separator'), array_map(static fn (array $flag): string => FraudFlag::tryFrom($flag['flag'])?->label() ?? $flag['flag'], $row->flags ?? [])) ?: '—'));
 
         $this->actionsColumn($table, static fn (IncentiveProgress $row): array => [
             TableAction::confirm(__('growth.incentive.actions.release'), route('admin.incentive-progress.release', $row), 'review', $row, icon: 'check', variant: 'secondary', confirm: ['title' => __('growth.incentive.confirm.release_title'), 'message' => __('growth.incentive.confirm.release_message'), 'confirm_label' => __('growth.incentive.actions.release')], reloadTable: self::TABLE_ID),

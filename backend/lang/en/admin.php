@@ -143,6 +143,7 @@ return [
     ],
 
     'js' => [
+        'charts' => ['other' => 'Other'],
         'realtime' => [
             'connected' => 'Live',
             'connecting' => 'Connecting…',
@@ -330,6 +331,8 @@ return [
             'ignore' => 'If you did not expect this email, you can ignore it.',
         ],
     ],
+
+    'list_separator' => ', ',
 
     'security' => [
         'title' => 'My account',

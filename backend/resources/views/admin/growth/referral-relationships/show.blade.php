@@ -47,7 +47,7 @@
                 @forelse ($flags as $flag)
                     <div class="mb-3 rounded-(--radius-control) border border-slate-200 p-3">
                         <div class="font-medium text-slate-900">{{ $flag['label'] }}</div>
-                        <div class="mt-1 text-sm text-slate-500">{{ collect($flag['evidence'])->map(fn ($v, $k) => \Illuminate\Support\Str::headline((string) $k).': '.(is_bool($v) ? ($v ? __('admin.common.yes') : __('admin.common.no')) : $v))->implode('، ') }}</div>
+                        <div class="mt-1 text-sm text-slate-500">{{ collect($flag['evidence'])->map(fn ($v, $k) => \Illuminate\Support\Str::headline((string) $k).': '.(is_bool($v) ? ($v ? __('admin.common.yes') : __('admin.common.no')) : $v))->implode(__('admin.list_separator')) }}</div>
                     </div>
                 @empty
                     <p class="text-sm text-slate-500">{{ __('growth.referral.no_flags') }}</p>

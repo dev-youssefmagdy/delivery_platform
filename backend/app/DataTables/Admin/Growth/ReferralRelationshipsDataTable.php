@@ -65,7 +65,7 @@ final class ReferralRelationshipsDataTable extends AdminDataTable
         $table->addColumn('referrer', static fn (ReferralRelationship $row): string => e($row->referrer->name ?? '—'));
         $table->addColumn('referee', static fn (ReferralRelationship $row): string => e($row->referee->name ?? '—'));
         $this->enumBadgeColumn($table, 'status');
-        $table->addColumn('flags', static fn (ReferralRelationship $row): string => e(implode('، ', array_map(static fn (string $flag): string => FraudFlag::tryFrom($flag)?->label() ?? $flag, $row->flagKeys())) ?: '—'));
+        $table->addColumn('flags', static fn (ReferralRelationship $row): string => e(implode(__('admin.list_separator'), array_map(static fn (string $flag): string => FraudFlag::tryFrom($flag)?->label() ?? $flag, $row->flagKeys())) ?: '—'));
         $this->dateColumn($table, 'created_at');
 
         $this->actionsColumn($table, static fn (ReferralRelationship $row): array => [TableAction::view(route('admin.referral-relationships.show', $row), $row)]);

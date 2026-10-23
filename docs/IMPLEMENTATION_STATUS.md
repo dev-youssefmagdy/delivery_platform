@@ -41,7 +41,7 @@
 | P5.1 | Safety center, SOS, trusted contacts | P1 | ❌ | — |
 | P5.2 | Reviews moderation & risk signals | P1 | 🟡 | gate not run (2026-11-11) |
 | P5.3 | Operations dashboard, reports, exports | P1 | 🟡 | gate not run (see section) |
-| P5.4 | CMS | P1 | ❌ | — |
+| P5.4 | CMS | P1 | 🟡 | gate not run (see section) |
 | P5.5 | Public website | P1 | ❌ | — |
 | P5.6 | Integration health, app versions, feature flags, system pages | P1 | ❌ | — |
 | P5.7 | Referrals, loyalty, provider incentives | P2 | ❌ | — |
@@ -1107,3 +1107,28 @@ No browser pass (charts, popovers, RTL layout not seen); the dev database has al
 
 ### Next (P5.4)
 CMS pages can show the freshness and chart components as is. Run the deferred backlog (P5.1, P5.2, P5.3 lists) before Phase 5 closes.
+
+
+---
+
+## P5.4 — CMS · 🟡 2026-11-13 (gate NOT run)
+
+Committed directly on `main`. ADR-182..187. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P5.4). The public website that renders this content is P5.5.
+
+### Built
+- **Schema** (`2026_11_13_090000_create_content_tables`): `content_media`, `content_categories` (faq / article), `content_pages` (kinds home / generic / service / city, `blocks` JSON, links to service category and city), `content_articles` (help / blog), `content_faqs`, `content_banners` (placements app_home / app_booking / web_home / web_top_bar / web_services, audience, display window), `content_menus` (header / footer_explore / footer_legal), `content_app_links`, `content_revisions`. Every entity has ar-required / en-optional JSON text and `fallback_to_ar`; pages and articles carry SEO fields (title, description, Open Graph, og image, canonical, noindex).
+- **Workflow**: draft -> in_review -> scheduled | published -> archived (`ContentWorkflowService`, `ManagedContentPolicy`), `content.manage` writes and submits, `content.publish` reviews / publishes / schedules / reverts / archives / restores with a mandatory reason and audit; only drafts are editable; row locks and `lock_version`; revision snapshot on every save and transition with restore into the draft; menu publish replaces the live menu of the location; idempotent `PublishScheduledContent` job + `content:publish-scheduled` command (every minute).
+- **Sanitization**: `HtmlSanitizer` (DOM allowlist) + `ContentRenderer` (CommonMark with raw HTML stripped) behind `ContentPayloadNormalizer`; `SafeContentUrl` validation for every link field. Media library re-encodes and resizes uploads (JPEG / PNG / WebP).
+- **Read side**: `ContentReadService` (localized, published only, cached with a version key) is the one source for the website and the apps; API `GET /api/v1/content/banners|faqs|pages/{slug}|articles|articles/{slug}|menus|app-links|legal/{type}` with ETag. `policy_versions` stays the legal mechanism and is exposed through `ContentReadService::policy()/legalPages()` (plain text).
+- **Admin** (Content group + Banners under Marketing): Pages (plus Service pages / City pages menu entries sharing the listing with a pre-applied kinds filter), FAQs, Articles, Categories, Menus and footer, Media, App links, Banners. Each listing is a Yajra table with a collapsed filters card (Appendix C: type, status, locale completeness, updated range, plus category / placement / location), forms use `<x-admin.form>` with Precognition, show pages have workflow actions (confirm / reason modals, schedule modal), preview in ar and en from the unpublished row, revisions and activity tabs. New components `x-admin.content.*` (actions, tabs, seo-fields, body-fields, block-editor, media-select, fallback-toggle, rendered), `.cms-prose` CSS, ar + en in `lang/*/content.php`, enums and API errors.
+- **Seed**: `ContentSeeder` (Arabic-first demo / placeholder content marked as such, only implemented safeguards claimed, see ADR-187).
+
+### Checks run (compile / sanity only)
+`php -l` on every new file; `migrate`, `migrate:rollback --step=1`, `migrate`; `route:list` (admin content routes, 8 API routes); `schedule:list` (job every minute); `view:cache`; container resolution of the new services; `npm run build` (once, Vite compiled); a sanitizer run over 22 HTML and 4 Markdown XSS payloads (script, event handlers, javascript: / data: URLs, svg / math / iframe / form / object, conditional comments, noscript mXSS, protocol-relative links: no failure); a rolled-back seeder run twice (same row counts, idempotent) with read-service payloads in ar and en; rolled-back in-process authenticated HTTP flows: access (guest redirect, 403 page / JSON / datatable / lookup without permission), every index and create form, Precognition 422 / 204 (nothing persisted), store with XSS body (stored HTML clean), update with stale `lock_version` (409), full workflow with both roles (editor cannot publish, publisher cannot submit, in-review not editable, publish without reason 422, published not editable / deletable), schedule in the past 422, scheduled publish run three times (1 then 0 then 0, audited as system), archive / restore / revision restore, public API (ETag + 304, 404 for unpublished, 422 for invalid filter), media upload (variants, fake image / SVG rejected), category in use, menu and app-link URL validation.
+
+### Known gaps
+No browser pass (the Alpine block editor, show / preview layout, RTL and the sidebar entries sharing one route were not seen); no WYSIWYG editor (Markdown or restricted HTML in a textarea); page blocks are typed rows (items one per line, "title | text"), no drag-and-drop ordering; no store links or banners are seeded; the content editor role (Appendix B) has `content.manage` only, so publishing needs a role or admin that is granted `content.publish` (Super Admin has it); the website routes and templates are P5.5; no Flutter screens for the help center yet (endpoints only); the `en` fallback is per item, not a global setting; leads (`leads.view`) are not part of this milestone.
+
+### Next (P5.5)
+Public website: call `ContentReadService` (page(`home`), pages(Service / City), faqs(), articles(), menus(), appLinks(), cities(), legalPages() / policy()) from the website controllers; render `body_html` and block `body_html` as trusted HTML (already sanitized), everything else escaped; policy `content` is plain text (escape + `white-space: pre-line`); use `seo.*` for title / description / Open Graph / canonical / noindex and `seo.available_locales` for hreflang; send `Vary: Accept-Language`; menu URLs are site-relative paths (`/how-it-works`, `/legal/{type}` ...) the website must route; app download buttons come from `appLinks()` (add the real store links first). Run the deferred backlog (P5.1 to P5.4 lists) before Phase 5 closes.
+

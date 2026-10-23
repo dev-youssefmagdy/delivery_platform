@@ -68,11 +68,7 @@ final class OperationsDashboardService
                 continue;
             }
 
-            $tile = $this->tile($key, $filters, $totals, $previous, $finance, $financePrevious, $live, $currency, $asOf);
-
-            if ($tile !== null) {
-                $tiles[] = $tile;
-            }
+            $tiles[] = $this->tile($key, $filters, $totals, $previous, $finance, $financePrevious, $live, $currency, $asOf);
         }
 
         return new OperationsDashboard($filters, $currency, $currencies, $tiles, $this->charts($admin, $filters, $currency), $asOf);

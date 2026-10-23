@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Provider;
 
+use App\Http\Controllers\Api\V1\Concerns\ResolvesClientApp;
 use App\Http\Controllers\Api\V1\Concerns\ResolvesProviderProfile;
 use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
  */
 final class OfferScopeController extends Controller
 {
+    use ResolvesClientApp;
     use ResolvesProviderProfile;
 
     public function __construct(private readonly VehicleRepositoryInterface $vehicles) {}

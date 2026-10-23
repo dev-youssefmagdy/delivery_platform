@@ -19,8 +19,8 @@ final class VehicleCapacityChecker
     {
         $vehicle->loadMissing('vehicleCategory');
         $category = $vehicle->vehicleCategory;
-        $maxPayload = $vehicle->payload_kg ?? $category?->max_payload_kg;
-        $maxVolume = $vehicle->volume_m3 ?? $category?->max_volume_m3;
+        $maxPayload = $vehicle->payload_kg ?? $category->max_payload_kg;
+        $maxVolume = $vehicle->volume_m3 ?? $category->max_volume_m3;
         $short = [];
 
         if ($payloadKg !== null && $maxPayload !== null && (float) $maxPayload > 0 && $payloadKg > (float) $maxPayload) {

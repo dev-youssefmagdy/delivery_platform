@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 interface LeadRepositoryInterface
 {
+    /**
+     * @phpstan-impure the result changes when another request inserts the same key
+     */
     public function findByDuplicateKey(string $key): ?Lead;
 
     /**

@@ -51,7 +51,7 @@ final class ArrivalEvidenceBuilder
             }
         }
 
-        if ($point === null || $capturedAt === null) {
+        if ($point === null) {
             return ['source' => 'none', 'verified' => false, 'recorded_at' => $now->toIso8601ZuluString()];
         }
 

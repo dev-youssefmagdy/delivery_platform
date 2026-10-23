@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\URL;
  *
  * @property SupportTicket $resource
  */
-class TicketResource extends JsonResource
+final class TicketResource extends JsonResource
 {
     /**
      * @var iterable<TicketMessage>|null public messages only
@@ -28,7 +28,7 @@ class TicketResource extends JsonResource
      */
     public static function detailed(SupportTicket $ticket, iterable $thread): static
     {
-        $resource = new static($ticket);
+        $resource = new self($ticket);
         $resource->thread = $thread;
 
         return $resource;

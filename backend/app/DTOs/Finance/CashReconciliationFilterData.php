@@ -51,6 +51,6 @@ final readonly class CashReconciliationFilterData implements FilterData
             'statuses' => array_map(static fn (CashReconciliationStatus $status): string => $status->value, $this->statuses),
             'provider_ids' => $this->providerIds,
             'period' => array_filter(['from' => $this->from?->toDateString(), 'to' => $this->to?->toDateString()]),
-        ], static fn (mixed $value): bool => $value !== null && $value !== []);
+        ], static fn (mixed $value): bool => $value !== []);
     }
 }

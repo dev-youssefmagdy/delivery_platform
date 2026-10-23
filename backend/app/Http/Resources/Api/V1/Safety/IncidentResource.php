@@ -62,7 +62,7 @@ class IncidentResource extends JsonResource
 
         return $data + [
             'narrative' => $incident->narrative,
-            'timeline' => $this->timeline?->map(static fn (SafetyIncidentEvent $event): array => [
+            'timeline' => $this->timeline->map(static fn (SafetyIncidentEvent $event): array => [
                 'type' => $event->type->value,
                 'label' => $event->type->label(),
                 'actor' => $event->actor_type->value === 'admin' ? 'staff' : $event->actor_type->value,

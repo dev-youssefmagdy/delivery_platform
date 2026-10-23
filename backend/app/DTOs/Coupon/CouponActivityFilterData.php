@@ -69,6 +69,6 @@ final readonly class CouponActivityFilterData implements FilterData
             'attempt_results' => array_map(static fn (CouponAttemptResult $result): string => $result->value, $this->attemptResults),
             'reservation_statuses' => array_map(static fn (CouponReservationStatus $status): string => $status->value, $this->reservationStatuses),
             'date_range' => array_filter(['from' => $this->from?->toDateString(), 'to' => $this->to?->toDateString()]),
-        ], static fn (mixed $value): bool => $value !== null && $value !== []);
+        ], static fn (mixed $value): bool => $value !== []);
     }
 }

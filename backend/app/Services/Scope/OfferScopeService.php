@@ -124,7 +124,7 @@ final class OfferScopeService
 
         $vehicle->loadMissing('vehicleCategory');
 
-        if ($vehicle->vehicleCategory !== null && $scope['vehicle_class'] !== $vehicle->vehicleCategory->code) {
+        if ($scope['vehicle_class'] !== $vehicle->vehicleCategory->code) {
             throw BusinessRuleViolation::make('offer_scope_vehicle_mismatch', 'scope.vehicle_class');
         }
 

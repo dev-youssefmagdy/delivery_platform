@@ -2,23 +2,15 @@
 
 namespace App\Services\Booking;
 
-use App\Enums\Catalog\ProofType;
 use App\Enums\Common\ActorType;
 use App\Enums\Settings\SettingKey;
 use App\Models\Booking;
-use App\Models\BookingProof;
 use App\Models\BookingRating;
 use App\Models\BookingStatusEvent;
-use App\Models\DeliveryAttempt;
-use App\Repositories\Contracts\Booking\BookingProofRepositoryInterface;
 use App\Repositories\Contracts\Booking\BookingStatusEventRepositoryInterface;
-use App\Repositories\Contracts\Booking\DeliveryAttemptRepositoryInterface;
 use App\Repositories\Contracts\Booking\RatingRepositoryInterface;
 use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
-use App\Services\Courier\CustodyService;
-use App\Services\Courier\DeliveryProofService;
-use App\Services\Courier\RecipientOtpService;
 use App\Services\Scope\BookingLoadPresenter;
 use App\Services\Settings\SettingsService;
 use Carbon\CarbonInterface;
@@ -32,13 +24,10 @@ final class BookingDetailTabsService
 {
     public function __construct(
         private readonly BookingStatusEventRepositoryInterface $events,
-        private readonly BookingProofRepositoryInterface $proofs,
         private readonly SupportTicketRepositoryInterface $tickets,
         private readonly SafetyIncidentRepositoryInterface $incidents,
         private readonly RatingRepositoryInterface $ratings,
         private readonly SettingsService $settings,
-        private readonly DeliveryAttemptRepositoryInterface $attempts,
-        private readonly RecipientOtpService $recipientOtps,
         private readonly BookingLoadPresenter $loads,
     ) {}
 
@@ -48,7 +37,7 @@ final class BookingDetailTabsService
     public function timeline(Booking $booking): array
     {
         return $this->events->forBooking($booking)->map(function (BookingStatusEvent $event): array {
-            $annotation = $event->from_status === $event->to_status && $event->from_status !== null;
+            $annotation = $event->from_status === $event->to_status;
             $key = (string) $event->reason;
             $known = $annotation && trans()->has("admin.bookings.timeline.events.{$key}");
 
@@ -141,7 +130,7 @@ final class BookingDetailTabsService
             'reports' => $this->tickets->forBooking($booking->id)->map(fn ($ticket): array => [
                 'category' => $ticket->number.' · '.$ticket->category->label(),
                 'status' => $ticket->status->label(),
-                'reporter' => ActorType::tryFrom($ticket->app->value)?->label() ?? $ticket->app->value,
+                'reporter' => ActorType::from($ticket->app->value)->label(),
                 'time' => $this->time($ticket->created_at),
             ])->values()->all(),
             'flag' => $booking->support_flagged_at === null ? null : [
@@ -169,43 +158,5 @@ final class BookingDetailTabsService
     private function time(CarbonInterface $at): string
     {
         return $at->copy()->setTimezone((string) config('admin.display_timezone', 'UTC'))->locale(app()->getLocale())->translatedFormat('Y-m-d H:i');
-    }
-
-    /**
-     * Custody, recipient code state (never the code) and failed attempts of a parcel; null for services without them. The
-     * free-text reason of an attempt is shown only to admins who may see personal data.
-     *
-     * @return array<string, mixed>|null
-     */
-    private function delivery(Booking $booking, bool $canViewPii): ?array
-    {
-        if (! CustodyService::applies($booking) && ! DeliveryProofService::supported($booking)) {
-            return null;
-        }
-
-        return [
-            'custody' => $booking->custody_status?->label(),
-            'otp' => $this->recipientOtps->state($booking),
-            'restricted_goods_at' => $booking->restricted_goods_acknowledged_at === null ? null : $this->time($booking->restricted_goods_acknowledged_at),
-            'attempts' => $this->attempts->forBooking($booking->id)->map(fn (DeliveryAttempt $attempt): array => [
-                'number' => $attempt->attempt_number,
-                'outcome' => $attempt->outcome->label(),
-                'reason' => $canViewPii ? $attempt->reason : null,
-                'resolution' => $attempt->resolution?->label(),
-                'time' => $this->time($attempt->created_at),
-            ])->values()->all(),
-        ];
-    }
-
-    private function proofDetail(BookingProof $proof): ?string
-    {
-        $metadata = (array) $proof->metadata;
-
-        return match ($proof->proof_type) {
-            ProofType::Weight => ($metadata['weight_kg'] ?? '').' kg'.(($metadata['weight_mismatch'] ?? false) ? ' · '.__('admin.bookings.safety.weight_mismatch') : ''),
-            ProofType::Checklist => (string) __('admin.bookings.safety.checklist_summary', ['done' => count(array_filter((array) ($metadata['items'] ?? []))), 'total' => count((array) ($metadata['items'] ?? []))]),
-            ProofType::Photo, ProofType::Signature => $proof->storage_path === null ? __('admin.bookings.safety.file_removed') : null,
-            default => null,
-        };
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Content;
 
 use App\Enums\Common\Locale;
+use App\Support\Content\Translations;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -13,15 +14,14 @@ final class ContentLocalizer
 {
     public function text(Model $content, string $attribute, string $locale): ?string
     {
-        /** @var \Spatie\Translatable\HasTranslations&Model $content */
-        $value = trim((string) $content->getTranslation($attribute, $locale, false));
+        $value = Translations::exact($content, $attribute, $locale);
 
         if ($value !== '') {
             return $value;
         }
 
         if ($locale !== Locale::default()->value && $this->fallsBack($content)) {
-            $value = trim((string) $content->getTranslation($attribute, Locale::default()->value, false));
+            $value = Translations::exact($content, $attribute, Locale::default()->value);
 
             return $value !== '' ? $value : null;
         }
@@ -56,8 +56,7 @@ final class ContentLocalizer
      */
     public function servedLocale(Model $content, string $attribute, string $locale): string
     {
-        /** @var \Spatie\Translatable\HasTranslations&Model $content */
-        return trim((string) $content->getTranslation($attribute, $locale, false)) !== '' ? $locale : Locale::default()->value;
+        return Translations::exact($content, $attribute, $locale) !== '' ? $locale : Locale::default()->value;
     }
 
     private function fallsBack(Model $content): bool

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Content\CategoryKind;
+use App\Models\Contracts\TranslatedContent;
 use App\Support\Audit\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
@@ -19,7 +20,7 @@ use Spatie\Translatable\HasTranslations;
  * @property bool $active
  * @property int $lock_version
  */
-class ContentCategory extends Model
+class ContentCategory extends Model implements TranslatedContent
 {
     use Auditable;
     use HasTranslations;

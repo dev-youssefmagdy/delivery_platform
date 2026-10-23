@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Content\ContentWorkflowStatus;
 use App\Models\Concerns\HasContentWorkflow;
+use App\Models\Contracts\TranslatedContent;
 use App\Support\Audit\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +16,7 @@ use Spatie\Translatable\HasTranslations;
  * Rich text sources are stored as written; the sanitized HTML copy (`*_html`) is what is served. Translatable
  * columns hold {ar, en}: Arabic is required, English optional with a safe fallback to Arabic (`fallback_to_ar`).
  */
-class ContentFaq extends Model
+class ContentFaq extends Model implements TranslatedContent
 {
     use Auditable;
     use HasContentWorkflow;

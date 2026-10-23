@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Contracts\TranslatedContent;
 use App\Support\Audit\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,7 +28,7 @@ use Spatie\Translatable\HasTranslations;
  * @property array<string, string>|null $variants
  * @property Carbon $created_at
  */
-class ContentMedia extends Model
+class ContentMedia extends Model implements TranslatedContent
 {
     use Auditable;
     use HasTranslations;

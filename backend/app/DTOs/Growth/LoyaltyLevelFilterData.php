@@ -29,6 +29,6 @@ final readonly class LoyaltyLevelFilterData implements FilterData
 
     public function toArray(): array
     {
-        return array_filter(['active' => $this->active], static fn (mixed $value): bool => $value !== [] && $value !== null);
+        return array_filter(['active' => $this->active], static fn (mixed $value): bool => $value !== null);
     }
 }

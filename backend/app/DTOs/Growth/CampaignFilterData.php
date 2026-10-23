@@ -41,6 +41,6 @@ final readonly class CampaignFilterData implements FilterData
             'audiences' => array_map(static fn (ReferralAudience $case): string => $case->value, $this->audiences),
             'statuses' => array_map(static fn (CampaignStatus $case): string => $case->value, $this->statuses),
             'starts' => array_filter(['from' => $this->from?->toDateString(), 'to' => $this->to?->toDateString()]),
-        ], static fn (mixed $value): bool => $value !== [] && $value !== null);
+        ], static fn (mixed $value): bool => $value !== []);
     }
 }

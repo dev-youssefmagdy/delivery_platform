@@ -181,7 +181,7 @@ final class CancellationFeeCalculator
                 'rule' => $penalty->ruleType === null ? null : ['type' => $penalty->ruleType, 'value' => (int) $penalty->ruleValue],
             ] : null,
             evidence: [
-                'selected_at' => $booking->provider_selected_at?->toIso8601ZuluString(),
+                'selected_at' => $booking->provider_selected_at->toIso8601ZuluString(),
                 'window_opened_at' => $opensAt->toIso8601ZuluString(),
                 'arrival_verified' => $arrivedVerified,
                 'reported_at' => $now->toIso8601ZuluString(),
@@ -235,7 +235,7 @@ final class CancellationFeeCalculator
             CancellationFeeType::Percent => Money::of($fare, $this->currencies->get($booking->currency))->multiplyBasisPoints($value)->amount,
         };
 
-        $cap = isset($rule['cap_minor']) && $rule['cap_minor'] !== null ? (int) $rule['cap_minor'] : null;
+        $cap = isset($rule['cap_minor']) ? (int) $rule['cap_minor'] : null;
 
         if ($cap !== null) {
             $fee = min($fee, $cap);

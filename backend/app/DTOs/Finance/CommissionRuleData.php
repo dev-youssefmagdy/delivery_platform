@@ -43,7 +43,7 @@ final readonly class CommissionRuleData
         $current = $request->route('commissionRule');
         $timezone = (string) config('admin.display_timezone', 'UTC');
         $type = CommissionType::from((string) $data['type']);
-        $optional = static fn (mixed $value): ?int => is_numeric($value) && $value !== '' ? (int) $value : null;
+        $optional = static fn (mixed $value): ?int => is_numeric($value) ? (int) $value : null;
 
         return new self(
             name: trim((string) $data['name']),

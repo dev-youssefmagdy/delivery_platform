@@ -56,6 +56,6 @@ final readonly class NotificationDeliveryFilterData implements FilterData
             'statuses' => array_map(static fn (DeliveryStatus $case): string => $case->value, $this->statuses),
             'events' => array_map(static fn (NotificationEvent $case): string => $case->value, $this->events),
             'created' => array_filter(['from' => $this->from?->toDateString(), 'to' => $this->to?->toDateString()]),
-        ], static fn (mixed $value): bool => $value !== null && $value !== []);
+        ], static fn (mixed $value): bool => $value !== []);
     }
 }

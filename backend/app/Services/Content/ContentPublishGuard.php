@@ -10,6 +10,7 @@ use App\Models\ContentBanner;
 use App\Models\ContentFaq;
 use App\Models\ContentMenu;
 use App\Models\ContentPage;
+use App\Support\Content\Translations;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -113,7 +114,6 @@ final class ContentPublishGuard
 
     private function has(Model $content, string $attribute, string $locale): bool
     {
-        /** @var \Spatie\Translatable\HasTranslations&Model $content */
-        return trim((string) $content->getTranslation($attribute, $locale, false)) !== '';
+        return Translations::exact($content, $attribute, $locale) !== '';
     }
 }

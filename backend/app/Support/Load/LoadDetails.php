@@ -52,7 +52,7 @@ final class LoadDetails
 
             $date = CarbonImmutable::createFromFormat(self::FORMAT, $value, $timezone);
 
-            return $date === false ? null : $date;
+            return $date instanceof CarbonImmutable ? $date : null;
         };
 
         return [$parse($details['pickup_window_start'] ?? null), $parse($details['pickup_window_end'] ?? null)];

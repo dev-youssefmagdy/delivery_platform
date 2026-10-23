@@ -68,7 +68,7 @@ final readonly class CouponData
         $type = DiscountType::from((string) $d['discount_type']);
         $source = FundingSource::from((string) $d['funding_source']);
         $timezone = (string) ($d['timezone'] ?? config('admin.display_timezone', 'UTC'));
-        $optional = static fn (mixed $value): ?int => is_numeric($value) && $value !== '' ? (int) $value : null;
+        $optional = static fn (mixed $value): ?int => is_numeric($value) ? (int) $value : null;
         $ids = static fn (mixed $value): array => array_values(array_unique(array_map('intval', array_filter((array) $value, 'is_numeric'))));
         // Start and end are typed in the admin display timezone (like every date in the panel); the coupon's own timezone governs its weekly schedule.
         $display = (string) config('admin.display_timezone', 'UTC');

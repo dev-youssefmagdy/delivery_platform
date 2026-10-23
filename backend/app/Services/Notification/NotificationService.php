@@ -15,7 +15,6 @@ use App\Models\User;
 use App\Repositories\Contracts\Notification\AppNotificationRepositoryInterface;
 use App\Repositories\Contracts\Notification\NotificationDeliveryRepositoryInterface;
 use Closure;
-use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Log;
@@ -240,7 +239,7 @@ final class NotificationService
 
     private function localeOf(User|Admin $recipient): string
     {
-        $preferred = $recipient instanceof HasLocalePreference ? $recipient->preferredLocale() : null;
+        $preferred = $recipient->preferredLocale();
 
         return Locale::tryFromValue($preferred)->value ?? Locale::default()->value;
     }

@@ -102,7 +102,7 @@ final class CashReconciliationService
         $figures = $this->figures($provider, $data->from, $data->to, $currency);
 
         try {
-            return $this->db->transaction(function () use ($actor, $data, $currency, $figures): CashReconciliation {
+            return $this->db->transaction(function () use ($actor, $data, $currency, $figures, $provider): CashReconciliation {
                 $reconciliation = $this->reconciliations->insert([
                     'provider_profile_id' => $data->providerId,
                     'currency' => $currency,

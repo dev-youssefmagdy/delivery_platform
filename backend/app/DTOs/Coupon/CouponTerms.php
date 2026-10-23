@@ -39,6 +39,8 @@ final readonly class CouponTerms
 
     /**
      * Default split of a single funder; `split` supplies its own basis points.
+     *
+     * @return array{0: int, 1: int, 2: int}
      */
     public static function splitFor(FundingSource $source, int $platformBp = 0, int $providerBp = 0, int $partnerBp = 0): array
     {

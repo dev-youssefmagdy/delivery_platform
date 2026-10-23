@@ -3,6 +3,7 @@
 namespace App\DataTables\Admin\Content\Concerns;
 
 use App\Enums\Common\Locale;
+use App\Support\Content\Translations;
 use App\View\Components\Admin\Badge;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
@@ -18,11 +19,10 @@ trait RendersLocales
     protected function localesColumn(EloquentDataTable $table, string $attribute): void
     {
         $table->addColumn('locales', static function (Model $row) use ($attribute): string {
-            /** @var \Spatie\Translatable\HasTranslations&Model $row */
             return collect(Locale::cases())
                 ->map(static fn (Locale $locale): string => Blade::renderComponent(new Badge(
                     label: strtoupper($locale->value),
-                    color: trim((string) $row->getTranslation($attribute, $locale->value, false)) !== '' ? 'success' : 'neutral',
+                    color: Translations::exact($row, $attribute, $locale->value) !== '' ? 'success' : 'neutral',
                 )))
                 ->implode(' ');
         });

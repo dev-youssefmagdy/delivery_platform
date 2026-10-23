@@ -39,7 +39,7 @@
 | P4.3 | Flutter courier/moving/freight flows | P1 | 🟡 | 2026-11-08 |
 | P4.4 | Admin & E2E for non-ride services | P1 | 🟡 | 2026-11-09 |
 | P5.1 | Safety center, SOS, trusted contacts | P1 | ❌ | — |
-| P5.2 | Reviews moderation & risk signals | P1 | ❌ | — |
+| P5.2 | Reviews moderation & risk signals | P1 | 🟡 | gate not run (2026-11-11) |
 | P5.3 | Operations dashboard, reports, exports | P1 | ❌ | — |
 | P5.4 | CMS | P1 | ❌ | — |
 | P5.5 | Public website | P1 | ❌ | — |
@@ -1062,3 +1062,25 @@ No real SMS gateway, push, signed-file or device run (GPS, haptics, TalkBack lon
 ### Next (P5.2)
 Reviews moderation can reuse the append-only event + audited evidence pattern; run the deferred test backlog (P5.1 list first: access separation, audited evidence, SOS under the rate limit) before Phase 5 closes.
 
+
+
+---
+
+## P5.2 — Reviews moderation and risk signals · 🟡 2026-11-11 (gate NOT run)
+
+Committed directly on `main`. ADR-173..177. **By user instruction no test, pint, phpstan, `php artisan test`, `flutter test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P5.2).
+
+### Built
+- **Backend**: migration `2026_11_11_090000` (`rating_reports`, `moderation_actions`, `rating_appeals`, `risk_signals`; `booking_ratings.reports_count|moderated_at`), enums (`App\Enums\Reviews`, `App\Enums\Risk`), models, repositories (`RatingModerationRepository`, `RiskSignalRepository`, `RiskDataRepository`, `RatingRepository` extended), services `Reviews\RatingModerationService` (hide / restore / under review, reason, audit, aggregate recompute), `RatingReportService`, `RatingAppealService`, `Risk\RiskSignalEvaluationService` with seven detectors (referral abuse is a disabled placeholder), `RiskSignalActionService` (suspend / restrict / dismiss / escalate through the existing account services), `RiskNotifier`; job `EvaluateRiskSignals` (hourly) and `risk:evaluate`; `config/risk.php`; notification events `review.hidden`, `review.appeal_decided`, `risk.signal_raised`. `BookingRating` refuses edits of stars, tags and comment.
+- **API**: report, appeal, own rating, own appeals (see `API.md`).
+- **Admin**: Reviews page (listing with collapsed Appendix C filters, Reports and Appeals tabs, review page with hide / restore / under review, dismiss report, decide appeal), Risk signals queue and signal page (open customer / provider, suspend, restrict, dismiss, escalate, each with a reason), Risk tab on customers and providers, Ratings tab on providers (customer ratings tab gains the review link), menu group Moderation, `OperationsAdmin` permissions, ar and en (`lang/*/reputation.php`).
+- **Data lifecycle**: customer and provider deletion scrub report / appeal text and risk signal facts; the personal-data export has a `reputation` section (reports and appeals the person made, no risk signals).
+
+### Checks run (compile / sanity only)
+`php -l` on changed files; `migrate`, `migrate:rollback --step=1`, `migrate` again; `route:list`; `view:cache`; container resolution of the new services and data tables; rolled-back tinker flows: `risk:evaluate` twice on seeded shared-device data (3 created then 3 refreshed, 0 duplicates), restrict from a signal (customer `restricted`, signal `actioned`), cooldown on the next run; in-process rendering (permission-only admin) of the risk queue, signal page, reviews page, reports tab, customer risk tab and the queue DataTable JSON. The hide / restore flow and the edit guard could not run: the dev database has no ratings.
+
+### Known gaps
+No Flutter screens for report / appeal (endpoints only); no browser run; provider cancellation counts rely on the booking's current `provider_id` (auto-redispatch loses the cancelling provider); `referral_abuse` waits for P5.7; no CSV export of the new listings; thresholds are env/config, not yet an admin settings page.
+
+### Next (P5.3)
+Reviews and risk counts (open reports, open appeals, active signals) are cheap repository calls for dashboard widgets; add the moderation backlog and risk queue size to the operations dashboard. Run the deferred backlog (P5.1 and P5.2 lists) before Phase 5 closes.

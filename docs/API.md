@@ -827,3 +827,17 @@ Both apps (`customer` and `provider` tokens), reachable by an account in any sta
 | POST / DELETE | `/safety/bookings/{booking}/share` | Send the trip link to the contacts with `share_trip`, or revoke it. `201 {url, expires_at, contacts {total, sent, failed, skipped}}`; `422 trusted_contacts_none_for_trip`, `409 share_not_available`, `429 safety_trip_share_rate_limited`. Either side of the booking. |
 
 `GET /config/app` gains `safety {emergency_numbers [{key, number}], sos_hold_seconds, trusted_contacts_max, emergency_dispatch: false}` (numbers by market country from `config/safety.php`; labels are the apps' own). Notifications: `safety.case_update` now has `link_type = safety` (`link_id` = case uuid; older safety-ticket notices still carry a ticket uuid, the apps fall back to the ticket on 404); admins get `safety.incident_raised` (`link_type = incident`) and a realtime `operations.safety_incident` hint on `private-admin.operations`.
+
+
+## P5.2 — Rating reports and appeals (ADR-173..177)
+
+Both apps (`customer` and `provider` tokens), reachable by an account in any standing. Rating ids are the `id` (uuid) of `RatingResource`. Another person's rating is a `404`.
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/api/v1/ratings/{rating}/report` | The rated side reports a rating written about them. Body `reason` (`abusive`, `spam`, `irrelevant`, `false_info`, `personal_info`, `other`), `details` (optional, max 1000). Idempotency-Key, 20/hour. `201`; `409 rating_report_exists`, `422 rating_not_reportable` (already hidden). A report never changes the public average. |
+| POST | `/api/v1/ratings/{rating}/appeal` | Body `message` (10-1000). The writer of a HIDDEN review (`grounds hidden_review`) or the person a low rating (<= 2 stars, still counted or under review) is about (`unfair_rating`). Idempotency-Key, 10/hour. `201 {id, rating_id, grounds {code,label}, status {code,label}, created_at, decided_at}`; `409 rating_appeal_exists`, `422 rating_appeal_not_allowed`, `422 rating_appeal_window_closed` (30 days). |
+| GET | `/api/v1/ratings/{rating}` | The rating the person WROTE: `RatingResource` (with `moderation_status` `visible`\|`hidden`\|`under_review`) plus `appeal` (null or the appeal object above). Opens the `review.hidden` notification (`link_type inbox`, `link_id` = rating id). |
+| GET | `/api/v1/ratings/appeals` | `{items: [appeal ...]}` the person's appeals in this app. The staff reason is internal and never returned. |
+
+`RatingResource` (response of the existing rating endpoints) gains `moderation_status`. Risk signals have no API: they are internal (SRS 15).

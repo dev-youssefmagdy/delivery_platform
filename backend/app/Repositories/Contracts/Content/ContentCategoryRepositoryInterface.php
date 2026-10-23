@@ -7,6 +7,7 @@ use App\Enums\Content\CategoryKind;
 use App\Models\ContentCategory;
 use App\Repositories\Contracts\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @extends BaseRepositoryInterface<ContentCategory>
@@ -29,4 +30,15 @@ interface ContentCategoryRepositoryInterface extends BaseRepositoryInterface
      * Number of FAQs / articles in the category (a used category cannot be deleted).
      */
     public function usageCount(ContentCategory $category): int;
+
+    /**
+     * @return Collection<int, ContentCategory>
+     */
+    public function lookup(CategoryKind $kind, string $term, int $limit): Collection;
+
+    /**
+     * @param list<int|string> $ids
+     * @return Collection<int, ContentCategory>
+     */
+    public function findManyByIds(CategoryKind $kind, array $ids): Collection;
 }

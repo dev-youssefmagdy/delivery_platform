@@ -38,6 +38,6 @@ class StoreMediaRequest extends FormRequest
      */
     public function attributes(): array
     {
-        return $this->translatedLabels(['alt'], 'content') + ['file' => (string) __('admin.content.fields.file')];
+        return $this->translatedLabels(['alt'], 'content') + ['file' => (string) __('content.fields.file')];
     }
 }

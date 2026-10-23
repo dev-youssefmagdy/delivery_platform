@@ -489,7 +489,7 @@ return [
         [
             'key' => 'content_pages',
             'group' => 'content',
-            'label' => 'admin.content.menu.pages',
+            'label' => 'content.menu.pages',
             'route' => 'admin.content-pages.index',
             'active' => 'admin.content-pages.*',
             'icon' => 'document',
@@ -500,7 +500,7 @@ return [
         [
             'key' => 'content_service_pages',
             'group' => 'content',
-            'label' => 'admin.content.menu.service_pages',
+            'label' => 'content.menu.service_pages',
             'route' => 'admin.content-pages.index',
             'active' => 'admin.content-pages.*',
             'icon' => 'squares',
@@ -510,7 +510,7 @@ return [
         [
             'key' => 'content_city_pages',
             'group' => 'content',
-            'label' => 'admin.content.menu.city_pages',
+            'label' => 'content.menu.city_pages',
             'route' => 'admin.content-pages.index',
             'active' => 'admin.content-pages.*',
             'icon' => 'map-pin',
@@ -520,7 +520,7 @@ return [
         [
             'key' => 'content_faqs',
             'group' => 'content',
-            'label' => 'admin.content.menu.faqs',
+            'label' => 'content.menu.faqs',
             'route' => 'admin.content-faqs.index',
             'active' => 'admin.content-faqs.*',
             'icon' => 'information',
@@ -529,7 +529,7 @@ return [
         [
             'key' => 'content_articles',
             'group' => 'content',
-            'label' => 'admin.content.menu.articles',
+            'label' => 'content.menu.articles',
             'route' => 'admin.content-articles.index',
             'active' => 'admin.content-articles.*',
             'icon' => 'clipboard',
@@ -538,7 +538,7 @@ return [
         [
             'key' => 'content_categories',
             'group' => 'content',
-            'label' => 'admin.content.menu.categories',
+            'label' => 'content.menu.categories',
             'route' => 'admin.content-categories.index',
             'active' => 'admin.content-categories.*',
             'icon' => 'tag',
@@ -547,7 +547,7 @@ return [
         [
             'key' => 'content_menus',
             'group' => 'content',
-            'label' => 'admin.content.menu.menus',
+            'label' => 'content.menu.menus',
             'route' => 'admin.content-menus.index',
             'active' => 'admin.content-menus.*',
             'icon' => 'bars',
@@ -556,7 +556,7 @@ return [
         [
             'key' => 'content_media',
             'group' => 'content',
-            'label' => 'admin.content.menu.media',
+            'label' => 'content.menu.media',
             'route' => 'admin.content-media.index',
             'active' => 'admin.content-media.*',
             'icon' => 'photo',
@@ -565,7 +565,7 @@ return [
         [
             'key' => 'content_app_links',
             'group' => 'content',
-            'label' => 'admin.content.menu.app_links',
+            'label' => 'content.menu.app_links',
             'route' => 'admin.content-app-links.index',
             'active' => 'admin.content-app-links.*',
             'icon' => 'download',
@@ -574,7 +574,7 @@ return [
         [
             'key' => 'content_banners',
             'group' => 'marketing',
-            'label' => 'admin.content.menu.banners',
+            'label' => 'content.menu.banners',
             'route' => 'admin.content-banners.index',
             'active' => 'admin.content-banners.*',
             'icon' => 'megaphone',

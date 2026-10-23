@@ -991,6 +991,106 @@ return [
         'risk.signal_raised' => 'Risk signal raised (staff)',
     ],
 
+    'content_workflow_status' => [
+        'draft' => 'Draft',
+        'in_review' => 'In review',
+        'scheduled' => 'Scheduled',
+        'published' => 'Published',
+        'archived' => 'Archived',
+    ],
+
+    'content_workflow_action' => [
+        'submit' => 'Submit for review',
+        'reject' => 'Send back to draft',
+        'publish' => 'Publish',
+        'schedule' => 'Schedule',
+        'revert' => 'Revert to draft',
+        'archive' => 'Archive',
+        'restore' => 'Restore to draft',
+    ],
+
+    'content_type' => [
+        'page' => 'Page',
+        'article' => 'Article',
+        'faq' => 'FAQ',
+        'banner' => 'Banner',
+        'menu' => 'Menu',
+    ],
+
+    'page_kind' => [
+        'home' => 'Homepage',
+        'generic' => 'Generic page',
+        'service' => 'Service page',
+        'city' => 'City page',
+    ],
+
+    'article_type' => [
+        'help' => 'Help center',
+        'blog' => 'Blog',
+    ],
+
+    'category_kind' => [
+        'faq' => 'FAQ',
+        'article' => 'Articles',
+    ],
+
+    'body_format' => [
+        'markdown' => 'Markdown',
+        'html' => 'Restricted HTML',
+    ],
+
+    'banner_placement' => [
+        'app_home' => 'App: home screen',
+        'app_booking' => 'App: booking screen',
+        'web_home' => 'Website: homepage',
+        'web_top_bar' => 'Website: top bar',
+        'web_services' => 'Website: service pages',
+    ],
+
+    'banner_kind' => [
+        'banner' => 'Banner (image)',
+        'announcement' => 'Announcement (text strip)',
+    ],
+
+    'banner_audience' => [
+        'all' => 'Everyone',
+        'customer' => 'Customers',
+        'provider' => 'Drivers and providers',
+    ],
+
+    'menu_location' => [
+        'header' => 'Header',
+        'footer_explore' => 'Footer: explore',
+        'footer_legal' => 'Footer: legal',
+    ],
+
+    'app_platform' => [
+        'android' => 'Google Play',
+        'ios' => 'App Store',
+        'huawei' => 'Huawei AppGallery',
+    ],
+
+    'app_kind' => [
+        'customer' => 'Customer app',
+        'driver' => 'Driver app',
+    ],
+
+    'block_type' => [
+        'hero' => 'Hero',
+        'rich_text' => 'Text',
+        'features' => 'Features',
+        'steps' => 'Steps',
+        'cta' => 'Call to action',
+        'faq' => 'FAQ',
+        'cities' => 'Cities',
+        'app_download' => 'App download',
+    ],
+
+    'locale_completeness' => [
+        'complete' => 'Arabic and English',
+        'arabic_only' => 'Arabic only',
+    ],
+
     // @admin-module:enums
 
     'cancellation_stage' => [

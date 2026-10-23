@@ -35,7 +35,7 @@ final class MenuController extends AdminController
     {
         $menu = $this->service->create(ContentType::Menu, MenuData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.created'))->redirect(route('admin.content-menus.show', $menu));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-menus.show', $menu));
     }
 
     public function show(ContentMenu $menu): View
@@ -57,14 +57,14 @@ final class MenuController extends AdminController
     {
         $this->service->update($menu, MenuData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.updated'))->redirect(route('admin.content-menus.show', $menu));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-menus.show', $menu));
     }
 
     public function destroy(DestroyContentRequest $request, ContentMenu $menu): AdminFormResponse
     {
         $this->service->delete($menu, $this->actor(), $request->reason());
 
-        $response = $this->formResponse(__('admin.content.deleted'))->reloadTable(ContentMenusDataTable::TABLE_ID);
+        $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentMenusDataTable::TABLE_ID);
 
         return $request->boolean('from_show') ? $response->redirect(route('admin.content-menus.index')) : $response;
     }

@@ -34,7 +34,7 @@ final class CategoryController extends AdminController
     {
         $this->service->create(CategoryData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.created'))->redirect(route('admin.content-categories.index'));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-categories.index'));
     }
 
     public function edit(ContentCategory $category): View
@@ -46,14 +46,14 @@ final class CategoryController extends AdminController
     {
         $this->service->update($category, CategoryData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.updated'))->redirect(route('admin.content-categories.index'));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-categories.index'));
     }
 
     public function destroy(DestroyContentRequest $request, ContentCategory $category): AdminFormResponse
     {
         $this->service->delete($category, $this->actor(), $request->reason());
 
-        return $this->formResponse(__('admin.content.deleted'))->reloadTable(ContentCategoriesDataTable::TABLE_ID);
+        return $this->formResponse(__('content.deleted'))->reloadTable(ContentCategoriesDataTable::TABLE_ID);
     }
 
     public function activity(ContentCategory $category, AuditTrailService $trail): View

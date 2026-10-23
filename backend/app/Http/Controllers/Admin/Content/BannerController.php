@@ -35,12 +35,12 @@ final class BannerController extends AdminController
     {
         $banner = $this->service->create(ContentType::Banner, BannerData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.created'))->redirect(route('admin.content-banners.show', $banner));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-banners.show', $banner));
     }
 
     public function show(ContentBanner $banner): View
     {
-        return view('admin.content.banners.show', ['banner' => $banner->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name'])]);
+        return view('admin.content.banners.show', ['banner' => $banner->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'media'])]);
     }
 
     public function activity(ContentBanner $banner, AuditTrailService $trail): View
@@ -50,21 +50,21 @@ final class BannerController extends AdminController
 
     public function edit(ContentBanner $banner): View
     {
-        return view('admin.content.banners.form', ['banner' => $banner]);
+        return view('admin.content.banners.form', ['banner' => $banner->loadMissing(['media'])]);
     }
 
     public function update(SaveBannerRequest $request, ContentBanner $banner): AdminFormResponse
     {
         $this->service->update($banner, BannerData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.updated'))->redirect(route('admin.content-banners.show', $banner));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-banners.show', $banner));
     }
 
     public function destroy(DestroyContentRequest $request, ContentBanner $banner): AdminFormResponse
     {
         $this->service->delete($banner, $this->actor(), $request->reason());
 
-        $response = $this->formResponse(__('admin.content.deleted'))->reloadTable(ContentBannersDataTable::TABLE_ID);
+        $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentBannersDataTable::TABLE_ID);
 
         return $request->boolean('from_show') ? $response->redirect(route('admin.content-banners.index')) : $response;
     }

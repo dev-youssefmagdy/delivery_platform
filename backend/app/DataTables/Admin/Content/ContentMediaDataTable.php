@@ -40,10 +40,10 @@ final class ContentMediaDataTable extends AdminDataTable
     {
         return [
             $this->column('id', '#', orderable: true),
-            $this->column('preview', __('admin.content.fields.preview')),
-            $this->column('original_name', __('admin.content.fields.file'), orderable: true),
-            $this->column('dimensions', __('admin.content.fields.dimensions')),
-            $this->column('size_bytes', __('admin.content.fields.size'), orderable: true),
+            $this->column('preview', __('content.fields.preview')),
+            $this->column('original_name', __('content.fields.file'), orderable: true),
+            $this->column('dimensions', __('content.fields.dimensions')),
+            $this->column('size_bytes', __('content.fields.size'), orderable: true),
             $this->column('created_at', __('admin.common.created_at'), orderable: true),
             $this->actionsColumnDefinition(),
         ];

@@ -30,7 +30,7 @@ class ContentRevision extends Model
     protected $table = 'content_revisions';
 
     /** @var list<string> */
-    protected $fillable = ['revisionable_type', 'revisionable_id', 'number', 'action', 'status', 'snapshot', 'reason', 'admin_id'];
+    protected $fillable = ['revisionable_type', 'revisionable_id', 'number', 'action', 'status', 'snapshot', 'reason', 'admin_id', 'created_at'];
 
     /**
      * @return BelongsTo<Admin, $this>

@@ -530,3 +530,59 @@
     --viz-7: #9085e9;
     --viz-8: #e66767;
 }
+
+/* CMS: sanitized rich text rendered in previews (logical properties only; the HTML comes from ContentRenderer). */
+@layer components {
+    .cms-prose {
+        @apply text-base leading-8 text-slate-800;
+    }
+
+    .cms-prose > * + * {
+        @apply mt-4;
+    }
+
+    .cms-prose h2 {
+        @apply mt-8 text-xl font-semibold text-slate-900;
+    }
+
+    .cms-prose h3 {
+        @apply mt-6 text-lg font-semibold text-slate-900;
+    }
+
+    .cms-prose h4 {
+        @apply mt-4 font-semibold text-slate-900;
+    }
+
+    .cms-prose ul {
+        @apply list-disc ps-6;
+    }
+
+    .cms-prose ol {
+        @apply list-decimal ps-6;
+    }
+
+    .cms-prose a {
+        @apply text-brand-700 underline;
+    }
+
+    .cms-prose blockquote {
+        @apply border-s-4 border-slate-300 ps-4 text-slate-600;
+    }
+
+    .cms-prose table {
+        @apply w-full border-collapse text-sm;
+    }
+
+    .cms-prose th,
+    .cms-prose td {
+        @apply border border-slate-200 px-3 py-2 text-start;
+    }
+
+    .cms-prose img {
+        @apply h-auto max-w-full rounded-(--radius-control);
+    }
+
+    .cms-prose pre {
+        @apply overflow-x-auto rounded-(--radius-control) bg-slate-100 p-3 text-sm;
+    }
+}

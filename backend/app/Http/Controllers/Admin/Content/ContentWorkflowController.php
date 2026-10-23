@@ -34,7 +34,7 @@ final class ContentWorkflowController extends AdminController
             $request->scheduledAt(),
         );
 
-        return $this->formResponse(__("admin.content.transitioned.{$action}"))->reload();
+        return $this->formResponse(__("content.transitioned.{$action}"))->reload();
     }
 
     public function preview(Request $request, string $contentType, string $content, ContentReadService $read): View
@@ -67,7 +67,7 @@ final class ContentWorkflowController extends AdminController
     {
         $entities->restoreRevision($this->resolve($contentType, $content), $number, $this->actor(), $request->reason());
 
-        return $this->formResponse(__('admin.content.revision_restored'))->reload();
+        return $this->formResponse(__('content.revision_restored'))->reload();
     }
 
     private function resolve(string $contentType, string $id): Model

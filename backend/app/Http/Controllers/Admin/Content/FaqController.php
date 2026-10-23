@@ -35,12 +35,12 @@ final class FaqController extends AdminController
     {
         $faq = $this->service->create(ContentType::Faq, FaqData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.created'))->redirect(route('admin.content-faqs.show', $faq));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-faqs.show', $faq));
     }
 
     public function show(ContentFaq $faq): View
     {
-        return view('admin.content.faqs.show', ['faq' => $faq->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name'])]);
+        return view('admin.content.faqs.show', ['faq' => $faq->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'category', 'serviceCategory'])]);
     }
 
     public function activity(ContentFaq $faq, AuditTrailService $trail): View
@@ -50,21 +50,21 @@ final class FaqController extends AdminController
 
     public function edit(ContentFaq $faq): View
     {
-        return view('admin.content.faqs.form', ['faq' => $faq]);
+        return view('admin.content.faqs.form', ['faq' => $faq->loadMissing(['category', 'serviceCategory'])]);
     }
 
     public function update(SaveFaqRequest $request, ContentFaq $faq): AdminFormResponse
     {
         $this->service->update($faq, FaqData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.updated'))->redirect(route('admin.content-faqs.show', $faq));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-faqs.show', $faq));
     }
 
     public function destroy(DestroyContentRequest $request, ContentFaq $faq): AdminFormResponse
     {
         $this->service->delete($faq, $this->actor(), $request->reason());
 
-        $response = $this->formResponse(__('admin.content.deleted'))->reloadTable(ContentFaqsDataTable::TABLE_ID);
+        $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentFaqsDataTable::TABLE_ID);
 
         return $request->boolean('from_show') ? $response->redirect(route('admin.content-faqs.index')) : $response;
     }

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             CouponSeeder::class,
             NotificationTemplateSeeder::class,
             RestrictedGoodsPolicySeeder::class,
+            ContentSeeder::class,
         ]);
     }
 }

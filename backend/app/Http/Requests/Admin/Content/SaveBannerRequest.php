@@ -51,15 +51,15 @@ class SaveBannerRequest extends FormRequest
     public function attributes(): array
     {
         return $this->translatedLabels(['title', 'body', 'cta_label'], 'content') + [
-            'kind' => (string) __('admin.content.fields.banner_kind'),
-            'placement' => (string) __('admin.content.fields.placement'),
-            'audience' => (string) __('admin.content.fields.audience'),
-            'media_id' => (string) __('admin.content.fields.image'),
-            'cta_url' => (string) __('admin.content.fields.cta_url'),
-            'starts_at' => (string) __('admin.content.fields.starts_at'),
-            'ends_at' => (string) __('admin.content.fields.ends_at'),
-            'sort_order' => (string) __('admin.common.sort_order'),
-            'fallback_to_ar' => (string) __('admin.content.fields.fallback_to_ar'),
+            'kind' => (string) __('content.fields.banner_kind'),
+            'placement' => (string) __('content.fields.placement'),
+            'audience' => (string) __('content.fields.audience'),
+            'media_id' => (string) __('content.fields.image'),
+            'cta_url' => (string) __('content.fields.cta_url'),
+            'starts_at' => (string) __('content.fields.starts_at'),
+            'ends_at' => (string) __('content.fields.ends_at'),
+            'sort_order' => (string) __('content.fields.sort_order'),
+            'fallback_to_ar' => (string) __('content.fields.fallback_to_ar'),
         ];
     }
 }

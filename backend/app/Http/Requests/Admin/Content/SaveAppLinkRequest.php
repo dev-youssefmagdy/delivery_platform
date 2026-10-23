@@ -45,11 +45,11 @@ class SaveAppLinkRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'app' => (string) __('admin.content.fields.app'),
-            'platform' => (string) __('admin.content.fields.platform'),
-            'url' => (string) __('admin.content.fields.store_url'),
-            'active' => (string) __('admin.common.active'),
-            'sort_order' => (string) __('admin.common.sort_order'),
+            'app' => (string) __('content.fields.app'),
+            'platform' => (string) __('content.fields.platform'),
+            'url' => (string) __('content.fields.store_url'),
+            'active' => (string) __('content.fields.active'),
+            'sort_order' => (string) __('content.fields.sort_order'),
         ];
     }
 }

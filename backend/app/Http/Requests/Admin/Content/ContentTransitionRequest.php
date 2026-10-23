@@ -36,7 +36,7 @@ class ContentTransitionRequest extends FormRequest
                     $at = CarbonImmutable::parse((string) $value, (string) config('admin.display_timezone'));
 
                     if ($at->lt(now()->addSeconds((int) config('content.schedule_min_lead_seconds', 60)))) {
-                        $fail((string) __('admin.content.schedule_in_future'));
+                        $fail((string) __('content.schedule_in_future'));
                     }
                 },
             ],
@@ -45,7 +45,7 @@ class ContentTransitionRequest extends FormRequest
 
     public function attributes(): array
     {
-        return ['reason' => (string) __('admin.common.reason'), 'scheduled_at' => (string) __('admin.content.fields.scheduled_at')];
+        return ['reason' => (string) __('admin.common.reason'), 'scheduled_at' => (string) __('content.fields.scheduled_at')];
     }
 
     public function action(): WorkflowAction

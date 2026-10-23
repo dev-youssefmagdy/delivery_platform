@@ -35,12 +35,12 @@ final class ArticleController extends AdminController
     {
         $article = $this->service->create(ContentType::Article, ArticleData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.created'))->redirect(route('admin.content-articles.show', $article));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-articles.show', $article));
     }
 
     public function show(ContentArticle $article): View
     {
-        return view('admin.content.articles.show', ['article' => $article->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name'])]);
+        return view('admin.content.articles.show', ['article' => $article->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'category', 'cover', 'ogImage'])]);
     }
 
     public function activity(ContentArticle $article, AuditTrailService $trail): View
@@ -50,21 +50,21 @@ final class ArticleController extends AdminController
 
     public function edit(ContentArticle $article): View
     {
-        return view('admin.content.articles.form', ['article' => $article]);
+        return view('admin.content.articles.form', ['article' => $article->loadMissing(['category', 'cover', 'ogImage'])]);
     }
 
     public function update(SaveArticleRequest $request, ContentArticle $article): AdminFormResponse
     {
         $this->service->update($article, ArticleData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.updated'))->redirect(route('admin.content-articles.show', $article));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-articles.show', $article));
     }
 
     public function destroy(DestroyContentRequest $request, ContentArticle $article): AdminFormResponse
     {
         $this->service->delete($article, $this->actor(), $request->reason());
 
-        $response = $this->formResponse(__('admin.content.deleted'))->reloadTable(ContentArticlesDataTable::TABLE_ID);
+        $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentArticlesDataTable::TABLE_ID);
 
         return $request->boolean('from_show') ? $response->redirect(route('admin.content-articles.index')) : $response;
     }

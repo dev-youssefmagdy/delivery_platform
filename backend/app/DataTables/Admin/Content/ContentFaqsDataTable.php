@@ -43,10 +43,10 @@ final class ContentFaqsDataTable extends AdminDataTable
     {
         return [
             $this->column('id', '#', orderable: true),
-            $this->column('question', __('admin.content.fields.question')),
-            $this->column('sort_order', __('admin.common.sort_order'), orderable: true),
-            $this->column('status', __('admin.content.fields.status'), orderable: true),
-            $this->column('locales', __('admin.content.fields.locales')),
+            $this->column('question', __('content.fields.question')),
+            $this->column('sort_order', __('content.fields.sort_order'), orderable: true),
+            $this->column('status', __('content.fields.status'), orderable: true),
+            $this->column('locales', __('content.fields.locales')),
             $this->column('updated_at', __('admin.common.updated_at'), orderable: true),
             $this->actionsColumnDefinition(),
         ];

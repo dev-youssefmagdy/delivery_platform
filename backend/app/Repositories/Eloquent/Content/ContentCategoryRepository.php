@@ -10,6 +10,7 @@ use App\Models\ContentFaq;
 use App\Repositories\Contracts\Content\ContentCategoryRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @extends BaseRepository<ContentCategory>
@@ -52,5 +53,25 @@ final class ContentCategoryRepository extends BaseRepository implements ContentC
         return $category->kind === CategoryKind::Faq
             ? ContentFaq::query()->where('category_id', $category->id)->count()
             : ContentArticle::query()->where('category_id', $category->id)->count();
+    }
+
+    public function lookup(CategoryKind $kind, string $term, int $limit): Collection
+    {
+        return $this->query()
+            ->where('kind', $kind->value)
+            ->where('active', true)
+            ->when($term !== '', static function (Builder $query) use ($term): void {
+                $like = '%'.addcslashes($term, '%_\\').'%';
+                $query->where(static fn (Builder $inner) => $inner->where('name->ar', 'like', $like)->orWhere('name->en', 'like', $like)->orWhere('slug', 'like', $like));
+            })
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function findManyByIds(CategoryKind $kind, array $ids): Collection
+    {
+        return $this->query()->where('kind', $kind->value)->whereIn('id', $ids)->get();
     }
 }

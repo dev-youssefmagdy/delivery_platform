@@ -54,10 +54,10 @@ class SaveCategoryRequest extends FormRequest
     public function attributes(): array
     {
         return $this->translatedLabels(['name', 'description'], 'content') + [
-            'kind' => (string) __('admin.content.fields.category_kind'),
-            'slug' => (string) __('admin.content.fields.slug'),
-            'sort_order' => (string) __('admin.common.sort_order'),
-            'active' => (string) __('admin.common.active'),
+            'kind' => (string) __('content.fields.category_kind'),
+            'slug' => (string) __('content.fields.slug'),
+            'sort_order' => (string) __('content.fields.sort_order'),
+            'active' => (string) __('content.fields.active'),
         ];
     }
 }

@@ -43,11 +43,11 @@ final class ContentPagesDataTable extends AdminDataTable
     {
         return [
             $this->column('id', '#', orderable: true),
-            $this->column('title', __('admin.content.fields.title')),
-            $this->column('slug', __('admin.content.fields.slug'), orderable: true),
-            $this->column('kind', __('admin.content.fields.kind'), orderable: true),
-            $this->column('status', __('admin.content.fields.status'), orderable: true),
-            $this->column('locales', __('admin.content.fields.locales')),
+            $this->column('title', __('content.fields.title')),
+            $this->column('slug', __('content.fields.slug'), orderable: true),
+            $this->column('kind', __('content.fields.kind'), orderable: true),
+            $this->column('status', __('content.fields.status'), orderable: true),
+            $this->column('locales', __('content.fields.locales')),
             $this->column('updated_at', __('admin.common.updated_at'), orderable: true),
             $this->actionsColumnDefinition(),
         ];

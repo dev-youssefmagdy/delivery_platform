@@ -83,6 +83,8 @@ return [
         'finance-providers' => App\Support\Admin\Lookups\FinanceProviderLookup::class,
         'wallets' => App\Support\Admin\Lookups\WalletLookup::class,
         'content-media' => App\Support\Admin\Lookups\ContentMediaLookup::class,
+        'faq-categories' => App\Support\Admin\Lookups\FaqCategoryLookup::class,
+        'article-categories' => App\Support\Admin\Lookups\ArticleCategoryLookup::class,
         // @admin-module:lookups
     ],
 

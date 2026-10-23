@@ -40,12 +40,12 @@ final class ContentCategoriesDataTable extends AdminDataTable
     {
         return [
             $this->column('id', '#', orderable: true),
-            $this->column('name', __('admin.content.fields.name')),
-            $this->column('kind', __('admin.content.fields.category_kind'), orderable: true),
-            $this->column('slug', __('admin.content.fields.slug'), orderable: true),
-            $this->column('sort_order', __('admin.common.sort_order'), orderable: true),
-            $this->column('active', __('admin.common.active'), orderable: true),
-            $this->column('locales', __('admin.content.fields.locales')),
+            $this->column('name', __('content.fields.name')),
+            $this->column('kind', __('content.fields.category_kind'), orderable: true),
+            $this->column('slug', __('content.fields.slug'), orderable: true),
+            $this->column('sort_order', __('content.fields.sort_order'), orderable: true),
+            $this->column('active', __('content.fields.active'), orderable: true),
+            $this->column('locales', __('content.fields.locales')),
             $this->actionsColumnDefinition(),
         ];
     }

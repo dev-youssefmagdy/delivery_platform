@@ -41,10 +41,10 @@ class SaveFaqRequest extends FormRequest
     public function attributes(): array
     {
         return $this->translatedLabels(['question', 'answer'], 'content') + [
-            'category_id' => (string) __('admin.content.fields.category'),
-            'service_category_id' => (string) __('admin.content.fields.service_category'),
-            'sort_order' => (string) __('admin.common.sort_order'),
-            'fallback_to_ar' => (string) __('admin.content.fields.fallback_to_ar'),
+            'category_id' => (string) __('content.fields.category'),
+            'service_category_id' => (string) __('content.fields.service_category'),
+            'sort_order' => (string) __('content.fields.sort_order'),
+            'fallback_to_ar' => (string) __('content.fields.fallback_to_ar'),
         ];
     }
 }

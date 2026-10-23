@@ -44,12 +44,12 @@ class SaveMenuRequest extends FormRequest
     public function attributes(): array
     {
         return $this->translatedLabels(['title'], 'content') + [
-            'location' => (string) __('admin.content.fields.location'),
-            'items' => (string) __('admin.content.fields.items'),
-            'items.*.label_ar' => (string) __('admin.content.fields.item_label').' (ar)',
-            'items.*.label_en' => (string) __('admin.content.fields.item_label').' (en)',
-            'items.*.url' => (string) __('admin.content.fields.item_url'),
-            'fallback_to_ar' => (string) __('admin.content.fields.fallback_to_ar'),
+            'location' => (string) __('content.fields.location'),
+            'items' => (string) __('content.fields.items'),
+            'items.*.label_ar' => (string) __('content.fields.item_label').' (ar)',
+            'items.*.label_en' => (string) __('content.fields.item_label').' (en)',
+            'items.*.url' => (string) __('content.fields.item_url'),
+            'fallback_to_ar' => (string) __('content.fields.fallback_to_ar'),
         ];
     }
 }

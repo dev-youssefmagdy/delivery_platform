@@ -62,6 +62,6 @@ final class ContentLocalizer
 
     private function fallsBack(Model $content): bool
     {
-        return (bool) ($content->getAttribute('fallback_to_ar') ?? true);
+        return ! array_key_exists('fallback_to_ar', $content->getAttributes()) || (bool) $content->getAttribute('fallback_to_ar');
     }
 }

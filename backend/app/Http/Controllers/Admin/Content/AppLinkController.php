@@ -34,7 +34,7 @@ final class AppLinkController extends AdminController
     {
         $this->service->create(AppLinkData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.created'))->redirect(route('admin.content-app-links.index'));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-app-links.index'));
     }
 
     public function edit(ContentAppLink $link): View
@@ -46,14 +46,14 @@ final class AppLinkController extends AdminController
     {
         $this->service->update($link, AppLinkData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.updated'))->redirect(route('admin.content-app-links.index'));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-app-links.index'));
     }
 
     public function destroy(DestroyContentRequest $request, ContentAppLink $link): AdminFormResponse
     {
         $this->service->delete($link, $this->actor(), $request->reason());
 
-        return $this->formResponse(__('admin.content.deleted'))->reloadTable(ContentAppLinksDataTable::TABLE_ID);
+        return $this->formResponse(__('content.deleted'))->reloadTable(ContentAppLinksDataTable::TABLE_ID);
     }
 
     public function activity(ContentAppLink $link, AuditTrailService $trail): View

@@ -991,6 +991,106 @@ return [
         'risk.signal_raised' => 'تنبيه مخاطر (للفريق)',
     ],
 
+    'content_workflow_status' => [
+        'draft' => 'مسودة',
+        'in_review' => 'قيد المراجعة',
+        'scheduled' => 'مجدول',
+        'published' => 'منشور',
+        'archived' => 'مؤرشف',
+    ],
+
+    'content_workflow_action' => [
+        'submit' => 'إرسال للمراجعة',
+        'reject' => 'إعادة إلى مسودة',
+        'publish' => 'نشر',
+        'schedule' => 'جدولة',
+        'revert' => 'إعادة إلى مسودة',
+        'archive' => 'أرشفة',
+        'restore' => 'استعادة كمسودة',
+    ],
+
+    'content_type' => [
+        'page' => 'صفحة',
+        'article' => 'مقال',
+        'faq' => 'سؤال شائع',
+        'banner' => 'لافتة',
+        'menu' => 'قائمة',
+    ],
+
+    'page_kind' => [
+        'home' => 'الصفحة الرئيسية',
+        'generic' => 'صفحة عامة',
+        'service' => 'صفحة خدمة',
+        'city' => 'صفحة مدينة',
+    ],
+
+    'article_type' => [
+        'help' => 'مركز المساعدة',
+        'blog' => 'المدونة',
+    ],
+
+    'category_kind' => [
+        'faq' => 'الأسئلة الشائعة',
+        'article' => 'المقالات',
+    ],
+
+    'body_format' => [
+        'markdown' => 'Markdown',
+        'html' => 'HTML مقيّد',
+    ],
+
+    'banner_placement' => [
+        'app_home' => 'التطبيق: الشاشة الرئيسية',
+        'app_booking' => 'التطبيق: شاشة الحجز',
+        'web_home' => 'الموقع: الصفحة الرئيسية',
+        'web_top_bar' => 'الموقع: الشريط العلوي',
+        'web_services' => 'الموقع: صفحات الخدمات',
+    ],
+
+    'banner_kind' => [
+        'banner' => 'لافتة (صورة)',
+        'announcement' => 'إعلان (شريط نصي)',
+    ],
+
+    'banner_audience' => [
+        'all' => 'الجميع',
+        'customer' => 'العملاء',
+        'provider' => 'السائقون ومقدمو الخدمة',
+    ],
+
+    'menu_location' => [
+        'header' => 'رأس الموقع',
+        'footer_explore' => 'التذييل: استكشف',
+        'footer_legal' => 'التذييل: قانوني',
+    ],
+
+    'app_platform' => [
+        'android' => 'Google Play',
+        'ios' => 'App Store',
+        'huawei' => 'Huawei AppGallery',
+    ],
+
+    'app_kind' => [
+        'customer' => 'تطبيق العميل',
+        'driver' => 'تطبيق السائق',
+    ],
+
+    'block_type' => [
+        'hero' => 'الواجهة الرئيسية',
+        'rich_text' => 'نص',
+        'features' => 'المزايا',
+        'steps' => 'الخطوات',
+        'cta' => 'دعوة لاتخاذ إجراء',
+        'faq' => 'الأسئلة الشائعة',
+        'cities' => 'المدن',
+        'app_download' => 'تحميل التطبيق',
+    ],
+
+    'locale_completeness' => [
+        'complete' => 'العربية والإنجليزية',
+        'arabic_only' => 'العربية فقط',
+    ],
+
     // @admin-module:enums
 
     'cancellation_stage' => [

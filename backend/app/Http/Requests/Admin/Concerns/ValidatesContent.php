@@ -63,9 +63,9 @@ trait ValidatesContent
     protected function seoLabels(): array
     {
         return $this->translatedLabels(['seo_title', 'seo_description', 'og_title', 'og_description'], 'content') + [
-            'og_image_id' => (string) __('admin.content.fields.og_image'),
-            'canonical_url' => (string) __('admin.content.fields.canonical_url'),
-            'noindex' => (string) __('admin.content.fields.noindex'),
+            'og_image_id' => (string) __('content.fields.og_image'),
+            'canonical_url' => (string) __('content.fields.canonical_url'),
+            'noindex' => (string) __('content.fields.noindex'),
         ];
     }
 }

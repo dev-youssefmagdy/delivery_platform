@@ -37,12 +37,12 @@ final class PageController extends AdminController
     {
         $page = $this->service->create(ContentType::Page, PageData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.created'))->redirect(route('admin.content-pages.show', $page));
+        return $this->formResponse(__('content.created'))->redirect(route('admin.content-pages.show', $page));
     }
 
     public function show(ContentPage $page): View
     {
-        return view('admin.content.pages.show', ['page' => $page->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name'])]);
+        return view('admin.content.pages.show', ['page' => $page->loadMissing(['publisher:id,name', 'creator:id,name', 'updater:id,name', 'hero', 'ogImage', 'serviceCategory', 'city'])]);
     }
 
     public function activity(ContentPage $page, AuditTrailService $trail): View
@@ -52,21 +52,21 @@ final class PageController extends AdminController
 
     public function edit(ContentPage $page): View
     {
-        return view('admin.content.pages.form', ['page' => $page]);
+        return view('admin.content.pages.form', ['page' => $page->loadMissing(['hero', 'ogImage', 'serviceCategory', 'city'])]);
     }
 
     public function update(SavePageRequest $request, ContentPage $page): AdminFormResponse
     {
         $this->service->update($page, PageData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.updated'))->redirect(route('admin.content-pages.show', $page));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-pages.show', $page));
     }
 
     public function destroy(DestroyContentRequest $request, ContentPage $page): AdminFormResponse
     {
         $this->service->delete($page, $this->actor(), $request->reason());
 
-        $response = $this->formResponse(__('admin.content.deleted'))->reloadTable(ContentPagesDataTable::TABLE_ID);
+        $response = $this->formResponse(__('content.deleted'))->reloadTable(ContentPagesDataTable::TABLE_ID);
 
         return $request->boolean('from_show') ? $response->redirect(route('admin.content-pages.index')) : $response;
     }

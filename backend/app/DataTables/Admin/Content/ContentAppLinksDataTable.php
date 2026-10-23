@@ -37,11 +37,11 @@ final class ContentAppLinksDataTable extends AdminDataTable
     {
         return [
             $this->column('id', '#', orderable: true),
-            $this->column('app', __('admin.content.fields.app'), orderable: true),
-            $this->column('platform', __('admin.content.fields.platform'), orderable: true),
-            $this->column('url', __('admin.content.fields.store_url')),
-            $this->column('sort_order', __('admin.common.sort_order'), orderable: true),
-            $this->column('active', __('admin.common.active'), orderable: true),
+            $this->column('app', __('content.fields.app'), orderable: true),
+            $this->column('platform', __('content.fields.platform'), orderable: true),
+            $this->column('url', __('content.fields.store_url')),
+            $this->column('sort_order', __('content.fields.sort_order'), orderable: true),
+            $this->column('active', __('content.fields.active'), orderable: true),
             $this->actionsColumnDefinition(),
         ];
     }

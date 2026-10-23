@@ -35,7 +35,7 @@ final class MediaController extends AdminController
     {
         $this->service->store(MediaUploadData::fromRequest($request), $this->actor());
 
-        return $this->formResponse(__('admin.content.media_uploaded'))->redirect(route('admin.content-media.index'));
+        return $this->formResponse(__('content.media_uploaded'))->redirect(route('admin.content-media.index'));
     }
 
     public function edit(ContentMedia $contentMedia): View
@@ -49,14 +49,14 @@ final class MediaController extends AdminController
         $alt = (array) $request->validated('alt');
         $this->service->updateAlt($contentMedia, array_filter(array_map(static fn (?string $value): ?string => $value !== null && trim($value) !== '' ? trim($value) : null, $alt)), $this->actor());
 
-        return $this->formResponse(__('admin.content.updated'))->redirect(route('admin.content-media.index'));
+        return $this->formResponse(__('content.updated'))->redirect(route('admin.content-media.index'));
     }
 
     public function destroy(DestroyContentRequest $request, ContentMedia $contentMedia): AdminFormResponse
     {
         $this->service->delete($contentMedia, $this->actor(), $request->reason());
 
-        return $this->formResponse(__('admin.content.deleted'))->reloadTable(ContentMediaDataTable::TABLE_ID);
+        return $this->formResponse(__('content.deleted'))->reloadTable(ContentMediaDataTable::TABLE_ID);
     }
 
     public function activity(ContentMedia $contentMedia, AuditTrailService $trail): View

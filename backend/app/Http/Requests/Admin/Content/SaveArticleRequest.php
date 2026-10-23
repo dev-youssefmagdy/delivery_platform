@@ -50,13 +50,13 @@ class SaveArticleRequest extends FormRequest
     public function attributes(): array
     {
         return $this->translatedLabels(['title', 'summary', 'body'], 'content') + $this->seoLabels() + [
-            'type' => (string) __('admin.content.fields.article_type'),
-            'slug' => (string) __('admin.content.fields.slug'),
-            'category_id' => (string) __('admin.content.fields.category'),
-            'body_format' => (string) __('admin.content.fields.body_format'),
-            'cover_media_id' => (string) __('admin.content.fields.cover_image'),
-            'sort_order' => (string) __('admin.common.sort_order'),
-            'fallback_to_ar' => (string) __('admin.content.fields.fallback_to_ar'),
+            'type' => (string) __('content.fields.article_type'),
+            'slug' => (string) __('content.fields.slug'),
+            'category_id' => (string) __('content.fields.category'),
+            'body_format' => (string) __('content.fields.body_format'),
+            'cover_media_id' => (string) __('content.fields.cover_image'),
+            'sort_order' => (string) __('content.fields.sort_order'),
+            'fallback_to_ar' => (string) __('content.fields.fallback_to_ar'),
         ];
     }
 }

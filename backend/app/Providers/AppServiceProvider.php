@@ -218,6 +218,12 @@ class AppServiceProvider extends ServiceProvider
             'content_category' => \App\Models\ContentCategory::class,
             'content_app_link' => \App\Models\ContentAppLink::class,
             'content_media' => \App\Models\ContentMedia::class,
+            'referral_campaign' => \App\Models\ReferralCampaign::class,
+            'referral_relationship' => \App\Models\ReferralRelationship::class,
+            'referral_reward' => \App\Models\ReferralReward::class,
+            'loyalty_level' => \App\Models\LoyaltyLevel::class,
+            'incentive_campaign' => \App\Models\IncentiveCampaign::class,
+            'incentive_progress' => \App\Models\IncentiveProgress::class,
             // @admin-module:morph-map
         ]);
 

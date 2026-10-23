@@ -50,20 +50,6 @@ return [
     ],
 
     /*
-    | Dashboard placeholder sections (shown with "available after …" until their milestone ships real data).
-    | An entry is listed only to admins holding its permission.
-    */
-    'dashboard' => [
-        'sections' => [
-            ['permission' => 'bookings.view', 'title' => 'admin.dashboard.sections.bookings', 'available_after' => 'admin.dashboard.after.bookings'],
-            ['permission' => 'drivers.view', 'title' => 'admin.dashboard.sections.providers', 'available_after' => 'admin.dashboard.after.providers'],
-            ['permission' => 'finance.view', 'title' => 'admin.dashboard.sections.finance', 'available_after' => 'admin.dashboard.after.finance'],
-            ['permission' => 'support.view', 'title' => 'admin.dashboard.sections.support', 'available_after' => 'admin.dashboard.after.support'],
-            ['permission' => 'reports.view', 'title' => 'admin.dashboard.sections.reports', 'available_after' => 'admin.dashboard.after.reports'],
-        ],
-    ],
-
-    /*
     | The "Demo Item" proof module (P0.3). Routes are registered only when enabled AND the environment is
     | local or testing; the menu entry is hidden everywhere else.
     */

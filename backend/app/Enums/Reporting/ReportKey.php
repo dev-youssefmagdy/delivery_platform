@@ -123,7 +123,7 @@ enum ReportKey: string implements HasLabel
 
     public function hasCities(): bool
     {
-        return $this->metricSet() === MetricSet::Bookings || $this === self::Commissions || $this === self::SupplyDemand;
+        return $this->metricSet() === MetricSet::Bookings || in_array($this, [self::Commissions, self::SupplyDemand, self::CouponRoi], true);
     }
 
     public function hasCategories(): bool

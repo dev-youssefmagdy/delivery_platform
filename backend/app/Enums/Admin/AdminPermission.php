@@ -92,6 +92,7 @@ enum AdminPermission: string implements HasLabel
     case PushCampaignsManage = 'push_campaigns.manage';
     case ReportsView = 'reports.view';
     case ReportsExport = 'reports.export';
+    case ReportsExportPii = 'reports.export_pii';
     case SystemHealth = 'system.health';
     case SystemFeatureFlags = 'system.feature_flags';
     case SystemAppVersions = 'system.app_versions';

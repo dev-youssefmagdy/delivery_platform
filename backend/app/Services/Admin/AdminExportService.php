@@ -231,7 +231,7 @@ final class AdminExportService
 
         $rows = 0;
 
-        foreach ($table->query()->lazyById((int) config('admin.exports.chunk', 500)) as $row) {
+        foreach ($table->exportSource() ?? $table->query()->lazyById((int) config('admin.exports.chunk', 500)) as $row) {
             /** @var Model $row */
             fputcsv($stream, array_map($this->safeCell(...), $table->exportRow($row)), escape: '');
             $rows++;

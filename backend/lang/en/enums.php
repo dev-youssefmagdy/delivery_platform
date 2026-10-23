@@ -161,6 +161,7 @@ return [
         'update' => 'Update',
         'suspend' => 'Suspend',
         'export' => 'Export',
+        'export_pii' => 'Export personal data columns',
         'process_deletion' => 'Process deletion',
         'verify' => 'Verify',
         'reject' => 'Reject',

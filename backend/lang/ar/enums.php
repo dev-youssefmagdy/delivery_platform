@@ -161,6 +161,7 @@ return [
         'update' => 'تعديل',
         'suspend' => 'إيقاف',
         'export' => 'تصدير',
+        'export_pii' => 'تصدير أعمدة البيانات الشخصية',
         'process_deletion' => 'معالجة طلبات الحذف',
         'verify' => 'توثيق',
         'reject' => 'رفض',

@@ -87,7 +87,7 @@ final class MetricsAggregationService
         $now ??= now();
 
         return $this->metrics->replaceBookingMetrics($date, $cityId, $this->bookingRows($cityId, $start, $end), $now)
-            + $this->metrics->replaceFinanceMetrics($date, $cityId, $this->metrics->financeFacts($cityId, $start, $end), $now);
+            + $this->metrics->replaceFinanceMetrics($date, $cityId, $this->financeRows($cityId, $start, $end), $now);
     }
 
     public function aggregateOperationsDay(string $timezone, string $date, ?CarbonInterface $now = null): int
@@ -120,6 +120,15 @@ final class MetricsAggregationService
             'service_category_id' => (int) $row['category_id'],
             'currency' => (string) $row['currency'],
         ] + array_diff_key($row, ['zone_id' => 1, 'category_id' => 1, 'currency' => 1]), $this->metrics->bookingFacts($cityId, $start, $end));
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function financeRows(int $cityId, CarbonInterface $start, CarbonInterface $end): array
+    {
+        return array_map(static fn (array $row): array => ['service_category_id' => (int) $row['category_id'], 'currency' => (string) $row['currency']]
+            + array_diff_key($row, ['category_id' => 1, 'currency' => 1]), $this->metrics->financeFacts($cityId, $start, $end));
     }
 
     /**

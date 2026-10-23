@@ -256,7 +256,7 @@ final class MetricsAggregationRepository implements MetricsAggregationRepository
             }
         }
 
-        $measures = array_values(array_unique(array_merge(...array_map(static fn (array $row): array => array_diff(array_keys($row), $keys), $merged ?: [[]]))));
+        $measures = array_values(array_unique(array_merge([], ...array_values(array_map(static fn (array $row): array => array_diff(array_keys($row), $keys), $merged)))));
 
         return array_values(array_map(static function (array $row) use ($measures, $keys): array {
             foreach ($measures as $measure) {

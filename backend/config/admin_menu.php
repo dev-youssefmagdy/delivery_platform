@@ -477,6 +477,15 @@ return [
             'icon' => 'exclamation',
             'permission' => App\Enums\Admin\AdminPermission::RiskView,
         ],
+        [
+            'key' => 'reports',
+            'group' => 'reports',
+            'label' => 'reporting.menu',
+            'route' => 'admin.reports.index',
+            'active' => 'admin.reports.*',
+            'icon' => 'chart',
+            'permission' => App\Enums\Admin\AdminPermission::ReportsView,
+        ],
         // @admin-module:menu
     ],
 ];

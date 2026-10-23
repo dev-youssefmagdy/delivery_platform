@@ -99,6 +99,17 @@ abstract class AdminDataTable extends DataTable
         return null;
     }
 
+    /**
+     * Rows for a CSV export of listings whose query is aggregated (no `id` to chunk by, e.g. reports). Null = the default
+     * chunked read of `query()`.
+     *
+     * @return iterable<Model>|null
+     */
+    public function exportSource(): ?iterable
+    {
+        return null;
+    }
+
     public function exportFilename(): string
     {
         return Str::of(class_basename(static::class))->beforeLast('DataTable')->kebab()->append('-', now()->format('Ymd-His'))->toString();

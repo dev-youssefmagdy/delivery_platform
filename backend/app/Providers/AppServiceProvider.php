@@ -59,7 +59,9 @@ use App\Models\VehicleCategory;
 use App\Models\VehicleDocument;
 use App\Models\VehiclePhoto;
 use App\Models\ZoneServiceCategory;
+use App\Enums\Reporting\ReportKey;
 use App\Policies\DocumentPolicy;
+use App\Policies\ReportPolicy;
 use App\Services\Booking\DispatchableBookingSource;
 use App\Services\Dispatch\BookingEventSequencer;
 use App\Services\Dispatch\DispatchableRequestSource;
@@ -205,6 +207,7 @@ class AppServiceProvider extends ServiceProvider
 
         // The shared base class of provider/vehicle documents: one policy covers both subclasses.
         Gate::policy(OwnedDocument::class, DocumentPolicy::class);
+        Gate::policy(ReportKey::class, ReportPolicy::class);
 
         // Super Admin passes every ability check (Plan Appendix B); every other admin is checked by Spatie.
         Gate::before(static fn (Authorizable $user): ?bool => $user instanceof Admin && $user->isSuperAdmin() ? true : null);

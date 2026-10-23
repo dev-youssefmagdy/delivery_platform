@@ -7,7 +7,7 @@ return [
     'enums' => [
         'app' => ['customer' => 'Customer app', 'provider' => 'Provider app'],
         'platform' => ['android' => 'Android', 'ios' => 'iOS'],
-        'flag' => ['wallet' => 'Wallet', 'offers' => 'Offers', 'referrals' => 'Referrals', 'loyalty' => 'Loyalty'],
+        'flag' => ['wallet' => 'Wallet', 'offers' => 'Offers', 'referrals' => 'Referrals', 'loyalty' => 'Loyalty', 'incentives' => 'Provider incentives'],
     ],
 
     'health' => [

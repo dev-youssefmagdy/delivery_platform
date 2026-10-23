@@ -782,6 +782,10 @@ return [
         'cancellation_fee' => 'رسوم إلغاء',
         'debt_settlement' => 'تسديد دين المحفظة',
         'reversal' => 'عكس قيد',
+        'referral_reward' => 'مكافأة إحالة',
+        'loyalty_reward' => 'مكافأة ولاء',
+        'incentive_bonus' => 'مكافأة حافز مقدم الخدمة',
+        'credit_expiry' => 'انتهاء صلاحية رصيد',
     ],
     'payout_status' => [
         'requested' => 'مطلوب',

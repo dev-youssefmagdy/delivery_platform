@@ -782,6 +782,10 @@ return [
         'cancellation_fee' => 'Cancellation fee',
         'debt_settlement' => 'Wallet debt settled',
         'reversal' => 'Reversal',
+        'referral_reward' => 'Referral reward',
+        'loyalty_reward' => 'Loyalty reward',
+        'incentive_bonus' => 'Provider incentive bonus',
+        'credit_expiry' => 'Credit expiry',
     ],
     'payout_status' => [
         'requested' => 'Requested',

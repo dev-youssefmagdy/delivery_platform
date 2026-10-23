@@ -18,6 +18,7 @@ enum FeatureFlagKey: string implements HasLabel
     case Offers = 'offers';
     case Referrals = 'referrals';
     case Loyalty = 'loyalty';
+    case Incentives = 'incentives';
 
     public function label(): string
     {

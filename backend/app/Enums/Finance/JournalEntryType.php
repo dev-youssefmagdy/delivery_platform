@@ -26,6 +26,10 @@ enum JournalEntryType: string implements HasColor, HasLabel
     case CancellationFee = 'cancellation_fee';
     case DebtSettlement = 'debt_settlement';
     case Reversal = 'reversal';
+    case ReferralReward = 'referral_reward';
+    case LoyaltyReward = 'loyalty_reward';
+    case IncentiveBonus = 'incentive_bonus';
+    case CreditExpiry = 'credit_expiry';
 
     public function label(): string
     {
@@ -36,7 +40,8 @@ enum JournalEntryType: string implements HasColor, HasLabel
     {
         return match ($this) {
             self::BookingSettlementCash, self::BookingSettlementGateway, self::Tip => BadgeColor::Success,
-            self::Refund, self::Reversal => BadgeColor::Warning,
+            self::Refund, self::Reversal, self::CreditExpiry => BadgeColor::Warning,
+            self::ReferralReward, self::LoyaltyReward, self::IncentiveBonus => BadgeColor::Primary,
             self::PayoutReserve, self::PayoutPaid => BadgeColor::Info,
             self::Adjustment, self::CashSettlement, self::CancellationFee, self::DebtSettlement => BadgeColor::Neutral,
         };

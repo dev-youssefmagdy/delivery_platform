@@ -7,7 +7,7 @@ return [
     'enums' => [
         'app' => ['customer' => 'تطبيق العميل', 'provider' => 'تطبيق مزود الخدمة'],
         'platform' => ['android' => 'أندرويد', 'ios' => 'آي أو إس'],
-        'flag' => ['wallet' => 'المحفظة', 'offers' => 'العروض', 'referrals' => 'الإحالات', 'loyalty' => 'الولاء'],
+        'flag' => ['wallet' => 'المحفظة', 'offers' => 'العروض', 'referrals' => 'الإحالات', 'loyalty' => 'الولاء', 'incentives' => 'حوافز مقدمي الخدمة'],
     ],
 
     'health' => [

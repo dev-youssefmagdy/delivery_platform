@@ -69,7 +69,7 @@ class ContactRequest extends FormRequest
         ];
     }
 
-    public function data(): WebsiteContactData
+    public function toData(): WebsiteContactData
     {
         return new WebsiteContactData(
             name: (string) $this->trimmed('name'),

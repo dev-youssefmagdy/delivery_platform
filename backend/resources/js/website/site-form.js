@@ -76,7 +76,7 @@ function renderErrors(form, errors, summaryMessage) {
     const items = [];
     let first = null;
 
-    Object.keys(errors).filter((name) => !name.startsWith('_')).forEach((name) => {
+    Object.keys(errors).filter((name) => name !== '_code').forEach((name) => {
         const message = Array.isArray(errors[name]) ? errors[name][0] : String(errors[name]);
 
         if (fieldOf(form, name)) {

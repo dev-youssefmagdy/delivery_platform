@@ -46,7 +46,7 @@ final class ContactController extends SiteController
     public function store(ContactRequest $request): JsonResponse|RedirectResponse
     {
         try {
-            $ticket = $this->tickets->openFromWebsite($request->data());
+            $ticket = $this->tickets->openFromWebsite($request->toData());
         } catch (BusinessRuleViolation $e) {
             throw ValidationException::withMessages([$e->field ?? 'email' => $e->getMessage()]);
         }

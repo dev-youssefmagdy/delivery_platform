@@ -46,7 +46,7 @@ final class ProviderLeadController extends SiteController
 
     public function store(ProviderLeadRequest $request): JsonResponse|RedirectResponse
     {
-        $result = $this->leads->submit($request->data());
+        $result = $this->leads->submit($request->toData());
         $reference = (string) $result['lead']->reference;
 
         if ($request->expectsJson()) {

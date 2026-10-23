@@ -74,7 +74,7 @@ class ProviderLeadRequest extends FormRequest
         ];
     }
 
-    public function data(): LeadSubmissionData
+    public function toData(): LeadSubmissionData
     {
         return new LeadSubmissionData(
             name: (string) $this->trimmed('name'),

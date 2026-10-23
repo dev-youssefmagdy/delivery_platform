@@ -21,6 +21,7 @@ use App\Models\MetricDailyOperation;
 use App\Models\PaymentReconciliationRun;
 use App\Models\PayoutRequest;
 use App\Models\ProviderDocument;
+use App\Models\ReferralRelationship;
 use App\Repositories\Contracts\Reporting\ReportQueryRepositoryInterface;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
@@ -90,7 +91,7 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
             ]),
             ReportKey::DocumentExpiry => $this->documentExpiry(),
             ReportKey::Retention => $this->retention($filters),
-            ReportKey::Referral => throw new \LogicException('The referral report is a placeholder until P5.7.'),
+            ReportKey::Referral => $this->referralOutcomes($filters),
         };
     }
 
@@ -312,6 +313,27 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
                 count(*) as total_active", array_fill(0, 7, $today))
             ->groupBy('t.id', 't.name')
             ->orderByDesc('expired');
+    }
+
+    /**
+     * Referral outcomes per campaign for referrals created inside the range: referrals, milestone reached, rewarded, under review,
+     * rejected, conversion (rewarded / referrals) and the money spent from the campaign budget (all time, it is the campaign's own counter).
+     */
+    private function referralOutcomes(ReportFilterData $filters): Builder
+    {
+        [$start, $end] = $this->window($filters);
+
+        return ReferralRelationship::query()->from('referral_relationships as r')
+            ->join('referral_campaigns as c', 'c.id', '=', 'r.campaign_id')
+            ->where('r.created_at', '>=', $start)->where('r.created_at', '<', $end)
+            ->when($filters->currency !== null, static fn (Builder $q) => $q->where('c.currency', $filters->currency))
+            ->selectRaw("c.name as campaign_name, case c.audience when 'customer' then ? else ? end as audience_label, c.currency,
+                count(*) as referrals, sum(r.qualified_at is not null) as qualified, sum(r.status = 'rewarded') as rewarded,
+                sum(r.status = 'under_review') as under_review, sum(r.status = 'rejected') as rejected,
+                {$this->pct("sum(r.status = 'rewarded')", 'count(*)')} as conversion_rate, c.spent_minor, c.budget_minor",
+                [(string) __('growth.enums.audience.customer'), (string) __('growth.enums.audience.provider')])
+            ->groupBy('c.id', 'c.name', 'c.audience', 'c.currency', 'c.spent_minor', 'c.budget_minor')
+            ->orderByDesc('referrals');
     }
 
     private function retention(ReportFilterData $filters): Builder

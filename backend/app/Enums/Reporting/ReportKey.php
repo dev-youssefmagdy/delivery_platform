@@ -10,7 +10,7 @@ use App\Enums\Contracts\HasLabel;
 /**
  * The reports of SRS 16.14 (ADR-178). Each report = a collapsed filters card, a chart, a Yajra table and a queued, audited CSV export.
  * Every report needs `reports.view` AND the permission of the data it reads (finance, support, safety...); PII columns need
- * `reports.export_pii`. `referral` is a documented placeholder until P5.7 (referrals) exists.
+ * `reports.export_pii`. `referral` (P5.7) lists referral outcomes per campaign and also needs `referrals.view`.
  */
 enum ReportKey: string implements HasLabel
 {
@@ -56,7 +56,7 @@ enum ReportKey: string implements HasLabel
             self::SafetyTrends => AdminPermission::IncidentsView,
             self::DocumentExpiry => AdminPermission::DocumentsView,
             self::Retention => AdminPermission::CustomersView,
-            self::Referral => AdminPermission::ReportsView,
+            self::Referral => AdminPermission::ReferralsView,
         };
     }
 
@@ -102,7 +102,7 @@ enum ReportKey: string implements HasLabel
 
     public function isPlaceholder(): bool
     {
-        return $this === self::Referral;
+        return false;
     }
 
     /**
@@ -133,7 +133,7 @@ enum ReportKey: string implements HasLabel
 
     public function usesDateRange(): bool
     {
-        return ! in_array($this, [self::PayoutAgeing, self::DocumentExpiry, self::Referral], true);
+        return ! in_array($this, [self::PayoutAgeing, self::DocumentExpiry], true);
     }
 
     public function hasPiiColumns(): bool
@@ -167,7 +167,7 @@ enum ReportKey: string implements HasLabel
             self::SafetyTrends => [$bucket, $int('incidents_opened'), $int('incidents_urgent'), $int('incidents_resolved'), $int('incidents_sla_breached')],
             self::DocumentExpiry => [ReportColumn::text('document_type'), $int('expired'), $int('expiring_7'), $int('expiring_30'), $int('expiring_60'), $int('total_active')],
             self::Retention => [ReportColumn::text('cohort'), $int('customers'), $int('m1'), $int('m2'), $int('m3'), $pct('m1_rate'), $pct('m2_rate'), $pct('m3_rate')],
-            self::Referral => [],
+            self::Referral => [ReportColumn::text('campaign_name'), ReportColumn::text('audience_label'), ReportColumn::text('currency'), $int('referrals'), $int('qualified'), $int('rewarded'), $int('under_review'), $int('rejected'), $pct('conversion_rate'), $money('spent_minor'), $money('budget_minor')],
         };
     }
 
@@ -196,7 +196,7 @@ enum ReportKey: string implements HasLabel
             self::SafetyTrends => [['incidents_opened', $c], ['incidents_urgent', $c], ['incidents_sla_breached', $c]],
             self::DocumentExpiry => [['expired', $c], ['expiring_7', $c], ['expiring_30', $c], ['expiring_60', $c]],
             self::Retention => [['customers', $c], ['m1', $c], ['m2', $c], ['m3', $c]],
-            self::Referral => [],
+            self::Referral => [['referrals', $c], ['qualified', $c], ['rewarded', $c], ['rejected', $c]],
         };
     }
 

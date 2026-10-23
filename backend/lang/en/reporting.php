@@ -145,10 +145,11 @@ return [
         'safety-trends' => ['title' => 'Safety incident trends', 'description' => 'Incidents opened, urgent, resolved and breaching their SLA per day.', 'definition' => 'Counts per day of the chosen timezone. Urgent = high or critical severity. Counts only: no narrative, contact or location appears in this report.'],
         'document-expiry' => ['title' => 'Document expiry', 'description' => 'Approved provider documents already expired or expiring in 7, 30 and 60 days.', 'definition' => 'Approved provider documents with an expiry date, per document type, relative to today in the admin timezone. A live view: it ignores the date range.'],
         'retention' => ['title' => 'Customer retention', 'description' => 'Customers by first-booking month and the share who booked again 1, 2 and 3 months later.', 'definition' => 'Cohort = customers whose first non-draft request was in the month. M+1 / M+2 / M+3 = customers with a request in that later month / customers in the cohort. Months use the timezone filter (or the admin timezone).'],
-        'referral' => ['title' => 'Referral outcomes', 'description' => 'Planned: invitations, sign-ups, first trips and rewards (arrives with referrals).', 'definition' => 'Placeholder until milestone P5.7.'],
+        'referral' => ['title' => 'Referral outcomes', 'description' => 'Referrals per campaign: milestone reached, rewarded, under review, rejected, conversion and spend.', 'definition' => 'Per referral campaign, for referrals created in the date range: referrals = relationships created; milestone = relationships whose new person completed the required jobs; rewarded = rewards paid; conversion = rewarded / referrals; spent and budget are the campaign\'s own counters (all time). Counts only, no names or contacts.'],
     ],
 
     'columns' => [
+        'campaign_name' => 'Campaign', 'audience_label' => 'Audience', 'referrals' => 'Referrals', 'qualified' => 'Milestone reached', 'rewarded' => 'Rewarded', 'under_review' => 'Under review', 'rejected' => 'Rejected', 'conversion_rate' => 'Conversion', 'spent_minor' => 'Spent', 'budget_minor' => 'Budget',
         'bucket_label' => 'Period / group',
         'requests' => 'Requests', 'with_offers' => 'With offers', 'selected' => 'Selected', 'completed' => 'Completed',
         'request_to_offer' => 'Request to offer', 'offer_to_selection' => 'Offer to selection', 'selection_to_completion' => 'Selection to completion', 'overall_conversion' => 'Overall conversion',

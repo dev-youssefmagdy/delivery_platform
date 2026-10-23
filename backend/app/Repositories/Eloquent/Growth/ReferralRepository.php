@@ -18,7 +18,6 @@ use App\Repositories\Contracts\Growth\ReferralRepositoryInterface;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 final class ReferralRepository implements ReferralRepositoryInterface
 {
@@ -228,40 +227,5 @@ final class ReferralRepository implements ReferralRepositoryInterface
             'rejected' => $by(RelationshipStatus::Rejected),
             'spent_minor' => (int) ReferralCampaign::query()->whereKey($campaignId)->value('spent_minor'),
         ];
-    }
-
-    public function outcomesReport(?CarbonInterface $from, ?CarbonInterface $to): array
-    {
-        $rows = DB::table('referral_campaigns as c')
-            ->leftJoin('referral_relationships as r', static function ($join) use ($from, $to): void {
-                $join->on('r.campaign_id', '=', 'c.id');
-                $from === null || $join->where('r.created_at', '>=', $from);
-                $to === null || $join->where('r.created_at', '<=', $to);
-            })
-            ->groupBy('c.id', 'c.name', 'c.audience', 'c.status', 'c.currency', 'c.budget_minor', 'c.spent_minor')
-            ->orderBy('c.id')
-            ->selectRaw("c.id, c.name, c.audience, c.status, c.currency, c.budget_minor, c.spent_minor, count(r.id) as referrals,
-                sum(r.qualified_at is not null) as qualified, sum(r.status = 'rewarded') as rewarded, sum(r.status = 'under_review') as under_review,
-                sum(r.status = 'rejected') as rejected")
-            ->get();
-
-        return $rows->map(static function (object $row): array {
-            $referrals = (int) $row->referrals;
-
-            return [
-                'campaign' => (string) $row->name,
-                'audience' => (string) $row->audience,
-                'status' => (string) $row->status,
-                'currency' => (string) $row->currency,
-                'referrals' => $referrals,
-                'qualified' => (int) $row->qualified,
-                'rewarded' => (int) $row->rewarded,
-                'under_review' => (int) $row->under_review,
-                'rejected' => (int) $row->rejected,
-                'conversion_bp' => $referrals === 0 ? 0 : intdiv((int) $row->rewarded * 10000, $referrals),
-                'spent_minor' => (int) $row->spent_minor,
-                'budget_minor' => (int) $row->budget_minor,
-            ];
-        })->all();
     }
 }

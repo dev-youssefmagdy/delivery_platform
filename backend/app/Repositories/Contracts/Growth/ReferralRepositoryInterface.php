@@ -149,9 +149,4 @@ interface ReferralRepositoryInterface
      * @return array{relationships: int, qualified: int, rewarded: int, under_review: int, rejected: int, spent_minor: int}
      */
     public function campaignTotals(int $campaignId): array;
-
-    /**
-     * @return list<array<string, mixed>> rows of the referral outcomes report
-     */
-    public function outcomesReport(?CarbonInterface $from, ?CarbonInterface $to): array;
 }

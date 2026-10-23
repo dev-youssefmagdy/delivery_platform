@@ -31,7 +31,7 @@
                 @if ($role->isSuperAdmin())
                     <x-admin.alert type="info">{{ __('admin.roles.super_admin_note') }}</x-admin.alert>
                 @elseif ($matrix['selected'] === [])
-                    <span class="text-sm text-slate-400">{{ __('admin.roles.no_permissions') }}</span>
+                    <span class="text-sm text-slate-500">{{ __('admin.roles.no_permissions') }}</span>
                 @else
                     <x-admin.permission-matrix :selected="$matrix['selected']" readonly />
                 @endif

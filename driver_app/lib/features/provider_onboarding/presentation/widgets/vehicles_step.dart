@@ -51,10 +51,8 @@ class VehiclesStep extends StatelessWidget {
               title: Text(v.title),
               subtitle: Text(
                 v.rejectionReason == null
-                    ? v.plate
-                    : '${v.plate} · ${l10n.obVehicleRejectedReason(v.rejectionReason!)}',
-                textDirection: TextDirection.ltr,
-              ),
+                    ? ltrIsolate(v.plate)
+                    : '${ltrIsolate(v.plate)} · ${l10n.obVehicleRejectedReason(v.rejectionReason!)}'),
               trailing: StatusChip(
                 label: v.status.label(l10n),
                 tone: v.status.tone,

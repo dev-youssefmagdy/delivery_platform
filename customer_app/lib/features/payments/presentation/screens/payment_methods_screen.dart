@@ -111,9 +111,7 @@ class _PaymentMethodsScreenState extends ConsumerState<PaymentMethodsScreen> wit
                       key: Key('method-${m.id}'),
                       leading: Icon(m.type == PaymentMethodType.mobileWallet ? Icons.phone_android : Icons.credit_card),
                       title: Text(
-                        m.type == PaymentMethodType.mobileWallet ? l10n.pmWallet : '${m.brand ?? l10n.pmCard} •••• ${m.last4 ?? ''}',
-                        textDirection: TextDirection.ltr,
-                      ),
+                        m.type == PaymentMethodType.mobileWallet ? l10n.pmWallet : '${m.brand ?? l10n.pmCard} ${ltrIsolate('•••• ${m.last4 ?? ''}')}'),
                       subtitle: m.isPending ? Text(l10n.pmPending) : (m.isDefault ? Text(l10n.pmDefault) : null),
                       trailing: _deleting == m.id
                           ? const SizedBox.square(dimension: 24, child: CircularProgressIndicator(strokeWidth: 2.5))

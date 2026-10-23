@@ -2,7 +2,7 @@
 {{-- Submits filters[name][min] / filters[name][max]. --}}
 @php($base = 'filter-'.\App\Support\Admin\FieldName::id($name, null))
 <fieldset class="min-w-0">
-    <legend class="form-label">{{ $label }}@if ($suffix) <span class="text-slate-400">({{ $suffix }})</span>@endif</legend>
+    <legend class="form-label">{{ $label }}@if ($suffix) <span class="text-slate-500">({{ $suffix }})</span>@endif</legend>
     <div class="grid grid-cols-2 gap-2">
         @foreach (['min', 'max'] as $edge)
             <input

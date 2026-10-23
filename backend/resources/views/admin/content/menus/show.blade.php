@@ -13,7 +13,7 @@
         <x-admin.detail-list.item :label="__('content.fields.items')" full>
             <ul class="space-y-1">
                 @foreach ((array) $menu->items as $item)
-                    <li class="flex flex-wrap gap-x-3"><span>{{ $item['label']['ar'] ?? '' }}</span><span class="text-slate-500" dir="ltr">{{ $item['label']['en'] ?? '' }}</span><span class="text-slate-400" dir="ltr">{{ $item['url'] ?? '' }}</span></li>
+                    <li class="flex flex-wrap gap-x-3"><span>{{ $item['label']['ar'] ?? '' }}</span><span class="text-slate-500" dir="ltr">{{ $item['label']['en'] ?? '' }}</span><span class="text-slate-500" dir="ltr">{{ $item['url'] ?? '' }}</span></li>
                 @endforeach
             </ul>
         </x-admin.detail-list.item>

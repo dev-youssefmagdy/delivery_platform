@@ -104,7 +104,7 @@ class _OffersBody extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(formatter.format(u.discount), textDirection: TextDirection.ltr),
+                  IsolatedText(formatter.format(u.discount)),
                   StatusChip(label: usageStatusText(l10n, u.status), tone: _usageTone(u.status)),
                 ],
               ),

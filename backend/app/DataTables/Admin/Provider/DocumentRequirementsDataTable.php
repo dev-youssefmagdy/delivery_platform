@@ -57,7 +57,7 @@ final class DocumentRequirementsDataTable extends AdminDataTable
 
     protected function configure(EloquentDataTable $table): void
     {
-        $any = '<span class="text-slate-400">'.e((string) __('admin.document_types.any')).'</span>';
+        $any = '<span class="text-slate-500">'.e((string) __('admin.document_types.any')).'</span>';
         $table->only(['id', 'country', 'city', 'service_category', 'vehicle_category', 'provider_type', 'mandatory', 'actions']);
 
         foreach (['country' => 'country', 'city' => 'city', 'service_category' => 'serviceCategory', 'vehicle_category' => 'vehicleCategory'] as $column => $relation) {

@@ -394,18 +394,16 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
                   color: theme.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
-                child: Text(
+                child: IsolatedText(
                   _text.isEmpty ? '0' : _text,
                   key: const Key('counter-amount'),
                   textAlign: TextAlign.center,
-                  textDirection: TextDirection.ltr,
                   style: theme.textTheme.displayMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                  ),
-                ),
+                  )),
               ),
-              SizedBox(
-                height: 48,
+              ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 48),
                 child: Center(
                   child: hint == null
                       ? (minor != null && check == AmountCheck.ok

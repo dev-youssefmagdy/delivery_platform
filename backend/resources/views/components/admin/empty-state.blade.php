@@ -1,6 +1,6 @@
 @props(['icon' => 'inbox', 'title' => null, 'description' => null, 'compact' => false])
 <div {{ $attributes->class(['flex flex-col items-center justify-center text-center', 'px-6 py-12' => ! $compact, 'px-4 py-6' => $compact]) }}>
-    <span @class(['inline-flex items-center justify-center rounded-full bg-slate-100 text-slate-400', 'size-12' => ! $compact, 'size-9' => $compact])>
+    <span @class(['inline-flex items-center justify-center rounded-full bg-slate-100 text-slate-500', 'size-12' => ! $compact, 'size-9' => $compact])>
         <x-admin.icon :name="$icon" @class(['size-6' => ! $compact, 'size-5' => $compact]) />
     </span>
     @if ($title)

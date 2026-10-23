@@ -27,6 +27,7 @@
     --color-brand-700: #0f766e;
     --color-brand-800: #0f5f5a;
     --color-brand-900: #114e4b;
+    --color-field: #8392a7; /* form control boundary, 3:1 on white */
     --color-accent-400: #fbbf24;
     --color-accent-500: #f59e0b;
 }

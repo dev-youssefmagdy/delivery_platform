@@ -7,7 +7,7 @@
         @elseif ($value !== null && $value !== '')
             {{ $value }}
         @else
-            <span class="text-slate-400">{{ __('admin.common.not_set') }}</span>
+            <span class="text-slate-500">{{ __('admin.common.not_set') }}</span>
         @endif
     </dd>
 </div>

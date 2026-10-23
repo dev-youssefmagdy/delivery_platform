@@ -522,7 +522,7 @@ class TrustedContactsScreen extends ConsumerWidget {
                   key: Key('contact-${c.id}'),
                   leading: const Icon(Icons.person_outline),
                   title: Text(c.name),
-                  subtitle: Text([c.phoneMasked, if (c.relationship != null) strings.relationshipName(c.relationship!)].join(' · '), textDirection: TextDirection.ltr),
+                  subtitle: Text([ltrIsolate(c.phoneMasked), if (c.relationship != null) strings.relationshipName(c.relationship!)].join(' · ')),
                   trailing: Wrap(spacing: 4, children: [if (c.notifyOnSos) const Icon(Icons.sos_rounded, size: 18), if (c.shareTrip) const Icon(Icons.share_location_outlined, size: 18)]),
                   onTap: () => _edit(context, ref, existing: c),
                 ),

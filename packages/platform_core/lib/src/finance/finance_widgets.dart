@@ -38,11 +38,9 @@ class WalletLineTile extends StatelessWidget {
           if (balanceLabel != null) balanceLabel!(formatter.format(line.balanceAfter)),
         ].where((s) => s.isNotEmpty).join(' - '),
       ),
-      trailing: Text(
+      trailing: IsolatedText(
         credit ? '+${formatter.format(line.change)}' : formatter.format(line.change),
-        textDirection: TextDirection.ltr,
-        style: theme.textTheme.titleSmall?.copyWith(color: color, fontWeight: FontWeight.w700),
-      ),
+        style: theme.textTheme.titleSmall?.copyWith(color: color, fontWeight: FontWeight.w700)),
     );
   }
 }
@@ -121,11 +119,9 @@ class AdjustmentCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.xs),
-            Text(
+            IsolatedText(
               formatter.format(adjustment.amount),
-              textDirection: TextDirection.ltr,
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-            ),
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
             if (detail != null && detail!.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(detail!, key: Key('adjustment-detail-${adjustment.id}'), style: theme.textTheme.labelLarge),
@@ -207,7 +203,7 @@ class AmountRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(label, style: style)),
-          Text(value, style: style, textDirection: TextDirection.ltr),
+          IsolatedText(value, style: style),
         ],
       ),
     );

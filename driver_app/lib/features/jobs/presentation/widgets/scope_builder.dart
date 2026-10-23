@@ -89,10 +89,10 @@ class ScopeStepper extends StatelessWidget {
             IconButton.filledTonal(
               key: Key('$key-minus'),
               iconSize: 32,
-              constraints: const BoxConstraints.tightFor(width: 56, height: 56),
+              constraints: const BoxConstraints.tightFor(width: 64, height: 64),
               onPressed: value - step >= min ? () => onChanged(value - step) : null,
               icon: const Icon(Icons.remove),
-              tooltip: '-',
+              tooltip: '$label -',
             ),
             Expanded(
               child: Text(
@@ -105,10 +105,10 @@ class ScopeStepper extends StatelessWidget {
             IconButton.filledTonal(
               key: Key('$key-plus'),
               iconSize: 32,
-              constraints: const BoxConstraints.tightFor(width: 56, height: 56),
+              constraints: const BoxConstraints.tightFor(width: 64, height: 64),
               onPressed: value + step <= max ? () => onChanged(value + step) : null,
               icon: const Icon(Icons.add),
-              tooltip: '+',
+              tooltip: '$label +',
             ),
           ],
         ),

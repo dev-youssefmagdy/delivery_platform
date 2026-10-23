@@ -7,7 +7,7 @@
 @endphp
 <fieldset class="min-w-0">
     <legend class="form-label">{{ $label }}</legend>
-    <div class="inline-flex rounded-(--radius-control) border border-slate-300 bg-white p-0.5" role="radiogroup">
+    <div class="inline-flex rounded-(--radius-control) border border-field bg-white p-0.5" role="radiogroup">
         @foreach ($choices as $value => $choiceLabel)
             <label class="cursor-pointer">
                 <input type="radio" name="filters[{{ $name }}]" value="{{ $value }}" id="{{ $base }}-{{ $value === '' ? 'any' : $value }}" class="peer sr-only" @checked($current === (string) $value)>

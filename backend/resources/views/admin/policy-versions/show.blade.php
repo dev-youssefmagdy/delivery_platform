@@ -54,7 +54,7 @@
                                 <p class="mb-2 font-medium text-slate-800">{{ $policy->getTranslation('title', $locale->value, false) }}</p>
                                 <div class="whitespace-pre-line rounded-(--radius-control) border border-slate-200 bg-slate-50 p-4 text-sm leading-7 text-slate-700">{{ $policy->getTranslation('content', $locale->value, false) }}</div>
                             @else
-                                <p class="text-sm text-slate-400">{{ __('admin.policy_versions.no_translation') }}</p>
+                                <p class="text-sm text-slate-500">{{ __('admin.policy_versions.no_translation') }}</p>
                             @endif
                         </section>
                     @endforeach

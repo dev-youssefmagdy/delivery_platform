@@ -180,7 +180,7 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
                     key: Key('pay-saved-${m.id}'),
                     contentPadding: EdgeInsets.zero,
                     value: m.id,
-                    title: Text('${m.brand ?? l10n.pmCard} •••• ${m.last4 ?? ''}', textDirection: TextDirection.ltr),
+                    title: Text('${m.brand ?? l10n.pmCard} ${ltrIsolate('•••• ${m.last4 ?? ''}')}'),
                   ),
                 RadioListTile<String?>(
                   key: const Key('pay-new-method'),

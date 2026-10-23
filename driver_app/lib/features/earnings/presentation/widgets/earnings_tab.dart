@@ -120,12 +120,10 @@ class _TotalsCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(l10n.ernEarned, style: theme.textTheme.bodyMedium),
-            Text(
+            IsolatedText(
               f.format(summary.earned),
               key: const Key('earnings-total'),
-              textDirection: TextDirection.ltr,
-              style: theme.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w700),
-            ),
+              style: theme.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w700)),
             Text(l10n.ernJobs(summary.jobs)),
             const Divider(),
             AmountRow(label: l10n.ernGross, value: f.format(summary.gross)),
@@ -223,7 +221,7 @@ class _CategoriesCard extends ConsumerWidget {
                   contentPadding: EdgeInsets.zero,
                   title: Text(c.name.resolve(language).isEmpty ? (c.code ?? '') : c.name.resolve(language)),
                   subtitle: Text(l10n.ernJobs(c.jobs)),
-                  trailing: Text(f.format(c.earnings), textDirection: TextDirection.ltr, style: theme.textTheme.titleMedium),
+                  trailing: IsolatedText(f.format(c.earnings), style: theme.textTheme.titleMedium),
                 ),
           ],
         ),

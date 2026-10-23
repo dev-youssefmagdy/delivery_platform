@@ -12,7 +12,7 @@
         @forelse ($item->tags ?? [] as $tag)
             <x-admin.badge :label="$tag->label()" color="primary" :dot="false" />
         @empty
-            <span class="text-slate-400">{{ __('admin.common.not_set') }}</span>
+            <span class="text-slate-500">{{ __('admin.common.not_set') }}</span>
         @endforelse
     </x-admin.detail-list.item>
     <x-admin.detail-list.item :label="__('admin.demo_items.fields.is_featured')" :value="$item->is_featured ? __('admin.common.yes') : __('admin.common.no')" />

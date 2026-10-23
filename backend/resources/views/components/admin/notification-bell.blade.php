@@ -27,7 +27,7 @@
                 <span class="min-w-0 flex-1">
                     <span class="block text-sm font-medium text-slate-800">{{ $notification->title }}</span>
                     <span class="block text-xs text-slate-600">{{ $notification->body }}</span>
-                    <span class="mt-1 flex items-center gap-2 text-xs text-slate-400">
+                    <span class="mt-1 flex items-center gap-2 text-xs text-slate-500">
                         <time datetime="{{ $notification->created_at->toIso8601String() }}">{{ $notification->created_at->diffForHumans() }}</time>
                         @if ($item['url'])
                             <span class="font-medium text-brand-700">{{ __('admin.layout.notification_download') }}</span>

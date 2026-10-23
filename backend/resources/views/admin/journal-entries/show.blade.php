@@ -74,7 +74,7 @@
                                 @else
                                     {{ $line->account->type->label() }}
                                 @endcan
-                                <span class="ltr-only ms-1 text-xs text-slate-400">{{ \Illuminate\Support\Str::substr($line->account->uuid, 0, 8) }}</span>
+                                <span class="ltr-only ms-1 text-xs text-slate-500">{{ \Illuminate\Support\Str::substr($line->account->uuid, 0, 8) }}</span>
                             </td>
                             <td class="py-2.5 pe-4 text-end tabular-nums" dir="ltr">{{ $isDebit ? $money->format($line->amount) : '' }}</td>
                             <td class="py-2.5 pe-4 text-end tabular-nums" dir="ltr">{{ ! $isDebit ? $money->format($line->amount) : '' }}</td>

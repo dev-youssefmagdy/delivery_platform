@@ -42,7 +42,7 @@
             <p class="mt-4 text-xs text-slate-500">{{ __('website.trip_share.estimate', ['minutes' => $trip['estimated_trip_minutes']]) }}</p>
         @endif
         <p class="mt-2 text-xs text-slate-500">{{ __('website.trip_share.expires', ['time' => $trip['expires_at']->format('H:i')]) }}</p>
-        <p class="mt-2 text-xs text-slate-400">{{ __('website.trip_share.privacy') }} {{ __('website.trip_share.refreshing') }}</p>
+        <p class="mt-2 text-xs text-slate-500">{{ __('website.trip_share.privacy') }} {{ __('website.trip_share.refreshing') }}</p>
     </section>
 
     <script nonce="{{ $cspNonce ?? '' }}">

@@ -29,8 +29,8 @@ class BigKeypad extends StatelessWidget {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.xs),
-      child: SizedBox(
-        height: 72,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 72),
         child: Semantics(
           button: true,
           label: semantics ?? label,
@@ -50,11 +50,9 @@ class BigKeypad extends StatelessWidget {
               child: Center(
                 child: icon != null
                     ? Icon(icon, size: 30)
-                    : Text(
+                    : IsolatedText(
                         label,
-                        textDirection: TextDirection.ltr,
-                        style: theme.textTheme.headlineMedium,
-                      ),
+                        style: theme.textTheme.headlineMedium),
               ),
             ),
           ),

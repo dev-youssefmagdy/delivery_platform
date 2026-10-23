@@ -190,10 +190,8 @@ class VerificationStatusView extends ConsumerWidget {
               title: Text(v.title),
               subtitle: Text(
                 v.rejectionReason == null
-                    ? v.plate
-                    : l10n.obVehicleRejectedReason(v.rejectionReason!),
-                textDirection: TextDirection.ltr,
-              ),
+                    ? ltrIsolate(v.plate)
+                    : l10n.obVehicleRejectedReason(v.rejectionReason!)),
               trailing: StatusChip(
                 label: v.status.label(l10n),
                 tone: v.status.tone,
@@ -270,14 +268,10 @@ class VerificationStatusView extends ConsumerWidget {
           ),
           if (app.support.phone != null)
             Text(
-              l10n.vsSupportPhone(app.support.phone!),
-              textDirection: TextDirection.ltr,
-            ),
+              l10n.vsSupportPhone(ltrIsolate(app.support.phone!))),
           if (app.support.email != null)
             Text(
-              l10n.vsSupportEmail(app.support.email!),
-              textDirection: TextDirection.ltr,
-            ),
+              l10n.vsSupportEmail(ltrIsolate(app.support.email!))),
         ],
       ],
     );

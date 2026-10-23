@@ -71,7 +71,7 @@
                     @forelse ($details->roles as $role)
                         <x-admin.badge :label="$role->displayName()" color="info" :dot="false" />
                     @empty
-                        <span class="text-sm text-slate-400">{{ __('admin.admins.no_roles') }}</span>
+                        <span class="text-sm text-slate-500">{{ __('admin.admins.no_roles') }}</span>
                     @endforelse
                 </div>
 
@@ -79,7 +79,7 @@
                 @if ($details->isSuperAdmin)
                     <x-admin.alert type="info">{{ __('admin.admins.super_admin_note') }}</x-admin.alert>
                 @elseif ($details->permissionNames === [])
-                    <span class="text-sm text-slate-400">{{ __('admin.admins.no_permissions') }}</span>
+                    <span class="text-sm text-slate-500">{{ __('admin.admins.no_permissions') }}</span>
                 @else
                     <x-admin.permission-matrix :selected="$details->permissionNames" readonly />
                 @endif

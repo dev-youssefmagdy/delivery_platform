@@ -201,11 +201,9 @@ class _AdjustmentSheetState extends ConsumerState<_AdjustmentSheet> {
                 child: Text(adjustmentDetailText(l10n, a)!, key: const Key('adjustment-sheet-scope'), style: theme.textTheme.labelLarge),
               ),
             const SizedBox(height: AppSpacing.md),
-            Text(
+            IsolatedText(
               formatter.format(a.amount),
-              textDirection: TextDirection.ltr,
-              style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
-            ),
+              style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
             if (a.reason.isNotEmpty) Padding(padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs), child: Text(a.reason)),
             if (a.oldTotal != null && a.newTotal != null) ...[
               const SizedBox(height: AppSpacing.sm),
@@ -374,12 +372,14 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
                   Expanded(child: Text(l10n.adjHelpersCount, style: theme.textTheme.titleSmall)),
                   IconButton(
                     key: const Key('adj-helpers-minus'),
+                    tooltip: '${l10n.adjHelpersCount} -',
                     onPressed: _helpers > 1 ? () => setState(() => _helpers--) : null,
                     icon: const Icon(Icons.remove_circle_outline),
                   ),
                   Text('$_helpers', key: const Key('adj-helpers-value'), style: theme.textTheme.titleMedium),
                   IconButton(
                     key: const Key('adj-helpers-plus'),
+                    tooltip: '${l10n.adjHelpersCount} +',
                     onPressed: _helpers < 5 ? () => setState(() => _helpers++) : null,
                     icon: const Icon(Icons.add_circle_outline),
                   ),

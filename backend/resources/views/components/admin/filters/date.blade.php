@@ -15,6 +15,6 @@
             placeholder="YYYY-MM-DD"
             {{ $attributes->class(['form-control pe-9']) }}
         >
-        <x-admin.icon name="calendar" class="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+        <x-admin.icon name="calendar" class="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
     </div>
 </div>

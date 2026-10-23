@@ -36,7 +36,7 @@
                                 <a href="{{ route('admin.support-tickets.attachments.show', [$ticket, $attachment->uuid]) }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-(--radius-control) border border-slate-200 bg-white px-2.5 py-1 text-xs text-brand-700 hover:underline">
                                     <x-admin.icon name="document" class="size-4" />
                                     {{ $attachment->original_name ?: __('admin.support_tickets.thread.attachment') }}
-                                    <span class="text-slate-400">· {{ $attachment->scan_status->label() }}</span>
+                                    <span class="text-slate-500">· {{ $attachment->scan_status->label() }}</span>
                                 </a>
                             </li>
                         @endforeach

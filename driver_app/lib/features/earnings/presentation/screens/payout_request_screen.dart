@@ -105,7 +105,7 @@ class _PayoutRequestScreenState extends ConsumerState<PayoutRequestScreen> {
                   padding: const EdgeInsetsDirectional.all(AppSpacing.md),
                   children: [
                     Text(l10n.poAvailable, style: theme.textTheme.bodyMedium),
-                    Text(f.format(balance.available), textDirection: TextDirection.ltr, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
+                    IsolatedText(f.format(balance.available), style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
                     Text(l10n.poLimits(f.format(balance.min), f.format(balance.max)), style: theme.textTheme.bodySmall),
                     const SizedBox(height: AppSpacing.md),
                     TextField(

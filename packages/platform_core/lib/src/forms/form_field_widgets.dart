@@ -339,11 +339,9 @@ class _DateTimeAnswer extends StatelessWidget {
               : Icons.calendar_today_outlined,
         ),
       ),
-      child: Text(
+      child: IsolatedText(
         value == null ? '' : value!.replaceFirst('T', ' '),
-        textDirection: TextDirection.ltr,
-        textAlign: TextAlign.start,
-      ),
+        textAlign: TextAlign.start),
     ),
   );
 }
@@ -643,6 +641,7 @@ class _ChecklistAnswer extends StatelessWidget {
                       children: [
                         IconButton(
                           key: ValueKey('${field.key}-minus-${o.value}'),
+                          tooltip: '${strings.quantity} -',
                           icon: const Icon(Icons.remove_circle_outline),
                           onPressed: quantityOf(o.value) > 1
                               ? () => _emit({
@@ -660,6 +659,7 @@ class _ChecklistAnswer extends StatelessWidget {
                         ),
                         IconButton(
                           key: ValueKey('${field.key}-plus-${o.value}'),
+                          tooltip: '${strings.quantity} +',
                           icon: const Icon(Icons.add_circle_outline),
                           onPressed:
                               quantityOf(o.value) < FormLogic.quantityMax

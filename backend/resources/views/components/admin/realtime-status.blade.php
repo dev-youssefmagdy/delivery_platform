@@ -12,6 +12,6 @@
 >
     <span class="size-2 rounded-full bg-slate-300" data-realtime-dot aria-hidden="true"></span>
     <span data-realtime-label>{{ __('admin.realtime.idle') }}</span>
-    <span class="text-slate-400" aria-hidden="true">·</span>
+    <span class="text-slate-500" aria-hidden="true">·</span>
     <span>{{ __('admin.realtime.last_event') }}: <time data-realtime-last>{{ __('admin.realtime.none') }}</time></span>
 </div>

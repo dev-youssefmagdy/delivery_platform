@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../money/money.dart';
 import '../money/money_formatter.dart';
+import 'isolated_text.dart';
 import 'tokens.dart';
 
 /// Primary action button with a loading state (disables itself while busy so a
@@ -121,7 +122,7 @@ class MoneyText extends StatelessWidget {
   final TextStyle? style;
 
   @override
-  Widget build(BuildContext context) => Text(
+  Widget build(BuildContext context) => IsolatedText(
     formatter.format(money),
     style: style ?? Theme.of(context).textTheme.titleMedium,
     semanticsLabel: formatter.format(money),
@@ -162,7 +163,11 @@ class StatusChip extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelMedium
-            ?.copyWith(color: _color, fontWeight: FontWeight.w600),
+            ?.copyWith(
+              // Darkened so the text keeps 4.5:1 on its own 12% tint (scripts/check-contrast.mjs).
+              color: Color.lerp(_color, Colors.black, 0.25),
+              fontWeight: FontWeight.w600,
+            ),
       ),
     ),
   );

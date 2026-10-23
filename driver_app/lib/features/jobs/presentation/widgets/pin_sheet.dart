@@ -122,19 +122,17 @@ class _PinSheetState extends ConsumerState<PinSheet> {
                 color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
-              child: Text(
+              child: IsolatedText(
                 _pin.isEmpty ? '' : _pin.split('').join(' '),
                 key: const Key('pin-display'),
                 textAlign: TextAlign.center,
-                textDirection: TextDirection.ltr,
                 style: theme.textTheme.displaySmall?.copyWith(
                   letterSpacing: 4,
                   fontWeight: FontWeight.w700,
-                ),
-              ),
+                )),
             ),
-            SizedBox(
-              height: 56,
+            ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 56),
               child: Center(
                 child: message != null
                     ? Text(

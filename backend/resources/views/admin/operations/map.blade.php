@@ -18,8 +18,8 @@
 
     <x-admin.card :padding="false">
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-slate-100 px-5 py-3 text-sm">
-            <label class="inline-flex items-center gap-2"><input type="checkbox" class="size-4 rounded border-slate-300" data-map-layer="providers" checked> <span class="inline-block size-3 rounded-full bg-success-600" aria-hidden="true"></span> {{ __('admin.operations.layers.providers') }}</label>
-            <label class="inline-flex items-center gap-2"><input type="checkbox" class="size-4 rounded border-slate-300" data-map-layer="bookings" checked> <span class="inline-block size-3 rounded-full bg-brand-600" aria-hidden="true"></span> {{ __('admin.operations.layers.bookings') }}</label>
+            <label class="inline-flex items-center gap-2"><input type="checkbox" class="size-4 rounded border-field" data-map-layer="providers" checked> <span class="inline-block size-3 rounded-full bg-success-600" aria-hidden="true"></span> {{ __('admin.operations.layers.providers') }}</label>
+            <label class="inline-flex items-center gap-2"><input type="checkbox" class="size-4 rounded border-field" data-map-layer="bookings" checked> <span class="inline-block size-3 rounded-full bg-brand-600" aria-hidden="true"></span> {{ __('admin.operations.layers.bookings') }}</label>
             <span class="text-xs text-slate-500">{{ __('admin.operations.privacy') }}</span>
             <span class="ms-auto text-xs text-slate-500">{{ __('admin.operations.updated') }}: <time data-map-updated>—</time></span>
         </div>

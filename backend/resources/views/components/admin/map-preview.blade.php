@@ -10,5 +10,5 @@
         aria-label="{{ $label ?? __('admin.form.map_point_hint') }}"
     ></div>
 @else
-    <span class="text-sm text-slate-400">{{ __('admin.common.not_set') }}</span>
+    <span class="text-sm text-slate-500">{{ __('admin.common.not_set') }}</span>
 @endif

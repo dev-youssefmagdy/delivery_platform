@@ -66,12 +66,10 @@ class _Body extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(l10n.poAvailable, style: theme.textTheme.bodyMedium),
-                      Text(
+                      IsolatedText(
                         balance == null ? '-' : f.format(balance.available),
                         key: const Key('payout-available'),
-                        textDirection: TextDirection.ltr,
-                        style: theme.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w700),
-                      ),
+                        style: theme.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w700)),
                       if (balance != null && !balance.reserved.isZero) Text(l10n.poReservedNote(f.format(balance.reserved)), style: theme.textTheme.bodySmall),
                       if (balance != null) Text(l10n.poLimits(f.format(balance.min), f.format(balance.max)), style: theme.textTheme.bodySmall),
                       const SizedBox(height: AppSpacing.md),
@@ -119,7 +117,7 @@ class _Body extends ConsumerWidget {
           margin: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
           child: ListTile(
             key: Key('payout-${p.id}'),
-            title: Text(f.format(p.amount), textDirection: TextDirection.ltr, style: theme.textTheme.titleMedium),
+            title: IsolatedText(f.format(p.amount), style: theme.textTheme.titleMedium),
             subtitle: Text(formatFinanceTime(context, p.requestedAt)),
             trailing: StatusChip(label: payoutStatusText(l10n, p.status, fallback: p.statusLabel), tone: payoutStatusTone(p.status)),
             onTap: () => context.push(Routes.payout(p.id)),

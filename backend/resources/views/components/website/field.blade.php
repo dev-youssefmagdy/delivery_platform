@@ -16,11 +16,11 @@
     @if ($as === 'textarea')
         <textarea id="{{ $id }}" name="{{ $name }}" rows="5" aria-describedby="{{ $describedBy }}" @required($required)
             data-msg-required="{{ __('site.forms.client.required', ['field' => $label]) }}" data-msg-invalid="{{ __('site.forms.client.invalid', ['field' => $label]) }}"
-            {{ $attributes->class(['block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-900 shadow-sm focus:border-brand-600 focus:outline-2 focus:outline-brand-600 aria-[invalid=true]:border-red-600']) }}>{{ $current }}</textarea>
+            {{ $attributes->class(['block w-full rounded-lg border border-field bg-white px-3.5 py-2.5 text-base text-slate-900 shadow-sm focus:border-brand-600 focus:outline-2 focus:outline-brand-600 aria-[invalid=true]:border-red-600']) }}>{{ $current }}</textarea>
     @elseif ($as === 'select')
         <select id="{{ $id }}" name="{{ $name }}" aria-describedby="{{ $describedBy }}" @required($required)
             data-msg-required="{{ __('site.forms.client.required', ['field' => $label]) }}" data-msg-invalid="{{ __('site.forms.client.invalid', ['field' => $label]) }}"
-            {{ $attributes->class(['block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-900 shadow-sm focus:border-brand-600 focus:outline-2 focus:outline-brand-600 aria-[invalid=true]:border-red-600']) }}>
+            {{ $attributes->class(['block w-full rounded-lg border border-field bg-white px-3.5 py-2.5 text-base text-slate-900 shadow-sm focus:border-brand-600 focus:outline-2 focus:outline-brand-600 aria-[invalid=true]:border-red-600']) }}>
             {{ $slot }}
         </select>
     @elseif ($as === 'checkbox')
@@ -33,7 +33,7 @@
     @else
         <input id="{{ $id }}" name="{{ $name }}" type="{{ $type }}" value="{{ $current }}" aria-describedby="{{ $describedBy }}" @required($required)
             data-msg-required="{{ __('site.forms.client.required', ['field' => $label]) }}" data-msg-invalid="{{ __('site.forms.client.invalid', ['field' => $label]) }}"
-            {{ $attributes->class(['block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-900 shadow-sm focus:border-brand-600 focus:outline-2 focus:outline-brand-600 aria-[invalid=true]:border-red-600']) }}>
+            {{ $attributes->class(['block w-full rounded-lg border border-field bg-white px-3.5 py-2.5 text-base text-slate-900 shadow-sm focus:border-brand-600 focus:outline-2 focus:outline-brand-600 aria-[invalid=true]:border-red-600']) }}>
     @endif
     @if ($hint)<p id="{{ $id }}-hint" class="mt-1.5 text-sm text-slate-500">{{ $hint }}</p>@endif
     <p id="{{ $id }}-error" data-error-for="{{ $name }}" class="mt-1.5 text-sm font-medium text-red-700" @if (! $error) hidden @endif>{{ $error }}</p>

@@ -39,7 +39,7 @@
                     <li>
                         @if ($readonly)
                             <span class="flex items-center gap-2 text-sm text-slate-700">
-                                <x-admin.icon name="check" class="size-4 text-success-600" />
+                                <x-admin.icon name="check" class="size-4 text-success-700" />
                                 {{ __("enums.admin_permission_action.{$permission->action()}") }}
                             </span>
                         @else

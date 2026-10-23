@@ -36,7 +36,7 @@
     <div class="grid gap-6 lg:grid-cols-3">
         <div class="space-y-6 lg:col-span-2">
             <x-admin.card :title="__('reputation.admin.reviews.the_review')" :subtitle="__('reputation.admin.reviews.read_only')">
-                <p class="text-xl text-warning-600" aria-label="{{ __('admin.ratings.stars_label', ['count' => $rating->stars]) }}">{{ str_repeat('★', $rating->stars).str_repeat('☆', 5 - $rating->stars) }}</p>
+                <p class="text-xl text-warning-700" aria-label="{{ __('admin.ratings.stars_label', ['count' => $rating->stars]) }}">{{ str_repeat('★', $rating->stars).str_repeat('☆', 5 - $rating->stars) }}</p>
                 @if (! empty($rating->tags))
                     <p class="mt-2 flex flex-wrap gap-1.5">
                         @foreach ((array) $rating->tags as $tag)

@@ -8,7 +8,7 @@
                     @foreach ($breadcrumbs as $crumb)
                         <li class="flex items-center gap-1.5">
                             @if (! $loop->first)
-                                <x-admin.icon name="chevron-right" class="size-3.5 text-slate-400" />
+                                <x-admin.icon name="chevron-right" class="size-3.5 text-slate-500" />
                             @endif
                             @if (! empty($crumb['url']) && ! $loop->last)
                                 <a href="{{ $crumb['url'] }}" class="hover:text-slate-800">{{ $crumb['label'] }}</a>

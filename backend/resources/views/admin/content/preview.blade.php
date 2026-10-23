@@ -37,7 +37,7 @@
                 <p class="mt-2 text-slate-600">{{ $payload['body'] }}</p>
             @endif
             @if (! empty($payload['cta']))
-                <p class="mt-3"><span class="btn btn-primary btn-sm">{{ $payload['cta']['label'] }}</span> <span class="text-xs text-slate-400" dir="ltr">{{ $payload['cta']['url'] }}</span></p>
+                <p class="mt-3"><span class="btn btn-primary btn-sm">{{ $payload['cta']['label'] }}</span> <span class="text-xs text-slate-500" dir="ltr">{{ $payload['cta']['url'] }}</span></p>
             @endif
 
             @if (! empty($payload['body_html']))
@@ -62,13 +62,13 @@
                         </ul>
                     @endif
                     @if ($block['cta'])
-                        <p class="mt-3"><span class="btn btn-primary btn-sm">{{ $block['cta']['label'] }}</span> <span class="text-xs text-slate-400" dir="ltr">{{ $block['cta']['url'] }}</span></p>
+                        <p class="mt-3"><span class="btn btn-primary btn-sm">{{ $block['cta']['label'] }}</span> <span class="text-xs text-slate-500" dir="ltr">{{ $block['cta']['url'] }}</span></p>
                     @endif
                 </section>
             @endforeach
 
             @foreach ($payload['items'] ?? [] as $item)
-                <p class="mt-2"><span class="font-medium">{{ $item['label'] }}</span> <span class="text-xs text-slate-400" dir="ltr">{{ $item['url'] }}</span></p>
+                <p class="mt-2"><span class="font-medium">{{ $item['label'] }}</span> <span class="text-xs text-slate-500" dir="ltr">{{ $item['url'] }}</span></p>
             @endforeach
 
             @isset($payload['seo'])

@@ -36,6 +36,9 @@
     --color-brand-900: oklch(0.32 0.06 222);
     --color-brand-950: oklch(0.22 0.04 225);
 
+    /* Form control boundary: 3:1 against white (WCAG 1.4.11), see scripts/check-contrast.mjs */
+    --color-field: #8392a7;
+
     --radius-control: 0.5rem;
     --radius-card: 0.875rem;
 
@@ -112,10 +115,10 @@
         @apply bg-danger-600 text-white shadow-sm hover:bg-danger-700;
     }
     .btn-success {
-        @apply bg-success-600 text-white shadow-sm hover:bg-success-700;
+        @apply bg-success-700 text-white shadow-sm hover:bg-emerald-800;
     }
     .btn-warning {
-        @apply bg-warning-600 text-white shadow-sm hover:bg-warning-700;
+        @apply bg-warning-700 text-white shadow-sm hover:bg-amber-800;
     }
     .btn-ghost {
         @apply text-slate-600 hover:bg-slate-100 hover:text-slate-900;
@@ -211,7 +214,7 @@
         @apply mt-1.5 text-xs text-slate-500;
     }
     .form-control {
-        @apply block w-full rounded-(--radius-control) border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-xs transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-3 focus:ring-brand-500/20 focus:outline-none disabled:bg-slate-100 disabled:text-slate-500;
+        @apply block w-full rounded-(--radius-control) border border-field bg-white px-3 py-2 text-sm text-slate-900 shadow-xs transition placeholder:text-slate-500 focus:border-brand-500 focus:ring-3 focus:ring-brand-500/20 focus:outline-none disabled:bg-slate-100 disabled:text-slate-500;
     }
     textarea.form-control {
         @apply min-h-24;
@@ -228,7 +231,7 @@
         @apply mt-1.5 text-xs font-medium text-danger-700 empty:hidden;
     }
     .form-check {
-        @apply size-4 rounded border-slate-300 text-brand-600 accent-brand-600 focus:ring-brand-500;
+        @apply size-4 rounded border-field text-brand-600 accent-brand-600 focus:ring-brand-500;
     }
     .input-group {
         @apply flex items-stretch;
@@ -237,7 +240,7 @@
         @apply rounded-none first:rounded-s-(--radius-control) last:rounded-e-(--radius-control);
     }
     .input-addon {
-        @apply inline-flex items-center border border-slate-300 bg-slate-50 px-3 text-sm text-slate-500 first:rounded-s-(--radius-control) first:border-e-0 last:rounded-e-(--radius-control) last:border-s-0;
+        @apply inline-flex items-center border border-field bg-slate-50 px-3 text-sm text-slate-500 first:rounded-s-(--radius-control) first:border-e-0 last:rounded-e-(--radius-control) last:border-s-0;
     }
 
     /* Toggle switch */
@@ -336,7 +339,7 @@
         @apply flex items-center gap-2 text-slate-600;
     }
     div.dt-container .dt-input {
-        @apply rounded-(--radius-control) border border-slate-300 bg-white px-2.5 py-1.5 text-sm focus:border-brand-500 focus:ring-3 focus:ring-brand-500/20 focus:outline-none;
+        @apply rounded-(--radius-control) border border-field bg-white px-2.5 py-1.5 text-sm focus:border-brand-500 focus:ring-3 focus:ring-brand-500/20 focus:outline-none;
     }
     div.dt-container .dt-search .dt-input {
         @apply w-56;
@@ -435,7 +438,7 @@
 /* ---------- Tom Select skin ---------- */
 @layer components {
     .ts-wrapper .ts-control {
-        @apply min-h-[2.375rem] rounded-(--radius-control) border-slate-300 px-3 py-1.5 text-sm shadow-xs;
+        @apply min-h-[2.375rem] rounded-(--radius-control) border-field px-3 py-1.5 text-sm shadow-xs;
     }
     .ts-wrapper.focus .ts-control {
         @apply border-brand-500 shadow-none ring-3 ring-brand-500/20;

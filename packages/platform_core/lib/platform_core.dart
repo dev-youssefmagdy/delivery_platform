@@ -75,4 +75,5 @@ export 'src/upload/proof_upload_queue.dart';
 export 'src/ui/blocking_notice.dart';
 export 'src/ui/components.dart';
 export 'src/ui/inputs.dart';
+export 'src/ui/isolated_text.dart';
 export 'src/ui/tokens.dart';

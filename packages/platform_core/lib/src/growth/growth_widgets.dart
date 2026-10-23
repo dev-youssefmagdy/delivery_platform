@@ -261,12 +261,10 @@ class CreditsView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(strings.available, style: theme.textTheme.bodyMedium),
-                Text(
+                IsolatedText(
                   moneyOrDash(overview.available, formatter.format),
                   key: const Key('credits-available'),
-                  textDirection: TextDirection.ltr,
-                  style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
-                ),
+                  style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
                 if (overview.note != null) ...[const SizedBox(height: AppSpacing.sm), Text(overview.note!, style: theme.textTheme.bodySmall)],
               ],
             ),
@@ -291,7 +289,7 @@ class CreditsView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(moneyOrDash(c.amount, formatter.format), textDirection: TextDirection.ltr),
+                  IsolatedText(moneyOrDash(c.amount, formatter.format)),
                   StatusChip(
                     label: switch (c.state) {
                       CreditState.expired => strings.stateExpired,

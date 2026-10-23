@@ -97,7 +97,7 @@ class _PayoutMethodsScreenState extends ConsumerState<PayoutMethodsScreen> {
                                     StatusChip(label: m.verified ? l10n.pomVerified : l10n.pomUnverified, tone: m.verified ? ChipTone.success : ChipTone.warning),
                                   ],
                                 ),
-                                Text('${m.kindLabel}${m.last4 == null ? '' : ' •••• ${m.last4}'}', textDirection: TextDirection.ltr),
+                                Text('${m.kindLabel}${m.last4 == null ? '' : ' ${ltrIsolate('•••• ${m.last4}')}'}'),
                                 if (m.isDefault) Text(l10n.pomDefault, style: theme.textTheme.bodySmall),
                                 if (!m.verified) Text(l10n.pomUnverifiedNote, style: theme.textTheme.bodySmall),
                                 const SizedBox(height: AppSpacing.xs),

@@ -583,12 +583,14 @@ class _PassengerStepper extends StatelessWidget {
       Expanded(child: Text(label, style: Theme.of(context).textTheme.titleMedium)),
       IconButton(
         key: const Key('passengers-minus'),
+        tooltip: '$label -',
         onPressed: value > 1 ? () => onChanged(value - 1) : null,
         icon: const Icon(Icons.remove_circle_outline),
       ),
       Text('$value', style: Theme.of(context).textTheme.titleMedium),
       IconButton(
         key: const Key('passengers-plus'),
+        tooltip: '$label +',
         onPressed: value < max ? () => onChanged(value + 1) : null,
         icon: const Icon(Icons.add_circle_outline),
       ),

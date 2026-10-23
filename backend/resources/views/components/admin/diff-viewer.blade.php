@@ -18,14 +18,14 @@
                         <th scope="row" class="px-3 py-2 text-start align-top font-mono text-xs font-medium text-slate-700" dir="ltr">{{ $row->key }}</th>
                         <td class="px-3 py-2 align-top">
                             @if ($row->before === null)
-                                <span class="text-slate-400">—</span>
+                                <span class="text-slate-500">—</span>
                             @else
                                 <pre dir="ltr" @class(['m-0 font-mono text-xs break-words whitespace-pre-wrap', 'text-danger-700 line-through decoration-rose-300' => $row->changed, 'text-slate-600' => ! $row->changed])>{{ $row->before }}</pre>
                             @endif
                         </td>
                         <td class="px-3 py-2 align-top">
                             @if ($row->after === null)
-                                <span class="text-slate-400">—</span>
+                                <span class="text-slate-500">—</span>
                             @else
                                 <pre dir="ltr" @class(['m-0 font-mono text-xs break-words whitespace-pre-wrap', 'font-semibold text-success-700' => $row->changed, 'text-slate-600' => ! $row->changed])>{{ $row->after }}</pre>
                             @endif

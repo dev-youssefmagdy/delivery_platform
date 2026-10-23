@@ -71,7 +71,7 @@ class _EarningLineTile extends ConsumerWidget {
         key: Key('line-${line.bookingId}'),
         title: Text('${line.bookingCode} · ${line.service.resolve(language)}'),
         subtitle: Text(formatFinanceTime(context, line.completedAt)),
-        trailing: Text(f.format(line.providerEarning), textDirection: TextDirection.ltr, style: theme.textTheme.titleMedium),
+        trailing: IsolatedText(f.format(line.providerEarning), style: theme.textTheme.titleMedium),
         childrenPadding: const EdgeInsetsDirectional.fromSTEB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
         children: [
           AmountRow(label: l10n.ernGross, value: f.format(line.grossFare)),

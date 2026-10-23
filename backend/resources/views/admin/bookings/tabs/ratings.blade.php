@@ -9,7 +9,7 @@
                     <p class="text-sm font-medium text-slate-900">{{ __('admin.bookings.ratings.from', ['party' => $rating['from']]) }}</p>
                     <x-admin.badge :label="$rating['status']" color="neutral" />
                 </header>
-                <p class="mt-2 text-lg text-warning-600" aria-label="{{ __('admin.ratings.stars_label', ['count' => $rating['stars']]) }}">{{ str_repeat('★', $rating['stars']).str_repeat('☆', 5 - $rating['stars']) }}</p>
+                <p class="mt-2 text-lg text-warning-700" aria-label="{{ __('admin.ratings.stars_label', ['count' => $rating['stars']]) }}">{{ str_repeat('★', $rating['stars']).str_repeat('☆', 5 - $rating['stars']) }}</p>
                 @if ($rating['tags'] !== [])
                     <p class="mt-1 flex flex-wrap gap-1.5">
                         @foreach ($rating['tags'] as $tag)

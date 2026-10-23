@@ -67,15 +67,13 @@ class _WalletBody extends ConsumerWidget {
                   if (primary == null)
                     Text(l10n.walNoWallet, key: const Key('wallet-none'))
                   else
-                    Text(
+                    IsolatedText(
                       formatter.format(primary.balance),
                       key: const Key('wallet-balance'),
-                      textDirection: TextDirection.ltr,
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: primary.inDebt ? AppColors.danger : null,
-                      ),
-                    ),
+                      )),
                 ],
               ),
             ),

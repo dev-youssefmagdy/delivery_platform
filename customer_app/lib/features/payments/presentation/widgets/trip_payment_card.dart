@@ -65,12 +65,10 @@ class _TripPaymentCardState extends ConsumerState<TripPaymentCard> {
             Text(l10n.payDueTitle, style: theme.textTheme.titleMedium),
             if (due != null) ...[
               const SizedBox(height: AppSpacing.xs),
-              Text(
+              IsolatedText(
                 formatter.format(due),
                 key: const Key('pay-amount'),
-                textDirection: TextDirection.ltr,
-                style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-              ),
+                style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
             ],
             if (receipt != null && receipt.couponApplied && receipt.discount != null && !receipt.discount!.isZero)
               Text(l10n.payCouponSaved(formatter.format(receipt.discount!)), key: const Key('pay-coupon-line'), style: theme.textTheme.bodyMedium),

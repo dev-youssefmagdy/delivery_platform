@@ -206,7 +206,7 @@ class ReceiptSection extends StatelessWidget {
             if (receipt.couponApplied && receipt.discount != null && !receipt.discount!.isZero)
               row(
                 l10n.rcpDiscount,
-                Text('-${formatter.format(receipt.discount!)}', key: const Key('receipt-discount'), textDirection: TextDirection.ltr),
+                IsolatedText('-${formatter.format(receipt.discount!)}', key: const Key('receipt-discount')),
               ),
             if (receipt.customerPayable != null)
               row(

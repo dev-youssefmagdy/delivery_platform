@@ -182,6 +182,8 @@ class AppServiceProvider extends ServiceProvider
             'notification_delivery' => \App\Models\NotificationDelivery::class,
             'support_ticket' => \App\Models\SupportTicket::class,
             'support_macro' => \App\Models\SupportMacro::class,
+            'safety_incident' => \App\Models\SafetyIncident::class,
+            'trusted_contact' => \App\Models\TrustedContact::class,
             // @admin-module:morph-map
         ]);
 

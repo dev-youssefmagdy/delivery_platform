@@ -180,10 +180,16 @@ use App\Repositories\Contracts\Notification\NotificationDeliveryRepositoryInterf
 use App\Repositories\Contracts\Notification\NotificationPreferenceRepositoryInterface;
 use App\Repositories\Contracts\Notification\NotificationTemplateRepositoryInterface;
 use App\Repositories\Contracts\Notification\PushCampaignRepositoryInterface;
+use App\Repositories\Contracts\Safety\IncidentThreadRepositoryInterface;
+use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
+use App\Repositories\Contracts\Safety\TrustedContactRepositoryInterface;
 use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportMacroRepositoryInterface;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Contracts\Support\TicketThreadRepositoryInterface;
+use App\Repositories\Eloquent\Safety\IncidentThreadRepository;
+use App\Repositories\Eloquent\Safety\SafetyIncidentRepository;
+use App\Repositories\Eloquent\Safety\TrustedContactRepository;
 use App\Repositories\Eloquent\Support\BookingMessageRepository;
 use App\Repositories\Eloquent\Support\SupportMacroRepository;
 use App\Repositories\Eloquent\Support\SupportTicketRepository;
@@ -257,6 +263,9 @@ class RepositoryServiceProvider extends ServiceProvider
         NotificationPreferenceRepositoryInterface::class => NotificationPreferenceRepository::class,
         PushCampaignRepositoryInterface::class => PushCampaignRepository::class,
         BookingMessageRepositoryInterface::class => BookingMessageRepository::class,
+        SafetyIncidentRepositoryInterface::class => SafetyIncidentRepository::class,
+        IncidentThreadRepositoryInterface::class => IncidentThreadRepository::class,
+        TrustedContactRepositoryInterface::class => TrustedContactRepository::class,
         SupportMacroRepositoryInterface::class => SupportMacroRepository::class,
         SupportTicketRepositoryInterface::class => SupportTicketRepository::class,
         TicketThreadRepositoryInterface::class => TicketThreadRepository::class,

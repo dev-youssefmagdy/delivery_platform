@@ -42,7 +42,7 @@
 | P5.2 | Reviews moderation & risk signals | P1 | 🟡 | gate not run (2026-11-11) |
 | P5.3 | Operations dashboard, reports, exports | P1 | 🟡 | gate not run (see section) |
 | P5.4 | CMS | P1 | 🟡 | gate not run (see section) |
-| P5.5 | Public website | P1 | ❌ | — |
+| P5.5 | Public website | P1 | 🟡 | gate not run (see section) |
 | P5.6 | Integration health, app versions, feature flags, system pages | P1 | ❌ | — |
 | P5.7 | Referrals, loyalty, provider incentives | P2 | ❌ | — |
 | P6.1 | Security, IDOR, race & webhook review | P0 | ❌ | — |
@@ -1132,3 +1132,28 @@ No browser pass (the Alpine block editor, show / preview layout, RTL and the sid
 ### Next (P5.5)
 Public website: call `ContentReadService` (page(`home`), pages(Service / City), faqs(), articles(), menus(), appLinks(), cities(), legalPages() / policy()) from the website controllers; render `body_html` and block `body_html` as trusted HTML (already sanitized), everything else escaped; policy `content` is plain text (escape + `white-space: pre-line`); use `seo.*` for title / description / Open Graph / canonical / noindex and `seo.available_locales` for hreflang; send `Vary: Accept-Language`; menu URLs are site-relative paths (`/how-it-works`, `/legal/{type}` ...) the website must route; app download buttons come from `appLinks()` (add the real store links first). Run the deferred backlog (P5.1 to P5.4 lists) before Phase 5 closes.
 
+
+---
+
+## P5.5 — Public website + Leads admin · 🟡 2026-11-14 (gate NOT run)
+
+Committed directly on `main`. ADR-188..192. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P5.5).
+
+### Built
+- **Website** (server-rendered Blade + Tailwind 4, own layout `x-website.layouts.site`, own Vite entry `resources/css/website.css` + `resources/js/website/app.js`, vanilla JS, no Alpine / jQuery / admin code): Arabic unprefixed (`/`), English under `/en`, each page with a localized path (`lang/{ar,en}/site.php` `paths`, `SitePaths`). Pages: Home, Customer app, App download (server-side QR SVG per published store link), Become a provider (lead form), Services index + service pages, How it works, Safety, Cities index + city pages, FAQ / help center + help articles, Blog + articles, Contact, About, Legal index + legal pages (policy_versions, plain text), 404. The trip-share page `/t/{token}` and its poller now render inside the same layout (minimal, noindex); the printable receipt keeps its own self-contained page.
+- **SEO**: per-page localized title / description, canonical (CMS canonical when set), hreflang only for languages the page exists in plus `x-default`, Open Graph + Twitter, `noindex` from the CMS, JSON-LD (Organization + WebSite on home, Organization on about, Service, Article, FAQPage only with complete Q and A), dynamic `sitemap.xml` (every language variant with alternates, percent-encoded, from the read service, 5 min cache) and dynamic `robots.txt` (static `public/robots.txt` removed).
+- **CMS rendering**: only `ContentReadService`; only `*_html` fields are printed as HTML; menu / CTA links go through `SitePaths::resolve` (CMS menus keep stable English paths such as `/how-it-works`, `/legal/{type}`; they are mapped to the visitor's localized URL); policy text is escaped with `white-space: pre-line`; images use the generated variants as `srcset` with width / height (no layout shift).
+- **Forms** (website variant of ajax-form, `site-form.js`): browser checks in the page language, Precognition validation call, inline errors and no submit when invalid, real AJAX submit only when valid, input kept on failure, double submit blocked, success panel with the reference; works without JS (plain POST, errors from the session). Protection: CSRF, `public-forms` throttle on the real submit and a separate `website-precognition` limiter for validation calls, honeypot, encrypted time trap.
+- **Provider lead**: `leads` table, `LeadService::submit` (idempotent per phone and day, E.164, consent timestamp, HMAC of the IP), staff notification `lead.received`; no file field (documents come later inside the provider app).
+- **Contact**: `TicketService::openFromWebsite` creates a support ticket (source `website`, owner = reserved non-login placeholder account, contact in the ticket context, 3 per email per day) and the page shows the `TK-` reference; admin ticket list / show display the visitor's contact.
+- **Admin Leads** (`/admin/leads`, Content group): Yajra listing, collapsed filters card (city, service interest, status, created range), show page with details, status workflow (new -> contacted -> qualified -> converted, reject / spam / reopen with a mandatory reason, row lock, audit), notes + owner form (Precognition, `lock_version`), activity tab. `leads.view` / `leads.manage` (enum + role defaults: Content CMS editor, Operations admin; read-only auditor gets view).
+- ar + en: `lang/*/site.php`, `lang/*/leads.php`, enum / notification / API error keys.
+
+### Checks run (compile / sanity only)
+`php -l`; `migrate`; `route:list` (46 `site.*` routes, 4 admin lead routes, sitemap, robots); `view:cache`; `npm run build` (once, passed); in-process rolled-back HTTP: all 17 page types in ar and en return 200 with the right `<html lang dir>`, title, description, canonical, hreflang ar / en / x-default, Open Graph, Content-Language; Organization / FAQPage / Service JSON-LD present; every CMS menu path (`/how-it-works`, `/legal/...`, ...) resolves in both languages; unknown slug 404; `/ar/...` 301; sitemap (52 URLs, alternates, encoded) and robots; forms: Precognition 422 / 204 (nothing stored), real submit with `TK-` / `LD-` references, honeypot, time trap, bad phone, duplicate lead, throttle 429, no-JS redirect; admin leads: index, show, datatable filters, Precognition 422 / 204, transitions with and without reason, audit row, illegal transition refused; website ticket in the admin list and show, 4th ticket from one email refused.
+
+### Known gaps
+No browser pass (RTL layout, mobile menu, form script, QR scan, Lighthouse not seen); the fonts are IBM Plex Sans Arabic from `@fontsource` (all subsets are bundled, only used ones load); no CDN / full-page cache (pages carry a session cookie for CSRF); contact replies go out by staff email (no recipient in the notification platform for an anonymous visitor); the demo content and the brand name (`WEBSITE_BRAND_NAME`, default "Tawsila"), support email / phone, social links and store links are placeholders to be configured; roles already stored in a database do not get `leads.manage` automatically (grant it in the role editor; new installs get it from the seeder); no captcha adapter (honeypot + time trap only); no cookie banner (no analytics or tracking is added).
+
+### Next (P5.6)
+Integration health can list the website as a consumer of `ContentReadService`; the app-version / feature-flag screens are independent. `config/website.php` holds brand, contact, social and form tunables; the `website-precognition` limiter is defined in `AppServiceProvider`. Run the deferred test backlog (P5.1 to P5.5 lists) before Phase 5 closes.

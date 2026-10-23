@@ -97,3 +97,8 @@ Never commit credentials. `.env`, service-account JSON, keystores, `*.p12`, prov
 - Tunables (all optional, see `config/courier.php`): `COURIER_OTP_LENGTH`, `COURIER_OTP_MAX_ATTEMPTS`, `COURIER_OTP_RESEND_COOLDOWN`, `COURIER_OTP_MAX_RESENDS`, `COURIER_MAX_DELIVERY_ATTEMPTS`, `COURIER_ESCALATE_AFTER_MINUTES`, `COURIER_PROOFS_PER_MINUTE`.
 - Scheduler: `courier:escalate-attempts` every minute.
 
+## Public website (P5.5)
+- No external service. Optional environment (all in `config/website.php`): `WEBSITE_BRAND_NAME` (default "Tawsila", shown in header, footer, titles, JSON-LD), `WEBSITE_SUPPORT_EMAIL`, `WEBSITE_SUPPORT_PHONE`, `WEBSITE_SOCIAL_FACEBOOK|INSTAGRAM|X|LINKEDIN|YOUTUBE`, `WEBSITE_DEFAULT_PHONE_CODE` (reads local numbers in forms, default `+20`), `WEBSITE_CONTACT_MAX_PER_EMAIL_PER_DAY`, `WEBSITE_FORM_MIN_FILL_SECONDS`, `WEBSITE_FORM_MAX_AGE_MINUTES`, `WEBSITE_PRECOGNITION_PER_MINUTE`, `WEBSITE_SITEMAP_TTL`.
+- Store links and the announcement bar come from the CMS (App links, Banners); the QR codes are drawn on the server from those links (`bacon/bacon-qr-code`).
+- Spam protection is honeypot + time trap; a captcha adapter would plug in behind `App\Support\Website\FormGuard`.
+

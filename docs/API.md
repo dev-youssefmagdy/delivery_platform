@@ -870,3 +870,20 @@ Public (no token), `GET`, JSON envelope `{success, message, data}`, `Cache-Contr
 | GET | `/api/v1/content/legal/{type}` | The current published `policy_versions` text through the same service: `{type, version, title, content, content_format: "plain_text", published_at}`. `content` is PLAIN TEXT: escape it and keep line breaks. `404` when the type has no published version. The existing `GET /policies/{type}` is unchanged. |
 
 Admin (session) endpoints added under `/admin/content-pages|content-articles|content-faqs|content-banners|content-menus` (CRUD, listings with Yajra + collapsed filters), `/admin/content-categories`, `/admin/content-app-links`, `/admin/content-media` and the shared workflow routes `POST /admin/content/{page|article|faq|banner|menu}/{id}/{submit|reject|publish|schedule|revert|archive|restore}` (reason mandatory except submit; `scheduled_at` for schedule), `GET .../preview?locale=`, `GET .../revisions`, `POST .../revisions/{n}/restore`. Lookups `content-media`, `faq-categories`, `article-categories`.
+
+## P5.5 — Public website routes (ADR-188..192)
+
+Not part of `/api/v1`: HTML routes of the `web` group (CSRF, session cookie). Arabic is unprefixed, English under `/en`; paths come from `lang/{locale}/site.php`. Forms answer JSON when `Accept: application/json` (envelope `{success, message, data: {reference}}`; errors `{errors: {field: [..]}}`), the Precognition header returns 204 / 422 without side effects, and a plain POST redirects back with the reference.
+
+| Method | Path (en) | Notes |
+|---|---|---|
+| GET | `/`, `/en` | Home |
+| GET | `/customer-app`, `/apps`, `/become-a-driver`, `/how-it-works`, `/safety`, `/about`, `/contact`, `/services`, `/cities`, `/faq`, `/blog`, `/legal` | Pages (Arabic equivalents in `site.paths`) |
+| GET | `/services/{slug}`, `/cities/{slug}`, `/help/{slug}`, `/blog/{slug}`, `/legal/{type}` | CMS service / city pages, help and blog articles, legal text; unknown or unpublished = 404 |
+| POST | `/become-a-driver` | Provider lead. Fields: `name`, `phone`, `email?`, `city_id?` / `city_other`, `service_category_id?`, `vehicle_note?`, `message?`, `consent`, honeypot `website_url` (empty), time trap `_ft`. Throttled `public-forms`; returns `data.reference` (`LD-000123`). No files. |
+| POST | `/contact` | Support ticket. Fields: `name`, `email`, `phone?`, `category` (`TicketCategory::forWebsite()`), `subject`, `message`, `consent`, `website_url`, `_ft`. Throttled `public-forms`; returns `data.reference` (`TK-000123`). 3 per email per day. |
+| GET | `/sitemap.xml`, `/robots.txt` | Dynamic; sitemap lists each language variant with hreflang alternates |
+| GET | `/t/{token}`, `/receipts/{uuid}` | Unchanged (trip share now uses the website layout, minimal and noindex) |
+
+Admin (session): `/admin/leads` (listing + filters `city_ids`, `category_ids`, `statuses`, `created`), `GET /admin/leads/{lead}`, `PUT /admin/leads/{lead}` (notes, owner, `lock_version`), `POST /admin/leads/{lead}/status?status=` (`reason` required for rejected / spam / new).
+

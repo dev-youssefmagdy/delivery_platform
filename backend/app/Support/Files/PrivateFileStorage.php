@@ -68,6 +68,17 @@ final class PrivateFileStorage
     }
 
     /**
+     * Restricted evidence of a safety case: `safety/{incidentUuid}/{random}.{ext}`.
+     */
+    public function putSafetyEvidence(string $incidentUuid, InspectedUpload $upload): string
+    {
+        $path = 'safety/'.$incidentUuid.'/'.Str::uuid().'.'.$upload->extension;
+        $this->disk()->put($path, $upload->bytes);
+
+        return $path;
+    }
+
+    /**
      * One picture of a delivery proof: `proofs/{bookingUuid}/{stage}/{random}.jpg`.
      */
     public function putProof(string $bookingUuid, string $stage, InspectedUpload $upload): string

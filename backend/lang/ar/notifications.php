@@ -108,6 +108,8 @@ return [
         'sms' => 'يوجد تحديث على بلاغ السلامة الخاص بك. افتح التطبيق.',
     ],
 
+    'safety.incident_raised' => ['title' => 'بلاغ سلامة جديد', 'body' => 'بلاغ السلامة {code} يحتاج إلى مسؤول سلامة.'],
+
     'marketing.campaign' => ['title' => '{title}', 'body' => '{body}'],
 
     'admin.export_ready' => [

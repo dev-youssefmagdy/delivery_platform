@@ -10,6 +10,7 @@ use App\Models\PolicyVersion;
 use App\Repositories\Contracts\Common\CountryRepositoryInterface;
 use App\Repositories\Contracts\Common\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
+use App\Services\Safety\EmergencyNumbers;
 use App\Services\Settings\SettingsService;
 use App\Support\Config\AppConfigCache;
 
@@ -25,6 +26,7 @@ final class AppConfigService
         private readonly CurrencyRepositoryInterface $currencies,
         private readonly PolicyVersionRepositoryInterface $policies,
         private readonly AppConfigCache $cache,
+        private readonly EmergencyNumbers $emergencyNumbers,
     ) {}
 
     public function get(): AppConfigData
@@ -99,6 +101,13 @@ final class AppConfigService
             features: [
                 'wallet' => $this->settings->bool(SettingKey::FeatureWalletEnabled),
                 'offers' => $this->settings->bool(SettingKey::FeatureOffersEnabled),
+            ],
+            // `emergency_dispatch` is always false: the platform shows the local numbers, it does not call anybody (SRS §13.2).
+            safety: [
+                'emergency_numbers' => $this->emergencyNumbers->raw($country?->iso2),
+                'sos_hold_seconds' => (int) config('safety.sos.hold_seconds', 2),
+                'trusted_contacts_max' => (int) config('safety.trusted_contacts.max_per_user', 5),
+                'emergency_dispatch' => false,
             ],
         );
     }

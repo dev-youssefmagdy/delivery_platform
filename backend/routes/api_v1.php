@@ -58,6 +58,9 @@ use App\Http\Controllers\Api\V1\Provider\VehicleController;
 use App\Http\Controllers\Api\V1\Support\BookingChatController;
 use App\Http\Controllers\Api\V1\Support\SupportTicketController;
 use App\Http\Controllers\Api\V1\Webhooks\PaymentWebhookController;
+use App\Http\Controllers\Api\V1\Safety\IncidentController;
+use App\Http\Controllers\Api\V1\Safety\TrustedContactController;
+use App\Http\Controllers\Api\V1\Safety\TripShareController as SafetyTripShareController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -345,6 +348,26 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
     Route::get('tickets/{ticket}', [SupportTicketController::class, 'show'])->whereUuid('ticket')->name('tickets.show');
     Route::post('tickets/{ticket}/messages', [SupportTicketController::class, 'reply'])->whereUuid('ticket')->middleware('idempotent')->name('tickets.reply');
     Route::get('tickets/{ticket}/attachments/{attachment}', [SupportTicketController::class, 'attachment'])->whereUuid(['ticket', 'attachment'])->middleware('signed')->name('tickets.attachment');
+});
+
+// Safety (P5.1, SRS §13, §20.5) for both apps. Like support, reachable by an account in any standing. The SOS has no Idempotency-Key
+// requirement (a person in danger is never stopped by a header): a repeated press joins the open case. Reports are limited per hour in
+// the service; the SOS is exempt from the global per-minute limiter (see AppServiceProvider).
+Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->prefix('safety')->name('safety.')->group(function (): void {
+    Route::get('incidents', [IncidentController::class, 'index'])->name('incidents.index');
+    Route::post('incidents', [IncidentController::class, 'store'])->name('incidents.store');
+    Route::get('incidents/{incident}', [IncidentController::class, 'show'])->whereUuid('incident')->name('incidents.show');
+    Route::post('incidents/{incident}/updates', [IncidentController::class, 'update'])->whereUuid('incident')->middleware('idempotent')->name('incidents.update');
+    Route::post('incidents/{incident}/attachments', [IncidentController::class, 'storeAttachment'])->whereUuid('incident')->middleware(['throttle:'.(int) config('safety.attachments.per_minute', 10).',1', 'idempotent'])->name('incidents.attachments.store');
+    Route::get('incidents/{incident}/attachments/{attachment}', [IncidentController::class, 'attachmentFile'])->whereUuid(['incident', 'attachment'])->middleware('signed')->name('attachments.file');
+
+    Route::get('trusted-contacts', [TrustedContactController::class, 'index'])->name('trusted-contacts.index');
+    Route::post('trusted-contacts', [TrustedContactController::class, 'store'])->middleware('idempotent')->name('trusted-contacts.store');
+    Route::patch('trusted-contacts/{contact}', [TrustedContactController::class, 'update'])->whereUuid('contact')->name('trusted-contacts.update');
+    Route::delete('trusted-contacts/{contact}', [TrustedContactController::class, 'destroy'])->whereUuid('contact')->name('trusted-contacts.destroy');
+
+    Route::post('bookings/{booking}/share', [SafetyTripShareController::class, 'store'])->whereUuid('booking')->name('bookings.share.store');
+    Route::delete('bookings/{booking}/share', [SafetyTripShareController::class, 'destroy'])->whereUuid('booking')->name('bookings.share.destroy');
 });
 
 // Private channel authorization for the mobile apps (ADR-07): the pusher-protocol clients post `socket_id` and

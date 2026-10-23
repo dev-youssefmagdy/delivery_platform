@@ -19,6 +19,10 @@ final class AdminNotificationLinker
 
     public function urlFor(AppNotification $notification): ?string
     {
+        if ($notification->link_type === NotificationLinkType::Incident->value && $notification->link_id !== null) {
+            return route('admin.safety-incidents.show', $notification->link_id);
+        }
+
         if ($notification->link_type !== NotificationLinkType::Export->value || $notification->link_id === null) {
             return null;
         }

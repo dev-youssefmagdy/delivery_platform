@@ -73,6 +73,7 @@ enum NotificationEvent: string implements HasLabel
     case SupportReply = 'support.reply';
     case SupportDisputeUpdate = 'support.dispute_update';
     case SafetyCaseUpdate = 'safety.case_update';
+    case SafetyIncidentRaised = 'safety.incident_raised';
 
     case MarketingCampaign = 'marketing.campaign';
 
@@ -95,7 +96,7 @@ enum NotificationEvent: string implements HasLabel
             self::CouponApplied, self::CouponRejected, self::CouponExpiring => NotificationCategory::Promotions,
             self::PayoutRequested, self::PayoutApproved, self::PayoutRejected, self::PayoutPaid, self::PayoutFailed => NotificationCategory::Payouts,
             self::SupportHelpMessage, self::SupportReply, self::SupportDisputeUpdate => NotificationCategory::Support,
-            self::SafetyCaseUpdate => NotificationCategory::Safety,
+            self::SafetyCaseUpdate, self::SafetyIncidentRaised => NotificationCategory::Safety,
             self::MarketingCampaign => NotificationCategory::Marketing,
             self::AdminExportReady, self::AdminExportFailed => NotificationCategory::System,
         };
@@ -113,7 +114,7 @@ enum NotificationEvent: string implements HasLabel
             self::DeliveryPickedUp, self::DeliveryArrivedDropoff, self::DeliveryDelivered, self::DeliveryAttemptFailed, self::DeliveryReturned,
             self::PaymentPending, self::PaymentSucceeded, self::PaymentFailed, self::PaymentRefunded,
             self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::SupportHelpMessage => NotificationAudience::Customer,
-            self::AdminExportReady, self::AdminExportFailed => NotificationAudience::Admin,
+            self::AdminExportReady, self::AdminExportFailed, self::SafetyIncidentRaised => NotificationAudience::Admin,
             default => NotificationAudience::Both,
         };
     }
@@ -178,7 +179,9 @@ enum NotificationEvent: string implements HasLabel
             self::PayoutRequested, self::PayoutApproved, self::PayoutRejected, self::PayoutPaid, self::PayoutFailed => NotificationLinkType::Payout,
             self::WalletAdjusted, self::CashDebtNotice, self::PaymentRefunded => NotificationLinkType::Wallet,
             self::SupportHelpMessage => NotificationLinkType::Message,
-            self::SupportReply, self::SupportDisputeUpdate, self::SafetyCaseUpdate => NotificationLinkType::Support,
+            self::SupportReply, self::SupportDisputeUpdate => NotificationLinkType::Support,
+            self::SafetyCaseUpdate => NotificationLinkType::Safety,
+            self::SafetyIncidentRaised => NotificationLinkType::Incident,
             self::BookingMessageReceived => NotificationLinkType::Chat,
             self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::MarketingCampaign => NotificationLinkType::Inbox,
             self::AdminExportReady, self::AdminExportFailed => NotificationLinkType::Export,

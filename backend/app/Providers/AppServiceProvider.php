@@ -226,7 +226,10 @@ class AppServiceProvider extends ServiceProvider
         });
         $actor = static fn (Request $request): string => (string) ($request->user()?->getAuthIdentifier() ?? 'ip:'.$request->ip());
 
-        RateLimiter::for(RateLimiterName::Api->value, static fn (Request $request): Limit => Limit::perMinute($perMinute(RateLimiterName::Api))->by($actor($request)));
+        RateLimiter::for(RateLimiterName::Api->value, static fn (Request $request): Limit => $request->routeIs('api.v1.safety.incidents.store') && $request->input('trigger') === 'sos'
+            // An SOS is never refused by a rate limit (SRS §13.2); repeated presses join the open case in the service.
+            ? Limit::none()
+            : Limit::perMinute($perMinute(RateLimiterName::Api))->by($actor($request)));
 
         RateLimiter::for(RateLimiterName::OtpRequest->value, static function (Request $request) use ($perMinute, $settings): array {
             $phone = 'phone:'.hash('sha256', self::limiterPhone($request));

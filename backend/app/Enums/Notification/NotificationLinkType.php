@@ -22,4 +22,8 @@ enum NotificationLinkType: string
     case Chat = 'chat';
     case Export = 'export';
     case Inbox = 'inbox';
+    /** A safety case of the person (link id: incident uuid; a safety support ticket uuid is also possible). */
+    case Safety = 'safety';
+    /** Admin only: opens the case in the Safety Center. */
+    case Incident = 'incident';
 }

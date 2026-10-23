@@ -38,6 +38,20 @@ final class ShareLinkService
     {
         $booking = $this->bookings->findOfCustomer($bookingUuid, $customer->id) ?? throw (new ModelNotFoundException)->setModel(Booking::class);
 
+        return $this->issue($customer, $booking);
+    }
+
+    /**
+     * Issues the live link of a booking for either side (the customer, or the provider through the safety share, P5.1).
+     *
+     * @return array{token: string, url: string, expires_at: CarbonImmutable}
+     *
+     * @throws ConflictException `share_not_available`
+     */
+    public function issue(User $creator, Booking $booking): array
+    {
+        $customer = $creator;
+
         return $this->db->transaction(function () use ($customer, $booking): array {
             $locked = $this->bookings->lockById($booking->id);
 
@@ -65,6 +79,14 @@ final class ShareLinkService
     {
         $booking = $this->bookings->findOfCustomer($bookingUuid, $customer->id) ?? throw (new ModelNotFoundException)->setModel(Booking::class);
 
+        return $this->links->revokeForBooking($booking->id, CarbonImmutable::now());
+    }
+
+    /**
+     * Ends the live links of a booking on behalf of its provider.
+     */
+    public function revokeForBooking(Booking $booking): int
+    {
         return $this->links->revokeForBooking($booking->id, CarbonImmutable::now());
     }
 

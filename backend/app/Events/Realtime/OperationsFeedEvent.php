@@ -18,6 +18,9 @@ final class OperationsFeedEvent extends RealtimeEvent
 
     public const PROVIDER_MOVED = 'provider_moved';
 
+    /** A safety case was raised or changed (ids and levels only; the case itself needs `incidents.view`). */
+    public const SAFETY_INCIDENT = 'safety_incident';
+
     /**
      * @param array<string, mixed> $payload
      */

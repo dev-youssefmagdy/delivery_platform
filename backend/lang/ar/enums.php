@@ -982,6 +982,7 @@ return [
         'support.dispute_update' => 'تحديث على نزاع',
         'safety.case_update' => 'تحديث على بلاغ سلامة',
         'marketing.campaign' => 'حملة تسويقية',
+        'safety.incident_raised' => 'بلاغ سلامة جديد (للفريق)',
         'admin.export_ready' => 'التصدير جاهز',
         'admin.export_failed' => 'فشل التصدير',
     ],

@@ -37,6 +37,7 @@ class AppConfigResource extends JsonResource
             'apps' => $config->apps,
             'policies' => $config->policies === [] ? new stdClass : $config->policies,
             'features' => $config->features === [] ? new stdClass : $config->features,
+            'safety' => $config->safety === [] ? new stdClass : $config->safety,
         ];
     }
 }

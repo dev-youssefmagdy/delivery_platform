@@ -8,11 +8,11 @@ import { config, csrfToken } from './config.js';
  *
  *   realtime.connect()            start (idempotent); resolves to null when realtime is not configured
  *   realtime.onStatus(fn)         fn(status) with idle | connecting | connected | unavailable | failed | disabled
- *   realtime.onEvent(fn)          fn(type, payload, { gap }) for booking_changed | provider_changed | provider_moved
+ *   realtime.onEvent(fn)          fn(type, payload, { gap }) for booking_changed | provider_changed | provider_moved | safety_incident
  *   realtime.state                { status, lastEventAt: Date|null }
  */
 const CHANNEL = 'admin.operations';
-const EVENTS = ['booking_changed', 'provider_changed', 'provider_moved'];
+const EVENTS = ['booking_changed', 'provider_changed', 'provider_moved', 'safety_incident'];
 const CONNECTION_STATES = {
     initialized: 'connecting',
     connecting: 'connecting',

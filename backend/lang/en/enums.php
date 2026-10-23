@@ -982,6 +982,7 @@ return [
         'support.dispute_update' => 'Dispute update',
         'safety.case_update' => 'Safety case update',
         'marketing.campaign' => 'Marketing campaign',
+        'safety.incident_raised' => 'Safety case raised (staff)',
         'admin.export_ready' => 'Export ready',
         'admin.export_failed' => 'Export failed',
     ],

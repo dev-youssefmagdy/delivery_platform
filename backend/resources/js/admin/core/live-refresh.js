@@ -43,7 +43,7 @@ export function initLiveRefresh(root = document) {
             timer = window.setInterval(reload, seconds * 1000);
             realtime.connect();
             off = realtime.onEvent((type, _payload, meta) => {
-                if (type === 'booking_changed' || meta.gap) {
+                if (type === 'booking_changed' || type === 'safety_incident' || meta.gap) {
                     window.clearTimeout(debounce);
                     debounce = window.setTimeout(reload, 1500);
                 }

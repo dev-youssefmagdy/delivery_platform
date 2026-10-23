@@ -22,6 +22,11 @@ final class OperationsFeedPublisher
         $this->publish(OperationsFeedEvent::BOOKING_CHANGED, ['uuid' => $bookingUuid, 'status' => $status, 'previous_status' => $previousStatus]);
     }
 
+    public function safetyIncident(string $incidentUuid, string $priority, string $status): void
+    {
+        $this->publish(OperationsFeedEvent::SAFETY_INCIDENT, ['uuid' => $incidentUuid, 'priority' => $priority, 'status' => $status]);
+    }
+
     public function providerChanged(string $providerUuid, bool $online): void
     {
         $this->publish(OperationsFeedEvent::PROVIDER_CHANGED, ['uuid' => $providerUuid, 'online' => $online]);

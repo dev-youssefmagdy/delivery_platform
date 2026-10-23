@@ -108,6 +108,8 @@ return [
         'sms' => 'There is an update on your safety case. Open the app.',
     ],
 
+    'safety.incident_raised' => ['title' => 'New safety case', 'body' => 'Safety case {code} needs a safety officer.'],
+
     'marketing.campaign' => ['title' => '{title}', 'body' => '{body}'],
 
     'admin.export_ready' => [

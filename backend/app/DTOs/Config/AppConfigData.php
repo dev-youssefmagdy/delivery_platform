@@ -16,6 +16,7 @@ final readonly class AppConfigData
      * @param array{customer: array{min_version: string, force_update: bool}, provider: array{min_version: string, force_update: bool}} $apps
      * @param array<string, array{id: string, version: int, published_at: string}> $policies current published version per policy type
      * @param array<string, bool> $features
+     * @param array{emergency_numbers: list<array{key: string, number: string}>, sos_hold_seconds: int, trusted_contacts_max: int, emergency_dispatch: bool} $safety
      */
     public function __construct(
         public string $defaultLocale,
@@ -28,6 +29,7 @@ final readonly class AppConfigData
         public array $apps,
         public array $policies,
         public array $features,
+        public array $safety = [],
     ) {}
 
     /**

@@ -12,6 +12,7 @@ enum NotificationLinkType implements ApiEnum {
   chat('chat'),
   export('export'),
   inbox('inbox'),
+  safety('safety'),
   unknown('');
 
   const NotificationLinkType(this.value);

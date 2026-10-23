@@ -10,6 +10,8 @@ use App\Models\NotificationDelivery;
 use App\Models\User;
 use App\Services\Notification\DeliveryOutcome;
 use Illuminate\Contracts\Container\Container;
+use App\Enums\System\HealthArea;
+use App\Services\System\IntegrationStatusStore;
 use Throwable;
 
 /**
@@ -40,11 +42,15 @@ final class SmsChannelSender implements ChannelSender
         try {
             $gateway = $this->container->make(SmsGateway::class);
             $gateway->send($phone, $delivery->body);
-        } catch (SmsDeliveryException) {
+        } catch (SmsDeliveryException $e) {
+            IntegrationStatusStore::failed(HealthArea::Sms, $e);
+
             return DeliveryOutcome::retry('sms_failed', 'The SMS provider did not accept the message.');
         } catch (Throwable) {
             return DeliveryOutcome::skipped('sms_not_configured');
         }
+
+        IntegrationStatusStore::succeeded(HealthArea::Sms);
 
         return DeliveryOutcome::sent($gateway->name());
     }

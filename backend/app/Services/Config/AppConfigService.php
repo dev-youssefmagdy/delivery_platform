@@ -10,6 +10,8 @@ use App\Models\PolicyVersion;
 use App\Repositories\Contracts\Common\CountryRepositoryInterface;
 use App\Repositories\Contracts\Common\CurrencyRepositoryInterface;
 use App\Repositories\Contracts\Policy\PolicyVersionRepositoryInterface;
+use App\Repositories\Contracts\System\AppVersionRepositoryInterface;
+use App\Services\System\FeatureFlagService;
 use App\Services\Safety\EmergencyNumbers;
 use App\Services\Settings\SettingsService;
 use App\Support\Config\AppConfigCache;
@@ -27,6 +29,8 @@ final class AppConfigService
         private readonly PolicyVersionRepositoryInterface $policies,
         private readonly AppConfigCache $cache,
         private readonly EmergencyNumbers $emergencyNumbers,
+        private readonly AppVersionRepositoryInterface $appVersions,
+        private readonly FeatureFlagService $featureFlags,
     ) {}
 
     public function get(): AppConfigData
@@ -87,21 +91,9 @@ final class AppConfigService
                 'whatsapp' => $this->settings->string(SettingKey::SupportWhatsapp),
             ],
             maintenance: $this->settings->bool(SettingKey::MaintenanceModeApps),
-            apps: [
-                'customer' => [
-                    'min_version' => (string) $this->settings->string(SettingKey::MinAppVersionCustomer),
-                    'force_update' => $this->settings->bool(SettingKey::ForceUpdateCustomer),
-                ],
-                'provider' => [
-                    'min_version' => (string) $this->settings->string(SettingKey::MinAppVersionDriver),
-                    'force_update' => $this->settings->bool(SettingKey::ForceUpdateDriver),
-                ],
-            ],
+            apps: $this->apps(),
             policies: $policies,
-            features: [
-                'wallet' => $this->settings->bool(SettingKey::FeatureWalletEnabled),
-                'offers' => $this->settings->bool(SettingKey::FeatureOffersEnabled),
-            ],
+            features: $this->featureFlags->masterSwitches(),
             // `emergency_dispatch` is always false: the platform shows the local numbers, it does not call anybody (SRS §13.2).
             safety: [
                 'emergency_numbers' => $this->emergencyNumbers->raw($country?->iso2),
@@ -109,6 +101,39 @@ final class AppConfigService
                 'trusted_contacts_max' => (int) config('safety.trusted_contacts.max_per_user', 5),
                 'emergency_dispatch' => false,
             ],
+            flags: $this->featureFlags->publicRules(),
         );
+    }
+
+    /**
+     * Per app: the settings values (floor for apps with no stored platform row) and, once app_versions rows exist, the strictest
+     * platform value at the top level plus every platform's own minimum, latest version, force switch and store link.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    private function apps(): array
+    {
+        $apps = [
+            'customer' => ['min_version' => (string) $this->settings->string(SettingKey::MinAppVersionCustomer), 'force_update' => $this->settings->bool(SettingKey::ForceUpdateCustomer)],
+            'provider' => ['min_version' => (string) $this->settings->string(SettingKey::MinAppVersionDriver), 'force_update' => $this->settings->bool(SettingKey::ForceUpdateDriver)],
+        ];
+
+        foreach ($this->appVersions->all() as $row) {
+            $app = $row->app->value;
+            $apps[$app]['platforms'][$row->platform->value] = [
+                'min_version' => $row->min_version,
+                'latest_version' => $row->latest_version,
+                'force_update' => $row->force_update,
+                'store_url' => $row->store_url,
+            ];
+
+            if (version_compare($row->min_version, $apps[$app]['min_version'], '>')) {
+                $apps[$app]['min_version'] = $row->min_version;
+            }
+
+            $apps[$app]['force_update'] = $apps[$app]['force_update'] || $row->force_update;
+        }
+
+        return $apps;
     }
 }

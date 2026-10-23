@@ -11,7 +11,7 @@ use Illuminate\Contracts\Cache\Repository;
  */
 final class AppConfigCache
 {
-    public const KEY = 'app_config.payload.v1';
+    public const KEY = 'app_config.payload.v2';
 
     public const TTL_SECONDS = 600;
 

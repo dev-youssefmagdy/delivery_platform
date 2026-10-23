@@ -278,6 +278,7 @@ final class PaymentIntentService
                 returnUrl: config('payments.return_url') ?: null,
             ));
         } catch (PaymentGatewayException $exception) {
+            \App\Services\System\IntegrationStatusStore::failed(\App\Enums\System\HealthArea::Payments, $exception);
             Log::error('payments.intent.gateway_failed', ['payment' => $payment->uuid, 'gateway' => $gateway->name()->value, 'exception' => $exception::class]);
 
             throw ServiceUnavailableException::make('payment_gateway_unavailable');

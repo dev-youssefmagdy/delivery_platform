@@ -9,6 +9,8 @@ use App\Models\NotificationDelivery;
 use App\Models\User;
 use App\Services\Notification\DeliveryOutcome;
 use Illuminate\Contracts\Mail\Mailer;
+use App\Enums\System\HealthArea;
+use App\Services\System\IntegrationStatusStore;
 use Throwable;
 
 /**
@@ -38,10 +40,14 @@ final class EmailChannelSender implements ChannelSender
 
         try {
             $this->mailer->to($address)->send(new NotificationMail((string) $delivery->title, $delivery->body, $delivery->notification->locale));
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            IntegrationStatusStore::failed(HealthArea::Email, $e);
+
             // The transport message can contain the address or credentials: only the code is stored.
             return DeliveryOutcome::retry('email_failed', 'The mail server did not accept the message.', (string) config('mail.default'));
         }
+
+        IntegrationStatusStore::succeeded(HealthArea::Email);
 
         return DeliveryOutcome::sent((string) config('mail.default'));
     }

@@ -3,6 +3,7 @@
 namespace App\Services\Notification\Channels;
 
 use App\Enums\Notification\NotificationChannel;
+use App\Enums\System\HealthArea;
 use App\Integrations\Push\Contracts\PushNotifier;
 use App\Integrations\Push\Data\PushMessage;
 use App\Integrations\Push\Exceptions\PushDeliveryException;
@@ -11,6 +12,7 @@ use App\Models\NotificationDelivery;
 use App\Models\User;
 use App\Repositories\Contracts\Identity\UserDeviceRepositoryInterface;
 use App\Services\Notification\DeliveryOutcome;
+use App\Services\System\IntegrationStatusStore;
 use Illuminate\Contracts\Container\Container;
 use Throwable;
 
@@ -78,6 +80,10 @@ final class PushChannelSender implements ChannelSender
                 ));
                 $accepted ??= $messageId;
             } catch (PushDeliveryException $e) {
+                if (! $e->invalidToken()) {
+                    IntegrationStatusStore::failed(HealthArea::Push, $e);
+                }
+
                 if ($e->invalidToken()) {
                     $invalid++;
                     $this->devices->forgetPushTokenByHash((string) ($device->push_token_hash ?? hash('sha256', (string) $device->push_token)));
@@ -90,6 +96,8 @@ final class PushChannelSender implements ChannelSender
         }
 
         if ($accepted !== null) {
+            IntegrationStatusStore::succeeded(HealthArea::Push);
+
             return DeliveryOutcome::sent($notifier->name(), $accepted);
         }
 

@@ -20,6 +20,14 @@ return [
     ],
     // The mailer used for notification emails; `log` / `array` only in local/testing (the same boot guard applies).
     'email' => ['driver' => env('MAIL_MAILER')],
+    // Optional error tracking (SRS 23.4). Off unless SENTRY_DSN is set; only the exception, release and correlation id are sent.
+    'error_tracker' => [
+        'driver' => env('SENTRY_DSN') ? 'sentry' : null,
+        'dsn' => env('SENTRY_DSN'),
+        'environment' => env('SENTRY_ENVIRONMENT', env('APP_ENV')),
+        'release' => env('SENTRY_RELEASE'),
+        'sample_rate' => (float) env('SENTRY_SAMPLE_RATE', 1.0),
+    ],
     'phone_relay' => ['driver' => env('PHONE_RELAY_DRIVER')],
     'file_scanner' => [
         'driver' => env('FILE_SCANNER_DRIVER'),

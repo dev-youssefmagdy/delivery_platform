@@ -25,6 +25,7 @@ enum HealthArea: string implements HasLabel
     case Push = 'push';
     case FileScanner = 'file_scanner';
     case Email = 'email';
+    case ErrorTracker = 'error_tracker';
     case PaymentWebhooks = 'payment_webhooks';
 
     public function label(): string
@@ -34,7 +35,7 @@ enum HealthArea: string implements HasLabel
 
     public function isAdapter(): bool
     {
-        return in_array($this, [self::Maps, self::Sms, self::Payments, self::Push, self::FileScanner, self::Email], true);
+        return in_array($this, [self::Maps, self::Sms, self::Payments, self::Push, self::FileScanner, self::Email, self::ErrorTracker], true);
     }
 
     /**

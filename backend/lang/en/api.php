@@ -168,6 +168,9 @@ return [
     'errors' => [
         'lead_transition_invalid' => 'This lead cannot move to that status from its current status.',
         'lead_reason_required' => 'A reason is required for this change.',
+        'app_version_duplicate' => 'This app and platform already have a version row. Edit the existing one.',
+        'app_version_store_url_required' => 'A store link is required to force an update.',
+        'failed_job_reason_required' => 'A reason is required to retry a job.',
         'chat_forbidden' => 'You are not part of this booking conversation.',
         'chat_closed' => 'The conversation for this booking is closed.',
         'chat_empty' => 'Write a message or attach an image.',

@@ -73,6 +73,26 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // One JSON object per line with the correlation id (`extra.request_id`) and secret keys redacted (SRS 23.4). Use
+        // LOG_STACK=json (files, 14 days) or LOG_STACK=stderr_json (containers).
+        'json' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.json.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'max_files' => env('LOG_DAILY_DAYS', 14),
+            'replace_placeholders' => true,
+            'tap' => [\App\Logging\StructuredLogging::class],
+        ],
+
+        'stderr_json' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => StreamHandler::class,
+            'handler_with' => ['stream' => 'php://stderr'],
+            'processors' => [PsrLogMessageProcessor::class],
+            'tap' => [\App\Logging\StructuredLogging::class],
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

@@ -76,4 +76,19 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->dontReport([DomainException::class]);
         $exceptions->shouldRenderJsonWhen(fn (Request $request): bool => ApiExceptionRenderer::wantsEnvelope($request));
         $exceptions->render(new ApiExceptionRenderer);
+        // Optional error tracker (off unless SENTRY_DSN is set). Runs after the response, never changes logging or rendering.
+        $exceptions->report(static function (Throwable $e): void {
+            if (config('integrations.error_tracker.driver') === null) {
+                return;
+            }
+
+            $requestId = \Illuminate\Support\Facades\Context::get('request_id');
+            app()->terminating(static function () use ($e, $requestId): void {
+                try {
+                    app(\App\Integrations\Errors\Contracts\ErrorTracker::class)->report($e, is_string($requestId) ? $requestId : null);
+                } catch (Throwable) {
+                    // Error tracking must never fail a request.
+                }
+            });
+        });
     })->create();

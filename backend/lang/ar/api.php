@@ -168,6 +168,9 @@ return [
     'errors' => [
         'lead_transition_invalid' => 'لا يمكن نقل هذا الطلب إلى هذه الحالة من حالته الحالية.',
         'lead_reason_required' => 'السبب مطلوب لهذا التغيير.',
+        'app_version_duplicate' => 'يوجد بالفعل صف إصدار لهذا التطبيق والمنصة. عدّل الصف الحالي.',
+        'app_version_store_url_required' => 'رابط المتجر مطلوب لفرض التحديث.',
+        'failed_job_reason_required' => 'السبب مطلوب لإعادة تشغيل المهمة.',
         'chat_forbidden' => 'أنت لست طرفاً في محادثة هذا الحجز.',
         'chat_closed' => 'تم إغلاق المحادثة الخاصة بهذا الحجز.',
         'chat_empty' => 'اكتب رسالة أو أرفق صورة.',

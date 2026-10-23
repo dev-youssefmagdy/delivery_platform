@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Integrations\Errors\Contracts\ErrorTracker;
+use App\Integrations\Errors\Drivers\SentryErrorTracker;
 use App\Integrations\Files\Contracts\FileScanner;
 use App\Integrations\Files\Drivers\ClamAvFileScanner;
 use App\Integrations\Files\Drivers\NoopFileScanner;
@@ -44,6 +46,7 @@ class IntegrationServiceProvider extends ServiceProvider
         ]],
         'payments' => [PaymentGateway::class, ['sandbox' => SandboxPaymentGateway::class, 'paymob' => PaymobPaymentGateway::class]],
         'push' => [PushNotifier::class, ['log' => LogPushNotifier::class, 'fcm' => FcmPushNotifier::class]],
+        'error_tracker' => [ErrorTracker::class, ['sentry' => SentryErrorTracker::class]],
         'file_scanner' => [FileScanner::class, ['noop' => NoopFileScanner::class, 'clamav' => ClamAvFileScanner::class]],
     ];
 
@@ -52,6 +55,11 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->when(ClamAvFileScanner::class)->needs('$host')->giveConfig('integrations.file_scanner.clamav.host');
         $this->app->when(ClamAvFileScanner::class)->needs('$port')->giveConfig('integrations.file_scanner.clamav.port');
         $this->app->when(ClamAvFileScanner::class)->needs('$timeoutSeconds')->giveConfig('integrations.file_scanner.clamav.timeout_seconds');
+
+        $this->app->when(SentryErrorTracker::class)->needs('$dsn')->giveConfig('integrations.error_tracker.dsn');
+        $this->app->when(SentryErrorTracker::class)->needs('$environment')->giveConfig('integrations.error_tracker.environment');
+        $this->app->when(SentryErrorTracker::class)->needs('$release')->giveConfig('integrations.error_tracker.release');
+        $this->app->when(SentryErrorTracker::class)->needs('$sampleRate')->giveConfig('integrations.error_tracker.sample_rate');
 
         foreach ($this->integrations as $area => [$contract, $drivers]) {
             $this->app->singleton($contract, function () use ($area, $contract, $drivers): object {

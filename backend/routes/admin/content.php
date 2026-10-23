@@ -45,10 +45,10 @@ $workflowEntity('content-banners', BannerController::class, ContentBanner::class
 $workflowEntity('content-menus', MenuController::class, ContentMenu::class, 'contentMenu');
 
 Route::prefix('content/{contentType}/{content}')->whereIn('contentType', ContentType::values())->whereNumber('content')->name('content.')->controller(ContentWorkflowController::class)->group(function (): void {
-    Route::get('preview', 'preview')->name('preview');
-    Route::get('revisions', 'revisions')->name('revisions');
-    Route::post('revisions/{number}/restore', 'restoreRevision')->whereNumber('number')->name('revisions.restore');
-    Route::post('{action}', 'transition')->whereIn('action', WorkflowAction::values())->name('transition');
+    Route::get('preview', 'preview')->name('preview')->can('viewAny', ContentPage::class);
+    Route::get('revisions', 'revisions')->name('revisions')->can('viewAny', ContentPage::class);
+    Route::post('revisions/{number}/restore', 'restoreRevision')->whereNumber('number')->name('revisions.restore')->can('viewAny', ContentPage::class);
+    Route::post('{action}', 'transition')->whereIn('action', WorkflowAction::values())->name('transition')->can('viewAny', ContentPage::class);
 });
 
 $assets = static function (string $prefix, string $controller, string $model, string $param): void {

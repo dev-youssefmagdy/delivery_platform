@@ -11,5 +11,5 @@ Route::prefix('leads')->name('leads.')->controller(LeadController::class)->group
     Route::get('/', 'index')->name('index')->can('viewAny', Lead::class);
     Route::get('{lead}', 'show')->whereUuid('lead')->name('show')->can('view', 'lead');
     Route::put('{lead}', 'update')->whereUuid('lead')->name('update')->can('update', 'lead');
-    Route::post('{lead}/status', 'transition')->whereUuid('lead')->name('transition');
+    Route::post('{lead}/status', 'transition')->whereUuid('lead')->name('transition')->can('transition', 'lead');
 });

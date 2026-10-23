@@ -42,14 +42,15 @@ String scopeTreatmentText(AppLocalizations l10n, String v) => switch (v) {
   _ => v,
 };
 
-String scopeIssueText(AppLocalizations l10n, ScopeIssue issue) => switch (issue) {
-  ScopeIssue.required => l10n.scIssueRequired,
-  ScopeIssue.outOfRange => l10n.scIssueRange,
-  ScopeIssue.invalidChoice => l10n.scIssueChoice,
-  ScopeIssue.floorsNeeded => l10n.scIssueFloors,
-  ScopeIssue.tooLong => l10n.scIssueTooLong,
-  ScopeIssue.duplicate => l10n.scIssueDuplicate,
-};
+String scopeIssueText(AppLocalizations l10n, ScopeIssue issue) =>
+    switch (issue) {
+      ScopeIssue.required => l10n.scIssueRequired,
+      ScopeIssue.outOfRange => l10n.scIssueRange,
+      ScopeIssue.invalidChoice => l10n.scIssueChoice,
+      ScopeIssue.floorsNeeded => l10n.scIssueFloors,
+      ScopeIssue.tooLong => l10n.scIssueTooLong,
+      ScopeIssue.duplicate => l10n.scIssueDuplicate,
+    };
 
 /// Large stepper (56 px buttons) for counts while driving or standing at a
 /// truck: minus, the value, plus.
@@ -78,7 +79,9 @@ class ScopeStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final key = (this.key is ValueKey<String>) ? (this.key! as ValueKey<String>).value : label;
+    final key = (this.key is ValueKey<String>)
+        ? (this.key! as ValueKey<String>).value
+        : label;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -90,7 +93,9 @@ class ScopeStepper extends StatelessWidget {
               key: Key('$key-minus'),
               iconSize: 32,
               constraints: const BoxConstraints.tightFor(width: 64, height: 64),
-              onPressed: value - step >= min ? () => onChanged(value - step) : null,
+              onPressed: value - step >= min
+                  ? () => onChanged(value - step)
+                  : null,
               icon: const Icon(Icons.remove),
               tooltip: '$label -',
             ),
@@ -99,14 +104,18 @@ class ScopeStepper extends StatelessWidget {
                 suffix == null ? '$value' : '$value $suffix',
                 key: Key('$key-value'),
                 textAlign: TextAlign.center,
-                style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             IconButton.filledTonal(
               key: Key('$key-plus'),
               iconSize: 32,
               constraints: const BoxConstraints.tightFor(width: 64, height: 64),
-              onPressed: value + step <= max ? () => onChanged(value + step) : null,
+              onPressed: value + step <= max
+                  ? () => onChanged(value + step)
+                  : null,
               icon: const Icon(Icons.add),
               tooltip: '$label +',
             ),
@@ -141,7 +150,9 @@ class ScopeChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final key = (this.key is ValueKey<String>) ? (this.key! as ValueKey<String>).value : label;
+    final key = (this.key is ValueKey<String>)
+        ? (this.key! as ValueKey<String>).value
+        : label;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -165,7 +176,8 @@ class ScopeChoice extends StatelessWidget {
               ),
           ],
         ),
-        if (error != null) Text(error!, style: TextStyle(color: theme.colorScheme.error)),
+        if (error != null)
+          Text(error!, style: TextStyle(color: theme.colorScheme.error)),
       ],
     );
   }
@@ -190,8 +202,12 @@ class ScopeBuilder extends StatelessWidget {
   final Map<String, ScopeIssue> issues;
 
   String? _err(AppLocalizations l10n, String path) {
-    final issue = issues[path] ??
-        issues.entries.where((e) => e.key.startsWith('$path.')).map((e) => e.value).firstOrNull;
+    final issue =
+        issues[path] ??
+        issues.entries
+            .where((e) => e.key.startsWith('$path.'))
+            .map((e) => e.value)
+            .firstOrNull;
     return issue == null ? null : scopeIssueText(l10n, issue);
   }
 

@@ -15,7 +15,8 @@ abstract final class GrowthFlags {
 }
 
 final growthRepositoryProvider = Provider<GrowthRepository>(
-  (ref) => ApiGrowthRepository(GrowthRemoteDataSource(ref.watch(apiClientProvider))),
+  (ref) =>
+      ApiGrowthRepository(GrowthRemoteDataSource(ref.watch(apiClientProvider))),
 );
 
 /// Whether a growth feature is on for this customer. Everything about it (menu
@@ -39,7 +40,9 @@ class ReferralNotifier extends AsyncNotifier<ReferralOverview> {
 
   Future<void> reload() async {
     state = const AsyncLoading<ReferralOverview>();
-    state = await AsyncValue.guard(() => ref.read(growthRepositoryProvider).referral());
+    state = await AsyncValue.guard(
+      () => ref.read(growthRepositoryProvider).referral(),
+    );
   }
 
   Future<void> refresh() async {
@@ -56,14 +59,20 @@ class ReferralNotifier extends AsyncNotifier<ReferralOverview> {
       _applyCode = code;
       _applyKey = newIdempotencyKey();
     }
-    await ref.read(growthRepositoryProvider).applyReferral(code, key: _applyKey!);
+    await ref
+        .read(growthRepositoryProvider)
+        .applyReferral(code, key: _applyKey!);
     _applyKey = null;
     _applyCode = null;
     await refresh();
   }
 }
 
-final referralProvider = AsyncNotifierProvider<ReferralNotifier, ReferralOverview>(ReferralNotifier.new, retry: _noAutoRetry);
+final referralProvider =
+    AsyncNotifierProvider<ReferralNotifier, ReferralOverview>(
+      ReferralNotifier.new,
+      retry: _noAutoRetry,
+    );
 
 class CreditsNotifier extends AsyncNotifier<CreditsOverview> {
   @override
@@ -74,7 +83,9 @@ class CreditsNotifier extends AsyncNotifier<CreditsOverview> {
 
   Future<void> reload() async {
     state = const AsyncLoading<CreditsOverview>();
-    state = await AsyncValue.guard(() => ref.read(growthRepositoryProvider).credits());
+    state = await AsyncValue.guard(
+      () => ref.read(growthRepositoryProvider).credits(),
+    );
   }
 
   Future<void> refresh() async {
@@ -86,7 +97,10 @@ class CreditsNotifier extends AsyncNotifier<CreditsOverview> {
   }
 }
 
-final creditsProvider = AsyncNotifierProvider<CreditsNotifier, CreditsOverview>(CreditsNotifier.new, retry: _noAutoRetry);
+final creditsProvider = AsyncNotifierProvider<CreditsNotifier, CreditsOverview>(
+  CreditsNotifier.new,
+  retry: _noAutoRetry,
+);
 
 class LoyaltyNotifier extends AsyncNotifier<LoyaltyStatus> {
   @override
@@ -97,7 +111,9 @@ class LoyaltyNotifier extends AsyncNotifier<LoyaltyStatus> {
 
   Future<void> reload() async {
     state = const AsyncLoading<LoyaltyStatus>();
-    state = await AsyncValue.guard(() => ref.read(growthRepositoryProvider).loyalty());
+    state = await AsyncValue.guard(
+      () => ref.read(growthRepositoryProvider).loyalty(),
+    );
   }
 
   Future<void> refresh() async {
@@ -109,7 +125,10 @@ class LoyaltyNotifier extends AsyncNotifier<LoyaltyStatus> {
   }
 }
 
-final loyaltyProvider = AsyncNotifierProvider<LoyaltyNotifier, LoyaltyStatus>(LoyaltyNotifier.new, retry: _noAutoRetry);
+final loyaltyProvider = AsyncNotifierProvider<LoyaltyNotifier, LoyaltyStatus>(
+  LoyaltyNotifier.new,
+  retry: _noAutoRetry,
+);
 
 /// Maps a failed code application to ARB text; the stable error code decides.
 String referralErrorText(AppLocalizations l10n, Object error) {

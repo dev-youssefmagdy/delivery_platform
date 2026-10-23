@@ -22,7 +22,8 @@ import '../providers/load_form_providers.dart';
 import '../widgets/load_form_widgets.dart';
 import '../widgets/booking_texts.dart';
 import '../widgets/payment_coupon_section.dart';
-import '../../../payments/presentation/providers/payments_providers.dart' show couponCheckProvider;
+import '../../../payments/presentation/providers/payments_providers.dart'
+    show couponCheckProvider;
 
 PlaceInfo placeInfoOf(PlaceSelection s) => PlaceInfo(
   lat: s.point.latitude,
@@ -67,23 +68,25 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
     super.dispose();
   }
 
-  int _exponent() =>
-      ref.read(appConfigProvider).value?.currencyExponent ?? 2;
+  int _exponent() => ref.read(appConfigProvider).value?.currencyExponent ?? 2;
 
   /// Photos and videos of a load are uploaded as soon as they are picked
   /// (`POST /bookings/attachments`); the form keeps the attachment ids.
-  AttachmentPhotoHandler _handlerFor(AppLocalizations l10n) => _uploadHandler ??= AttachmentPhotoHandler(
-    repository: ref.read(bookingAttachmentRepositoryProvider),
-    newKey: newIdempotencyKey,
-    cameraLabel: l10n.formPhotoCamera,
-    galleryLabel: l10n.formPhotoGallery,
-    videoLabel: l10n.lfPickVideo,
-    uploadingLabel: l10n.lfUploading,
-    allowVideo: true,
-    onError: (context, error) => ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(bookingErrorText(l10n, error)))),
-  );
+  AttachmentPhotoHandler _handlerFor(AppLocalizations l10n) =>
+      _uploadHandler ??= AttachmentPhotoHandler(
+        repository: ref.read(bookingAttachmentRepositoryProvider),
+        newKey: newIdempotencyKey,
+        cameraLabel: l10n.formPhotoCamera,
+        galleryLabel: l10n.formPhotoGallery,
+        videoLabel: l10n.lfPickVideo,
+        uploadingLabel: l10n.lfUploading,
+        allowVideo: true,
+        onError: (context, error) => ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text(bookingErrorText(l10n, error))),
+          ),
+      );
 
   DynamicFormController _formFor(ServiceCategoryInfo category) {
     if (_formCategoryId != category.id) {
@@ -99,9 +102,18 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
   }
 
   /// The chosen method, or cash when the service does not accept it any more.
-  PaymentMethodType _effectivePayment(ServiceCategoryInfo category, PaymentMethodType chosen) {
-    final accepted = category.paymentMethods.isEmpty ? const [PaymentMethodType.cash] : category.paymentMethods;
-    return accepted.contains(chosen) ? chosen : (accepted.contains(PaymentMethodType.cash) ? PaymentMethodType.cash : accepted.first);
+  PaymentMethodType _effectivePayment(
+    ServiceCategoryInfo category,
+    PaymentMethodType chosen,
+  ) {
+    final accepted = category.paymentMethods.isEmpty
+        ? const [PaymentMethodType.cash]
+        : category.paymentMethods;
+    return accepted.contains(chosen)
+        ? chosen
+        : (accepted.contains(PaymentMethodType.cash)
+              ? PaymentMethodType.cash
+              : accepted.first);
   }
 
   void _onFareChanged(String text) {
@@ -141,11 +153,15 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
 
     // Courier: the restricted-goods policy shown must be acknowledged.
     final courier = category.familyKind == ServiceFamilyKind.courier;
-    final policy = courier ? ref.read(restrictedGoodsPolicyProvider).value : null;
+    final policy = courier
+        ? ref.read(restrictedGoodsPolicyProvider).value
+        : null;
     final acknowledged = ref.read(restrictedGoodsAckProvider);
     final ackOk = !courier || (policy != null && acknowledged == policy.id);
     // Stops with a half-typed contact are not sent.
-    final stops = category.supportsStops && usesLoadUploads(category) ? ref.read(bookingStopsProvider) : const <StopDraft>[];
+    final stops = category.supportsStops && usesLoadUploads(category)
+        ? ref.read(bookingStopsProvider)
+        : const <StopDraft>[];
     final stopsOk = stops.every((s) => s.issue == null);
     setState(() => _showLoadErrors = true);
     if (check != FareCheck.ok || !formOk || !ackOk || !stopsOk) return;
@@ -163,11 +179,15 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
             bookingType: bookingTypeFor(category),
             stops: [for (final s in stops) s.toInput()],
             restrictedGoodsPolicyVersion: courier ? policy?.id : null,
-            passengers: category.maxPassengers == null ? null : draft.passengers,
+            passengers: category.maxPassengers == null
+                ? null
+                : draft.passengers,
             proposedFareMinor: draft.fareMinor!,
             currency: currency,
             paymentMethod: _effectivePayment(category, draft.payment),
-            couponCode: ref.read(couponCheckProvider).code.isEmpty ? null : ref.read(couponCheckProvider).code,
+            couponCode: ref.read(couponCheckProvider).code.isEmpty
+                ? null
+                : ref.read(couponCheckProvider).code,
           ),
         );
     if (booking != null && mounted) {
@@ -177,21 +197,31 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
     } else if (mounted) {
       // A newer policy than the one acknowledged: read it again, tick again.
       final error = ref.read(bookingDraftProvider).error;
-      if (error?.code == 'restricted_goods_ack_stale' || error?.code == 'restricted_goods_policy_unavailable') {
+      if (error?.code == 'restricted_goods_ack_stale' ||
+          error?.code == 'restricted_goods_policy_unavailable') {
         ref.read(restrictedGoodsAckProvider.notifier).clear();
         ref.invalidate(restrictedGoodsPolicyProvider);
       }
     }
   }
 
-  String _fareErrorText(AppLocalizations l10n, ServiceCategoryInfo c, MoneyFormatter f, String currency) {
+  String _fareErrorText(
+    AppLocalizations l10n,
+    ServiceCategoryInfo c,
+    MoneyFormatter f,
+    String currency,
+  ) {
     final exp = _exponent();
     return switch (_fareError) {
       FareCheck.belowMinimum => l10n.bkFareBelowMin(
-        f.format(Money(minor: c.minFareMinor!, currency: currency, exponent: exp)),
+        f.format(
+          Money(minor: c.minFareMinor!, currency: currency, exponent: exp),
+        ),
       ),
       FareCheck.aboveMaximum => l10n.bkFareAboveMax(
-        f.format(Money(minor: c.maxFareMinor!, currency: currency, exponent: exp)),
+        f.format(
+          Money(minor: c.maxFareMinor!, currency: currency, exponent: exp),
+        ),
       ),
       FareCheck.invalid => l10n.bkFareInvalid,
       _ => l10n.bkFareRequired,
@@ -275,10 +305,13 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
             _RouteSummary(
               pickup: pickup.title ?? pickup.address ?? l10n.mapCurrentLocation,
               destination:
-                  destination.title ?? destination.address ?? l10n.mapPinnedLocation,
+                  destination.title ??
+                  destination.address ??
+                  l10n.mapPinnedLocation,
               estimate: estimate,
               formatter: formatter,
-              onRetry: () => ref.invalidate(routeEstimateProvider(estimateArgs)),
+              onRetry: () =>
+                  ref.invalidate(routeEstimateProvider(estimateArgs)),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
@@ -310,7 +343,10 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
             ],
             if (category.supportsStops && usesLoadUploads(category)) ...[
               const SizedBox(height: AppSpacing.md),
-              StopsSection(maxStops: category.maxStops, showErrors: _showLoadErrors),
+              StopsSection(
+                maxStops: category.maxStops,
+                showErrors: _showLoadErrors,
+              ),
             ],
             if (category.maxPassengers != null) ...[
               const SizedBox(height: AppSpacing.md),
@@ -318,7 +354,9 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
                 value: draft.passengers,
                 max: category.maxPassengers!,
                 label: l10n.bkPassengers,
-                onChanged: ref.read(bookingDraftProvider.notifier).setPassengers,
+                onChanged: ref
+                    .read(bookingDraftProvider.notifier)
+                    .setPassengers,
               ),
             ],
             const SizedBox(height: AppSpacing.md),
@@ -328,12 +366,17 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
               exponent: exponent,
             ),
             const SizedBox(height: AppSpacing.md),
-            Text(l10n.bkFareTitle, style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              l10n.bkFareTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: AppSpacing.sm),
             TextField(
               key: const Key('fare-field'),
               controller: _fareController,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩.,٫]')),
               ],
@@ -341,7 +384,13 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
               onChanged: _onFareChanged,
               decoration: InputDecoration(
                 labelText: l10n.bkFareLabel(currency),
-                helperText: _bounds(l10n, category, formatter, currency, exponent),
+                helperText: _bounds(
+                  l10n,
+                  category,
+                  formatter,
+                  currency,
+                  exponent,
+                ),
                 errorText: _fareError == null || _fareError == FareCheck.ok
                     ? null
                     : _fareErrorText(l10n, category, formatter, currency),
@@ -357,7 +406,11 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
                       key: Key('fare-suggestion-$minor'),
                       label: Text(
                         formatter.format(
-                          Money(minor: minor, currency: currency, exponent: exponent),
+                          Money(
+                            minor: minor,
+                            currency: currency,
+                            exponent: exponent,
+                          ),
                         ),
                       ),
                       onPressed: () => _setFare(minor),
@@ -368,7 +421,11 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
             const SizedBox(height: AppSpacing.md),
             PaymentChooser(category: category),
             const SizedBox(height: AppSpacing.md),
-            CouponBox(category: category, lat: pickup.point.latitude, lng: pickup.point.longitude),
+            CouponBox(
+              category: category,
+              lat: pickup.point.latitude,
+              lng: pickup.point.longitude,
+            ),
             const SizedBox(height: AppSpacing.sm),
             _Summary(
               category: category.name.resolve(language),
@@ -387,7 +444,9 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
             const SizedBox(height: AppSpacing.md),
             if (draft.error != null)
               Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+                padding: const EdgeInsetsDirectional.only(
+                  bottom: AppSpacing.sm,
+                ),
                 child: Text(
                   bookingErrorText(l10n, draft.error!),
                   key: const Key('booking-error'),
@@ -407,11 +466,20 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
     );
   }
 
-  String? _bounds(AppLocalizations l10n, ServiceCategoryInfo c, MoneyFormatter f, String currency, int exp) {
+  String? _bounds(
+    AppLocalizations l10n,
+    ServiceCategoryInfo c,
+    MoneyFormatter f,
+    String currency,
+    int exp,
+  ) {
     final min = c.minFareMinor;
     final max = c.maxFareMinor;
-    String fmt(int v) => f.format(Money(minor: v, currency: currency, exponent: exp));
-    if (min != null && max != null) return l10n.bkFareBoundsBoth(fmt(min), fmt(max));
+    String fmt(int v) =>
+        f.format(Money(minor: v, currency: currency, exponent: exp));
+    if (min != null && max != null) {
+      return l10n.bkFareBoundsBoth(fmt(min), fmt(max));
+    }
     if (min != null) return l10n.bkFareBoundsMin(fmt(min));
     if (max != null) return l10n.bkFareBoundsMax(fmt(max));
     return null;
@@ -465,7 +533,11 @@ class _RouteSummary extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
-                Icon(Icons.location_on, size: 18, color: theme.colorScheme.error),
+                Icon(
+                  Icons.location_on,
+                  size: 18,
+                  color: theme.colorScheme.error,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(child: Text(destination)),
               ],
@@ -583,7 +655,9 @@ class _PassengerStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      Expanded(child: Text(label, style: Theme.of(context).textTheme.titleMedium)),
+      Expanded(
+        child: Text(label, style: Theme.of(context).textTheme.titleMedium),
+      ),
       IconButton(
         key: const Key('passengers-minus'),
         tooltip: '$label -',
@@ -602,7 +676,12 @@ class _PassengerStepper extends StatelessWidget {
 }
 
 class _Summary extends StatelessWidget {
-  const _Summary({required this.category, required this.fare, required this.estimate, required this.payment});
+  const _Summary({
+    required this.category,
+    required this.fare,
+    required this.estimate,
+    required this.payment,
+  });
 
   final String category;
   final String? fare;
@@ -619,7 +698,10 @@ class _Summary extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.bkSummaryTitle, style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              l10n.bkSummaryTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: AppSpacing.xs),
             Text(category),
             Text(l10n.bkSummaryFare(fare ?? l10n.bkSummaryFareNone)),

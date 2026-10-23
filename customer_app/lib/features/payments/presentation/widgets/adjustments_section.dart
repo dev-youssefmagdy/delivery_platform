@@ -6,7 +6,8 @@ import 'package:platform_core/platform_core.dart';
 
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
-import '../../../booking/presentation/widgets/delivery_texts.dart' show scopeItemText;
+import '../../../booking/presentation/widgets/delivery_texts.dart'
+    show scopeItemText;
 import '../providers/payments_providers.dart';
 
 AdjustmentStrings adjustmentStrings(AppLocalizations l10n) => AdjustmentStrings(
@@ -35,7 +36,12 @@ String? adjustmentDetailText(AppLocalizations l10n, Adjustment a) {
 }
 
 class AdjustmentsSection extends ConsumerStatefulWidget {
-  const AdjustmentsSection({super.key, required this.bookingId, this.scoped = false, this.canRequest = false});
+  const AdjustmentsSection({
+    super.key,
+    required this.bookingId,
+    this.scoped = false,
+    this.canRequest = false,
+  });
 
   final String bookingId;
 
@@ -54,17 +60,31 @@ class _AdjustmentsSectionState extends ConsumerState<AdjustmentsSection> {
   final _shown = <String>{};
   String? _busy;
 
-  Future<void> _answer(Adjustment a, {required bool approve, String? note}) async {
+  Future<void> _answer(
+    Adjustment a, {
+    required bool approve,
+    String? note,
+  }) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = a.id);
     try {
-      await ref.read(adjustmentsProvider(widget.bookingId).notifier).answer(a, approve: approve, note: note);
-      messenger.showSnackBar(SnackBar(content: Text(approve ? l10n.adjApproved : l10n.adjRejected)));
+      await ref
+          .read(adjustmentsProvider(widget.bookingId).notifier)
+          .answer(a, approve: approve, note: note);
+      messenger.showSnackBar(
+        SnackBar(content: Text(approve ? l10n.adjApproved : l10n.adjRejected)),
+      );
     } on Object catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(paymentErrorText(l10n, e))));
-      if (e is ApiException && (e.code == 'adjustment_not_pending' || e.code == 'adjustment_expired')) {
-        unawaited(ref.read(adjustmentsProvider(widget.bookingId).notifier).refresh());
+      messenger.showSnackBar(
+        SnackBar(content: Text(paymentErrorText(l10n, e))),
+      );
+      if (e is ApiException &&
+          (e.code == 'adjustment_not_pending' ||
+              e.code == 'adjustment_expired')) {
+        unawaited(
+          ref.read(adjustmentsProvider(widget.bookingId).notifier).refresh(),
+        );
       }
     } finally {
       if (mounted) setState(() => _busy = null);
@@ -75,7 +95,14 @@ class _AdjustmentsSectionState extends ConsumerState<AdjustmentsSection> {
     for (final a in list) {
       if (a.canAnswer && _shown.add(a.id)) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) showAdjustmentSheet(context, a, onAnswer: (approve, note) => _answer(a, approve: approve, note: note));
+          if (mounted) {
+            showAdjustmentSheet(
+              context,
+              a,
+              onAnswer: (approve, note) =>
+                  _answer(a, approve: approve, note: note),
+            );
+          }
         });
         break;
       }
@@ -93,7 +120,9 @@ class _AdjustmentsSectionState extends ConsumerState<AdjustmentsSection> {
     });
     final list = adjustments.value;
     final showRequest = widget.scoped && widget.canRequest;
-    if ((list == null || list.isEmpty) && !showRequest) return const SizedBox.shrink();
+    if ((list == null || list.isEmpty) && !showRequest) {
+      return const SizedBox.shrink();
+    }
     final strings = adjustmentStrings(l10n);
     return Column(
       key: const Key('adjustments-section'),
@@ -143,7 +172,8 @@ Future<void> showAdjustmentSheet(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (_) => _AdjustmentSheet(adjustment: adjustment, onAnswer: onAnswer),
+    builder: (_) =>
+        _AdjustmentSheet(adjustment: adjustment, onAnswer: onAnswer),
   );
 }
 
@@ -170,7 +200,10 @@ class _AdjustmentSheetState extends ConsumerState<_AdjustmentSheet> {
   Future<void> _go(bool approve) async {
     setState(() => _busy = true);
     final navigator = Navigator.of(context);
-    await widget.onAnswer(approve, _note.text.trim().isEmpty ? null : _note.text.trim());
+    await widget.onAnswer(
+      approve,
+      _note.text.trim().isEmpty ? null : _note.text.trim(),
+    );
     if (navigator.mounted) navigator.pop();
   }
 
@@ -194,21 +227,42 @@ class _AdjustmentSheetState extends ConsumerState<_AdjustmentSheet> {
           children: [
             Text(l10n.adjSheetTitle, style: theme.textTheme.titleLarge),
             const SizedBox(height: AppSpacing.xs),
-            Text(l10n.adjSheetBody(a.typeLabel), style: theme.textTheme.bodyMedium),
+            Text(
+              l10n.adjSheetBody(a.typeLabel),
+              style: theme.textTheme.bodyMedium,
+            ),
             if (adjustmentDetailText(l10n, a) != null)
               Padding(
                 padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
-                child: Text(adjustmentDetailText(l10n, a)!, key: const Key('adjustment-sheet-scope'), style: theme.textTheme.labelLarge),
+                child: Text(
+                  adjustmentDetailText(l10n, a)!,
+                  key: const Key('adjustment-sheet-scope'),
+                  style: theme.textTheme.labelLarge,
+                ),
               ),
             const SizedBox(height: AppSpacing.md),
             IsolatedText(
               formatter.format(a.amount),
-              style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
-            if (a.reason.isNotEmpty) Padding(padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs), child: Text(a.reason)),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            if (a.reason.isNotEmpty)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+                child: Text(a.reason),
+              ),
             if (a.oldTotal != null && a.newTotal != null) ...[
               const SizedBox(height: AppSpacing.sm),
-              AmountRow(label: l10n.adjOldTotal, value: formatter.format(a.oldTotal!)),
-              AmountRow(label: l10n.adjNewTotalLabel, value: formatter.format(a.newTotal!), bold: true),
+              AmountRow(
+                label: l10n.adjOldTotal,
+                value: formatter.format(a.oldTotal!),
+              ),
+              AmountRow(
+                label: l10n.adjNewTotalLabel,
+                value: formatter.format(a.newTotal!),
+                bold: true,
+              ),
             ],
             const SizedBox(height: AppSpacing.md),
             TextField(
@@ -218,17 +272,31 @@ class _AdjustmentSheetState extends ConsumerState<_AdjustmentSheet> {
               decoration: InputDecoration(labelText: l10n.adjNoteOptional),
             ),
             const SizedBox(height: AppSpacing.sm),
-            AppButton(key: const Key('adjustment-sheet-approve'), label: l10n.adjApprove, loading: _busy, onPressed: () => _go(true)),
+            AppButton(
+              key: const Key('adjustment-sheet-approve'),
+              label: l10n.adjApprove,
+              loading: _busy,
+              onPressed: () => _go(true),
+            ),
             const SizedBox(height: AppSpacing.sm),
-            AppButton(key: const Key('adjustment-sheet-reject'), label: l10n.adjReject, secondary: true, onPressed: _busy ? null : () => _go(false)),
-            AppButton(key: const Key('adjustment-sheet-later'), label: l10n.adjDecideLater, secondary: true, onPressed: _busy ? null : () => Navigator.of(context).pop()),
+            AppButton(
+              key: const Key('adjustment-sheet-reject'),
+              label: l10n.adjReject,
+              secondary: true,
+              onPressed: _busy ? null : () => _go(false),
+            ),
+            AppButton(
+              key: const Key('adjustment-sheet-later'),
+              label: l10n.adjDecideLater,
+              secondary: true,
+              onPressed: _busy ? null : () => Navigator.of(context).pop(),
+            ),
           ],
         ),
       ),
     );
   }
 }
-
 
 /// The customer asks for a change on a moving / freight booking: an extra
 /// helper or a scope change, naming the item of the agreed scope. The server
@@ -243,10 +311,21 @@ class _RequestSheet extends ConsumerStatefulWidget {
 }
 
 class _RequestSheetState extends ConsumerState<_RequestSheet> {
-  static const _types = [AdjustmentType.extraHelper, AdjustmentType.scopeChange];
+  static const _types = [
+    AdjustmentType.extraHelper,
+    AdjustmentType.scopeChange,
+  ];
   static const _items = {
     AdjustmentType.extraHelper: ['helpers'],
-    AdjustmentType.scopeChange: ['helpers', 'stairs', 'extra_stops', 'waiting_allowance', 'packing', 'assembly', 'loading_equipment'],
+    AdjustmentType.scopeChange: [
+      'helpers',
+      'stairs',
+      'extra_stops',
+      'waiting_allowance',
+      'packing',
+      'assembly',
+      'loading_equipment',
+    ],
   };
 
   AdjustmentType _type = AdjustmentType.extraHelper;
@@ -295,15 +374,17 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
       _local = null;
     });
     try {
-      await ref.read(adjustmentsProvider(widget.bookingId).notifier).request(
-        NewAdjustmentInput(
-          type: _type,
-          reason: _reason.text.trim(),
-          amountMinor: amount,
-          scopeItem: _effectiveItem,
-          helpers: _type == AdjustmentType.extraHelper ? _helpers : null,
-        ),
-      );
+      await ref
+          .read(adjustmentsProvider(widget.bookingId).notifier)
+          .request(
+            NewAdjustmentInput(
+              type: _type,
+              reason: _reason.text.trim(),
+              amountMinor: amount,
+              scopeItem: _effectiveItem,
+              helpers: _type == AdjustmentType.extraHelper ? _helpers : null,
+            ),
+          );
       messenger.showSnackBar(SnackBar(content: Text(l10n.adjRequestSent)));
       if (navigator.mounted) navigator.pop();
     } on Object catch (e) {
@@ -341,7 +422,11 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
                 for (final t in _types)
                   ChoiceChip(
                     key: Key('adj-type-${t.value}'),
-                    label: Text(t == AdjustmentType.extraHelper ? l10n.adjTypeHelper : l10n.adjTypeScope),
+                    label: Text(
+                      t == AdjustmentType.extraHelper
+                          ? l10n.adjTypeHelper
+                          : l10n.adjTypeScope,
+                    ),
                     selected: _type == t,
                     onSelected: (_) => setState(() {
                       _type = t;
@@ -369,18 +454,31 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
             if (_type == AdjustmentType.extraHelper)
               Row(
                 children: [
-                  Expanded(child: Text(l10n.adjHelpersCount, style: theme.textTheme.titleSmall)),
+                  Expanded(
+                    child: Text(
+                      l10n.adjHelpersCount,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ),
                   IconButton(
                     key: const Key('adj-helpers-minus'),
                     tooltip: '${l10n.adjHelpersCount} -',
-                    onPressed: _helpers > 1 ? () => setState(() => _helpers--) : null,
+                    onPressed: _helpers > 1
+                        ? () => setState(() => _helpers--)
+                        : null,
                     icon: const Icon(Icons.remove_circle_outline),
                   ),
-                  Text('$_helpers', key: const Key('adj-helpers-value'), style: theme.textTheme.titleMedium),
+                  Text(
+                    '$_helpers',
+                    key: const Key('adj-helpers-value'),
+                    style: theme.textTheme.titleMedium,
+                  ),
                   IconButton(
                     key: const Key('adj-helpers-plus'),
                     tooltip: '${l10n.adjHelpersCount} +',
-                    onPressed: _helpers < 5 ? () => setState(() => _helpers++) : null,
+                    onPressed: _helpers < 5
+                        ? () => setState(() => _helpers++)
+                        : null,
                     icon: const Icon(Icons.add_circle_outline),
                   ),
                 ],
@@ -389,7 +487,9 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
             TextField(
               key: const Key('adj-amount'),
               controller: _amount,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               textDirection: TextDirection.ltr,
               decoration: InputDecoration(labelText: l10n.adjAmountLabel),
             ),
@@ -407,7 +507,12 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
                 style: TextStyle(color: theme.colorScheme.error),
               ),
             const SizedBox(height: AppSpacing.sm),
-            AppButton(key: const Key('adj-send'), label: l10n.adjSend, loading: _busy, onPressed: _send),
+            AppButton(
+              key: const Key('adj-send'),
+              label: l10n.adjSend,
+              loading: _busy,
+              onPressed: _send,
+            ),
           ],
         ),
       ),

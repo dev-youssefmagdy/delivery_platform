@@ -52,7 +52,10 @@ class _Body extends ConsumerWidget {
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-      itemCount: 2 + (data.items.isEmpty ? 1 : data.items.length) + (data.hasMore ? 1 : 0),
+      itemCount:
+          2 +
+          (data.items.isEmpty ? 1 : data.items.length) +
+          (data.hasMore ? 1 : 0),
       itemBuilder: (context, i) {
         if (i == 0) {
           return Column(
@@ -69,15 +72,32 @@ class _Body extends ConsumerWidget {
                       IsolatedText(
                         balance == null ? '-' : f.format(balance.available),
                         key: const Key('payout-available'),
-                        style: theme.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w700)),
-                      if (balance != null && !balance.reserved.isZero) Text(l10n.poReservedNote(f.format(balance.reserved)), style: theme.textTheme.bodySmall),
-                      if (balance != null) Text(l10n.poLimits(f.format(balance.min), f.format(balance.max)), style: theme.textTheme.bodySmall),
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      if (balance != null && !balance.reserved.isZero)
+                        Text(
+                          l10n.poReservedNote(f.format(balance.reserved)),
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      if (balance != null)
+                        Text(
+                          l10n.poLimits(
+                            f.format(balance.min),
+                            f.format(balance.max),
+                          ),
+                          style: theme.textTheme.bodySmall,
+                        ),
                       const SizedBox(height: AppSpacing.md),
                       AppButton(
                         key: const Key('payout-request'),
                         label: l10n.poRequest,
                         icon: Icons.south_west,
-                        onPressed: balance == null || balance.available.minor <= 0 ? null : () => context.push(Routes.payoutRequest),
+                        onPressed:
+                            balance == null || balance.available.minor <= 0
+                            ? null
+                            : () => context.push(Routes.payoutRequest),
                       ),
                     ],
                   ),
@@ -101,7 +121,12 @@ class _Body extends ConsumerWidget {
           );
         }
         if (data.items.isEmpty) {
-          return EmptyState(key: const Key('payouts-empty'), icon: Icons.payments_outlined, title: l10n.poEmptyTitle, message: l10n.poEmptyBody);
+          return EmptyState(
+            key: const Key('payouts-empty'),
+            icon: Icons.payments_outlined,
+            title: l10n.poEmptyTitle,
+            message: l10n.poEmptyBody,
+          );
         }
         final index = i - 2;
         if (index >= data.items.length) {
@@ -109,7 +134,11 @@ class _Body extends ConsumerWidget {
             padding: const EdgeInsetsDirectional.all(AppSpacing.md),
             child: data.loadingMore
                 ? const Center(child: CircularProgressIndicator())
-                : TextButton(key: const Key('payouts-more'), onPressed: ref.read(payoutsProvider.notifier).loadMore, child: Text(l10n.walLoadMore)),
+                : TextButton(
+                    key: const Key('payouts-more'),
+                    onPressed: ref.read(payoutsProvider.notifier).loadMore,
+                    child: Text(l10n.walLoadMore),
+                  ),
           );
         }
         final p = data.items[index];
@@ -117,9 +146,15 @@ class _Body extends ConsumerWidget {
           margin: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
           child: ListTile(
             key: Key('payout-${p.id}'),
-            title: IsolatedText(f.format(p.amount), style: theme.textTheme.titleMedium),
+            title: IsolatedText(
+              f.format(p.amount),
+              style: theme.textTheme.titleMedium,
+            ),
             subtitle: Text(formatFinanceTime(context, p.requestedAt)),
-            trailing: StatusChip(label: payoutStatusText(l10n, p.status, fallback: p.statusLabel), tone: payoutStatusTone(p.status)),
+            trailing: StatusChip(
+              label: payoutStatusText(l10n, p.status, fallback: p.statusLabel),
+              tone: payoutStatusTone(p.status),
+            ),
             onTap: () => context.push(Routes.payout(p.id)),
           ),
         );

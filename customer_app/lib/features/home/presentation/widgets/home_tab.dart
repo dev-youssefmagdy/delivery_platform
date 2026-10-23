@@ -27,7 +27,9 @@ class HomeTab extends ConsumerWidget {
     final category = ref.watch(selectedCategoryProvider);
     final active = ref.watch(activeBookingProvider).value;
     final ready =
-        endpoints.pickup != null && endpoints.destination != null && category != null;
+        endpoints.pickup != null &&
+        endpoints.destination != null &&
+        category != null;
     final hint = active != null
         ? l10n.homeRequestHintActive
         : endpoints.pickup == null

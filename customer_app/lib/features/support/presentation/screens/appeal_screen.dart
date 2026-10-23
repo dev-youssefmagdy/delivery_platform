@@ -44,12 +44,19 @@ class _AppealScreenState extends ConsumerState<AppealScreen> {
     });
     _key ??= newClientKey();
     try {
-      final ticket = await ref.read(supportActionsProvider).appeal(widget.bookingId, _reason.text.trim(), _key!);
+      final ticket = await ref
+          .read(supportActionsProvider)
+          .appeal(widget.bookingId, _reason.text.trim(), _key!);
       messenger.showSnackBar(SnackBar(content: Text(l10n.supportAppealSent)));
       router.pushReplacement(Routes.supportTicket(ticket.id));
     } on Object catch (e) {
       if (!mounted) return;
-      if (e is ApiException && e.statusCode != null && e.statusCode! < 500 && !e.isOffline) _key = null;
+      if (e is ApiException &&
+          e.statusCode != null &&
+          e.statusCode! < 500 &&
+          !e.isOffline) {
+        _key = null;
+      }
       setState(() {
         _busy = false;
         _error = supportErrorText(l10n, e);
@@ -74,15 +81,28 @@ class _AppealScreenState extends ConsumerState<AppealScreen> {
               minLines: 4,
               maxLines: 8,
               maxLength: 4000,
-              decoration: InputDecoration(labelText: l10n.supportAppealReason, border: const OutlineInputBorder(), alignLabelWithHint: true),
+              decoration: InputDecoration(
+                labelText: l10n.supportAppealReason,
+                border: const OutlineInputBorder(),
+                alignLabelWithHint: true,
+              ),
             ),
             if (_error != null)
               Padding(
                 padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
-                child: Text(_error!, key: const Key('appeal-error'), style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                child: Text(
+                  _error!,
+                  key: const Key('appeal-error'),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
               ),
             const SizedBox(height: AppSpacing.lg),
-            AppButton(key: const Key('appeal-submit'), label: l10n.supportAppealSubmit, loading: _busy, onPressed: _submit),
+            AppButton(
+              key: const Key('appeal-submit'),
+              label: l10n.supportAppealSubmit,
+              loading: _busy,
+              onPressed: _submit,
+            ),
           ],
         ),
       ),

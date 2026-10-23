@@ -31,11 +31,24 @@ class EarningLinesScreen extends ConsumerWidget {
             child: data.items.isEmpty
                 ? ListView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    children: [Padding(padding: const EdgeInsetsDirectional.only(top: AppSpacing.xl), child: EmptyState(key: const Key('lines-empty'), icon: Icons.list_alt_outlined, title: l10n.ernNoJobs))],
+                    children: [
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(
+                          top: AppSpacing.xl,
+                        ),
+                        child: EmptyState(
+                          key: const Key('lines-empty'),
+                          icon: Icons.list_alt_outlined,
+                          title: l10n.ernNoJobs,
+                        ),
+                      ),
+                    ],
                   )
                 : NotificationListener<ScrollNotification>(
                     onNotification: (n) {
-                      if (n.metrics.pixels >= n.metrics.maxScrollExtent - 200) notifier.loadMore();
+                      if (n.metrics.pixels >= n.metrics.maxScrollExtent - 200) {
+                        notifier.loadMore();
+                      }
                       return false;
                     },
                     child: ListView.builder(
@@ -71,21 +84,53 @@ class _EarningLineTile extends ConsumerWidget {
         key: Key('line-${line.bookingId}'),
         title: Text('${line.bookingCode} · ${line.service.resolve(language)}'),
         subtitle: Text(formatFinanceTime(context, line.completedAt)),
-        trailing: IsolatedText(f.format(line.providerEarning), style: theme.textTheme.titleMedium),
-        childrenPadding: const EdgeInsetsDirectional.fromSTEB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+        trailing: IsolatedText(
+          f.format(line.providerEarning),
+          style: theme.textTheme.titleMedium,
+        ),
+        childrenPadding: const EdgeInsetsDirectional.fromSTEB(
+          AppSpacing.md,
+          0,
+          AppSpacing.md,
+          AppSpacing.md,
+        ),
         children: [
           AmountRow(label: l10n.ernGross, value: f.format(line.grossFare)),
-          AmountRow(label: l10n.ernCommission, value: '-${f.format(line.commission)}'),
-          if (!line.discountProviderFunded.isZero) AmountRow(label: l10n.ernProviderDiscount, value: '-${f.format(line.discountProviderFunded)}'),
-          if (!line.discountPlatformFunded.isZero) AmountRow(label: l10n.ernPlatformDiscount, value: f.format(line.discountPlatformFunded)),
-          if (!line.tax.isZero) AmountRow(label: l10n.rcpTax, value: f.format(line.tax)),
-          if (!line.tip.isZero) AmountRow(label: l10n.ernTips, value: f.format(line.tip)),
+          AmountRow(
+            label: l10n.ernCommission,
+            value: '-${f.format(line.commission)}',
+          ),
+          if (!line.discountProviderFunded.isZero)
+            AmountRow(
+              label: l10n.ernProviderDiscount,
+              value: '-${f.format(line.discountProviderFunded)}',
+            ),
+          if (!line.discountPlatformFunded.isZero)
+            AmountRow(
+              label: l10n.ernPlatformDiscount,
+              value: f.format(line.discountPlatformFunded),
+            ),
+          if (!line.tax.isZero)
+            AmountRow(label: l10n.rcpTax, value: f.format(line.tax)),
+          if (!line.tip.isZero)
+            AmountRow(label: l10n.ernTips, value: f.format(line.tip)),
           AmountRow(label: l10n.ernNet, value: f.format(line.providerNet)),
-          AmountRow(label: l10n.ernEarned, value: f.format(line.providerEarning), bold: true),
-          if (line.cashCollected != null) AmountRow(label: l10n.ernCash, value: f.format(line.cashCollected!)),
+          AmountRow(
+            label: l10n.ernEarned,
+            value: f.format(line.providerEarning),
+            bold: true,
+          ),
+          if (line.cashCollected != null)
+            AmountRow(
+              label: l10n.ernCash,
+              value: f.format(line.cashCollected!),
+            ),
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: Text(line.paymentStatusLabel ?? line.paymentStatus.value, style: theme.textTheme.bodySmall),
+            child: Text(
+              line.paymentStatusLabel ?? line.paymentStatus.value,
+              style: theme.textTheme.bodySmall,
+            ),
           ),
           Align(
             alignment: AlignmentDirectional.centerStart,

@@ -18,21 +18,34 @@ class PaymentChooser extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final draft = ref.watch(bookingDraftProvider);
-    final accepted = category.paymentMethods.isEmpty ? const [PaymentMethodType.cash] : category.paymentMethods;
+    final accepted = category.paymentMethods.isEmpty
+        ? const [PaymentMethodType.cash]
+        : category.paymentMethods;
     final options = [
-      for (final m in const [PaymentMethodType.cash, PaymentMethodType.card, PaymentMethodType.mobileWallet])
+      for (final m in const [
+        PaymentMethodType.cash,
+        PaymentMethodType.card,
+        PaymentMethodType.mobileWallet,
+      ])
         if (accepted.contains(m)) m,
     ];
     if (options.isEmpty) options.add(PaymentMethodType.cash);
-    final selected = options.contains(draft.payment) ? draft.payment : options.first;
+    final selected = options.contains(draft.payment)
+        ? draft.payment
+        : options.first;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.bkPaymentTitle, style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          l10n.bkPaymentTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         RadioGroup<PaymentMethodType>(
           groupValue: selected,
           onChanged: (v) {
-            if (v != null) ref.read(bookingDraftProvider.notifier).setPayment(v);
+            if (v != null) {
+              ref.read(bookingDraftProvider.notifier).setPayment(v);
+            }
           },
           child: Column(
             children: [
@@ -51,7 +64,9 @@ class PaymentChooser extends ConsumerWidget {
                     PaymentMethodType.mobileWallet => l10n.pmWallet,
                     _ => l10n.bkPaymentCash,
                   }),
-                  subtitle: m == PaymentMethodType.cash ? null : Text(l10n.bkPaymentOnlineNote),
+                  subtitle: m == PaymentMethodType.cash
+                      ? null
+                      : Text(l10n.bkPaymentOnlineNote),
                 ),
             ],
           ),
@@ -117,7 +132,10 @@ class _CouponBoxState extends ConsumerState<CouponBox> {
                 formatter.format(quote.discount),
                 quote.coupon?.title.resolveOrNull(language) ?? check.code,
               ),
-              style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.success, fontWeight: FontWeight.w600),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppColors.success,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -130,7 +148,10 @@ class _CouponBoxState extends ConsumerState<CouponBox> {
           Icon(Icons.info_outline, color: theme.colorScheme.error, size: 20),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
-            child: Text(couponReasonText(l10n, quote.reasonCode, fallback: quote.message), style: TextStyle(color: theme.colorScheme.error)),
+            child: Text(
+              couponReasonText(l10n, quote.reasonCode, fallback: quote.message),
+              style: TextStyle(color: theme.colorScheme.error),
+            ),
           ),
         ],
       );
@@ -157,8 +178,12 @@ class _CouponBoxState extends ConsumerState<CouponBox> {
                 textCapitalization: TextCapitalization.characters,
                 textDirection: TextDirection.ltr,
                 maxLength: 40,
-                onChanged: (v) => ref.read(couponCheckProvider.notifier).setCode(v),
-                decoration: InputDecoration(labelText: l10n.cpnFormLabel, counterText: ''),
+                onChanged: (v) =>
+                    ref.read(couponCheckProvider.notifier).setCode(v),
+                decoration: InputDecoration(
+                  labelText: l10n.cpnFormLabel,
+                  counterText: '',
+                ),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -183,10 +208,24 @@ class _CouponBoxState extends ConsumerState<CouponBox> {
           ],
         ),
         if (check.code.isNotEmpty && fare == null)
-          Padding(padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs), child: Text(l10n.cpnNeedFare, style: theme.textTheme.bodySmall)),
-        if (result != null) Padding(padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs), child: result),
-        if (check.code.isNotEmpty && quote == null && !check.checking && check.error == null && fare != null)
-          Padding(padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs), child: Text(l10n.cpnNotChecked, style: theme.textTheme.bodySmall)),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+            child: Text(l10n.cpnNeedFare, style: theme.textTheme.bodySmall),
+          ),
+        if (result != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+            child: result,
+          ),
+        if (check.code.isNotEmpty &&
+            quote == null &&
+            !check.checking &&
+            check.error == null &&
+            fare != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+            child: Text(l10n.cpnNotChecked, style: theme.textTheme.bodySmall),
+          ),
       ],
     );
   }

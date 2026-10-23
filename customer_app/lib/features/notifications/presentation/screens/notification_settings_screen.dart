@@ -101,7 +101,9 @@ class _CategoryTile extends StatelessWidget {
       children: [
         for (final channel in category.channels)
           SwitchListTile(
-            key: Key('pref-${category.category.value}-${channel.channel.value}'),
+            key: Key(
+              'pref-${category.category.value}-${channel.channel.value}',
+            ),
             title: Text(channelLabel(channel.channel)),
             subtitle: channel.locked ? Text(l10n.notificationLockedOn) : null,
             value: channel.enabled,

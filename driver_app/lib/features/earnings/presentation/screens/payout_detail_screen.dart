@@ -70,12 +70,29 @@ class _PayoutDetailScreenState extends ConsumerState<PayoutDetailScreen> {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsetsDirectional.all(AppSpacing.md),
               children: [
-                Center(child: StatusChip(label: payoutStatusText(l10n, p.status, fallback: p.statusLabel), tone: payoutStatusTone(p.status))),
+                Center(
+                  child: StatusChip(
+                    label: payoutStatusText(
+                      l10n,
+                      p.status,
+                      fallback: p.statusLabel,
+                    ),
+                    tone: payoutStatusTone(p.status),
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.sm),
-                Text(payoutStatusExplain(l10n, p), key: const Key('payout-explain'), textAlign: TextAlign.center),
+                Text(
+                  payoutStatusExplain(l10n, p),
+                  key: const Key('payout-explain'),
+                  textAlign: TextAlign.center,
+                ),
                 if (p.returned) ...[
                   const SizedBox(height: AppSpacing.xs),
-                  Text(l10n.poMoneyBack, textAlign: TextAlign.center, style: theme.textTheme.bodySmall),
+                  Text(
+                    l10n.poMoneyBack,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ],
                 const SizedBox(height: AppSpacing.md),
                 Card(
@@ -84,28 +101,66 @@ class _PayoutDetailScreenState extends ConsumerState<PayoutDetailScreen> {
                     padding: const EdgeInsetsDirectional.all(AppSpacing.md),
                     child: Column(
                       children: [
-                        AmountRow(label: l10n.poAmount, value: f.format(p.amount)),
-                        AmountRow(label: l10n.poFee, value: '-${f.format(p.fee)}'),
-                        AmountRow(label: l10n.poNet, value: f.format(p.net), bold: true),
-                        if (p.methodLabel != null && p.methodLabel!.isNotEmpty) AmountRow(label: l10n.poMethod, value: p.methodLabel!),
-                        AmountRow(label: l10n.poRequestedAt, value: formatFinanceTime(context, p.requestedAt)),
-                        if (p.paidAt != null) AmountRow(label: l10n.poPaidAt, value: formatFinanceTime(context, p.paidAt)),
-                        if (p.transferReference != null) AmountRow(label: l10n.poReference, value: p.transferReference!),
+                        AmountRow(
+                          label: l10n.poAmount,
+                          value: f.format(p.amount),
+                        ),
+                        AmountRow(
+                          label: l10n.poFee,
+                          value: '-${f.format(p.fee)}',
+                        ),
+                        AmountRow(
+                          label: l10n.poNet,
+                          value: f.format(p.net),
+                          bold: true,
+                        ),
+                        if (p.methodLabel != null && p.methodLabel!.isNotEmpty)
+                          AmountRow(
+                            label: l10n.poMethod,
+                            value: p.methodLabel!,
+                          ),
+                        AmountRow(
+                          label: l10n.poRequestedAt,
+                          value: formatFinanceTime(context, p.requestedAt),
+                        ),
+                        if (p.paidAt != null)
+                          AmountRow(
+                            label: l10n.poPaidAt,
+                            value: formatFinanceTime(context, p.paidAt),
+                          ),
+                        if (p.transferReference != null)
+                          AmountRow(
+                            label: l10n.poReference,
+                            value: p.transferReference!,
+                          ),
                       ],
                     ),
                   ),
                 ),
-                if (p.rejectionReason != null && p.rejectionReason!.isNotEmpty) ...[
+                if (p.rejectionReason != null &&
+                    p.rejectionReason!.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.md),
-                  Text('${l10n.poReason}: ${p.rejectionReason}', key: const Key('payout-rejection')),
+                  Text(
+                    '${l10n.poReason}: ${p.rejectionReason}',
+                    key: const Key('payout-rejection'),
+                  ),
                 ],
                 if (p.failureReason != null && p.failureReason!.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.md),
-                  Text('${l10n.poReason}: ${p.failureReason}', key: const Key('payout-failure')),
+                  Text(
+                    '${l10n.poReason}: ${p.failureReason}',
+                    key: const Key('payout-failure'),
+                  ),
                 ],
                 const SizedBox(height: AppSpacing.lg),
                 if (p.cancellable)
-                  AppButton(key: const Key('payout-cancel'), label: l10n.poCancel, secondary: true, loading: _busy, onPressed: _cancel),
+                  AppButton(
+                    key: const Key('payout-cancel'),
+                    label: l10n.poCancel,
+                    secondary: true,
+                    loading: _busy,
+                    onPressed: _cancel,
+                  ),
                 const SizedBox(height: AppSpacing.sm),
                 AppButton(
                   key: const Key('payout-help'),

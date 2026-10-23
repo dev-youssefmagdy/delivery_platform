@@ -18,11 +18,20 @@ class PushStatusCard extends ConsumerWidget {
       valueListenable: coordinator.status,
       builder: (context, status, _) {
         final (icon, text) = switch (status) {
-          PushStatus.ready => (Icons.notifications_active, l10n.pushStatusReady),
-          PushStatus.permissionNeeded => (Icons.notifications_off_outlined, l10n.pushStatusPermissionNeeded),
+          PushStatus.ready => (
+            Icons.notifications_active,
+            l10n.pushStatusReady,
+          ),
+          PushStatus.permissionNeeded => (
+            Icons.notifications_off_outlined,
+            l10n.pushStatusPermissionNeeded,
+          ),
           PushStatus.denied => (Icons.block, l10n.pushStatusDenied),
           PushStatus.failed => (Icons.error_outline, l10n.pushStatusFailed),
-          PushStatus.notConfigured => (Icons.cloud_off_outlined, l10n.pushStatusNotConfigured),
+          PushStatus.notConfigured => (
+            Icons.cloud_off_outlined,
+            l10n.pushStatusNotConfigured,
+          ),
           null => (Icons.hourglass_empty, l10n.loadingLabel),
         };
         return Card(

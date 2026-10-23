@@ -83,7 +83,8 @@ abstract final class Routes {
   static String supportTicket(String id) => '/support/ticket/$id';
   static String jobChat(String id) => '/job/$id/chat';
   static String jobAppeal(String id) => '/job/$id/appeal';
-  static String jobSupport(String id, String code) => '/support/new?booking=$id&code=$code';
+  static String jobSupport(String id, String code) =>
+      '/support/new?booking=$id&code=$code';
 }
 
 /// Where the splash screen sends the user.
@@ -200,14 +201,30 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const NotificationSettingsScreen(),
       ),
       GoRoute(path: Routes.referral, builder: (_, _) => const ReferralScreen()),
-      GoRoute(path: Routes.incentives, builder: (_, _) => const IncentivesScreen()),
-      GoRoute(path: Routes.safetyContacts, builder: (_, _) => const SafetyContactsScreen()),
+      GoRoute(
+        path: Routes.incentives,
+        builder: (_, _) => const IncentivesScreen(),
+      ),
+      GoRoute(
+        path: Routes.safetyContacts,
+        builder: (_, _) => const SafetyContactsScreen(),
+      ),
       GoRoute(
         path: Routes.safetyIncidents,
         builder: (_, _) => const SafetyIncidentsScreen(),
-        routes: [GoRoute(path: ':id', builder: (_, state) => SafetyIncidentScreen(incidentId: state.pathParameters['id']!))],
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder: (_, state) =>
+                SafetyIncidentScreen(incidentId: state.pathParameters['id']!),
+          ),
+        ],
       ),
-      GoRoute(path: '/safety/report/:bookingId', builder: (_, state) => SafetyReportScreen(bookingId: state.pathParameters['bookingId']!)),
+      GoRoute(
+        path: '/safety/report/:bookingId',
+        builder: (_, state) =>
+            SafetyReportScreen(bookingId: state.pathParameters['bookingId']!),
+      ),
       GoRoute(
         path: Routes.support,
         builder: (_, _) => const TicketsScreen(),
@@ -232,13 +249,33 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.applicationStatus,
         builder: (_, _) => const ApplicationStatusScreen(),
       ),
-      GoRoute(path: Routes.earningLines, builder: (_, _) => const EarningLinesScreen()),
-      GoRoute(path: Routes.walletLedger, builder: (_, _) => const WalletLedgerScreen()),
+      GoRoute(
+        path: Routes.earningLines,
+        builder: (_, _) => const EarningLinesScreen(),
+      ),
+      GoRoute(
+        path: Routes.walletLedger,
+        builder: (_, _) => const WalletLedgerScreen(),
+      ),
       GoRoute(path: Routes.payouts, builder: (_, _) => const PayoutsScreen()),
-      GoRoute(path: Routes.payoutRequest, builder: (_, _) => const PayoutRequestScreen()),
-      GoRoute(path: '${Routes.payouts}/:id', builder: (_, state) => PayoutDetailScreen(payoutId: state.pathParameters['id']!)),
-      GoRoute(path: Routes.payoutMethods, builder: (_, _) => const PayoutMethodsScreen()),
-      GoRoute(path: Routes.payoutMethodNew, builder: (_, state) => PayoutMethodFormScreen(editing: state.extra as PayoutMethod?)),
+      GoRoute(
+        path: Routes.payoutRequest,
+        builder: (_, _) => const PayoutRequestScreen(),
+      ),
+      GoRoute(
+        path: '${Routes.payouts}/:id',
+        builder: (_, state) =>
+            PayoutDetailScreen(payoutId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: Routes.payoutMethods,
+        builder: (_, _) => const PayoutMethodsScreen(),
+      ),
+      GoRoute(
+        path: Routes.payoutMethodNew,
+        builder: (_, state) =>
+            PayoutMethodFormScreen(editing: state.extra as PayoutMethod?),
+      ),
       GoRoute(
         path: '${Routes.job}/:id',
         builder: (_, state) =>
@@ -261,7 +298,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: 'receipt',
-            builder: (_, state) => JobReceiptScreen(bookingId: state.pathParameters['id']!),
+            builder: (_, state) =>
+                JobReceiptScreen(bookingId: state.pathParameters['id']!),
           ),
           GoRoute(
             path: 'appeal',

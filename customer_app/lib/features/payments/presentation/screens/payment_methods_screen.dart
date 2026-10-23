@@ -14,10 +14,12 @@ class PaymentMethodsScreen extends ConsumerStatefulWidget {
   const PaymentMethodsScreen({super.key});
 
   @override
-  ConsumerState<PaymentMethodsScreen> createState() => _PaymentMethodsScreenState();
+  ConsumerState<PaymentMethodsScreen> createState() =>
+      _PaymentMethodsScreenState();
 }
 
-class _PaymentMethodsScreenState extends ConsumerState<PaymentMethodsScreen> with WidgetsBindingObserver {
+class _PaymentMethodsScreenState extends ConsumerState<PaymentMethodsScreen>
+    with WidgetsBindingObserver {
   bool _adding = false;
   String? _deleting;
 
@@ -36,7 +38,9 @@ class _PaymentMethodsScreenState extends ConsumerState<PaymentMethodsScreen> wit
   /// Back from the gateway page: the method may have become active meanwhile.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) ref.read(paymentMethodsProvider.notifier).refresh();
+    if (state == AppLifecycleState.resumed) {
+      ref.read(paymentMethodsProvider.notifier).refresh();
+    }
   }
 
   Future<void> _add(PaymentMethodType type) async {
@@ -48,12 +52,16 @@ class _PaymentMethodsScreenState extends ConsumerState<PaymentMethodsScreen> wit
       final url = setup.action?.url;
       if (url != null) {
         final ok = await ref.read(gatewayLauncherProvider)(url);
-        if (!ok) messenger.showSnackBar(SnackBar(content: Text(l10n.payLaunchFailed)));
+        if (!ok) {
+          messenger.showSnackBar(SnackBar(content: Text(l10n.payLaunchFailed)));
+        }
       } else {
         messenger.showSnackBar(SnackBar(content: Text(l10n.pmSetupPending)));
       }
     } on Object catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(paymentErrorText(l10n, e))));
+      messenger.showSnackBar(
+        SnackBar(content: Text(paymentErrorText(l10n, e))),
+      );
     } finally {
       if (mounted) setState(() => _adding = false);
     }
@@ -76,7 +84,9 @@ class _PaymentMethodsScreenState extends ConsumerState<PaymentMethodsScreen> wit
       await ref.read(paymentMethodsProvider.notifier).delete(m.id);
       messenger.showSnackBar(SnackBar(content: Text(l10n.pmDeleted)));
     } on Object catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(paymentErrorText(l10n, e))));
+      messenger.showSnackBar(
+        SnackBar(content: Text(paymentErrorText(l10n, e))),
+      );
     } finally {
       if (mounted) setState(() => _deleting = null);
     }
@@ -100,21 +110,45 @@ class _PaymentMethodsScreenState extends ConsumerState<PaymentMethodsScreen> wit
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsetsDirectional.all(AppSpacing.md),
               children: [
-                Text(l10n.pmIntro, style: Theme.of(context).textTheme.bodyMedium),
+                Text(
+                  l10n.pmIntro,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
                 const SizedBox(height: AppSpacing.md),
                 if (list.isEmpty)
-                  EmptyState(key: const Key('methods-empty'), icon: Icons.credit_card_off_outlined, title: l10n.pmEmptyTitle, message: l10n.pmEmptyBody),
+                  EmptyState(
+                    key: const Key('methods-empty'),
+                    icon: Icons.credit_card_off_outlined,
+                    title: l10n.pmEmptyTitle,
+                    message: l10n.pmEmptyBody,
+                  ),
                 for (final m in list)
                   Card(
-                    margin: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+                    margin: const EdgeInsetsDirectional.only(
+                      bottom: AppSpacing.sm,
+                    ),
                     child: ListTile(
                       key: Key('method-${m.id}'),
-                      leading: Icon(m.type == PaymentMethodType.mobileWallet ? Icons.phone_android : Icons.credit_card),
+                      leading: Icon(
+                        m.type == PaymentMethodType.mobileWallet
+                            ? Icons.phone_android
+                            : Icons.credit_card,
+                      ),
                       title: Text(
-                        m.type == PaymentMethodType.mobileWallet ? l10n.pmWallet : '${m.brand ?? l10n.pmCard} ${ltrIsolate('•••• ${m.last4 ?? ''}')}'),
-                      subtitle: m.isPending ? Text(l10n.pmPending) : (m.isDefault ? Text(l10n.pmDefault) : null),
+                        m.type == PaymentMethodType.mobileWallet
+                            ? l10n.pmWallet
+                            : '${m.brand ?? l10n.pmCard} ${ltrIsolate('•••• ${m.last4 ?? ''}')}',
+                      ),
+                      subtitle: m.isPending
+                          ? Text(l10n.pmPending)
+                          : (m.isDefault ? Text(l10n.pmDefault) : null),
                       trailing: _deleting == m.id
-                          ? const SizedBox.square(dimension: 24, child: CircularProgressIndicator(strokeWidth: 2.5))
+                          ? const SizedBox.square(
+                              dimension: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                              ),
+                            )
                           : IconButton(
                               key: Key('method-delete-${m.id}'),
                               tooltip: l10n.pmDelete,
@@ -137,7 +171,9 @@ class _PaymentMethodsScreenState extends ConsumerState<PaymentMethodsScreen> wit
                   label: l10n.pmAddWallet,
                   icon: Icons.phone_android,
                   secondary: true,
-                  onPressed: _adding ? null : () => _add(PaymentMethodType.mobileWallet),
+                  onPressed: _adding
+                      ? null
+                      : () => _add(PaymentMethodType.mobileWallet),
                 ),
               ],
             ),

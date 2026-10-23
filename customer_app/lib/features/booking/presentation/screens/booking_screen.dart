@@ -32,10 +32,8 @@ class BookingScreen extends ConsumerWidget {
           value: tracked,
           onRetry: notifier.reload,
           onSignIn: () => context.go(Routes.auth),
-          builder: (context, data) => RefreshIndicator(
-            onRefresh: notifier.refresh,
-            child: _body(data),
-          ),
+          builder: (context, data) =>
+              RefreshIndicator(onRefresh: notifier.refresh, child: _body(data)),
         ),
       ),
     );

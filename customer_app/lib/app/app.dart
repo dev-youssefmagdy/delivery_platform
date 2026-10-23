@@ -25,7 +25,11 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    ref.listenManual(authStageProvider, (_, stage) => _syncPush(stage), fireImmediately: true);
+    ref.listenManual(
+      authStageProvider,
+      (_, stage) => _syncPush(stage),
+      fireImmediately: true,
+    );
   }
 
   @override
@@ -59,8 +63,14 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
       return;
     }
     await prefs.setBool('push_prompted', true);
-    final context = ref.read(routerProvider).routerDelegate.navigatorKey.currentContext;
-    if (context != null && context.mounted && await showPushRationale(context)) {
+    final context = ref
+        .read(routerProvider)
+        .routerDelegate
+        .navigatorKey
+        .currentContext;
+    if (context != null &&
+        context.mounted &&
+        await showPushRationale(context)) {
       await coordinator.enable();
     }
   }

@@ -75,10 +75,7 @@ class _ReportJobScreenState extends ConsumerState<ReportJobScreen> {
             : ListView(
                 padding: const EdgeInsetsDirectional.all(AppSpacing.md),
                 children: [
-                  Text(
-                    l10n.jbReportPrompt,
-                    style: theme.textTheme.titleMedium,
-                  ),
+                  Text(l10n.jbReportPrompt, style: theme.textTheme.titleMedium),
                   RadioGroup<DriverReportCategory>(
                     groupValue: _category,
                     onChanged: (v) {

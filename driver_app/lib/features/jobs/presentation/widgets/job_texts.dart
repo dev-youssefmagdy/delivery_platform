@@ -24,8 +24,8 @@ String jobStatusText(AppLocalizations l10n, BookingStatus status) =>
     };
 
 ChipTone jobStatusTone(BookingStatus status) => switch (status) {
-  BookingStatus.completed || BookingStatus.completedPendingPayment =>
-    ChipTone.success,
+  BookingStatus.completed ||
+  BookingStatus.completedPendingPayment => ChipTone.success,
   BookingStatus.cancelledByCustomer ||
   BookingStatus.cancelledByProvider ||
   BookingStatus.cancelledByOperations ||
@@ -184,8 +184,12 @@ String jobErrorText(AppLocalizations l10n, Object error) {
       return l10n.jbErrScopeVehicle;
     case 'offer_vehicle_capacity_insufficient':
       final shortfalls = error.meta['shortfalls'];
-      final list = shortfalls is List ? shortfalls.map((e) => '$e').toList() : const <String>[];
-      if (list.contains('payload') && list.contains('volume')) return l10n.jbErrCapacityBoth;
+      final list = shortfalls is List
+          ? shortfalls.map((e) => '$e').toList()
+          : const <String>[];
+      if (list.contains('payload') && list.contains('volume')) {
+        return l10n.jbErrCapacityBoth;
+      }
       if (list.contains('volume')) return l10n.jbErrCapacityVolume;
       if (list.contains('payload')) return l10n.jbErrCapacityPayload;
       return l10n.jbErrCapacity;
@@ -213,7 +217,9 @@ String jobErrorText(AppLocalizations l10n, Object error) {
       return l10n.dlErrCustody;
     case 'recipient_otp_invalid':
       final otpLeft = error.meta['attempts_remaining'];
-      return otpLeft is num ? l10n.dlErrOtpInvalidLeft(otpLeft.toInt()) : l10n.dlErrOtpInvalid;
+      return otpLeft is num
+          ? l10n.dlErrOtpInvalidLeft(otpLeft.toInt())
+          : l10n.dlErrOtpInvalid;
     case 'recipient_otp_locked':
       return l10n.dlErrOtpLocked;
     case 'recipient_otp_not_ready':

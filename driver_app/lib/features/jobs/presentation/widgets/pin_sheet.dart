@@ -129,7 +129,8 @@ class _PinSheetState extends ConsumerState<PinSheet> {
                 style: theme.textTheme.displaySmall?.copyWith(
                   letterSpacing: 4,
                   fontWeight: FontWeight.w700,
-                )),
+                ),
+              ),
             ),
             ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 56),

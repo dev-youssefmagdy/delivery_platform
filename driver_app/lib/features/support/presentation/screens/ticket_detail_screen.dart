@@ -33,7 +33,9 @@ class _TicketDetailScreenState extends ConsumerState<TicketDetailScreen> {
     // One key per intent: a retry after a timeout reuses it so the reply is stored once.
     _key ??= newClientKey();
     try {
-      await ref.read(ticketDetailProvider(widget.ticketId).notifier).reply(body, paths, _key!);
+      await ref
+          .read(ticketDetailProvider(widget.ticketId).notifier)
+          .reply(body, paths, _key!);
       _key = null;
       if (mounted) setState(() => _sending = false);
       return true;
@@ -44,7 +46,12 @@ class _TicketDetailScreenState extends ConsumerState<TicketDetailScreen> {
           _error = supportErrorText(l10n, e);
         });
       }
-      if (e is ApiException && e.statusCode != null && e.statusCode! < 500 && !e.isOffline) _key = null;
+      if (e is ApiException &&
+          e.statusCode != null &&
+          e.statusCode! < 500 &&
+          !e.isOffline) {
+        _key = null;
+      }
       return false;
     }
   }
@@ -57,10 +64,22 @@ class _TicketDetailScreenState extends ConsumerState<TicketDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(ticket.value == null ? l10n.supportTicketTitle : l10n.supportTicketNumber(ticket.value!.number)),
-        leading: BackButton(onPressed: () => context.canPop() ? context.pop() : context.go(Routes.support)),
+        title: Text(
+          ticket.value == null
+              ? l10n.supportTicketTitle
+              : l10n.supportTicketNumber(ticket.value!.number),
+        ),
+        leading: BackButton(
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go(Routes.support),
+        ),
         actions: [
-          IconButton(key: const Key('ticket-refresh'), tooltip: l10n.actionRefresh, icon: const Icon(Icons.refresh), onPressed: notifier.refresh),
+          IconButton(
+            key: const Key('ticket-refresh'),
+            tooltip: l10n.actionRefresh,
+            icon: const Icon(Icons.refresh),
+            onPressed: notifier.refresh,
+          ),
         ],
       ),
       body: SafeArea(

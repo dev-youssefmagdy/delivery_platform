@@ -109,7 +109,9 @@ class InboxNotifier extends AsyncNotifier<InboxState> {
     state = AsyncData(
       current.copyWith(
         unread: current.unread > 0 ? current.unread - 1 : 0,
-        items: [for (final i in current.items) i.id == item.id ? i.asRead() : i],
+        items: [
+          for (final i in current.items) i.id == item.id ? i.asRead() : i,
+        ],
       ),
     );
     try {
@@ -124,7 +126,10 @@ class InboxNotifier extends AsyncNotifier<InboxState> {
     if (current == null || current.unread == 0) return;
     await _repo.markAllRead();
     state = AsyncData(
-      current.copyWith(unread: 0, items: [for (final i in current.items) i.asRead()]),
+      current.copyWith(
+        unread: 0,
+        items: [for (final i in current.items) i.asRead()],
+      ),
     );
   }
 }
@@ -185,7 +190,9 @@ final pushCoordinatorProvider = Provider<PushCoordinator>((ref) {
     links: DeepLinkHandler(
       routeFor: customerRouteFor,
       validate: (link) async {
-        if ((link.type == NotificationLinkType.booking || link.type == NotificationLinkType.chat) && link.id != null) {
+        if ((link.type == NotificationLinkType.booking ||
+                link.type == NotificationLinkType.chat) &&
+            link.id != null) {
           await ref.read(bookingRepositoryProvider).get(link.id!);
         }
         if (link.type == NotificationLinkType.support && link.id != null) {
@@ -199,7 +206,9 @@ final pushCoordinatorProvider = Provider<PushCoordinator>((ref) {
         final context = router.routerDelegate.navigatorKey.currentContext;
         if (context == null) return;
         ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).notificationUnavailable)),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).notificationUnavailable),
+          ),
         );
       },
       markRead: (id) async {

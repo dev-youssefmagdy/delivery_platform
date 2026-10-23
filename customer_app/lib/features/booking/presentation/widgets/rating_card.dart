@@ -52,9 +52,8 @@ class _RatingCardState extends ConsumerState<RatingCard> {
             comment: _comment.text,
           );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.bkRatingThanks)),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.bkRatingThanks)));
       }
     } on Object catch (e) {
       if (mounted) {
@@ -96,8 +95,7 @@ class _RatingCardState extends ConsumerState<RatingCard> {
                       }),
               ),
             ),
-            if (_stars > 0)
-              Center(child: Text(ratingTone(l10n, _stars))),
+            if (_stars > 0) Center(child: Text(ratingTone(l10n, _stars))),
             if (_stars > 0) ...[
               const SizedBox(height: AppSpacing.sm),
               Wrap(
@@ -127,10 +125,7 @@ class _RatingCardState extends ConsumerState<RatingCard> {
               ),
             ],
             if (_error != null)
-              Text(
-                _error!,
-                style: TextStyle(color: theme.colorScheme.error),
-              ),
+              Text(_error!, style: TextStyle(color: theme.colorScheme.error)),
             const SizedBox(height: AppSpacing.sm),
             AppButton(
               key: const Key('rating-submit'),

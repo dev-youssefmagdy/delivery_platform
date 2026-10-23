@@ -38,10 +38,7 @@ class ActiveJobBanner extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      l10n.jbActiveJob,
-                      style: theme.textTheme.titleMedium,
-                    ),
+                    Text(l10n.jbActiveJob, style: theme.textTheme.titleMedium),
                     Text(
                       '${job.code} · ${jobStatusText(l10n, job.status)}',
                       key: const Key('active-job-status'),

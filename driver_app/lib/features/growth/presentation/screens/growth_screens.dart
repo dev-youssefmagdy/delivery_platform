@@ -19,7 +19,11 @@ class _Unavailable extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: EmptyState(key: const Key('growth-unavailable'), icon: Icons.block, title: l10n.growUnavailable),
+      body: EmptyState(
+        key: const Key('growth-unavailable'),
+        icon: Icons.block,
+        title: l10n.growUnavailable,
+      ),
     );
   }
 }
@@ -32,7 +36,9 @@ class ReferralScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    if (!ref.watch(growthFeatureProvider(GrowthFlags.referrals))) return _Unavailable(title: l10n.refTitle);
+    if (!ref.watch(growthFeatureProvider(GrowthFlags.referrals))) {
+      return _Unavailable(title: l10n.refTitle);
+    }
     final overview = ref.watch(referralProvider);
     final notifier = ref.read(referralProvider.notifier);
     return Scaffold(
@@ -64,7 +70,9 @@ class IncentivesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    if (!ref.watch(growthFeatureProvider(GrowthFlags.incentives))) return _Unavailable(title: l10n.incTitle);
+    if (!ref.watch(growthFeatureProvider(GrowthFlags.incentives))) {
+      return _Unavailable(title: l10n.incTitle);
+    }
     final quests = ref.watch(incentivesProvider);
     final notifier = ref.read(incentivesProvider.notifier);
     return Scaffold(
@@ -76,7 +84,11 @@ class IncentivesScreen extends ConsumerWidget {
           onSignIn: () => ref.read(authActionsProvider).logout(),
           builder: (context, data) => RefreshIndicator(
             onRefresh: notifier.refresh,
-            child: IncentivesView(quests: data, formatter: ref.watch(moneyFormatterProvider), strings: incentiveStrings(l10n)),
+            child: IncentivesView(
+              quests: data,
+              formatter: ref.watch(moneyFormatterProvider),
+              strings: incentiveStrings(l10n),
+            ),
           ),
         ),
       ),

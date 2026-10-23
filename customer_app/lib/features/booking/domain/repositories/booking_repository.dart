@@ -1,4 +1,5 @@
 import '../entities/booking_entities.dart';
+
 import 'package:latlong2/latlong.dart';
 
 /// A link to follow the trip, shown once by the server.
@@ -28,11 +29,17 @@ abstract interface class BookingRepository {
   });
 
   /// Creates the booking; [idempotencyKey] is generated once per user intent.
-  Future<Booking> create(BookingRequest request, {required String idempotencyKey});
+  Future<Booking> create(
+    BookingRequest request, {
+    required String idempotencyKey,
+  });
 
   Future<Booking> get(String bookingId);
 
-  Future<BookingPage> list({int page = 1, TripFilter filter = const TripFilter()});
+  Future<BookingPage> list({
+    int page = 1,
+    TripFilter filter = const TripFilter(),
+  });
 
   /// The newest in-flight booking, if any.
   Future<BookingSummary?> active();
@@ -71,7 +78,10 @@ abstract interface class BookingRepository {
     int? acceptedFeeMinor,
   });
 
-  Future<ShareLink> startShare(String bookingId, {required String idempotencyKey});
+  Future<ShareLink> startShare(
+    String bookingId, {
+    required String idempotencyKey,
+  });
 
   Future<void> stopShare(String bookingId, {required String idempotencyKey});
 

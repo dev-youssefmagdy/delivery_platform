@@ -36,7 +36,10 @@ class WalletLedgerScreen extends ConsumerWidget {
             child: ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-              itemCount: 1 + (data.items.isEmpty ? 1 : data.items.length) + (data.hasMore ? 1 : 0),
+              itemCount:
+                  1 +
+                  (data.items.isEmpty ? 1 : data.items.length) +
+                  (data.hasMore ? 1 : 0),
               itemBuilder: (context, i) {
                 if (i == 0) {
                   return Column(
@@ -44,15 +47,25 @@ class WalletLedgerScreen extends ConsumerWidget {
                     children: [
                       if (position != null) ...[
                         CashDebtBanner(position: position),
-                        if (position.hasCashDebt) const SizedBox(height: AppSpacing.md),
+                        if (position.hasCashDebt)
+                          const SizedBox(height: AppSpacing.md),
                         Card(
                           margin: EdgeInsets.zero,
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+                            padding: const EdgeInsetsDirectional.all(
+                              AppSpacing.md,
+                            ),
                             child: Column(
                               children: [
-                                AmountRow(label: l10n.ernWalletBalance, value: f.format(position.balance)),
-                                AmountRow(label: l10n.ernWalletAvailable, value: f.format(position.available), bold: true),
+                                AmountRow(
+                                  label: l10n.ernWalletBalance,
+                                  value: f.format(position.balance),
+                                ),
+                                AmountRow(
+                                  label: l10n.ernWalletAvailable,
+                                  value: f.format(position.available),
+                                  bold: true,
+                                ),
                               ],
                             ),
                           ),
@@ -63,7 +76,11 @@ class WalletLedgerScreen extends ConsumerWidget {
                   );
                 }
                 if (data.items.isEmpty) {
-                  return EmptyState(key: const Key('ledger-empty'), icon: Icons.receipt_long_outlined, title: l10n.walLedgerEmpty);
+                  return EmptyState(
+                    key: const Key('ledger-empty'),
+                    icon: Icons.receipt_long_outlined,
+                    title: l10n.walLedgerEmpty,
+                  );
                 }
                 final index = i - 1;
                 if (index >= data.items.length) {
@@ -71,10 +88,18 @@ class WalletLedgerScreen extends ConsumerWidget {
                     padding: const EdgeInsetsDirectional.all(AppSpacing.md),
                     child: data.loadingMore
                         ? const Center(child: CircularProgressIndicator())
-                        : TextButton(key: const Key('ledger-more'), onPressed: notifier.loadMore, child: Text(l10n.walLoadMore)),
+                        : TextButton(
+                            key: const Key('ledger-more'),
+                            onPressed: notifier.loadMore,
+                            child: Text(l10n.walLoadMore),
+                          ),
                   );
                 }
-                return WalletLineTile(line: data.items[index], formatter: f, balanceLabel: l10n.walBalanceAfter);
+                return WalletLineTile(
+                  line: data.items[index],
+                  formatter: f,
+                  balanceLabel: l10n.walBalanceAfter,
+                );
               },
             ),
           ),

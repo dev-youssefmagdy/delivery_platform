@@ -17,7 +17,10 @@ final chatRepositoryProvider = Provider<ChatRepository>(
 
 final supportRepositoryProvider = Provider<SupportRepository>(
   (ref) => ApiSupportRepository(
-    SupportRemoteDataSource(ref.watch(apiClientProvider), bookingPrefix: '/bookings'),
+    SupportRemoteDataSource(
+      ref.watch(apiClientProvider),
+      bookingPrefix: '/bookings',
+    ),
   ),
 );
 
@@ -27,7 +30,9 @@ String supportErrorText(AppLocalizations l10n, Object error) {
   if (error is! ApiException) return l10n.errorGenericBody;
   if (error.isOffline) return l10n.errorOfflineBody;
   if (error.isSessionExpired) return l10n.errorSessionExpiredBody;
-  return supportCodeText(l10n, error.code) ?? error.message ?? l10n.errorGenericBody;
+  return supportCodeText(l10n, error.code) ??
+      error.message ??
+      l10n.errorGenericBody;
 }
 
 /// ARB text for a stable error [code], or null when the app has none.
@@ -42,8 +47,11 @@ String? supportCodeText(AppLocalizations l10n, String code) {
     'appeal_already_open' => l10n.supportErrAppealOpen,
     'appeal_not_available' => l10n.supportErrAppealNone,
     'document_infected' => l10n.supportErrInfected,
-    'document_type_not_allowed' || 'document_unreadable' || 'document_pdf_active_content' => l10n.supportErrFileType,
-    'document_too_large' || 'document_image_too_large' => l10n.supportErrFileSize,
+    'document_type_not_allowed' ||
+    'document_unreadable' ||
+    'document_pdf_active_content' => l10n.supportErrFileType,
+    'document_too_large' ||
+    'document_image_too_large' => l10n.supportErrFileSize,
     _ => null,
   };
 }
@@ -73,7 +81,9 @@ class ChatNotifier extends AsyncNotifier<ChatState> {
     final hub = ref.watch(customerEventsProvider);
     final subs = <StreamSubscription<Object?>>[
       hub.events.listen((e) {
-        if ((e.name == 'booking.message_received' || e.name == 'booking.messages_read') && e.data['booking_uuid'] == bookingId) {
+        if ((e.name == 'booking.message_received' ||
+                e.name == 'booking.messages_read') &&
+            e.data['booking_uuid'] == bookingId) {
           unawaited(refresh());
         }
       }),
@@ -139,7 +149,11 @@ class ChatNotifier extends AsyncNotifier<ChatState> {
     final current = state.value;
     if (current == null) return;
     final key = newClientKey();
-    final local = ChatMessage.local(clientKey: key, body: text, localAttachmentPath: imagePath);
+    final local = ChatMessage.local(
+      clientKey: key,
+      body: text,
+      localAttachmentPath: imagePath,
+    );
     state = AsyncData(current.withLocal(local));
     await _deliver(local);
   }
@@ -162,16 +176,31 @@ class ChatNotifier extends AsyncNotifier<ChatState> {
   Future<void> _deliver(ChatMessage local) async {
     final key = local.clientKey!;
     try {
-      final saved = await _repo.send(bookingId, clientKey: key, body: local.body, imagePath: local.localAttachmentPath);
+      final saved = await _repo.send(
+        bookingId,
+        clientKey: key,
+        body: local.body,
+        imagePath: local.localAttachmentPath,
+      );
       final current = state.value;
       if (current != null) state = AsyncData(current.withConfirmed(key, saved));
     } on Object catch (e) {
       final current = state.value;
       if (current == null) return;
       // A rule the server enforces (window closed, too long ...) will not pass on retry: show why and drop the draft.
-      final permanent = e is ApiException && (e.code == 'chat_closed' || e.code == 'chat_forbidden' || e.code == 'chat_message_too_long' || e.code.startsWith('document_'));
-      state = AsyncData(current.withFailed(key, error: permanent ? e.code : null));
-      if (e is ApiException && (e.code == 'chat_closed' || e.code == 'chat_forbidden')) await refresh();
+      final permanent =
+          e is ApiException &&
+          (e.code == 'chat_closed' ||
+              e.code == 'chat_forbidden' ||
+              e.code == 'chat_message_too_long' ||
+              e.code.startsWith('document_'));
+      state = AsyncData(
+        current.withFailed(key, error: permanent ? e.code : null),
+      );
+      if (e is ApiException &&
+          (e.code == 'chat_closed' || e.code == 'chat_forbidden')) {
+        await refresh();
+      }
     }
   }
 
@@ -186,7 +215,10 @@ class ChatNotifier extends AsyncNotifier<ChatState> {
 }
 
 final chatProvider = AsyncNotifierProvider.autoDispose
-    .family<ChatNotifier, ChatState, String>(ChatNotifier.new, retry: _noAutoRetry);
+    .family<ChatNotifier, ChatState, String>(
+      ChatNotifier.new,
+      retry: _noAutoRetry,
+    );
 
 // ---------------------------------------------------------------------------
 // Tickets
@@ -206,7 +238,12 @@ class TicketsState {
   final String? filter;
   final bool loadingMore;
 
-  TicketsState copyWith({List<SupportTicket>? items, int? page, bool? hasMore, bool? loadingMore}) => TicketsState(
+  TicketsState copyWith({
+    List<SupportTicket>? items,
+    int? page,
+    bool? hasMore,
+    bool? loadingMore,
+  }) => TicketsState(
     items: items ?? this.items,
     page: page ?? this.page,
     hasMore: hasMore ?? this.hasMore,
@@ -222,7 +259,9 @@ class TicketFilterNotifier extends Notifier<String?> {
   void select(String? value) => state = value;
 }
 
-final ticketFilterProvider = NotifierProvider<TicketFilterNotifier, String?>(TicketFilterNotifier.new);
+final ticketFilterProvider = NotifierProvider<TicketFilterNotifier, String?>(
+  TicketFilterNotifier.new,
+);
 
 class TicketsNotifier extends AsyncNotifier<TicketsState> {
   SupportRepository get _repo => ref.read(supportRepositoryProvider);
@@ -233,7 +272,12 @@ class TicketsNotifier extends AsyncNotifier<TicketsState> {
     final filter = ref.watch(ticketFilterProvider);
     final page = await _repo.tickets(status: filter);
 
-    return TicketsState(items: page.items, page: page.currentPage, hasMore: page.hasMore, filter: filter);
+    return TicketsState(
+      items: page.items,
+      page: page.currentPage,
+      hasMore: page.hasMore,
+      filter: filter,
+    );
   }
 
   Future<void> loadMore() async {
@@ -241,15 +285,28 @@ class TicketsNotifier extends AsyncNotifier<TicketsState> {
     if (current == null || !current.hasMore || current.loadingMore) return;
     state = AsyncData(current.copyWith(loadingMore: true));
     try {
-      final next = await _repo.tickets(page: current.page + 1, status: current.filter);
-      state = AsyncData(current.copyWith(items: [...current.items, ...next.items], page: next.currentPage, hasMore: next.hasMore, loadingMore: false));
+      final next = await _repo.tickets(
+        page: current.page + 1,
+        status: current.filter,
+      );
+      state = AsyncData(
+        current.copyWith(
+          items: [...current.items, ...next.items],
+          page: next.currentPage,
+          hasMore: next.hasMore,
+          loadingMore: false,
+        ),
+      );
     } on Object {
       state = AsyncData(current.copyWith(loadingMore: false));
     }
   }
 }
 
-final ticketsProvider = AsyncNotifierProvider<TicketsNotifier, TicketsState>(TicketsNotifier.new, retry: _noAutoRetry);
+final ticketsProvider = AsyncNotifierProvider<TicketsNotifier, TicketsState>(
+  TicketsNotifier.new,
+  retry: _noAutoRetry,
+);
 
 /// One ticket with its public thread. Refreshes when the person comes back to it.
 class TicketDetailNotifier extends AsyncNotifier<SupportTicket> {
@@ -265,27 +322,44 @@ class TicketDetailNotifier extends AsyncNotifier<SupportTicket> {
 
   Future<void> refresh() async {
     try {
-      state = AsyncData(await ref.read(supportRepositoryProvider).ticket(ticketId));
+      state = AsyncData(
+        await ref.read(supportRepositoryProvider).ticket(ticketId),
+      );
     } on Object {
       // Keep what is shown.
     }
   }
 
   /// Sends a reply with optional evidence. Returns the saved ticket or throws [ApiException].
-  Future<void> reply(String body, List<String> attachmentPaths, String key) async {
-    final saved = await ref.read(supportRepositoryProvider).reply(ticketId, key: key, body: body, attachmentPaths: attachmentPaths);
+  Future<void> reply(
+    String body,
+    List<String> attachmentPaths,
+    String key,
+  ) async {
+    final saved = await ref
+        .read(supportRepositoryProvider)
+        .reply(
+          ticketId,
+          key: key,
+          body: body,
+          attachmentPaths: attachmentPaths,
+        );
     state = AsyncData(saved);
     ref.invalidate(ticketsProvider);
   }
 }
 
 final ticketDetailProvider = AsyncNotifierProvider.autoDispose
-    .family<TicketDetailNotifier, SupportTicket, String>(TicketDetailNotifier.new, retry: _noAutoRetry);
+    .family<TicketDetailNotifier, SupportTicket, String>(
+      TicketDetailNotifier.new,
+      retry: _noAutoRetry,
+    );
 
-final ticketCategoriesProvider = FutureProvider.autoDispose<List<TicketCategoryOption>>((ref) {
-  ref.watch(sessionStatusProvider);
-  return ref.read(supportRepositoryProvider).categories();
-});
+final ticketCategoriesProvider =
+    FutureProvider.autoDispose<List<TicketCategoryOption>>((ref) {
+      ref.watch(sessionStatusProvider);
+      return ref.read(supportRepositoryProvider).categories();
+    });
 
 /// Opens tickets and appeals; refreshes the list afterwards.
 class SupportActions {
@@ -294,13 +368,21 @@ class SupportActions {
   final Ref _ref;
 
   Future<SupportTicket> open(NewTicketInput input, String key) async {
-    final ticket = await _ref.read(supportRepositoryProvider).open(input, key: key);
+    final ticket = await _ref
+        .read(supportRepositoryProvider)
+        .open(input, key: key);
     _ref.invalidate(ticketsProvider);
     return ticket;
   }
 
-  Future<SupportTicket> appeal(String bookingId, String reason, String key) async {
-    final ticket = await _ref.read(supportRepositoryProvider).appeal(bookingId, key: key, reason: reason);
+  Future<SupportTicket> appeal(
+    String bookingId,
+    String reason,
+    String key,
+  ) async {
+    final ticket = await _ref
+        .read(supportRepositoryProvider)
+        .appeal(bookingId, key: key, reason: reason);
     _ref.invalidate(ticketsProvider);
     return ticket;
   }

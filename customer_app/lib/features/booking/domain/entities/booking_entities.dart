@@ -528,7 +528,12 @@ class BookingPage {
 
 /// History filters of My Trips.
 class TripFilter {
-  const TripFilter({this.serviceCategoryId, this.statuses = const [], this.from, this.to});
+  const TripFilter({
+    this.serviceCategoryId,
+    this.statuses = const [],
+    this.from,
+    this.to,
+  });
 
   final int? serviceCategoryId;
   final List<BookingStatus> statuses;
@@ -592,12 +597,19 @@ class BookingRequest {
 /// An intermediate stop with the person to meet there (moving / freight).
 /// The contact is stored encrypted and shown to the selected provider only.
 class StopInput {
-  const StopInput({required this.place, this.contactName, this.contactPhone, this.contactNote});
+  const StopInput({
+    required this.place,
+    this.contactName,
+    this.contactPhone,
+    this.contactNote,
+  });
 
   final PlaceInfo place;
   final String? contactName;
   final String? contactPhone;
   final String? contactNote;
 
-  bool get hasContact => (contactName ?? '').trim().isNotEmpty || (contactPhone ?? '').trim().isNotEmpty;
+  bool get hasContact =>
+      (contactName ?? '').trim().isNotEmpty ||
+      (contactPhone ?? '').trim().isNotEmpty;
 }

@@ -18,16 +18,18 @@ final deliveryRepositoryProvider = Provider<DeliveryRepository>(
 );
 
 /// Proofs the server already holds for a job (viewer).
-final jobProofsProvider = FutureProvider.autoDispose.family<List<BookingProof>, String>(
-  (ref, id) => ref.watch(deliveryRepositoryProvider).proofs(id),
-  retry: (_, _) => null,
-);
+final jobProofsProvider = FutureProvider.autoDispose
+    .family<List<BookingProof>, String>(
+      (ref, id) => ref.watch(deliveryRepositoryProvider).proofs(id),
+      retry: (_, _) => null,
+    );
 
 /// Load files of the job (photos, videos, documents) behind signed URLs.
-final jobAttachmentsProvider = FutureProvider.autoDispose.family<List<AttachmentInfo>, String>(
-  (ref, id) => ref.watch(deliveryRepositoryProvider).attachments(id),
-  retry: (_, _) => null,
-);
+final jobAttachmentsProvider = FutureProvider.autoDispose
+    .family<List<AttachmentInfo>, String>(
+      (ref, id) => ref.watch(deliveryRepositoryProvider).attachments(id),
+      retry: (_, _) => null,
+    );
 
 /// The proof queue keeps its items in SharedPreferences so a captured proof
 /// survives a restart and a dead connection.
@@ -65,12 +67,18 @@ class ProofQueueNotifier extends Notifier<List<PendingUpload>> {
         final data = result?.booking;
         if (data != null) {
           try {
-            ref.read(jobTrackerProvider(item.bookingId).notifier).apply(JobDto.job(data));
+            ref
+                .read(jobTrackerProvider(item.bookingId).notifier)
+                .apply(JobDto.job(data));
           } on Object {
-            unawaited(ref.read(jobTrackerProvider(item.bookingId).notifier).refresh());
+            unawaited(
+              ref.read(jobTrackerProvider(item.bookingId).notifier).refresh(),
+            );
           }
         } else {
-          unawaited(ref.read(jobTrackerProvider(item.bookingId).notifier).refresh());
+          unawaited(
+            ref.read(jobTrackerProvider(item.bookingId).notifier).refresh(),
+          );
         }
         ref.invalidate(jobProofsProvider(item.bookingId));
       },
@@ -80,7 +88,10 @@ class ProofQueueNotifier extends Notifier<List<PendingUpload>> {
     ref.listen<AsyncValue<bool>>(onlineProvider, (previous, next) {
       if (next.value == true) unawaited(_queue.flush(force: true));
     });
-    final timer = Timer.periodic(const Duration(seconds: 20), (_) => unawaited(_queue.flush()));
+    final timer = Timer.periodic(
+      const Duration(seconds: 20),
+      (_) => unawaited(_queue.flush()),
+    );
     ref.onDispose(() {
       timer.cancel();
       _queue.removeListener(sync);
@@ -91,8 +102,8 @@ class ProofQueueNotifier extends Notifier<List<PendingUpload>> {
     return _queue.items;
   }
 
-  Future<PendingUpload> capture(String bookingId, ProofInput input) =>
-      _queue.enqueue(bookingId: bookingId, input: input, newKey: newIdempotencyKey);
+  Future<PendingUpload> capture(String bookingId, ProofInput input) => _queue
+      .enqueue(bookingId: bookingId, input: input, newKey: newIdempotencyKey);
 
   Future<void> retry(String id) => _queue.retry(id);
 
@@ -102,15 +113,18 @@ class ProofQueueNotifier extends Notifier<List<PendingUpload>> {
 }
 
 final proofQueueProvider =
-    NotifierProvider<ProofQueueNotifier, List<PendingUpload>>(ProofQueueNotifier.new);
+    NotifierProvider<ProofQueueNotifier, List<PendingUpload>>(
+      ProofQueueNotifier.new,
+    );
 
 /// Pending proofs of one job.
-final jobPendingProofsProvider = Provider.autoDispose.family<List<PendingUpload>, String>(
-  (ref, id) => [
-    for (final p in ref.watch(proofQueueProvider))
-      if (p.bookingId == id) p,
-  ],
-);
+final jobPendingProofsProvider = Provider.autoDispose
+    .family<List<PendingUpload>, String>(
+      (ref, id) => [
+        for (final p in ref.watch(proofQueueProvider))
+          if (p.bookingId == id) p,
+      ],
+    );
 
 /// Field work on a parcel / moving / freight job. Every call keeps one
 /// Idempotency-Key per user intent until it succeeded or was refused for good
@@ -152,24 +166,32 @@ class DeliveryActions {
 
   /// A server refusal that changed the booking (code locked, wrong step)
   /// shows the fresh state.
-  Future<R> _refreshOnRefusal<R>(String bookingId, Future<R> Function() call) async {
+  Future<R> _refreshOnRefusal<R>(
+    String bookingId,
+    Future<R> Function() call,
+  ) async {
     try {
       return await call();
     } on ApiException catch (e) {
-      if (e.kind == ApiFailureKind.conflict || e.kind == ApiFailureKind.validation) {
+      if (e.kind == ApiFailureKind.conflict ||
+          e.kind == ApiFailureKind.validation) {
         unawaited(_ref.read(jobTrackerProvider(bookingId).notifier).refresh());
       }
       rethrow;
     }
   }
 
-  Future<Job> custody(String bookingId, CustodyStatus event) => _refreshOnRefusal(
-    bookingId,
-    () => _run(
-      'custody:$bookingId:${event.value}',
-      (key) async => _apply(bookingId, await _repo.custody(bookingId, event, key: key)),
-    ),
-  );
+  Future<Job> custody(String bookingId, CustodyStatus event) =>
+      _refreshOnRefusal(
+        bookingId,
+        () => _run(
+          'custody:$bookingId:${event.value}',
+          (key) async => _apply(
+            bookingId,
+            await _repo.custody(bookingId, event, key: key),
+          ),
+        ),
+      );
 
   /// Enters the code the recipient read out. A wrong code is a new intent per
   /// code, so the same wrong code is not replayed by mistake.
@@ -177,7 +199,10 @@ class DeliveryActions {
     bookingId,
     () => _run(
       'otp:$bookingId:$code',
-      (key) async => _apply(bookingId, await _repo.verifyRecipientOtp(bookingId, code, key: key)),
+      (key) async => _apply(
+        bookingId,
+        await _repo.verifyRecipientOtp(bookingId, code, key: key),
+      ),
     ),
   );
 
@@ -185,7 +210,10 @@ class DeliveryActions {
     bookingId,
     () => _run(
       'otp-resend:$bookingId:${DateTime.now().millisecondsSinceEpoch ~/ 60000}',
-      (key) async => _apply(bookingId, await _repo.resendRecipientOtp(bookingId, key: key)),
+      (key) async => _apply(
+        bookingId,
+        await _repo.resendRecipientOtp(bookingId, key: key),
+      ),
     ),
   );
 
@@ -213,17 +241,20 @@ class DeliveryActions {
     ),
   );
 
-  Future<Job> resolveAttempt(String bookingId, String attemptId, AttemptResolution resolution) =>
-      _refreshOnRefusal(
+  Future<Job> resolveAttempt(
+    String bookingId,
+    String attemptId,
+    AttemptResolution resolution,
+  ) => _refreshOnRefusal(
+    bookingId,
+    () => _run(
+      'resolve:$bookingId:$attemptId:${resolution.value}',
+      (key) async => _apply(
         bookingId,
-        () => _run(
-          'resolve:$bookingId:$attemptId:${resolution.value}',
-          (key) async => _apply(
-            bookingId,
-            await _repo.resolveAttempt(bookingId, attemptId, resolution, key: key),
-          ),
-        ),
-      );
+        await _repo.resolveAttempt(bookingId, attemptId, resolution, key: key),
+      ),
+    ),
+  );
 }
 
 final deliveryActionsProvider = Provider<DeliveryActions>(DeliveryActions.new);

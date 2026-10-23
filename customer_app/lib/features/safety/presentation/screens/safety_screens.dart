@@ -44,7 +44,8 @@ class SafetyIncidentScreen extends ConsumerStatefulWidget {
   final String incidentId;
 
   @override
-  ConsumerState<SafetyIncidentScreen> createState() => _SafetyIncidentScreenState();
+  ConsumerState<SafetyIncidentScreen> createState() =>
+      _SafetyIncidentScreenState();
 }
 
 class _SafetyIncidentScreenState extends ConsumerState<SafetyIncidentScreen> {
@@ -55,7 +56,9 @@ class _SafetyIncidentScreenState extends ConsumerState<SafetyIncidentScreen> {
     _redirected = true;
     try {
       await ref.read(supportRepositoryProvider).ticket(widget.incidentId);
-      if (mounted) context.pushReplacement(Routes.supportTicket(widget.incidentId));
+      if (mounted) {
+        context.pushReplacement(Routes.supportTicket(widget.incidentId));
+      }
     } on Object {
       _redirected = false;
     }
@@ -80,6 +83,8 @@ class SafetyContactsScreen extends ConsumerWidget {
   const SafetyContactsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
-      TrustedContactsScreen(providers: safetyProviders, strings: safetyStrings(AppLocalizations.of(context)));
+  Widget build(BuildContext context, WidgetRef ref) => TrustedContactsScreen(
+    providers: safetyProviders,
+    strings: safetyStrings(AppLocalizations.of(context)),
+  );
 }

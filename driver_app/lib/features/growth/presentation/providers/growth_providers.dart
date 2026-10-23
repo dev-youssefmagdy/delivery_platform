@@ -15,7 +15,8 @@ abstract final class GrowthFlags {
 }
 
 final growthRepositoryProvider = Provider<GrowthRepository>(
-  (ref) => ApiGrowthRepository(GrowthRemoteDataSource(ref.watch(apiClientProvider))),
+  (ref) =>
+      ApiGrowthRepository(GrowthRemoteDataSource(ref.watch(apiClientProvider))),
 );
 
 /// Whether a growth feature is on for this customer. Everything about it (menu
@@ -39,7 +40,9 @@ class ReferralNotifier extends AsyncNotifier<ReferralOverview> {
 
   Future<void> reload() async {
     state = const AsyncLoading<ReferralOverview>();
-    state = await AsyncValue.guard(() => ref.read(growthRepositoryProvider).referral());
+    state = await AsyncValue.guard(
+      () => ref.read(growthRepositoryProvider).referral(),
+    );
   }
 
   Future<void> refresh() async {
@@ -56,14 +59,20 @@ class ReferralNotifier extends AsyncNotifier<ReferralOverview> {
       _applyCode = code;
       _applyKey = newIdempotencyKey();
     }
-    await ref.read(growthRepositoryProvider).applyReferral(code, key: _applyKey!);
+    await ref
+        .read(growthRepositoryProvider)
+        .applyReferral(code, key: _applyKey!);
     _applyKey = null;
     _applyCode = null;
     await refresh();
   }
 }
 
-final referralProvider = AsyncNotifierProvider<ReferralNotifier, ReferralOverview>(ReferralNotifier.new, retry: _noAutoRetry);
+final referralProvider =
+    AsyncNotifierProvider<ReferralNotifier, ReferralOverview>(
+      ReferralNotifier.new,
+      retry: _noAutoRetry,
+    );
 
 /// The provider's open incentive campaigns with quest progress.
 class IncentivesNotifier extends AsyncNotifier<List<IncentiveQuest>> {
@@ -75,7 +84,9 @@ class IncentivesNotifier extends AsyncNotifier<List<IncentiveQuest>> {
 
   Future<void> reload() async {
     state = const AsyncLoading<List<IncentiveQuest>>();
-    state = await AsyncValue.guard(() => ref.read(growthRepositoryProvider).incentives());
+    state = await AsyncValue.guard(
+      () => ref.read(growthRepositoryProvider).incentives(),
+    );
   }
 
   Future<void> refresh() async {
@@ -87,7 +98,11 @@ class IncentivesNotifier extends AsyncNotifier<List<IncentiveQuest>> {
   }
 }
 
-final incentivesProvider = AsyncNotifierProvider<IncentivesNotifier, List<IncentiveQuest>>(IncentivesNotifier.new, retry: _noAutoRetry);
+final incentivesProvider =
+    AsyncNotifierProvider<IncentivesNotifier, List<IncentiveQuest>>(
+      IncentivesNotifier.new,
+      retry: _noAutoRetry,
+    );
 
 /// Maps a failed code application to ARB text; the stable error code decides.
 String referralErrorText(AppLocalizations l10n, Object error) {

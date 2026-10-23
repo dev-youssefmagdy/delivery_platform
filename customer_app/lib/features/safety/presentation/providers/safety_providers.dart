@@ -36,7 +36,12 @@ Future<SafetyFix?> Function() safetyLocator(WidgetRef ref) => () async {
     if (await service.status() != LocationPermissionState.granted) return null;
     final point = await service.current();
     if (point == null) return null;
-    return SafetyFix(latitude: point.latitude, longitude: point.longitude, accuracyMeters: point.accuracyMeters, capturedAt: point.capturedAt ?? DateTime.now());
+    return SafetyFix(
+      latitude: point.latitude,
+      longitude: point.longitude,
+      accuracyMeters: point.accuracyMeters,
+      capturedAt: point.capturedAt ?? DateTime.now(),
+    );
   } on Object {
     return null;
   }

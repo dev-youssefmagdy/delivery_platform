@@ -94,14 +94,18 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final features = ref.watch(appConfigProvider).value?.features ?? const <String, bool>{};
-    bool enabled(String key) => enabledFeatures?.call(key) ?? (features[key] != false);
+    final features =
+        ref.watch(appConfigProvider).value?.features ?? const <String, bool>{};
+    bool enabled(String key) =>
+        enabledFeatures?.call(key) ?? (features[key] != false);
     final tabs = [
       for (final t in shellTabSpecs)
         if (t.featureKey == null || enabled(t.featureKey!)) t,
     ];
     final selectedKey = ref.watch(shellTabProvider);
-    final index = tabs.indexWhere((t) => t.key == selectedKey).clamp(0, tabs.length - 1);
+    final index = tabs
+        .indexWhere((t) => t.key == selectedKey)
+        .clamp(0, tabs.length - 1);
     return Scaffold(
       body: IndexedStack(
         index: index,

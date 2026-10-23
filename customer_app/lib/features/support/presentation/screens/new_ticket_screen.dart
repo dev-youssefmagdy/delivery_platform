@@ -11,7 +11,13 @@ import '../widgets/support_texts.dart';
 
 /// Contact support: optionally about one booking (opened from the booking screen).
 class NewTicketScreen extends ConsumerStatefulWidget {
-  const NewTicketScreen({super.key, this.bookingId, this.bookingCode, this.paymentId, this.payoutId});
+  const NewTicketScreen({
+    super.key,
+    this.bookingId,
+    this.bookingCode,
+    this.paymentId,
+    this.payoutId,
+  });
 
   /// Money questions link the payment or payout (ids the person owns).
   final String? paymentId;
@@ -29,7 +35,12 @@ class _NewTicketScreenState extends ConsumerState<NewTicketScreen> {
   String? _error;
   String? _key;
 
-  Future<void> _submit(String category, String subject, String body, List<String> paths) async {
+  Future<void> _submit(
+    String category,
+    String subject,
+    String body,
+    List<String> paths,
+  ) async {
     final l10n = AppLocalizations.of(context);
     final router = GoRouter.of(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -39,15 +50,30 @@ class _NewTicketScreenState extends ConsumerState<NewTicketScreen> {
     });
     _key ??= newClientKey();
     try {
-      final ticket = await ref.read(supportActionsProvider).open(
-        NewTicketInput(category: category, subject: subject, body: body, bookingId: widget.bookingId, paymentId: widget.paymentId, payoutId: widget.payoutId, attachmentPaths: paths),
-        _key!,
-      );
+      final ticket = await ref
+          .read(supportActionsProvider)
+          .open(
+            NewTicketInput(
+              category: category,
+              subject: subject,
+              body: body,
+              bookingId: widget.bookingId,
+              paymentId: widget.paymentId,
+              payoutId: widget.payoutId,
+              attachmentPaths: paths,
+            ),
+            _key!,
+          );
       messenger.showSnackBar(SnackBar(content: Text(l10n.supportSent)));
       router.pushReplacement(Routes.supportTicket(ticket.id));
     } on Object catch (e) {
       if (!mounted) return;
-      if (e is ApiException && e.statusCode != null && e.statusCode! < 500 && !e.isOffline) _key = null;
+      if (e is ApiException &&
+          e.statusCode != null &&
+          e.statusCode! < 500 &&
+          !e.isOffline) {
+        _key = null;
+      }
       setState(() {
         _busy = false;
         _error = supportErrorText(l10n, e);

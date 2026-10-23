@@ -23,21 +23,29 @@ const checklistCodes = [
   'recipient_checked',
 ];
 
-Future<void> showProofCaptureSheet(BuildContext context, String bookingId, ProofType type) =>
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (_) => ProofCaptureSheet(bookingId: bookingId, type: type),
-    );
+Future<void> showProofCaptureSheet(
+  BuildContext context,
+  String bookingId,
+  ProofType type,
+) => showModalBottomSheet<void>(
+  context: context,
+  isScrollControlled: true,
+  useSafeArea: true,
+  showDragHandle: true,
+  builder: (_) => ProofCaptureSheet(bookingId: bookingId, type: type),
+);
 
 /// Captures one proof and puts it in the offline-safe queue: a picture from
 /// the camera, a signature, the checklist or the measured weight. Nothing is
 /// sent from here; the queue sends it (and retries it) with a fixed
 /// Idempotency-Key.
 class ProofCaptureSheet extends ConsumerStatefulWidget {
-  const ProofCaptureSheet({super.key, required this.bookingId, required this.type, this.camera = const CameraCapture()});
+  const ProofCaptureSheet({
+    super.key,
+    required this.bookingId,
+    required this.type,
+    this.camera = const CameraCapture(),
+  });
 
   final String bookingId;
   final ProofType type;
@@ -85,7 +93,11 @@ class _ProofCaptureSheetState extends ConsumerState<ProofCaptureSheet> {
           setState(() => _error = l10n.dlErrPhotoFirst);
           return;
         }
-        input = ProofInput(type: ProofType.photo, filePath: _path, note: _note.text);
+        input = ProofInput(
+          type: ProofType.photo,
+          filePath: _path,
+          note: _note.text,
+        );
       case ProofType.signature:
         if (_pad.isEmpty) {
           setState(() => _error = l10n.dlErrSignFirst);
@@ -97,7 +109,10 @@ class _ProofCaptureSheetState extends ConsumerState<ProofCaptureSheet> {
       case ProofType.checklist:
         input = ProofInput(
           type: ProofType.checklist,
-          checklist: [for (final e in _checked.entries) ChecklistAnswer(code: e.key, checked: e.value)],
+          checklist: [
+            for (final e in _checked.entries)
+              ChecklistAnswer(code: e.key, checked: e.value),
+          ],
         );
       case ProofType.weight:
         final kg = FormLogic.parseNumber(_weight.text);
@@ -109,7 +124,9 @@ class _ProofCaptureSheetState extends ConsumerState<ProofCaptureSheet> {
       default:
         return;
     }
-    await ref.read(proofQueueProvider.notifier).capture(widget.bookingId, input);
+    await ref
+        .read(proofQueueProvider.notifier)
+        .capture(widget.bookingId, input);
     messenger.showSnackBar(SnackBar(content: Text(l10n.dlProofQueued)));
     if (navigator.mounted) navigator.pop();
   }
@@ -125,7 +142,12 @@ class _ProofCaptureSheetState extends ConsumerState<ProofCaptureSheet> {
           if (_path != null)
             ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.md),
-              child: Image.file(File(_path!), height: 220, fit: BoxFit.cover, key: const Key('proof-preview')),
+              child: Image.file(
+                File(_path!),
+                height: 220,
+                fit: BoxFit.cover,
+                key: const Key('proof-preview'),
+              ),
             ),
           const SizedBox(height: AppSpacing.sm),
           AppButton(
@@ -163,7 +185,10 @@ class _ProofCaptureSheetState extends ConsumerState<ProofCaptureSheet> {
             CheckboxListTile(
               key: Key('check-$code'),
               contentPadding: EdgeInsets.zero,
-              title: Text(checklistCodeText(l10n, code), style: theme.textTheme.titleMedium),
+              title: Text(
+                checklistCodeText(l10n, code),
+                style: theme.textTheme.titleMedium,
+              ),
               value: _checked[code],
               onChanged: (v) => setState(() => _checked[code] = v ?? false),
             ),
@@ -173,10 +198,15 @@ class _ProofCaptureSheetState extends ConsumerState<ProofCaptureSheet> {
         key: const Key('proof-weight'),
         controller: _weight,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩.,٫]'))],
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩.,٫]')),
+        ],
         textDirection: TextDirection.ltr,
         style: theme.textTheme.headlineMedium,
-        decoration: InputDecoration(labelText: l10n.dlWeightLabel, suffixText: l10n.dlKg),
+        decoration: InputDecoration(
+          labelText: l10n.dlWeightLabel,
+          suffixText: l10n.dlKg,
+        ),
       ),
       _ => const SizedBox.shrink(),
     };
@@ -192,13 +222,20 @@ class _ProofCaptureSheetState extends ConsumerState<ProofCaptureSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.dlCaptureTitle(proofTypeText(l10n, widget.type)), style: theme.textTheme.titleLarge),
+            Text(
+              l10n.dlCaptureTitle(proofTypeText(l10n, widget.type)),
+              style: theme.textTheme.titleLarge,
+            ),
             const SizedBox(height: AppSpacing.md),
             body,
             if (_error != null)
               Padding(
                 padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
-                child: Text(_error!, key: const Key('proof-error'), style: TextStyle(color: theme.colorScheme.error)),
+                child: Text(
+                  _error!,
+                  key: const Key('proof-error'),
+                  style: TextStyle(color: theme.colorScheme.error),
+                ),
               ),
             const SizedBox(height: AppSpacing.md),
             AppButton(
@@ -208,7 +245,11 @@ class _ProofCaptureSheetState extends ConsumerState<ProofCaptureSheet> {
               onPressed: _busy ? null : _save,
             ),
             const SizedBox(height: AppSpacing.xs),
-            Text(l10n.dlQueueHint, style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
+            Text(
+              l10n.dlQueueHint,
+              style: theme.textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
@@ -251,9 +292,14 @@ class SignatureController extends ChangeNotifier {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
     const target = Size(exportWidth, exportHeight);
-    canvas.drawRect(Offset.zero & target, Paint()..color = const Color(0xFFFFFFFF));
-    final scaleX = target.width / (_size.width == 0 ? target.width : _size.width);
-    final scaleY = target.height / (_size.height == 0 ? target.height : _size.height);
+    canvas.drawRect(
+      Offset.zero & target,
+      Paint()..color = const Color(0xFFFFFFFF),
+    );
+    final scaleX =
+        target.width / (_size.width == 0 ? target.width : _size.width);
+    final scaleY =
+        target.height / (_size.height == 0 ? target.height : _size.height);
     final paint = Paint()
       ..color = const Color(0xFF111111)
       ..strokeWidth = 4
@@ -262,15 +308,23 @@ class SignatureController extends ChangeNotifier {
       ..style = PaintingStyle.stroke;
     for (final stroke in strokes) {
       if (stroke.length < 2) continue;
-      final path = Path()..moveTo(stroke.first.dx * scaleX, stroke.first.dy * scaleY);
+      final path = Path()
+        ..moveTo(stroke.first.dx * scaleX, stroke.first.dy * scaleY);
       for (final p in stroke.skip(1)) {
         path.lineTo(p.dx * scaleX, p.dy * scaleY);
       }
       canvas.drawPath(path, paint);
     }
-    final image = await recorder.endRecording().toImage(exportWidth.toInt(), exportHeight.toInt());
-    final ByteData? data = await image.toByteData(format: ui.ImageByteFormat.png);
-    final file = File('${Directory.systemTemp.path}/signature_${DateTime.now().microsecondsSinceEpoch}.png');
+    final image = await recorder.endRecording().toImage(
+      exportWidth.toInt(),
+      exportHeight.toInt(),
+    );
+    final ByteData? data = await image.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
+    final file = File(
+      '${Directory.systemTemp.path}/signature_${DateTime.now().microsecondsSinceEpoch}.png',
+    );
     await file.writeAsBytes(data!.buffer.asUint8List());
     return file.path;
   }
@@ -343,13 +397,14 @@ class _SignaturePainter extends CustomPainter {
 // ---------------------------------------------------------------------------
 // Recipient code
 
-Future<void> showRecipientOtpSheet(BuildContext context, Job job) => showModalBottomSheet<void>(
-  context: context,
-  isScrollControlled: true,
-  useSafeArea: true,
-  showDragHandle: true,
-  builder: (_) => RecipientOtpSheet(job: job),
-);
+Future<void> showRecipientOtpSheet(BuildContext context, Job job) =>
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (_) => RecipientOtpSheet(job: job),
+    );
 
 /// The recipient reads the SMS code out; the driver types it. The remaining
 /// tries come from the server; a locked code only operations can lift.
@@ -390,7 +445,9 @@ class _RecipientOtpSheetState extends ConsumerState<RecipientOtpSheet> {
       setState(() {
         _busy = false;
         _error = e;
-        if (e is ApiException && e.code == 'recipient_otp_invalid') _code.clear();
+        if (e is ApiException && e.code == 'recipient_otp_invalid') {
+          _code.clear();
+        }
       });
     }
   }
@@ -414,7 +471,8 @@ class _RecipientOtpSheetState extends ConsumerState<RecipientOtpSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final job = ref.watch(jobTrackerProvider(widget.job.id)).value ?? widget.job;
+    final job =
+        ref.watch(jobTrackerProvider(widget.job.id)).value ?? widget.job;
     final otp = job.delivery?.recipientOtp;
     final locked = otp?.locked ?? false;
     final resendAt = otp?.resendAvailableAt;
@@ -436,11 +494,19 @@ class _RecipientOtpSheetState extends ConsumerState<RecipientOtpSheet> {
             if (otp != null && otp.attemptsRemaining != null && !locked)
               Padding(
                 padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
-                child: Text(l10n.dlOtpAttemptsLeft(otp.attemptsRemaining!), key: const Key('otp-attempts'), style: theme.textTheme.bodySmall),
+                child: Text(
+                  l10n.dlOtpAttemptsLeft(otp.attemptsRemaining!),
+                  key: const Key('otp-attempts'),
+                  style: theme.textTheme.bodySmall,
+                ),
               ),
             const SizedBox(height: AppSpacing.md),
             if (locked)
-              Text(l10n.dlErrOtpLocked, key: const Key('otp-locked'), style: TextStyle(color: theme.colorScheme.error))
+              Text(
+                l10n.dlErrOtpLocked,
+                key: const Key('otp-locked'),
+                style: TextStyle(color: theme.colorScheme.error),
+              )
             else ...[
               TextField(
                 key: const Key('otp-input'),
@@ -451,27 +517,52 @@ class _RecipientOtpSheetState extends ConsumerState<RecipientOtpSheet> {
                 textAlign: TextAlign.center,
                 textDirection: TextDirection.ltr,
                 maxLength: 12,
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩]'))],
-                style: theme.textTheme.displaySmall?.copyWith(letterSpacing: 8, fontWeight: FontWeight.w700),
-                decoration: InputDecoration(counterText: '', labelText: l10n.dlOtpField),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩]')),
+                ],
+                style: theme.textTheme.displaySmall?.copyWith(
+                  letterSpacing: 8,
+                  fontWeight: FontWeight.w700,
+                ),
+                decoration: InputDecoration(
+                  counterText: '',
+                  labelText: l10n.dlOtpField,
+                ),
                 onSubmitted: (_) => _verify(),
               ),
               if (_error != null)
                 Padding(
                   padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
-                  child: Text(jobErrorText(l10n, _error!), key: const Key('otp-error'), style: TextStyle(color: theme.colorScheme.error)),
+                  child: Text(
+                    jobErrorText(l10n, _error!),
+                    key: const Key('otp-error'),
+                    style: TextStyle(color: theme.colorScheme.error),
+                  ),
                 ),
               const SizedBox(height: AppSpacing.md),
-              AppButton(key: const Key('otp-verify'), label: l10n.dlOtpVerify, loading: _busy, onPressed: _verify),
+              AppButton(
+                key: const Key('otp-verify'),
+                label: l10n.dlOtpVerify,
+                loading: _busy,
+                onPressed: _verify,
+              ),
               const SizedBox(height: AppSpacing.sm),
               if (job.can(JobAction.resendRecipientOtp))
                 resendAt == null
-                    ? AppButton(key: const Key('otp-resend'), label: l10n.dlOtpResend, secondary: true, loading: _resending, onPressed: _resend)
+                    ? AppButton(
+                        key: const Key('otp-resend'),
+                        label: l10n.dlOtpResend,
+                        secondary: true,
+                        loading: _resending,
+                        onPressed: _resend,
+                      )
                     : Countdown(
                         until: resendAt,
                         builder: (context, left, over) => AppButton(
                           key: const Key('otp-resend'),
-                          label: over ? l10n.dlOtpResend : l10n.dlOtpResendIn(formatClock(context, left)),
+                          label: over
+                              ? l10n.dlOtpResend
+                              : l10n.dlOtpResendIn(formatClock(context, left)),
                           secondary: true,
                           loading: _resending,
                           onPressed: over ? _resend : null,
@@ -488,19 +579,24 @@ class _RecipientOtpSheetState extends ConsumerState<RecipientOtpSheet> {
 // ---------------------------------------------------------------------------
 // Failed attempt
 
-Future<void> showAttemptSheet(BuildContext context, Job job) => showModalBottomSheet<void>(
-  context: context,
-  isScrollControlled: true,
-  useSafeArea: true,
-  showDragHandle: true,
-  builder: (_) => AttemptSheet(job: job),
-);
+Future<void> showAttemptSheet(BuildContext context, Job job) =>
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (_) => AttemptSheet(job: job),
+    );
 
 /// "I could not deliver": the reason (a fixed list), a note where the server
 /// requires one and an evidence picture. The same outcome, note and picture
 /// keep one Idempotency-Key, so a retry after a timeout reports it once.
 class AttemptSheet extends ConsumerStatefulWidget {
-  const AttemptSheet({super.key, required this.job, this.camera = const CameraCapture()});
+  const AttemptSheet({
+    super.key,
+    required this.job,
+    this.camera = const CameraCapture(),
+  });
 
   final Job job;
   final CameraCapture camera;
@@ -528,7 +624,9 @@ class _AttemptSheetState extends ConsumerState<AttemptSheet> {
       final path = await widget.camera.take();
       if (mounted && path != null) setState(() => _evidence = path);
     } on Object {
-      if (mounted) setState(() => _local = AppLocalizations.of(context).dlErrCamera);
+      if (mounted) {
+        setState(() => _local = AppLocalizations.of(context).dlErrCamera);
+      }
     }
   }
 
@@ -550,12 +648,14 @@ class _AttemptSheetState extends ConsumerState<AttemptSheet> {
       _local = null;
     });
     try {
-      await ref.read(deliveryActionsProvider).reportAttempt(
-        widget.job.id,
-        outcome: outcome,
-        reason: _reason.text.trim().isEmpty ? null : _reason.text.trim(),
-        evidencePath: _evidence,
-      );
+      await ref
+          .read(deliveryActionsProvider)
+          .reportAttempt(
+            widget.job.id,
+            outcome: outcome,
+            reason: _reason.text.trim().isEmpty ? null : _reason.text.trim(),
+            evidencePath: _evidence,
+          );
       if (navigator.mounted) navigator.pop();
     } on Object catch (e) {
       if (mounted) {
@@ -594,10 +694,18 @@ class _AttemptSheetState extends ConsumerState<AttemptSheet> {
                 for (final o in AttemptOutcome.choices)
                   ChoiceChip(
                     key: Key('attempt-${o.value}'),
-                    label: Text(attemptOutcomeText(l10n, o), style: theme.textTheme.titleSmall),
-                    padding: const EdgeInsetsDirectional.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.sm),
+                    label: Text(
+                      attemptOutcomeText(l10n, o),
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.sm,
+                    ),
                     selected: _outcome == o,
-                    onSelected: _busy ? null : (_) => setState(() => _outcome = o),
+                    onSelected: _busy
+                        ? null
+                        : (_) => setState(() => _outcome = o),
                   ),
               ],
             ),
@@ -609,18 +717,27 @@ class _AttemptSheetState extends ConsumerState<AttemptSheet> {
               minLines: 2,
               maxLines: 4,
               decoration: InputDecoration(
-                labelText: (_outcome?.needsReason ?? false) ? l10n.dlReasonRequired : l10n.dlReasonOptional,
+                labelText: (_outcome?.needsReason ?? false)
+                    ? l10n.dlReasonRequired
+                    : l10n.dlReasonOptional,
               ),
             ),
             if (_evidence != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.md),
-                child: Image.file(File(_evidence!), height: 160, fit: BoxFit.cover, key: const Key('attempt-evidence-preview')),
+                child: Image.file(
+                  File(_evidence!),
+                  height: 160,
+                  fit: BoxFit.cover,
+                  key: const Key('attempt-evidence-preview'),
+                ),
               ),
             const SizedBox(height: AppSpacing.sm),
             AppButton(
               key: const Key('attempt-evidence'),
-              label: _evidence == null ? l10n.dlAddEvidence : l10n.dlRetakePhoto,
+              label: _evidence == null
+                  ? l10n.dlAddEvidence
+                  : l10n.dlRetakePhoto,
               icon: Icons.photo_camera_outlined,
               secondary: true,
               onPressed: _busy ? null : _photo,
@@ -635,7 +752,12 @@ class _AttemptSheetState extends ConsumerState<AttemptSheet> {
                 ),
               ),
             const SizedBox(height: AppSpacing.md),
-            AppButton(key: const Key('attempt-send'), label: l10n.dlAttemptSend, loading: _busy, onPressed: _send),
+            AppButton(
+              key: const Key('attempt-send'),
+              label: l10n.dlAttemptSend,
+              loading: _busy,
+              onPressed: _send,
+            ),
           ],
         ),
       ),
@@ -646,13 +768,14 @@ class _AttemptSheetState extends ConsumerState<AttemptSheet> {
 // ---------------------------------------------------------------------------
 // After a failed attempt
 
-Future<void> showResolveSheet(BuildContext context, Job job) => showModalBottomSheet<void>(
-  context: context,
-  isScrollControlled: true,
-  useSafeArea: true,
-  showDragHandle: true,
-  builder: (_) => ResolveAttemptSheet(job: job),
-);
+Future<void> showResolveSheet(BuildContext context, Job job) =>
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (_) => ResolveAttemptSheet(job: job),
+    );
 
 /// What happens to the goods after a failed attempt: try again (while tries
 /// are left), take them back to the sender, or hand the case to operations.
@@ -662,21 +785,27 @@ class ResolveAttemptSheet extends ConsumerStatefulWidget {
   final Job job;
 
   @override
-  ConsumerState<ResolveAttemptSheet> createState() => _ResolveAttemptSheetState();
+  ConsumerState<ResolveAttemptSheet> createState() =>
+      _ResolveAttemptSheetState();
 }
 
 class _ResolveAttemptSheetState extends ConsumerState<ResolveAttemptSheet> {
   AttemptResolution? _busy;
   Object? _error;
 
-  Future<void> _go(DeliveryAttempt attempt, AttemptResolution resolution) async {
+  Future<void> _go(
+    DeliveryAttempt attempt,
+    AttemptResolution resolution,
+  ) async {
     final navigator = Navigator.of(context);
     setState(() {
       _busy = resolution;
       _error = null;
     });
     try {
-      await ref.read(deliveryActionsProvider).resolveAttempt(widget.job.id, attempt.id, resolution);
+      await ref
+          .read(deliveryActionsProvider)
+          .resolveAttempt(widget.job.id, attempt.id, resolution);
       if (navigator.mounted) navigator.pop();
     } on Object catch (e) {
       if (mounted) {
@@ -692,11 +821,17 @@ class _ResolveAttemptSheetState extends ConsumerState<ResolveAttemptSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final job = ref.watch(jobTrackerProvider(widget.job.id)).value ?? widget.job;
+    final job =
+        ref.watch(jobTrackerProvider(widget.job.id)).value ?? widget.job;
     final attempts = job.delivery?.attempts;
     final pending = attempts?.pending;
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.md,
+        0,
+        AppSpacing.md,
+        AppSpacing.md,
+      ),
       child: Column(
         key: const Key('resolve-sheet'),
         mainAxisSize: MainAxisSize.min,
@@ -714,17 +849,24 @@ class _ResolveAttemptSheetState extends ConsumerState<ResolveAttemptSheet> {
                 key: const Key('resolve-retry'),
                 label: l10n.dlResRetry,
                 loading: _busy == AttemptResolution.retry,
-                onPressed: _busy != null ? null : () => _go(pending, AttemptResolution.retry),
+                onPressed: _busy != null
+                    ? null
+                    : () => _go(pending, AttemptResolution.retry),
               )
             else
-              Text(l10n.dlErrAttemptsExhausted, key: const Key('resolve-exhausted')),
+              Text(
+                l10n.dlErrAttemptsExhausted,
+                key: const Key('resolve-exhausted'),
+              ),
             const SizedBox(height: AppSpacing.sm),
             AppButton(
               key: const Key('resolve-return'),
               label: l10n.dlResReturn,
               secondary: true,
               loading: _busy == AttemptResolution.returnToSender,
-              onPressed: _busy != null ? null : () => _go(pending, AttemptResolution.returnToSender),
+              onPressed: _busy != null
+                  ? null
+                  : () => _go(pending, AttemptResolution.returnToSender),
             ),
             const SizedBox(height: AppSpacing.sm),
             AppButton(
@@ -732,13 +874,19 @@ class _ResolveAttemptSheetState extends ConsumerState<ResolveAttemptSheet> {
               label: l10n.dlResOperations,
               secondary: true,
               loading: _busy == AttemptResolution.operations,
-              onPressed: _busy != null ? null : () => _go(pending, AttemptResolution.operations),
+              onPressed: _busy != null
+                  ? null
+                  : () => _go(pending, AttemptResolution.operations),
             ),
           ],
           if (_error != null)
             Padding(
               padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
-              child: Text(jobErrorText(l10n, _error!), key: const Key('resolve-error'), style: TextStyle(color: theme.colorScheme.error)),
+              child: Text(
+                jobErrorText(l10n, _error!),
+                key: const Key('resolve-error'),
+                style: TextStyle(color: theme.colorScheme.error),
+              ),
             ),
         ],
       ),

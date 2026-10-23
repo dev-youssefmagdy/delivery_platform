@@ -37,7 +37,9 @@ class RestrictedGoodsSection extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                e is ApiException && e.isOffline ? l10n.errorOfflineBody : l10n.rgErrUnavailable,
+                e is ApiException && e.isOffline
+                    ? l10n.errorOfflineBody
+                    : l10n.rgErrUnavailable,
                 key: const Key('restricted-goods-error'),
               ),
               TextButton(
@@ -58,11 +60,18 @@ class RestrictedGoodsSection extends ConsumerWidget {
                 ExpansionTile(
                   key: const Key('restricted-goods-policy'),
                   tilePadding: EdgeInsets.zero,
-                  title: Text(doc.title.isEmpty ? l10n.rgReadPolicy : doc.title),
+                  title: Text(
+                    doc.title.isEmpty ? l10n.rgReadPolicy : doc.title,
+                  ),
                   children: [
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
-                      child: Text(doc.content, key: const Key('restricted-goods-content')),
+                      padding: const EdgeInsetsDirectional.only(
+                        bottom: AppSpacing.sm,
+                      ),
+                      child: Text(
+                        doc.content,
+                        key: const Key('restricted-goods-content'),
+                      ),
                     ),
                   ],
                 ),
@@ -73,8 +82,12 @@ class RestrictedGoodsSection extends ConsumerWidget {
                   title: Text(l10n.rgAcknowledge(doc.version)),
                   value: ticked,
                   onChanged: (on) {
-                    final notifier = ref.read(restrictedGoodsAckProvider.notifier);
-                    on == true ? notifier.acknowledge(doc.id) : notifier.clear();
+                    final notifier = ref.read(
+                      restrictedGoodsAckProvider.notifier,
+                    );
+                    on == true
+                        ? notifier.acknowledge(doc.id)
+                        : notifier.clear();
                   },
                 ),
                 if (showError && !ticked)
@@ -95,7 +108,11 @@ class RestrictedGoodsSection extends ConsumerWidget {
 /// Intermediate stops (moving / freight) each with the person to meet there.
 /// The contact travels encrypted and only the selected provider sees it.
 class StopsSection extends ConsumerWidget {
-  const StopsSection({super.key, required this.maxStops, this.showErrors = false});
+  const StopsSection({
+    super.key,
+    required this.maxStops,
+    this.showErrors = false,
+  });
 
   final int maxStops;
   final bool showErrors;
@@ -104,7 +121,10 @@ class StopsSection extends ConsumerWidget {
     final endpoints = ref.read(tripEndpointsProvider);
     final picked = await context.push<PlaceSelection>(
       Routes.placeSearch,
-      extra: PlaceSearchArgs(mode: PlaceSearchMode.destination, near: endpoints.pickup?.point),
+      extra: PlaceSearchArgs(
+        mode: PlaceSearchMode.destination,
+        near: endpoints.pickup?.point,
+      ),
     );
     if (picked != null) ref.read(bookingStopsProvider.notifier).add(picked);
   }
@@ -123,7 +143,9 @@ class StopsSection extends ConsumerWidget {
         Text(l10n.stpIntro, style: theme.textTheme.bodySmall),
         for (var i = 0; i < stops.length; i++)
           _StopCard(
-            key: ValueKey('stop-$i-${stops[i].place.point.latitude}-${stops[i].place.point.longitude}'),
+            key: ValueKey(
+              'stop-$i-${stops[i].place.point.latitude}-${stops[i].place.point.longitude}',
+            ),
             index: i,
             count: stops.length,
             draft: stops[i],
@@ -139,14 +161,24 @@ class StopsSection extends ConsumerWidget {
             onPressed: () => _add(context, ref),
           )
         else
-          Text(l10n.stpMax(maxStops), key: const Key('stop-max'), style: theme.textTheme.bodySmall),
+          Text(
+            l10n.stpMax(maxStops),
+            key: const Key('stop-max'),
+            style: theme.textTheme.bodySmall,
+          ),
       ],
     );
   }
 }
 
 class _StopCard extends ConsumerStatefulWidget {
-  const _StopCard({super.key, required this.index, required this.count, required this.draft, required this.showIssue});
+  const _StopCard({
+    super.key,
+    required this.index,
+    required this.count,
+    required this.draft,
+    required this.showIssue,
+  });
 
   final int index;
   final int count;
@@ -170,10 +202,13 @@ class _StopCardState extends ConsumerState<_StopCard> {
     super.dispose();
   }
 
-  void _changed() => ref.read(bookingStopsProvider.notifier).update(
-    widget.index,
-    (d) => d.copyWith(name: _name.text, phone: _phone.text, note: _note.text),
-  );
+  void _changed() => ref
+      .read(bookingStopsProvider.notifier)
+      .update(
+        widget.index,
+        (d) =>
+            d.copyWith(name: _name.text, phone: _phone.text, note: _note.text),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -195,20 +230,27 @@ class _StopCardState extends ConsumerState<_StopCard> {
                 const SizedBox(width: AppSpacing.xs),
                 Expanded(
                   child: Text(
-                    l10n.stpNumbered(widget.index + 1, place.title ?? place.address ?? l10n.mapPinnedLocation),
+                    l10n.stpNumbered(
+                      widget.index + 1,
+                      place.title ?? place.address ?? l10n.mapPinnedLocation,
+                    ),
                     style: theme.textTheme.titleSmall,
                   ),
                 ),
                 IconButton(
                   key: Key('stop-up-${widget.index}'),
                   tooltip: l10n.stpMoveUp,
-                  onPressed: widget.index > 0 ? () => notifier.move(widget.index, -1) : null,
+                  onPressed: widget.index > 0
+                      ? () => notifier.move(widget.index, -1)
+                      : null,
                   icon: const Icon(Icons.arrow_upward),
                 ),
                 IconButton(
                   key: Key('stop-down-${widget.index}'),
                   tooltip: l10n.stpMoveDown,
-                  onPressed: widget.index < widget.count - 1 ? () => notifier.move(widget.index, 1) : null,
+                  onPressed: widget.index < widget.count - 1
+                      ? () => notifier.move(widget.index, 1)
+                      : null,
                   icon: const Icon(Icons.arrow_downward),
                 ),
                 IconButton(
@@ -226,7 +268,9 @@ class _StopCardState extends ConsumerState<_StopCard> {
               decoration: InputDecoration(
                 labelText: l10n.stpContactName,
                 counterText: '',
-                errorText: issue == StopIssue.nameMissing ? l10n.stpErrName : null,
+                errorText: issue == StopIssue.nameMissing
+                    ? l10n.stpErrName
+                    : null,
               ),
               onChanged: (_) => _changed(),
             ),
@@ -236,10 +280,14 @@ class _StopCardState extends ConsumerState<_StopCard> {
               controller: _phone,
               keyboardType: TextInputType.phone,
               textDirection: TextDirection.ltr,
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩+\s\-()]'))],
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩+\s\-()]')),
+              ],
               decoration: InputDecoration(
                 labelText: l10n.stpContactPhone,
-                errorText: issue == StopIssue.phoneInvalid ? l10n.formInvalidPhone : null,
+                errorText: issue == StopIssue.phoneInvalid
+                    ? l10n.formInvalidPhone
+                    : null,
               ),
               onChanged: (_) => _changed(),
             ),
@@ -248,7 +296,10 @@ class _StopCardState extends ConsumerState<_StopCard> {
               key: Key('stop-note-${widget.index}'),
               controller: _note,
               maxLength: 200,
-              decoration: InputDecoration(labelText: l10n.stpNote, counterText: ''),
+              decoration: InputDecoration(
+                labelText: l10n.stpNote,
+                counterText: '',
+              ),
               onChanged: (_) => _changed(),
             ),
           ],

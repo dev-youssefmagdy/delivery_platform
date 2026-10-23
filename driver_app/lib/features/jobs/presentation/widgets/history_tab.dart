@@ -33,7 +33,9 @@ class HistoryTab extends ConsumerWidget {
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   Padding(
-                    padding: const EdgeInsetsDirectional.only(top: AppSpacing.xl),
+                    padding: const EdgeInsetsDirectional.only(
+                      top: AppSpacing.xl,
+                    ),
                     child: EmptyState(
                       key: const Key('history-empty'),
                       icon: Icons.history,
@@ -94,7 +96,10 @@ class HistoryRow extends ConsumerWidget {
                       style: theme.textTheme.titleMedium,
                     ),
                     if (entry.when != null)
-                      Text(formatDateTime(context, entry.when!), style: theme.textTheme.bodySmall),
+                      Text(
+                        formatDateTime(context, entry.when!),
+                        style: theme.textTheme.bodySmall,
+                      ),
                     const SizedBox(height: AppSpacing.xs),
                     StatusChip(
                       label: jobStatusText(l10n, entry.status),
@@ -104,7 +109,10 @@ class HistoryRow extends ConsumerWidget {
                 ),
               ),
               if (entry.amount != null)
-                Text(formatter.format(entry.amount!), style: theme.textTheme.titleLarge),
+                Text(
+                  formatter.format(entry.amount!),
+                  style: theme.textTheme.titleLarge,
+                ),
             ],
           ),
         ),

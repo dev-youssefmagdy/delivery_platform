@@ -36,7 +36,10 @@ final storeLauncherProvider = Provider<Future<bool> Function(String url)>(
     final safe = safeStoreUrl(url);
     if (safe == null) return false;
     try {
-      return await launchUrl(Uri.parse(safe), mode: LaunchMode.externalApplication);
+      return await launchUrl(
+        Uri.parse(safe),
+        mode: LaunchMode.externalApplication,
+      );
     } on Object {
       return false;
     }

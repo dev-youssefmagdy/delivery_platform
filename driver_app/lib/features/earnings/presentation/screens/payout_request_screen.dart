@@ -19,7 +19,8 @@ class PayoutRequestScreen extends ConsumerStatefulWidget {
   const PayoutRequestScreen({super.key});
 
   @override
-  ConsumerState<PayoutRequestScreen> createState() => _PayoutRequestScreenState();
+  ConsumerState<PayoutRequestScreen> createState() =>
+      _PayoutRequestScreenState();
 }
 
 class _PayoutRequestScreenState extends ConsumerState<PayoutRequestScreen> {
@@ -36,7 +37,10 @@ class _PayoutRequestScreenState extends ConsumerState<PayoutRequestScreen> {
 
   int get _exponent => ref.read(appConfigProvider).value?.currencyExponent ?? 2;
 
-  Future<void> _submit(PayoutBalance balance, List<PayoutMethod> methods) async {
+  Future<void> _submit(
+    PayoutBalance balance,
+    List<PayoutMethod> methods,
+  ) async {
     final l10n = AppLocalizations.of(context);
     final router = GoRouter.of(context);
     final f = ref.read(moneyFormatterProvider);
@@ -63,7 +67,9 @@ class _PayoutRequestScreenState extends ConsumerState<PayoutRequestScreen> {
       _error = null;
     });
     try {
-      final payout = await ref.read(payoutsProvider.notifier).request(amountMinor: minor!, methodId: method!.id);
+      final payout = await ref
+          .read(payoutsProvider.notifier)
+          .request(amountMinor: minor!, methodId: method!.id);
       if (!mounted) return;
       router.pushReplacement(Routes.payout(payout.id));
     } on Object catch (e) {
@@ -97,28 +103,54 @@ class _PayoutRequestScreenState extends ConsumerState<PayoutRequestScreen> {
               onRetry: ref.read(payoutMethodsProvider.notifier).reload,
               onSignIn: () => ref.read(authActionsProvider).logout(),
               builder: (context, list) {
-                final usable = [for (final m in list) if (m.verified) m];
+                final usable = [
+                  for (final m in list)
+                    if (m.verified) m,
+                ];
                 if (_methodId == null && usable.isNotEmpty) {
-                  _methodId = (usable.where((m) => m.isDefault).firstOrNull ?? usable.first).id;
+                  _methodId =
+                      (usable.where((m) => m.isDefault).firstOrNull ??
+                              usable.first)
+                          .id;
                 }
                 return ListView(
                   padding: const EdgeInsetsDirectional.all(AppSpacing.md),
                   children: [
                     Text(l10n.poAvailable, style: theme.textTheme.bodyMedium),
-                    IsolatedText(f.format(balance.available), style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
-                    Text(l10n.poLimits(f.format(balance.min), f.format(balance.max)), style: theme.textTheme.bodySmall),
+                    IsolatedText(
+                      f.format(balance.available),
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      l10n.poLimits(
+                        f.format(balance.min),
+                        f.format(balance.max),
+                      ),
+                      style: theme.textTheme.bodySmall,
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     TextField(
                       key: const Key('payout-amount'),
                       controller: _amount,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                      ],
                       textDirection: TextDirection.ltr,
                       decoration: InputDecoration(
-                        labelText: l10n.poAmountLabel(balance.available.currency),
+                        labelText: l10n.poAmountLabel(
+                          balance.available.currency,
+                        ),
                         suffix: TextButton(
                           key: const Key('payout-all'),
-                          onPressed: () => _amount.text = amountInputText(balance.available.minor, exponent: _exponent),
+                          onPressed: () => _amount.text = amountInputText(
+                            balance.available.minor,
+                            exponent: _exponent,
+                          ),
                           child: Text(l10n.poAll),
                         ),
                       ),
@@ -127,8 +159,15 @@ class _PayoutRequestScreenState extends ConsumerState<PayoutRequestScreen> {
                     Text(l10n.poMethod, style: theme.textTheme.titleMedium),
                     if (usable.isEmpty)
                       Padding(
-                        padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.sm),
-                        child: Text(list.isEmpty ? l10n.poNoMethods : l10n.poNoVerifiedMethods, key: const Key('payout-no-method')),
+                        padding: const EdgeInsetsDirectional.symmetric(
+                          vertical: AppSpacing.sm,
+                        ),
+                        child: Text(
+                          list.isEmpty
+                              ? l10n.poNoMethods
+                              : l10n.poNoVerifiedMethods,
+                          key: const Key('payout-no-method'),
+                        ),
                       )
                     else
                       RadioGroup<String>(
@@ -142,25 +181,38 @@ class _PayoutRequestScreenState extends ConsumerState<PayoutRequestScreen> {
                                 contentPadding: EdgeInsets.zero,
                                 value: m.id,
                                 title: Text(m.label),
-                                subtitle: Text('${m.kindLabel}${m.last4 == null ? '' : ' •••• ${m.last4}'}'),
+                                subtitle: Text(
+                                  '${m.kindLabel}${m.last4 == null ? '' : ' •••• ${m.last4}'}',
+                                ),
                               ),
                           ],
                         ),
                       ),
-                    TextButton(onPressed: () => context.push(Routes.payoutMethods), child: Text(l10n.pomManage)),
+                    TextButton(
+                      onPressed: () => context.push(Routes.payoutMethods),
+                      child: Text(l10n.pomManage),
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(l10n.poFeeNote, style: theme.textTheme.bodySmall),
                     const SizedBox(height: AppSpacing.md),
                     if (_error != null)
                       Padding(
-                        padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
-                        child: Text(_error!, key: const Key('payout-error'), style: TextStyle(color: theme.colorScheme.error)),
+                        padding: const EdgeInsetsDirectional.only(
+                          bottom: AppSpacing.sm,
+                        ),
+                        child: Text(
+                          _error!,
+                          key: const Key('payout-error'),
+                          style: TextStyle(color: theme.colorScheme.error),
+                        ),
                       ),
                     AppButton(
                       key: const Key('payout-submit'),
                       label: l10n.poSubmit,
                       loading: _busy,
-                      onPressed: usable.isEmpty ? null : () => _submit(balance, list),
+                      onPressed: usable.isEmpty
+                          ? null
+                          : () => _submit(balance, list),
                     ),
                   ],
                 );

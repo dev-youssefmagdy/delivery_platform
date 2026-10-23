@@ -21,13 +21,19 @@ class ChatScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final chat = ref.watch(chatProvider(bookingId));
     final notifier = ref.read(chatProvider(bookingId).notifier);
-    final forbidden = chat.error is ApiException &&
-        ((chat.error! as ApiException).kind == ApiFailureKind.forbidden || (chat.error! as ApiException).kind == ApiFailureKind.notFound);
+    final forbidden =
+        chat.error is ApiException &&
+        ((chat.error! as ApiException).kind == ApiFailureKind.forbidden ||
+            (chat.error! as ApiException).kind == ApiFailureKind.notFound);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.chatTitle),
-        leading: BackButton(onPressed: () => context.canPop() ? context.pop() : context.go('${Routes.job}/$bookingId')),
+        leading: BackButton(
+          onPressed: () => context.canPop()
+              ? context.pop()
+              : context.go('${Routes.job}/$bookingId'),
+        ),
       ),
       body: SafeArea(
         child: forbidden
@@ -37,7 +43,9 @@ class ChatScreen extends ConsumerWidget {
                 title: l10n.chatUnavailableTitle,
                 message: l10n.chatUnavailableBody,
                 actionLabel: l10n.actionBack,
-                onAction: () => context.canPop() ? context.pop() : context.go('${Routes.job}/$bookingId'),
+                onAction: () => context.canPop()
+                    ? context.pop()
+                    : context.go('${Routes.job}/$bookingId'),
               )
             : AsyncStateView<ChatState>(
                 value: chat,
@@ -52,7 +60,10 @@ class ChatScreen extends ConsumerWidget {
                   loadingMore: data.loadingMore,
                   onLoadOlder: notifier.loadOlder,
                   strings: chatStrings(l10n),
-                  sendError: data.sendError == null ? null : (supportCodeText(l10n, data.sendError!) ?? l10n.errorGenericBody),
+                  sendError: data.sendError == null
+                      ? null
+                      : (supportCodeText(l10n, data.sendError!) ??
+                            l10n.errorGenericBody),
                   onSend: notifier.send,
                   onRetry: notifier.retry,
                   onDiscard: notifier.discard,

@@ -112,12 +112,8 @@ class JobRepositoryImpl implements JobRepository {
     String bookingId,
     String pin, {
     required String idempotencyKey,
-  }) => _step(
-    bookingId,
-    'verify-start-pin',
-    idempotencyKey,
-    body: {'pin': pin},
-  );
+  }) =>
+      _step(bookingId, 'verify-start-pin', idempotencyKey, body: {'pin': pin});
 
   @override
   Future<Job> start(String bookingId, {required String idempotencyKey}) =>

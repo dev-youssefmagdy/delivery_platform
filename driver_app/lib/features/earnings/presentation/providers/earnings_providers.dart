@@ -10,10 +10,15 @@ import '../../../jobs/presentation/providers/job_providers.dart';
 
 Duration? _noAutoRetry(int retryCount, Object error) => null;
 
-final earningsRepositoryProvider = Provider<EarningsRepository>((ref) => ApiEarningsRepository(ref.watch(apiClientProvider)));
+final earningsRepositoryProvider = Provider<EarningsRepository>(
+  (ref) => ApiEarningsRepository(ref.watch(apiClientProvider)),
+);
 
 final adjustmentsRepositoryProvider = Provider<AdjustmentsRepository>(
-  (ref) => ApiAdjustmentsRepository(ref.watch(apiClientProvider), bookingPrefix: '/provider/bookings'),
+  (ref) => ApiAdjustmentsRepository(
+    ref.watch(apiClientProvider),
+    bookingPrefix: '/provider/bookings',
+  ),
 );
 
 // ---------------------------------------------------------------------------
@@ -21,7 +26,11 @@ final adjustmentsRepositoryProvider = Provider<AdjustmentsRepository>(
 
 /// Maps a failure of the earnings, payout and cash calls to ARB text. The stable
 /// code decides; the server message is the last fallback.
-String moneyErrorText(AppLocalizations l10n, Object error, {String Function(String)? formatMinor}) {
+String moneyErrorText(
+  AppLocalizations l10n,
+  Object error, {
+  String Function(String)? formatMinor,
+}) {
   if (error is! ApiException) return l10n.errorGenericBody;
   if (error.isOffline) return l10n.errorOfflineBody;
   if (error.isSessionExpired) return l10n.errorSessionExpiredBody;
@@ -93,9 +102,13 @@ class EarningsPeriodNotifier extends Notifier<EarningsPeriod> {
   void select(EarningsPeriod period) => state = period;
 }
 
-final earningsPeriodProvider = NotifierProvider<EarningsPeriodNotifier, EarningsPeriod>(EarningsPeriodNotifier.new);
+final earningsPeriodProvider =
+    NotifierProvider<EarningsPeriodNotifier, EarningsPeriod>(
+      EarningsPeriodNotifier.new,
+    );
 
-bool _moneyHint(RealtimeEvent e) => e.name.startsWith('booking.') || e.name == 'payment.status_changed';
+bool _moneyHint(RealtimeEvent e) =>
+    e.name.startsWith('booking.') || e.name == 'payment.status_changed';
 
 /// Refetches when a trip finishes or a payment changes (events are hints) and on reconnect.
 void _refetchOnHints(Ref ref, void Function() invalidate) {
@@ -111,7 +124,9 @@ void _refetchOnHints(Ref ref, void Function() invalidate) {
   ref.onDispose(sub.cancel);
 }
 
-final earningsSummaryProvider = FutureProvider.autoDispose<EarningsSummary>((ref) {
+final earningsSummaryProvider = FutureProvider.autoDispose<EarningsSummary>((
+  ref,
+) {
   ref.watch(sessionStatusProvider);
   final period = ref.watch(earningsPeriodProvider);
   _refetchOnHints(ref, ref.invalidateSelf);
@@ -119,25 +134,38 @@ final earningsSummaryProvider = FutureProvider.autoDispose<EarningsSummary>((ref
 }, retry: _noAutoRetry);
 
 /// The wallet position alone (cash debt banner on the Home and Earnings tabs).
-final walletPositionProvider = FutureProvider.autoDispose<ProviderWalletPosition>((ref) async {
-  ref.watch(sessionStatusProvider);
-  _refetchOnHints(ref, ref.invalidateSelf);
-  final summary = await ref.read(earningsRepositoryProvider).summary(EarningsPeriod.day);
-  return summary.wallet;
-}, retry: _noAutoRetry);
+final walletPositionProvider =
+    FutureProvider.autoDispose<ProviderWalletPosition>((ref) async {
+      ref.watch(sessionStatusProvider);
+      _refetchOnHints(ref, ref.invalidateSelf);
+      final summary = await ref
+          .read(earningsRepositoryProvider)
+          .summary(EarningsPeriod.day);
+      return summary.wallet;
+    }, retry: _noAutoRetry);
 
 // ---------------------------------------------------------------------------
 // Paged lists: booking-level earnings, wallet ledger
 
 class PagedState<T> {
-  const PagedState({required this.items, required this.page, required this.hasMore, this.loadingMore = false});
+  const PagedState({
+    required this.items,
+    required this.page,
+    required this.hasMore,
+    this.loadingMore = false,
+  });
 
   final List<T> items;
   final int page;
   final bool hasMore;
   final bool loadingMore;
 
-  PagedState<T> copyWith({List<T>? items, int? page, bool? hasMore, bool? loadingMore}) => PagedState(
+  PagedState<T> copyWith({
+    List<T>? items,
+    int? page,
+    bool? hasMore,
+    bool? loadingMore,
+  }) => PagedState(
     items: items ?? this.items,
     page: page ?? this.page,
     hasMore: hasMore ?? this.hasMore,
@@ -152,14 +180,24 @@ abstract class PagedNotifier<T> extends AsyncNotifier<PagedState<T>> {
   Future<PagedState<T>> build() async {
     ref.watch(sessionStatusProvider);
     final first = await fetch(1);
-    return PagedState(items: first.items, page: first.currentPage, hasMore: first.hasMore);
+    return PagedState(
+      items: first.items,
+      page: first.currentPage,
+      hasMore: first.hasMore,
+    );
   }
 
   Future<void> reload() async {
     state = AsyncLoading<PagedState<T>>();
     try {
       final first = await fetch(1);
-      state = AsyncData(PagedState(items: first.items, page: first.currentPage, hasMore: first.hasMore));
+      state = AsyncData(
+        PagedState(
+          items: first.items,
+          page: first.currentPage,
+          hasMore: first.hasMore,
+        ),
+      );
     } on Object catch (e, st) {
       state = AsyncError(e, st);
     }
@@ -168,7 +206,13 @@ abstract class PagedNotifier<T> extends AsyncNotifier<PagedState<T>> {
   Future<void> refresh() async {
     try {
       final first = await fetch(1);
-      state = AsyncData(PagedState(items: first.items, page: first.currentPage, hasMore: first.hasMore));
+      state = AsyncData(
+        PagedState(
+          items: first.items,
+          page: first.currentPage,
+          hasMore: first.hasMore,
+        ),
+      );
     } on Object {
       // Keep the list on screen.
     }
@@ -180,7 +224,14 @@ abstract class PagedNotifier<T> extends AsyncNotifier<PagedState<T>> {
     state = AsyncData(current.copyWith(loadingMore: true));
     try {
       final next = await fetch(current.page + 1);
-      state = AsyncData(current.copyWith(items: [...current.items, ...next.items], page: next.currentPage, hasMore: next.hasMore, loadingMore: false));
+      state = AsyncData(
+        current.copyWith(
+          items: [...current.items, ...next.items],
+          page: next.currentPage,
+          hasMore: next.hasMore,
+          loadingMore: false,
+        ),
+      );
     } on Object {
       state = AsyncData(current.copyWith(loadingMore: false));
     }
@@ -189,23 +240,27 @@ abstract class PagedNotifier<T> extends AsyncNotifier<PagedState<T>> {
 
 class EarningLinesNotifier extends PagedNotifier<EarningLine> {
   @override
-  Future<PagedList<EarningLine>> fetch(int page) => ref.read(earningsRepositoryProvider).transactions(page: page);
+  Future<PagedList<EarningLine>> fetch(int page) =>
+      ref.read(earningsRepositoryProvider).transactions(page: page);
 }
 
-final earningLinesProvider = AsyncNotifierProvider.autoDispose<EarningLinesNotifier, PagedState<EarningLine>>(
-  EarningLinesNotifier.new,
-  retry: _noAutoRetry,
-);
+final earningLinesProvider =
+    AsyncNotifierProvider.autoDispose<
+      EarningLinesNotifier,
+      PagedState<EarningLine>
+    >(EarningLinesNotifier.new, retry: _noAutoRetry);
 
 class WalletLinesNotifier extends PagedNotifier<WalletLine> {
   @override
-  Future<PagedList<WalletLine>> fetch(int page) => ref.read(earningsRepositoryProvider).walletLines(page: page);
+  Future<PagedList<WalletLine>> fetch(int page) =>
+      ref.read(earningsRepositoryProvider).walletLines(page: page);
 }
 
-final walletLinesProvider = AsyncNotifierProvider.autoDispose<WalletLinesNotifier, PagedState<WalletLine>>(
-  WalletLinesNotifier.new,
-  retry: _noAutoRetry,
-);
+final walletLinesProvider =
+    AsyncNotifierProvider.autoDispose<
+      WalletLinesNotifier,
+      PagedState<WalletLine>
+    >(WalletLinesNotifier.new, retry: _noAutoRetry);
 
 // ---------------------------------------------------------------------------
 // Payout methods
@@ -222,7 +277,9 @@ class PayoutMethodsNotifier extends AsyncNotifier<List<PayoutMethod>> {
   Future<void> reload() async {
     state = const AsyncLoading<List<PayoutMethod>>();
     try {
-      state = AsyncData(await ref.read(earningsRepositoryProvider).payoutMethods());
+      state = AsyncData(
+        await ref.read(earningsRepositoryProvider).payoutMethods(),
+      );
     } on Object catch (e, st) {
       state = AsyncError(e, st);
     }
@@ -230,14 +287,20 @@ class PayoutMethodsNotifier extends AsyncNotifier<List<PayoutMethod>> {
 
   Future<void> refresh() async {
     try {
-      state = AsyncData(await ref.read(earningsRepositoryProvider).payoutMethods());
+      state = AsyncData(
+        await ref.read(earningsRepositoryProvider).payoutMethods(),
+      );
     } on Object {
       // Keep the list.
     }
   }
 
   /// One key per form intent: [intentId] is created by the form once and reused on retry.
-  Future<void> save(NewPayoutMethodInput input, {required String intentId, String? editingId}) async {
+  Future<void> save(
+    NewPayoutMethodInput input, {
+    required String intentId,
+    String? editingId,
+  }) async {
     final key = _keys.putIfAbsent(intentId, newIdempotencyKey);
     final repo = ref.read(earningsRepositoryProvider);
     if (editingId == null) {
@@ -264,13 +327,23 @@ class PayoutMethodsNotifier extends AsyncNotifier<List<PayoutMethod>> {
   }
 }
 
-final payoutMethodsProvider = AsyncNotifierProvider<PayoutMethodsNotifier, List<PayoutMethod>>(PayoutMethodsNotifier.new, retry: _noAutoRetry);
+final payoutMethodsProvider =
+    AsyncNotifierProvider<PayoutMethodsNotifier, List<PayoutMethod>>(
+      PayoutMethodsNotifier.new,
+      retry: _noAutoRetry,
+    );
 
 // ---------------------------------------------------------------------------
 // Payouts
 
 class PayoutsState {
-  const PayoutsState({required this.items, required this.page, required this.hasMore, required this.balance, this.loadingMore = false});
+  const PayoutsState({
+    required this.items,
+    required this.page,
+    required this.hasMore,
+    required this.balance,
+    this.loadingMore = false,
+  });
 
   final List<PayoutRequest> items;
   final int page;
@@ -299,7 +372,12 @@ class PayoutsNotifier extends AsyncNotifier<PayoutsState> {
 
   Future<PayoutsState> _load() async {
     final list = await ref.read(earningsRepositoryProvider).payouts();
-    return PayoutsState(items: list.page.items, page: list.page.currentPage, hasMore: list.page.hasMore, balance: list.balance);
+    return PayoutsState(
+      items: list.page.items,
+      page: list.page.currentPage,
+      hasMore: list.page.hasMore,
+      balance: list.balance,
+    );
   }
 
   Future<void> reload() async {
@@ -322,26 +400,57 @@ class PayoutsNotifier extends AsyncNotifier<PayoutsState> {
   Future<void> loadMore() async {
     final current = state.value;
     if (current == null || !current.hasMore || current.loadingMore) return;
-    state = AsyncData(PayoutsState(items: current.items, page: current.page, hasMore: current.hasMore, balance: current.balance, loadingMore: true));
+    state = AsyncData(
+      PayoutsState(
+        items: current.items,
+        page: current.page,
+        hasMore: current.hasMore,
+        balance: current.balance,
+        loadingMore: true,
+      ),
+    );
     try {
-      final next = await ref.read(earningsRepositoryProvider).payouts(page: current.page + 1);
+      final next = await ref
+          .read(earningsRepositoryProvider)
+          .payouts(page: current.page + 1);
       state = AsyncData(
-        PayoutsState(items: [...current.items, ...next.page.items], page: next.page.currentPage, hasMore: next.page.hasMore, balance: next.balance ?? current.balance),
+        PayoutsState(
+          items: [...current.items, ...next.page.items],
+          page: next.page.currentPage,
+          hasMore: next.page.hasMore,
+          balance: next.balance ?? current.balance,
+        ),
       );
     } on Object {
-      state = AsyncData(PayoutsState(items: current.items, page: current.page, hasMore: current.hasMore, balance: current.balance));
+      state = AsyncData(
+        PayoutsState(
+          items: current.items,
+          page: current.page,
+          hasMore: current.hasMore,
+          balance: current.balance,
+        ),
+      );
     }
   }
 
   /// Requests a payout. The Idempotency-Key belongs to the (amount, method)
   /// intent and survives retries after a network drop; a different amount is a new intent.
-  Future<PayoutRequest> request({required int amountMinor, required String methodId}) async {
+  Future<PayoutRequest> request({
+    required int amountMinor,
+    required String methodId,
+  }) async {
     final fingerprint = '$amountMinor|$methodId';
     if (_requestKey == null || _requestFingerprint != fingerprint) {
       _requestKey = newIdempotencyKey();
       _requestFingerprint = fingerprint;
     }
-    final payout = await ref.read(earningsRepositoryProvider).requestPayout(amountMinor: amountMinor, methodId: methodId, key: _requestKey!);
+    final payout = await ref
+        .read(earningsRepositoryProvider)
+        .requestPayout(
+          amountMinor: amountMinor,
+          methodId: methodId,
+          key: _requestKey!,
+        );
     _requestKey = null;
     _requestFingerprint = null;
     await refresh();
@@ -352,7 +461,9 @@ class PayoutsNotifier extends AsyncNotifier<PayoutsState> {
 
   Future<PayoutRequest> cancel(String id) async {
     final key = _cancelKeys.putIfAbsent(id, newIdempotencyKey);
-    final payout = await ref.read(earningsRepositoryProvider).cancelPayout(id, key: key);
+    final payout = await ref
+        .read(earningsRepositoryProvider)
+        .cancelPayout(id, key: key);
     _cancelKeys.remove(id);
     ref.invalidate(payoutDetailProvider(id));
     await refresh();
@@ -362,12 +473,16 @@ class PayoutsNotifier extends AsyncNotifier<PayoutsState> {
   }
 }
 
-final payoutsProvider = AsyncNotifierProvider<PayoutsNotifier, PayoutsState>(PayoutsNotifier.new, retry: _noAutoRetry);
+final payoutsProvider = AsyncNotifierProvider<PayoutsNotifier, PayoutsState>(
+  PayoutsNotifier.new,
+  retry: _noAutoRetry,
+);
 
-final payoutDetailProvider = FutureProvider.autoDispose.family<PayoutRequest, String>((ref, id) {
-  ref.watch(sessionStatusProvider);
-  return ref.read(earningsRepositoryProvider).payout(id);
-}, retry: _noAutoRetry);
+final payoutDetailProvider = FutureProvider.autoDispose
+    .family<PayoutRequest, String>((ref, id) {
+      ref.watch(sessionStatusProvider);
+      return ref.read(earningsRepositoryProvider).payout(id);
+    }, retry: _noAutoRetry);
 
 // ---------------------------------------------------------------------------
 // Cash collected
@@ -382,7 +497,9 @@ class CashActions {
   /// so a retry after a dropped connection is a replay, not a second confirmation.
   Future<PaymentInfo> confirm(String bookingId) async {
     final key = _keys.putIfAbsent(bookingId, newIdempotencyKey);
-    final payment = await _ref.read(earningsRepositoryProvider).confirmCash(bookingId, key: key);
+    final payment = await _ref
+        .read(earningsRepositoryProvider)
+        .confirmCash(bookingId, key: key);
     _keys.remove(bookingId);
     unawaited(_ref.read(jobTrackerProvider(bookingId).notifier).refresh());
     _ref.invalidate(walletPositionProvider);
@@ -408,9 +525,15 @@ class JobAdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
   Future<List<Adjustment>> build() async {
     ref.watch(sessionStatusProvider);
     final sub = ref.watch(providerRealtimeEventsProvider).stream.listen((e) {
-      if (e.name == 'booking.adjustment_changed' && e.data['booking_uuid'] == bookingId) unawaited(refresh());
+      if (e.name == 'booking.adjustment_changed' &&
+          e.data['booking_uuid'] == bookingId) {
+        unawaited(refresh());
+      }
     });
-    final timer = Timer.periodic(const Duration(seconds: 30), (_) => unawaited(refresh()));
+    final timer = Timer.periodic(
+      const Duration(seconds: 30),
+      (_) => unawaited(refresh()),
+    );
     ref.onDispose(() {
       timer.cancel();
       sub.cancel();
@@ -425,7 +548,9 @@ class JobAdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
 
   Future<void> refresh() async {
     try {
-      state = AsyncData(await ref.read(adjustmentsRepositoryProvider).list(bookingId));
+      state = AsyncData(
+        await ref.read(adjustmentsRepositoryProvider).list(bookingId),
+      );
     } on Object {
       // Keep what is shown.
     }
@@ -433,12 +558,15 @@ class JobAdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
 
   /// Creates a request. One key per distinct request; a retry of the same one replays.
   Future<Adjustment> create(NewAdjustmentInput input) async {
-    final fingerprint = '${input.type.value}|${input.amountMinor}|${input.reason}|${input.note}';
+    final fingerprint =
+        '${input.type.value}|${input.amountMinor}|${input.reason}|${input.note}';
     if (_createKey == null || _createFingerprint != fingerprint) {
       _createKey = newIdempotencyKey();
       _createFingerprint = fingerprint;
     }
-    final created = await ref.read(adjustmentsRepositoryProvider).create(bookingId, input, key: _createKey!);
+    final created = await ref
+        .read(adjustmentsRepositoryProvider)
+        .create(bookingId, input, key: _createKey!);
     _createKey = null;
     _createFingerprint = null;
     await refresh();
@@ -461,18 +589,22 @@ class JobAdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
 
   Future<void> withdraw(Adjustment a) async {
     final key = _keys.putIfAbsent('${a.id}:withdraw', newIdempotencyKey);
-    await ref.read(adjustmentsRepositoryProvider).withdraw(bookingId, a.id, key: key);
+    await ref
+        .read(adjustmentsRepositoryProvider)
+        .withdraw(bookingId, a.id, key: key);
     _keys.remove('${a.id}:withdraw');
     await refresh();
   }
 }
 
-final jobAdjustmentsProvider = AsyncNotifierProvider.autoDispose.family<JobAdjustmentsNotifier, List<Adjustment>, String>(
-  JobAdjustmentsNotifier.new,
-  retry: _noAutoRetry,
-);
+final jobAdjustmentsProvider = AsyncNotifierProvider.autoDispose
+    .family<JobAdjustmentsNotifier, List<Adjustment>, String>(
+      JobAdjustmentsNotifier.new,
+      retry: _noAutoRetry,
+    );
 
-final jobReceiptProvider = FutureProvider.autoDispose.family<TripReceipt, String>((ref, bookingId) {
-  ref.watch(sessionStatusProvider);
-  return ref.read(adjustmentsRepositoryProvider).receipt(bookingId);
-}, retry: _noAutoRetry);
+final jobReceiptProvider = FutureProvider.autoDispose
+    .family<TripReceipt, String>((ref, bookingId) {
+      ref.watch(sessionStatusProvider);
+      return ref.read(adjustmentsRepositoryProvider).receipt(bookingId);
+    }, retry: _noAutoRetry);

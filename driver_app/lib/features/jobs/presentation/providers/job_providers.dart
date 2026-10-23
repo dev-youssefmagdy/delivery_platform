@@ -59,7 +59,8 @@ void _bindRealtime(
   });
 }
 
-bool _isBookingEvent(RealtimeEvent e) => e.name.startsWith('booking.') || e.name == 'payment.status_changed';
+bool _isBookingEvent(RealtimeEvent e) =>
+    e.name.startsWith('booking.') || e.name == 'payment.status_changed';
 
 String? _eventBooking(RealtimeEvent e) => e.data['booking_uuid'] as String?;
 
@@ -305,8 +306,7 @@ class ActiveJobNotifier extends AsyncNotifier<Job?> {
       final job = await ref.read(jobRepositoryProvider).activeJob();
       final previous = state.value;
       state = AsyncData(job);
-      if (previous?.status != job?.status ||
-          previous?.id != job?.id) {
+      if (previous?.status != job?.status || previous?.id != job?.id) {
         // The tracking plan follows the job state (to pickup, active, idle).
         unawaited(ref.read(availabilityProvider.notifier).refresh());
       }
@@ -432,10 +432,17 @@ class JobHistoryNotifier extends AsyncNotifier<JobHistoryState> {
     final current = state.value;
     if (current == null || !current.hasMore || current.loadingMore) return;
     state = AsyncData(
-      JobHistoryState(items: current.items, page: current.page, hasMore: true, loadingMore: true),
+      JobHistoryState(
+        items: current.items,
+        page: current.page,
+        hasMore: true,
+        loadingMore: true,
+      ),
     );
     try {
-      final next = await ref.read(jobRepositoryProvider).history(page: current.page + 1);
+      final next = await ref
+          .read(jobRepositoryProvider)
+          .history(page: current.page + 1);
       state = AsyncData(
         JobHistoryState(
           items: [...current.items, ...next.items],
@@ -445,16 +452,21 @@ class JobHistoryNotifier extends AsyncNotifier<JobHistoryState> {
       );
     } on Object {
       state = AsyncData(
-        JobHistoryState(items: current.items, page: current.page, hasMore: current.hasMore),
+        JobHistoryState(
+          items: current.items,
+          page: current.page,
+          hasMore: current.hasMore,
+        ),
       );
     }
   }
 }
 
-final jobHistoryProvider = AsyncNotifierProvider.autoDispose<JobHistoryNotifier, JobHistoryState>(
-  JobHistoryNotifier.new,
-  retry: _noAutoRetry,
-);
+final jobHistoryProvider =
+    AsyncNotifierProvider.autoDispose<JobHistoryNotifier, JobHistoryState>(
+      JobHistoryNotifier.new,
+      retry: _noAutoRetry,
+    );
 
 // ---------------------------------------------------------------------------
 // Writes
@@ -465,8 +477,7 @@ final jobHistoryProvider = AsyncNotifierProvider.autoDispose<JobHistoryNotifier,
 class IntentKeys {
   final _keys = <String, String>{};
 
-  String keyFor(String intent) =>
-      _keys.putIfAbsent(intent, newIdempotencyKey);
+  String keyFor(String intent) => _keys.putIfAbsent(intent, newIdempotencyKey);
 
   bool has(String intent) => _keys.containsKey(intent);
 
@@ -531,7 +542,8 @@ class JobActions {
     try {
       return await call();
     } on ApiException catch (e) {
-      if (isLostRequest(e) || e.kind == ApiFailureKind.conflict ||
+      if (isLostRequest(e) ||
+          e.kind == ApiFailureKind.conflict ||
           e.kind == ApiFailureKind.validation) {
         _refreshNegotiation();
       }
@@ -558,17 +570,20 @@ class JobActions {
     String? currency,
     Map<String, Object?>? scope,
   }) => _negotiation(
-    () => _run('counter:$bookingId:$amountMinor:${scope == null ? '' : jsonEncode(scope)}', (key) async {
-      final offer = await _repo.counterOffer(
-        bookingId,
-        amountMinor: amountMinor,
-        currency: currency,
-        idempotencyKey: key,
-        scope: scope,
-      );
-      _refreshNegotiation();
-      return offer;
-    }),
+    () => _run(
+      'counter:$bookingId:$amountMinor:${scope == null ? '' : jsonEncode(scope)}',
+      (key) async {
+        final offer = await _repo.counterOffer(
+          bookingId,
+          amountMinor: amountMinor,
+          currency: currency,
+          idempotencyKey: key,
+          scope: scope,
+        );
+        _refreshNegotiation();
+        return offer;
+      },
+    ),
   );
 
   Future<void> skip(String bookingId) => _negotiation(() async {
@@ -644,18 +659,19 @@ class JobActions {
     }
   }
 
-  Future<Job> verifyPin(String id, String pin) => _transition(
-    id,
-    'pin',
-    (key) => _repo.verifyPin(id, pin, idempotencyKey: key),
-    extra: ':$pin',
-  ).catchError((Object e) {
-    // A wrong PIN changes the booking (attempts left, lock): show it.
-    if (e is ApiException && e.code.startsWith('trip_pin')) {
-      unawaited(_ref.read(jobTrackerProvider(id).notifier).refresh());
-    }
-    throw e;
-  });
+  Future<Job> verifyPin(String id, String pin) =>
+      _transition(
+        id,
+        'pin',
+        (key) => _repo.verifyPin(id, pin, idempotencyKey: key),
+        extra: ':$pin',
+      ).catchError((Object e) {
+        // A wrong PIN changes the booking (attempts left, lock): show it.
+        if (e is ApiException && e.code.startsWith('trip_pin')) {
+          unawaited(_ref.read(jobTrackerProvider(id).notifier).refresh());
+        }
+        throw e;
+      });
 
   Future<Job> start(String id) =>
       _transition(id, 'start', (key) => _repo.start(id, idempotencyKey: key));

@@ -14,12 +14,17 @@ class PayoutMethodFormScreen extends ConsumerStatefulWidget {
   final PayoutMethod? editing;
 
   @override
-  ConsumerState<PayoutMethodFormScreen> createState() => _PayoutMethodFormScreenState();
+  ConsumerState<PayoutMethodFormScreen> createState() =>
+      _PayoutMethodFormScreenState();
 }
 
-class _PayoutMethodFormScreenState extends ConsumerState<PayoutMethodFormScreen> {
+class _PayoutMethodFormScreenState
+    extends ConsumerState<PayoutMethodFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  late PayoutMethodKind _kind = widget.editing?.kind == PayoutMethodKind.mobileWallet ? PayoutMethodKind.mobileWallet : PayoutMethodKind.bankAccount;
+  late PayoutMethodKind _kind =
+      widget.editing?.kind == PayoutMethodKind.mobileWallet
+      ? PayoutMethodKind.mobileWallet
+      : PayoutMethodKind.bankAccount;
   late final _label = TextEditingController(text: widget.editing?.label ?? '');
   final _holder = TextEditingController();
   final _bank = TextEditingController();
@@ -52,13 +57,21 @@ class _PayoutMethodFormScreenState extends ConsumerState<PayoutMethodFormScreen>
       kind: _kind,
       label: _label.text.trim(),
       holderName: _holder.text.trim(),
-      bankName: _kind == PayoutMethodKind.bankAccount ? _bank.text.trim() : null,
-      accountNumber: _kind == PayoutMethodKind.bankAccount ? _account.text.trim() : null,
-      walletNumber: _kind == PayoutMethodKind.mobileWallet ? _wallet.text.trim() : null,
+      bankName: _kind == PayoutMethodKind.bankAccount
+          ? _bank.text.trim()
+          : null,
+      accountNumber: _kind == PayoutMethodKind.bankAccount
+          ? _account.text.trim()
+          : null,
+      walletNumber: _kind == PayoutMethodKind.mobileWallet
+          ? _wallet.text.trim()
+          : null,
       isDefault: _default,
     );
     try {
-      await ref.read(payoutMethodsProvider.notifier).save(input, intentId: _intentId, editingId: widget.editing?.id);
+      await ref
+          .read(payoutMethodsProvider.notifier)
+          .save(input, intentId: _intentId, editingId: widget.editing?.id);
       messenger.showSnackBar(SnackBar(content: Text(l10n.pomSaved)));
       if (mounted) router.pop();
     } on Object catch (e) {
@@ -70,7 +83,8 @@ class _PayoutMethodFormScreenState extends ConsumerState<PayoutMethodFormScreen>
     }
   }
 
-  String? _required(String? v, AppLocalizations l10n) => (v == null || v.trim().isEmpty) ? l10n.fieldRequired : null;
+  String? _required(String? v, AppLocalizations l10n) =>
+      (v == null || v.trim().isEmpty) ? l10n.fieldRequired : null;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +92,9 @@ class _PayoutMethodFormScreenState extends ConsumerState<PayoutMethodFormScreen>
     final theme = Theme.of(context);
     final bank = _kind == PayoutMethodKind.bankAccount;
     return Scaffold(
-      appBar: AppBar(title: Text(widget.editing == null ? l10n.pomAdd : l10n.pomEdit)),
+      appBar: AppBar(
+        title: Text(widget.editing == null ? l10n.pomAdd : l10n.pomEdit),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -92,26 +108,53 @@ class _PayoutMethodFormScreenState extends ConsumerState<PayoutMethodFormScreen>
               SegmentedButton<PayoutMethodKind>(
                 key: const Key('pm-kind'),
                 segments: [
-                  ButtonSegment(value: PayoutMethodKind.bankAccount, label: Text(l10n.pomBank)),
-                  ButtonSegment(value: PayoutMethodKind.mobileWallet, label: Text(l10n.pomWallet)),
+                  ButtonSegment(
+                    value: PayoutMethodKind.bankAccount,
+                    label: Text(l10n.pomBank),
+                  ),
+                  ButtonSegment(
+                    value: PayoutMethodKind.mobileWallet,
+                    label: Text(l10n.pomWallet),
+                  ),
                 ],
                 selected: {_kind},
-                onSelectionChanged: widget.editing != null ? null : (s) => setState(() => _kind = s.first),
+                onSelectionChanged: widget.editing != null
+                    ? null
+                    : (s) => setState(() => _kind = s.first),
               ),
               const SizedBox(height: AppSpacing.md),
-              TextFormField(key: const Key('pm-label'), controller: _label, decoration: InputDecoration(labelText: l10n.pomLabel), validator: (v) => _required(v, l10n)),
+              TextFormField(
+                key: const Key('pm-label'),
+                controller: _label,
+                decoration: InputDecoration(labelText: l10n.pomLabel),
+                validator: (v) => _required(v, l10n),
+              ),
               const SizedBox(height: AppSpacing.sm),
-              TextFormField(key: const Key('pm-holder'), controller: _holder, decoration: InputDecoration(labelText: l10n.pomHolder), validator: (v) => _required(v, l10n)),
+              TextFormField(
+                key: const Key('pm-holder'),
+                controller: _holder,
+                decoration: InputDecoration(labelText: l10n.pomHolder),
+                validator: (v) => _required(v, l10n),
+              ),
               const SizedBox(height: AppSpacing.sm),
               if (bank) ...[
-                TextFormField(key: const Key('pm-bank'), controller: _bank, decoration: InputDecoration(labelText: l10n.pomBankName), validator: (v) => _required(v, l10n)),
+                TextFormField(
+                  key: const Key('pm-bank'),
+                  controller: _bank,
+                  decoration: InputDecoration(labelText: l10n.pomBankName),
+                  validator: (v) => _required(v, l10n),
+                ),
                 const SizedBox(height: AppSpacing.sm),
                 TextFormField(
                   key: const Key('pm-account'),
                   controller: _account,
                   textDirection: TextDirection.ltr,
                   decoration: InputDecoration(labelText: l10n.pomAccount),
-                  validator: (v) => RegExp(r'^[A-Za-z0-9 \-]{4,40}$').hasMatch((v ?? '').trim()) ? null : l10n.pomAccountInvalid,
+                  validator: (v) =>
+                      RegExp(r'^[A-Za-z0-9 \-]{4,40}$')
+                          .hasMatch((v ?? '').trim())
+                      ? null
+                      : l10n.pomAccountInvalid,
                 ),
               ] else
                 TextFormField(
@@ -120,7 +163,10 @@ class _PayoutMethodFormScreenState extends ConsumerState<PayoutMethodFormScreen>
                   keyboardType: TextInputType.phone,
                   textDirection: TextDirection.ltr,
                   decoration: InputDecoration(labelText: l10n.pomWalletNumber),
-                  validator: (v) => RegExp(r'^\+?[0-9 \-]{8,24}$').hasMatch((v ?? '').trim()) ? null : l10n.pomWalletInvalid,
+                  validator: (v) =>
+                      RegExp(r'^\+?[0-9 \-]{8,24}$').hasMatch((v ?? '').trim())
+                      ? null
+                      : l10n.pomWalletInvalid,
                 ),
               SwitchListTile(
                 key: const Key('pm-default-switch'),
@@ -133,10 +179,21 @@ class _PayoutMethodFormScreenState extends ConsumerState<PayoutMethodFormScreen>
               const SizedBox(height: AppSpacing.md),
               if (_error != null)
                 Padding(
-                  padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
-                  child: Text(_error!, key: const Key('pm-error'), style: TextStyle(color: theme.colorScheme.error)),
+                  padding: const EdgeInsetsDirectional.only(
+                    bottom: AppSpacing.sm,
+                  ),
+                  child: Text(
+                    _error!,
+                    key: const Key('pm-error'),
+                    style: TextStyle(color: theme.colorScheme.error),
+                  ),
                 ),
-              AppButton(key: const Key('pm-save'), label: l10n.pomSave, loading: _busy, onPressed: _save),
+              AppButton(
+                key: const Key('pm-save'),
+                label: l10n.pomSave,
+                loading: _busy,
+                onPressed: _save,
+              ),
             ],
           ),
         ),

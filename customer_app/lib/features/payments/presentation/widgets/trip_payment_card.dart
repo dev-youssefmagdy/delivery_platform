@@ -19,11 +19,18 @@ class TripPaymentCard extends ConsumerStatefulWidget {
 
   /// Whether the booking needs the card at all.
   static bool needed(Booking booking) {
-    final online = booking.paymentMethod == PaymentMethodType.card || booking.paymentMethod == PaymentMethodType.mobileWallet;
+    final online =
+        booking.paymentMethod == PaymentMethodType.card ||
+        booking.paymentMethod == PaymentMethodType.mobileWallet;
     if (!online) return false;
     if (booking.can(BookingAction.pay)) return true;
     return booking.status == BookingStatus.completedPendingPayment &&
-        const {PaymentStatus.pending, PaymentStatus.requiresAction, PaymentStatus.failed, PaymentStatus.reconciliationRequired}.contains(booking.paymentStatus);
+        const {
+          PaymentStatus.pending,
+          PaymentStatus.requiresAction,
+          PaymentStatus.failed,
+          PaymentStatus.reconciliationRequired,
+        }.contains(booking.paymentStatus);
   }
 
   @override
@@ -37,11 +44,15 @@ class _TripPaymentCardState extends ConsumerState<TripPaymentCard> {
     // The app was closed during an attempt: ask the server what became of it
     // (the same open attempt is returned; the gateway page is not reopened).
     final status = widget.booking.paymentStatus;
-    if (status == PaymentStatus.pending || status == PaymentStatus.requiresAction || status == PaymentStatus.reconciliationRequired) {
+    if (status == PaymentStatus.pending ||
+        status == PaymentStatus.requiresAction ||
+        status == PaymentStatus.reconciliationRequired) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         final pay = PayWith(method: widget.booking.paymentMethod);
-        ref.read(paymentFlowProvider(PayArgs.trip(widget.booking.id)).notifier).start(pay, openGateway: false);
+        ref
+            .read(paymentFlowProvider(PayArgs.trip(widget.booking.id)).notifier)
+            .start(pay, openGateway: false);
       });
     }
   }
@@ -53,7 +64,8 @@ class _TripPaymentCardState extends ConsumerState<TripPaymentCard> {
     final booking = widget.booking;
     final formatter = ref.watch(moneyFormatterProvider);
     final receipt = booking.receipt;
-    final due = receipt?.customerPayable ?? booking.finalFare ?? booking.agreedFare;
+    final due =
+        receipt?.customerPayable ?? booking.finalFare ?? booking.agreedFare;
     return Card(
       key: const Key('trip-payment-card'),
       margin: EdgeInsets.zero,
@@ -68,10 +80,20 @@ class _TripPaymentCardState extends ConsumerState<TripPaymentCard> {
               IsolatedText(
                 formatter.format(due),
                 key: const Key('pay-amount'),
-                style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ],
-            if (receipt != null && receipt.couponApplied && receipt.discount != null && !receipt.discount!.isZero)
-              Text(l10n.payCouponSaved(formatter.format(receipt.discount!)), key: const Key('pay-coupon-line'), style: theme.textTheme.bodyMedium),
+            if (receipt != null &&
+                receipt.couponApplied &&
+                receipt.discount != null &&
+                !receipt.discount!.isZero)
+              Text(
+                l10n.payCouponSaved(formatter.format(receipt.discount!)),
+                key: const Key('pay-coupon-line'),
+                style: theme.textTheme.bodyMedium,
+              ),
             const SizedBox(height: AppSpacing.md),
             PaymentFlowPanel(
               args: PayArgs.trip(booking.id),
@@ -131,7 +153,11 @@ class _TipCardState extends ConsumerState<TipCard> {
   void _onCustom(String text, int exponent) {
     final cleaned = text.replaceAll(RegExp('[^0-9]'), '');
     final whole = int.tryParse(cleaned);
-    setState(() => _tipMinor = whole == null || whole == 0 ? null : whole * _unit(exponent));
+    setState(
+      () => _tipMinor = whole == null || whole == 0
+          ? null
+          : whole * _unit(exponent),
+    );
   }
 
   @override
@@ -163,7 +189,15 @@ class _TipCardState extends ConsumerState<TipCard> {
                 for (final minor in presets)
                   ChoiceChip(
                     key: Key('tip-$minor'),
-                    label: Text(formatter.format(Money(minor: minor, currency: fare.currency, exponent: fare.exponent))),
+                    label: Text(
+                      formatter.format(
+                        Money(
+                          minor: minor,
+                          currency: fare.currency,
+                          exponent: fare.exponent,
+                        ),
+                      ),
+                    ),
                     selected: !_custom && tip == minor,
                     onSelected: (_) => setState(() {
                       _custom = false;
@@ -190,7 +224,9 @@ class _TipCardState extends ConsumerState<TipCard> {
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChanged: (t) => _onCustom(t, fare.exponent),
-                decoration: InputDecoration(labelText: l10n.tipAmountLabel(fare.currency)),
+                decoration: InputDecoration(
+                  labelText: l10n.tipAmountLabel(fare.currency),
+                ),
               ),
             ],
             if (tip != null) ...[
@@ -199,7 +235,15 @@ class _TipCardState extends ConsumerState<TipCard> {
                 key: ValueKey('tip-flow-$tip'),
                 args: PayArgs.tip(booking.id, tip),
                 method: PaymentMethodType.card,
-                payLabel: l10n.tipPay(formatter.format(Money(minor: tip, currency: fare.currency, exponent: fare.exponent))),
+                payLabel: l10n.tipPay(
+                  formatter.format(
+                    Money(
+                      minor: tip,
+                      currency: fare.currency,
+                      exponent: fare.exponent,
+                    ),
+                  ),
+                ),
                 bookingId: booking.id,
                 bookingCode: booking.code,
               ),

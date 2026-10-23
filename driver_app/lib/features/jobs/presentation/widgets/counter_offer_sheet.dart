@@ -101,9 +101,13 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
   OfferScope _initialScope(ScopeTemplate template) {
     final vehicle = template.vehicleClass ?? '';
     final current = widget.current?.scope;
-    if (current != null) return OfferScope.fromJson(current, vehicleClass: vehicle);
+    if (current != null) {
+      return OfferScope.fromJson(current, vehicleClass: vehicle);
+    }
     final requested = widget.card.requestedScope;
-    if (requested != null) return OfferScope.fromJson(requested, vehicleClass: vehicle);
+    if (requested != null) {
+      return OfferScope.fromJson(requested, vehicleClass: vehicle);
+    }
     return OfferScope(vehicleClass: vehicle);
   }
 
@@ -150,7 +154,8 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
         if (e is ApiException && e.code == 'offer_scope_invalid') {
           _scopeIssues = scopeIssuesFromServer(e.meta['scope_errors']);
           _scopeStep = true;
-        } else if (e is ApiException && e.code == 'offer_scope_vehicle_mismatch') {
+        } else if (e is ApiException &&
+            e.code == 'offer_scope_vehicle_mismatch') {
           _scopeIssues = const {'vehicle_class': ScopeIssue.invalidChoice};
           _scopeStep = true;
         }
@@ -159,12 +164,24 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
     }
   }
 
-  Widget _scopePage(BuildContext context, AppLocalizations l10n, ThemeData theme) {
+  Widget _scopePage(
+    BuildContext context,
+    AppLocalizations l10n,
+    ThemeData theme,
+  ) {
     final template = ref.watch(scopeTemplateProvider);
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.md,
+        0,
+        AppSpacing.md,
+        AppSpacing.md,
+      ),
       child: template.when(
-        loading: () => const SizedBox(height: 240, child: Center(child: CircularProgressIndicator())),
+        loading: () => const SizedBox(
+          height: 240,
+          child: Center(child: CircularProgressIndicator()),
+        ),
         error: (e, _) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -182,9 +199,16 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(l10n.scNoVehicle, key: const Key('scope-no-vehicle'), textAlign: TextAlign.center),
+                Text(
+                  l10n.scNoVehicle,
+                  key: const Key('scope-no-vehicle'),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: AppSpacing.md),
-                AppButton(label: l10n.actionDone, onPressed: () => Navigator.of(context).pop()),
+                AppButton(
+                  label: l10n.actionDone,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               ],
             );
           }
@@ -194,9 +218,17 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(l10n.scTitle, style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
+              Text(
+                l10n.scTitle,
+                style: theme.textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: AppSpacing.xs),
-              Text(l10n.scIntro, textAlign: TextAlign.center, style: theme.textTheme.bodySmall),
+              Text(
+                l10n.scIntro,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall,
+              ),
               if (widget.card.requestedScopeSummary.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.sm),
                 ExpansionTile(
@@ -400,7 +432,8 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
                   textAlign: TextAlign.center,
                   style: theme.textTheme.displayMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                  )),
+                  ),
+                ),
               ),
               ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 48),
@@ -429,7 +462,9 @@ class _CounterOfferSheetState extends ConsumerState<CounterOfferSheet> {
               if (card.scopeRequired)
                 TextButton.icon(
                   key: const Key('scope-edit'),
-                  onPressed: _busy ? null : () => setState(() => _scopeStep = true),
+                  onPressed: _busy
+                      ? null
+                      : () => setState(() => _scopeStep = true),
                   icon: const Icon(Icons.tune),
                   label: Text(l10n.scEditScope),
                 ),

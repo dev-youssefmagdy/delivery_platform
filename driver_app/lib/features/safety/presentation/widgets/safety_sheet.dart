@@ -12,7 +12,11 @@ import 'safety_texts.dart';
 
 /// Safety button (SRS 13.2): opens the SOS (press and hold), the incident report, trusted contacts, trip sharing and the local emergency
 /// numbers. [bookingId] is the active job; without it only the numbers, contacts and support are offered.
-Future<void> showSafetySheet(BuildContext context, {String? bookingId, bool shareAllowed = true}) => showModalBottomSheet<void>(
+Future<void> showSafetySheet(
+  BuildContext context, {
+  String? bookingId,
+  bool shareAllowed = true,
+}) => showModalBottomSheet<void>(
   context: context,
   showDragHandle: true,
   isScrollControlled: true,
@@ -39,9 +43,20 @@ class SafetySheet extends ConsumerWidget {
       locate: safetyLocator(ref),
       supportPhone: ref.watch(appConfigProvider).value?.support.phone,
       onCall: (number) => launchUrl(Uri(scheme: 'tel', path: number)),
-      onReport: id == null ? null : () { Navigator.of(context).pop(); router.push(Routes.safetyReport(id)); },
-      onContacts: () { Navigator.of(context).pop(); router.push(Routes.safetyContacts); },
-      onOpenIncident: (incident) { Navigator.of(context).pop(); router.push(Routes.safetyIncident(incident)); },
+      onReport: id == null
+          ? null
+          : () {
+              Navigator.of(context).pop();
+              router.push(Routes.safetyReport(id));
+            },
+      onContacts: () {
+        Navigator.of(context).pop();
+        router.push(Routes.safetyContacts);
+      },
+      onOpenIncident: (incident) {
+        Navigator.of(context).pop();
+        router.push(Routes.safetyIncident(incident));
+      },
       onShare: id == null
           ? null
           : () {
@@ -52,7 +67,15 @@ class SafetySheet extends ConsumerWidget {
                 context: root,
                 showDragHandle: true,
                 isScrollControlled: true,
-                builder: (_) => TripShareSheet(providers: safetyProviders, strings: strings, bookingId: id, onContacts: () { Navigator.of(root).pop(); router.push(Routes.safetyContacts); }),
+                builder: (_) => TripShareSheet(
+                  providers: safetyProviders,
+                  strings: strings,
+                  bookingId: id,
+                  onContacts: () {
+                    Navigator.of(root).pop();
+                    router.push(Routes.safetyContacts);
+                  },
+                ),
               );
             },
     );

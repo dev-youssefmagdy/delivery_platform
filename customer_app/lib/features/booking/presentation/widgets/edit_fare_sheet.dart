@@ -36,8 +36,7 @@ class _EditFareSheetState extends ConsumerState<EditFareSheet> {
   bool _busy = false;
   String? _error;
 
-  int get _exponent =>
-      ref.read(appConfigProvider).value?.currencyExponent ?? 2;
+  int get _exponent => ref.read(appConfigProvider).value?.currencyExponent ?? 2;
 
   @override
   void initState() {
@@ -58,9 +57,10 @@ class _EditFareSheetState extends ConsumerState<EditFareSheet> {
 
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context);
-    final category = ref.read(catalogProvider).value?.categoryById(
-      widget.booking.serviceId,
-    );
+    final category = ref
+        .read(catalogProvider)
+        .value
+        ?.categoryById(widget.booking.serviceId);
     final minor = parseFareMinor(_controller.text, exponent: _exponent);
     final check = _controller.text.trim().isEmpty
         ? FareCheck.empty
@@ -70,12 +70,14 @@ class _EditFareSheetState extends ConsumerState<EditFareSheet> {
             maxMinor: category?.maxFareMinor,
           );
     if (check != FareCheck.ok) {
-      setState(() => _error = switch (check) {
-        FareCheck.invalid => l10n.bkFareInvalid,
-        FareCheck.belowMinimum => l10n.bkErrFareBelow,
-        FareCheck.aboveMaximum => l10n.bkErrFareAbove,
-        _ => l10n.bkFareRequired,
-      });
+      setState(
+        () => _error = switch (check) {
+          FareCheck.invalid => l10n.bkFareInvalid,
+          FareCheck.belowMinimum => l10n.bkErrFareBelow,
+          FareCheck.aboveMaximum => l10n.bkErrFareAbove,
+          _ => l10n.bkFareRequired,
+        },
+      );
       return;
     }
     final navigator = Navigator.of(context);
@@ -113,7 +115,10 @@ class _EditFareSheetState extends ConsumerState<EditFareSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.bkEditFareTitle, style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            l10n.bkEditFareTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             widget.booking.activeOfferCount > 0
@@ -122,7 +127,10 @@ class _EditFareSheetState extends ConsumerState<EditFareSheet> {
             key: const Key('edit-fare-warning'),
           ),
           const SizedBox(height: AppSpacing.sm),
-          Text(l10n.bkEditFareNoGuarantee, style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            l10n.bkEditFareNoGuarantee,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           const SizedBox(height: AppSpacing.md),
           TextField(
             key: const Key('edit-fare-field'),

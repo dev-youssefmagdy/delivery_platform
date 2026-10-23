@@ -75,7 +75,8 @@ abstract class AppVersionRuleDto with _$AppVersionRuleDto {
     @JsonKey(name: 'force_update') @Default(false) bool forceUpdate,
 
     /// Per-platform rules (`android`, `ios`) with the store page to open.
-    @Default(<String, PlatformRuleDto>{}) Map<String, PlatformRuleDto> platforms,
+    @Default(<String, PlatformRuleDto>{})
+    Map<String, PlatformRuleDto> platforms,
   }) = _AppVersionRuleDto;
 
   factory AppVersionRuleDto.fromJson(Map<String, dynamic> json) =>

@@ -465,7 +465,8 @@ class Job {
   /// Statuses that end the job for the driver.
   bool get isFinished => status == BookingStatus.deliveryAttemptFailed
       // A failed attempt still needs a decision (retry / return): the job stays open.
-      ? !(delivery?.awaitingResolution ?? false) && !can(JobAction.resolveDeliveryAttempt)
+      ? !(delivery?.awaitingResolution ?? false) &&
+            !can(JobAction.resolveDeliveryAttempt)
       : const {
           BookingStatus.completed,
           BookingStatus.completedPendingPayment,

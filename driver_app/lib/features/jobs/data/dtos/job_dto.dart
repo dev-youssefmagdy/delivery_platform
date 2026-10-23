@@ -27,7 +27,11 @@ abstract final class JobDto {
     final minor = _int(m['amount_minor']);
     final currency = m['currency'];
     if (minor == null || currency is! String) return null;
-    return Money(minor: minor, currency: currency, exponent: _int(m['exponent']) ?? 2);
+    return Money(
+      minor: minor,
+      currency: currency,
+      exponent: _int(m['exponent']) ?? 2,
+    );
   }
 
   static AreaPoint? _area(Object? v) {
@@ -86,7 +90,9 @@ abstract final class JobDto {
       distanceMeters: _int(m['distance_m']),
       closedAt: _time(m['closed_at']),
       earningsPreview: earnings(m['earnings_preview']),
-      scope: m['scope'] is Map ? Map<String, Object?>.from(m['scope'] as Map) : null,
+      scope: m['scope'] is Map
+          ? Map<String, Object?>.from(m['scope'] as Map)
+          : null,
       scopeSummary: ScopeLine.list(m['scope_summary']),
     );
   }
@@ -155,7 +161,9 @@ abstract final class JobDto {
       myOffer: offer(m['my_offer']),
       scopeRequired: details['scope_required'] == true,
       load: LoadInfo.fromCard(details['load'], details['pickup_window']),
-      requestedScope: details['requested_scope'] is Map && (details['requested_scope'] as Map).isNotEmpty
+      requestedScope:
+          details['requested_scope'] is Map &&
+              (details['requested_scope'] as Map).isNotEmpty
           ? Map<String, Object?>.from(details['requested_scope'] as Map)
           : null,
       requestedScopeSummary: ScopeLine.list(details['requested_scope_summary']),
@@ -202,8 +210,7 @@ abstract final class JobDto {
       freeWaitSeconds: _int(m['free_wait_seconds']) ?? 0,
       reasons: [
         if (m['reasons'] is List)
-          for (final r in m['reasons'] as List)
-            DriverCancelReason.parse('$r'),
+          for (final r in m['reasons'] as List) DriverCancelReason.parse('$r'),
       ],
       providerFees: [
         for (final f in _list(m['provider_fees']))

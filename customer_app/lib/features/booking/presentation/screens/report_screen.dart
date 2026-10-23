@@ -34,9 +34,11 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     final l10n = AppLocalizations.of(context);
     final category = _category;
     if (category == null || _description.text.trim().length < 10) {
-      setState(() => _error = category == null
-          ? l10n.bkReportPickCategory
-          : l10n.bkReportDescriptionShort);
+      setState(
+        () => _error = category == null
+            ? l10n.bkReportPickCategory
+            : l10n.bkReportDescriptionShort,
+      );
       return;
     }
     final router = GoRouter.of(context);
@@ -102,7 +104,9 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             ),
             if (_error != null)
               Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+                padding: const EdgeInsetsDirectional.only(
+                  bottom: AppSpacing.sm,
+                ),
                 child: Text(
                   _error!,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),

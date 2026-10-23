@@ -75,29 +75,37 @@ class BookingLoadCard extends ConsumerWidget {
           children: [
             Text(l10n.lfLoadTitle, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppSpacing.xs),
-            if (load.weightKg != null) Text(l10n.lfLoadWeight('${load.weightKg}')),
-            if (load.volumeM3 != null) Text(l10n.lfLoadVolume('${load.volumeM3}')),
+            if (load.weightKg != null)
+              Text(l10n.lfLoadWeight('${load.weightKg}')),
+            if (load.volumeM3 != null)
+              Text(l10n.lfLoadVolume('${load.volumeM3}')),
             if (load.declaredValueMinor != null)
               Text(
                 l10n.lfLoadValue(
-                  formatter.format(Money(
-                    minor: load.declaredValueMinor!,
-                    currency: currency,
-                    exponent: booking.proposedFare.exponent,
-                  )),
+                  formatter.format(
+                    Money(
+                      minor: load.declaredValueMinor!,
+                      currency: currency,
+                      exponent: booking.proposedFare.exponent,
+                    ),
+                  ),
                 ),
               ),
             if (load.windowStart != null)
               Text(
                 l10n.lfLoadWindow(
                   formatDateTime(context, load.windowStart),
-                  load.windowEnd == null ? '' : formatDateTime(context, load.windowEnd),
+                  load.windowEnd == null
+                      ? ''
+                      : formatDateTime(context, load.windowEnd),
                 ),
               ),
             for (final item in load.items)
               Padding(
                 padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
-                child: Text('${item.quantity} × ${item.label}${item.note == null ? '' : ' · ${item.note}'}'),
+                child: Text(
+                  '${item.quantity} × ${item.label}${item.note == null ? '' : ' · ${item.note}'}',
+                ),
               ),
             if (load.hasFiles) _Files(bookingId: booking.id),
           ],
@@ -124,7 +132,8 @@ class _Files extends ConsumerWidget {
           children: [
             Expanded(child: Text(bookingErrorText(l10n, e))),
             TextButton(
-              onPressed: () => ref.invalidate(bookingAttachmentsProvider(bookingId)),
+              onPressed: () =>
+                  ref.invalidate(bookingAttachmentsProvider(bookingId)),
               child: Text(l10n.actionRetry),
             ),
           ],
@@ -137,14 +146,21 @@ class _Files extends ConsumerWidget {
               if (f.isImage && f.url != null)
                 SecureImage(
                   cacheKey: 'att-${f.id}',
-                  load: () => ref.read(deliveryRepositoryProvider).fileBytes(f.url!),
+                  load: () =>
+                      ref.read(deliveryRepositoryProvider).fileBytes(f.url!),
                   errorLabel: l10n.dcProofLoadError,
                   size: 88,
                 )
               else
                 Chip(
-                  avatar: Icon(f.kind == 'video' ? Icons.videocam_outlined : Icons.description_outlined),
-                  label: Text(f.kind == 'video' ? l10n.lfFileVideo : l10n.lfFileDocument),
+                  avatar: Icon(
+                    f.kind == 'video'
+                        ? Icons.videocam_outlined
+                        : Icons.description_outlined,
+                  ),
+                  label: Text(
+                    f.kind == 'video' ? l10n.lfFileVideo : l10n.lfFileDocument,
+                  ),
                 ),
           ],
         ),
@@ -171,14 +187,19 @@ class _DeliveryPanelState extends ConsumerState<DeliveryPanel> {
   Object? _error;
   bool _showProofs = false;
 
-  Future<void> _resolve(DeliveryAttempt attempt, AttemptResolution resolution) async {
+  Future<void> _resolve(
+    DeliveryAttempt attempt,
+    AttemptResolution resolution,
+  ) async {
     if (_busy != null) return;
     setState(() {
       _busy = resolution;
       _error = null;
     });
     try {
-      await ref.read(customerDeliveryActionsProvider).resolveAttempt(widget.booking.id, attempt.id, resolution);
+      await ref
+          .read(customerDeliveryActionsProvider)
+          .resolveAttempt(widget.booking.id, attempt.id, resolution);
     } on Object catch (e) {
       if (mounted) setState(() => _error = e);
     } finally {
@@ -200,7 +221,8 @@ class _DeliveryPanelState extends ConsumerState<DeliveryPanel> {
     final theme = Theme.of(context);
     final strings = deliveryStrings(l10n);
     final pending = delivery.attempts.pending;
-    final canResolve = booking.can(BookingAction.resolveDeliveryAttempt) && pending != null;
+    final canResolve =
+        booking.can(BookingAction.resolveDeliveryAttempt) && pending != null;
 
     return Column(
       key: const Key('delivery-panel'),
@@ -211,13 +233,21 @@ class _DeliveryPanelState extends ConsumerState<DeliveryPanel> {
           child: Padding(
             padding: const EdgeInsetsDirectional.all(AppSpacing.md),
             child: delivery.custody.isKnown
-                ? CustodyTimelineView(delivery: delivery, strings: strings, times: _times)
+                ? CustodyTimelineView(
+                    delivery: delivery,
+                    strings: strings,
+                    times: _times,
+                  )
                 : Text(l10n.dcCustodyNotStarted),
           ),
         ),
         if (delivery.recipientOtp != null) ...[
           const SizedBox(height: AppSpacing.md),
-          RecipientOtpCard(state: delivery.recipientOtp!, strings: strings, showShareHint: true),
+          RecipientOtpCard(
+            state: delivery.recipientOtp!,
+            strings: strings,
+            showShareHint: true,
+          ),
         ],
         if (booking.contacts.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.md),
@@ -229,10 +259,15 @@ class _DeliveryPanelState extends ConsumerState<DeliveryPanel> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.dcContactsTitle, style: theme.textTheme.titleMedium),
+                  Text(
+                    l10n.dcContactsTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
                   for (final c in booking.contacts)
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+                      padding: const EdgeInsetsDirectional.only(
+                        top: AppSpacing.xs,
+                      ),
                       child: Text(
                         '${contactRoleText(l10n, c.role)}: ${c.name ?? ''}'
                         '${c.phoneMasked == null ? '' : ' · ${c.phoneMasked}'}',
@@ -256,8 +291,12 @@ class _DeliveryPanelState extends ConsumerState<DeliveryPanel> {
                 children: [
                   Text(l10n.dcFailedTitle, style: theme.textTheme.titleMedium),
                   const SizedBox(height: AppSpacing.xs),
-                  Text(attemptOutcomeText(l10n, pending.outcome), key: const Key('attempt-outcome')),
-                  if (pending.reason != null && pending.reason!.isNotEmpty) Text(pending.reason!),
+                  Text(
+                    attemptOutcomeText(l10n, pending.outcome),
+                    key: const Key('attempt-outcome'),
+                  ),
+                  if (pending.reason != null && pending.reason!.isNotEmpty)
+                    Text(pending.reason!),
                   const SizedBox(height: AppSpacing.xs),
                   Text(l10n.dcFailedChoose, style: theme.textTheme.bodyMedium),
                   const SizedBox(height: AppSpacing.sm),
@@ -266,17 +305,27 @@ class _DeliveryPanelState extends ConsumerState<DeliveryPanel> {
                       key: const Key('attempt-retry'),
                       label: l10n.dcResRetry,
                       loading: _busy == AttemptResolution.retry,
-                      onPressed: _busy != null ? null : () => _resolve(pending, AttemptResolution.retry),
+                      onPressed: _busy != null
+                          ? null
+                          : () => _resolve(pending, AttemptResolution.retry),
                     )
                   else
-                    Text(l10n.dcErrAttemptsExhausted, key: const Key('attempt-exhausted')),
+                    Text(
+                      l10n.dcErrAttemptsExhausted,
+                      key: const Key('attempt-exhausted'),
+                    ),
                   const SizedBox(height: AppSpacing.sm),
                   AppButton(
                     key: const Key('attempt-return'),
                     label: l10n.dcResReturn,
                     secondary: true,
                     loading: _busy == AttemptResolution.returnToSender,
-                    onPressed: _busy != null ? null : () => _resolve(pending, AttemptResolution.returnToSender),
+                    onPressed: _busy != null
+                        ? null
+                        : () => _resolve(
+                            pending,
+                            AttemptResolution.returnToSender,
+                          ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   AppButton(
@@ -284,11 +333,15 @@ class _DeliveryPanelState extends ConsumerState<DeliveryPanel> {
                     label: l10n.dcResOperations,
                     secondary: true,
                     loading: _busy == AttemptResolution.operations,
-                    onPressed: _busy != null ? null : () => _resolve(pending, AttemptResolution.operations),
+                    onPressed: _busy != null
+                        ? null
+                        : () => _resolve(pending, AttemptResolution.operations),
                   ),
                   if (_error != null)
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
+                      padding: const EdgeInsetsDirectional.only(
+                        top: AppSpacing.sm,
+                      ),
                       child: Text(
                         bookingErrorText(l10n, _error!),
                         key: const Key('attempt-resolve-error'),
@@ -313,7 +366,8 @@ class _DeliveryPanelState extends ConsumerState<DeliveryPanel> {
             secondary: true,
             onPressed: () => setState(() => _showProofs = !_showProofs),
           ),
-          if (_showProofs) _ProofViewer(bookingId: booking.id, strings: strings),
+          if (_showProofs)
+            _ProofViewer(bookingId: booking.id, strings: strings),
         ],
       ],
     );
@@ -347,7 +401,8 @@ class _ProofViewer extends ConsumerWidget {
         data: (list) => ProofGallery(
           proofs: list,
           strings: strings,
-          loadBytes: (url) => ref.read(deliveryRepositoryProvider).fileBytes(url),
+          loadBytes: (url) =>
+              ref.read(deliveryRepositoryProvider).fileBytes(url),
         ),
       ),
     );

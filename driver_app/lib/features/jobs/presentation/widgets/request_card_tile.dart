@@ -121,7 +121,9 @@ class _RequestCardTileState extends ConsumerState<RequestCardTile> {
             text: l10n.jbPickupArea(card.pickup.name ?? l10n.jbAreaUnknown),
             trailing: card.distanceToPickupMeters == null
                 ? null
-                : l10n.jbAwayKm(formatKm(context, card.distanceToPickupMeters!)),
+                : l10n.jbAwayKm(
+                    formatKm(context, card.distanceToPickupMeters!),
+                  ),
           ),
           if (card.dropoff != null)
             _InfoRow(
@@ -179,7 +181,10 @@ class _RequestCardTileState extends ConsumerState<RequestCardTile> {
                   tone: ChipTone.warning,
                 ),
               if (card.restrictedPickup)
-                StatusChip(label: l10n.jbRestrictedPickup, tone: ChipTone.warning),
+                StatusChip(
+                  label: l10n.jbRestrictedPickup,
+                  tone: ChipTone.warning,
+                ),
               if (card.load?.volumeM3 != null)
                 StatusChip(
                   key: const Key('request-volume'),
@@ -193,7 +198,9 @@ class _RequestCardTileState extends ConsumerState<RequestCardTile> {
               icon: Icons.event_available_outlined,
               text: l10n.jbPickupWindow(
                 formatDateTime(context, card.load!.windowStart!),
-                card.load!.windowEnd == null ? '' : formatDateTime(context, card.load!.windowEnd!),
+                card.load!.windowEnd == null
+                    ? ''
+                    : formatDateTime(context, card.load!.windowEnd!),
               ),
             ),
           if (card.requestedScopeSummary.isNotEmpty)
@@ -259,7 +266,9 @@ class _RequestCardTileState extends ConsumerState<RequestCardTile> {
           ] else ...[
             if (card.scopeRequired)
               Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.xs),
+                padding: const EdgeInsetsDirectional.only(
+                  bottom: AppSpacing.xs,
+                ),
                 child: Text(
                   l10n.jbAcceptScopeNote,
                   key: const Key('request-accept-note'),

@@ -20,7 +20,11 @@ class _Unavailable extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: EmptyState(key: const Key('growth-unavailable'), icon: Icons.block, title: l10n.growUnavailable),
+      body: EmptyState(
+        key: const Key('growth-unavailable'),
+        icon: Icons.block,
+        title: l10n.growUnavailable,
+      ),
     );
   }
 }
@@ -33,7 +37,9 @@ class ReferralScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    if (!ref.watch(growthFeatureProvider(GrowthFlags.referrals))) return _Unavailable(title: l10n.refTitle);
+    if (!ref.watch(growthFeatureProvider(GrowthFlags.referrals))) {
+      return _Unavailable(title: l10n.refTitle);
+    }
     final overview = ref.watch(referralProvider);
     final notifier = ref.read(referralProvider.notifier);
     return Scaffold(
@@ -65,7 +71,9 @@ class CreditsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    if (!ref.watch(growthFeatureProvider(GrowthFlags.referrals))) return _Unavailable(title: l10n.credTitle);
+    if (!ref.watch(growthFeatureProvider(GrowthFlags.referrals))) {
+      return _Unavailable(title: l10n.credTitle);
+    }
     final credits = ref.watch(creditsProvider);
     final notifier = ref.read(creditsProvider.notifier);
     return Scaffold(
@@ -77,7 +85,11 @@ class CreditsScreen extends ConsumerWidget {
           onSignIn: () => context.go(Routes.auth),
           builder: (context, data) => RefreshIndicator(
             onRefresh: notifier.refresh,
-            child: CreditsView(overview: data, formatter: ref.watch(moneyFormatterProvider), strings: creditsStrings(l10n)),
+            child: CreditsView(
+              overview: data,
+              formatter: ref.watch(moneyFormatterProvider),
+              strings: creditsStrings(l10n),
+            ),
           ),
         ),
       ),
@@ -92,7 +104,9 @@ class LoyaltyScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    if (!ref.watch(growthFeatureProvider(GrowthFlags.loyalty))) return _Unavailable(title: l10n.loyTitle);
+    if (!ref.watch(growthFeatureProvider(GrowthFlags.loyalty))) {
+      return _Unavailable(title: l10n.loyTitle);
+    }
     final status = ref.watch(loyaltyProvider);
     final notifier = ref.read(loyaltyProvider.notifier);
     return Scaffold(
@@ -104,7 +118,11 @@ class LoyaltyScreen extends ConsumerWidget {
           onSignIn: () => context.go(Routes.auth),
           builder: (context, data) => RefreshIndicator(
             onRefresh: notifier.refresh,
-            child: LoyaltyView(status: data, formatter: ref.watch(moneyFormatterProvider), strings: loyaltyStrings(l10n)),
+            child: LoyaltyView(
+              status: data,
+              formatter: ref.watch(moneyFormatterProvider),
+              strings: loyaltyStrings(l10n),
+            ),
           ),
         ),
       ),

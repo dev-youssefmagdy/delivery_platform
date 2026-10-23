@@ -7,7 +7,8 @@ import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../../jobs/domain/amount_input.dart';
 import '../../../jobs/domain/entities/job_entities.dart';
-import '../../../jobs/presentation/widgets/scope_builder.dart' show ScopeStepper;
+import '../../../jobs/presentation/widgets/scope_builder.dart'
+    show ScopeStepper;
 import '../providers/earnings_providers.dart';
 
 /// "I collected the cash": the driver confirms the cash of a completed cash
@@ -51,7 +52,11 @@ class _CashCollectedCardState extends ConsumerState<CashCollectedCard> {
     if (_done) {
       return Card(
         key: const Key('cash-confirmed'),
-        child: ListTile(leading: const Icon(Icons.check_circle, color: AppColors.success), title: Text(l10n.cashConfirmedTitle), subtitle: Text(l10n.cashConfirmedBody)),
+        child: ListTile(
+          leading: const Icon(Icons.check_circle, color: AppColors.success),
+          title: Text(l10n.cashConfirmedTitle),
+          subtitle: Text(l10n.cashConfirmedBody),
+        ),
       );
     }
     return Card(
@@ -61,12 +66,33 @@ class _CashCollectedCardState extends ConsumerState<CashCollectedCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.cashCollectTitle, style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              l10n.cashCollectTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: AppSpacing.xs),
-            Text(amount == null ? l10n.cashCollectBodyNoAmount : l10n.cashCollectBody(f.format(amount))),
-            if (_error != null) Padding(padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs), child: Text(_error!, key: const Key('cash-error'), style: TextStyle(color: Theme.of(context).colorScheme.error))),
+            Text(
+              amount == null
+                  ? l10n.cashCollectBodyNoAmount
+                  : l10n.cashCollectBody(f.format(amount)),
+            ),
+            if (_error != null)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+                child: Text(
+                  _error!,
+                  key: const Key('cash-error'),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
             const SizedBox(height: AppSpacing.sm),
-            AppButton(key: const Key('cash-confirm'), label: l10n.cashConfirm, icon: Icons.payments_outlined, loading: _busy, onPressed: _confirm),
+            AppButton(
+              key: const Key('cash-confirm'),
+              label: l10n.cashConfirm,
+              icon: Icons.payments_outlined,
+              loading: _busy,
+              onPressed: _confirm,
+            ),
           ],
         ),
       ),
@@ -139,7 +165,8 @@ class JobAdjustmentsSection extends ConsumerStatefulWidget {
   final Job job;
 
   @override
-  ConsumerState<JobAdjustmentsSection> createState() => _JobAdjustmentsSectionState();
+  ConsumerState<JobAdjustmentsSection> createState() =>
+      _JobAdjustmentsSectionState();
 }
 
 class _JobAdjustmentsSectionState extends ConsumerState<JobAdjustmentsSection> {
@@ -175,7 +202,10 @@ class _JobAdjustmentsSectionState extends ConsumerState<JobAdjustmentsSection> {
         Text(l10n.dadjTitle, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: AppSpacing.sm),
         if (list.hasError && items.isEmpty)
-          Text(moneyErrorText(l10n, list.error!), style: TextStyle(color: Theme.of(context).colorScheme.error)),
+          Text(
+            moneyErrorText(l10n, list.error!),
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
         for (final a in items) ...[
           AdjustmentCard(
             adjustment: a,
@@ -183,8 +213,10 @@ class _JobAdjustmentsSectionState extends ConsumerState<JobAdjustmentsSection> {
             formatter: f,
             strings: _strings(l10n),
             busy: _busy == a.id,
-            onApprove: () => _run(a.id, () => notifier.answer(a, approve: true)),
-            onReject: () => _run(a.id, () => notifier.answer(a, approve: false)),
+            onApprove: () =>
+                _run(a.id, () => notifier.answer(a, approve: true)),
+            onReject: () =>
+                _run(a.id, () => notifier.answer(a, approve: false)),
             onWithdraw: () => _run(a.id, () => notifier.withdraw(a)),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -199,7 +231,10 @@ class _JobAdjustmentsSectionState extends ConsumerState<JobAdjustmentsSection> {
               context: context,
               isScrollControlled: true,
               showDragHandle: true,
-              builder: (_) => _NewAdjustmentSheet(bookingId: job.id, scoped: job.scope.agreed != null),
+              builder: (_) => _NewAdjustmentSheet(
+                bookingId: job.id,
+                scoped: job.scope.agreed != null,
+              ),
             ),
           ),
       ],
@@ -217,11 +252,14 @@ class _NewAdjustmentSheet extends ConsumerStatefulWidget {
   final bool scoped;
 
   @override
-  ConsumerState<_NewAdjustmentSheet> createState() => _NewAdjustmentSheetState();
+  ConsumerState<_NewAdjustmentSheet> createState() =>
+      _NewAdjustmentSheetState();
 }
 
 class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
-  late AdjustmentType _type = widget.scoped ? AdjustmentType.extraHelper : AdjustmentType.extraStop;
+  late AdjustmentType _type = widget.scoped
+      ? AdjustmentType.extraHelper
+      : AdjustmentType.extraStop;
   final _amount = TextEditingController();
   final _reason = TextEditingController();
   final _reference = TextEditingController();
@@ -262,7 +300,9 @@ class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final exponent = ref.read(appConfigProvider).value?.currencyExponent ?? 2;
-    final amount = _amount.text.trim().isEmpty ? null : parseAmountMinor(_amount.text, exponent: exponent);
+    final amount = _amount.text.trim().isEmpty
+        ? null
+        : parseAmountMinor(_amount.text, exponent: exponent);
     if (_amount.text.trim().isNotEmpty && (amount == null || amount <= 0)) {
       setState(() => _error = l10n.dadjErrAmount);
       return;
@@ -288,15 +328,21 @@ class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
       _error = null;
     });
     try {
-      await ref.read(jobAdjustmentsProvider(widget.bookingId).notifier).create(NewAdjustmentInput(
-          type: _type,
-          reason: _reason.text.trim(),
-          amountMinor: amount,
-          scopeItem: _effectiveItem,
-          helpers: _type == AdjustmentType.extraHelper ? _helpers : null,
-          floors: _type == AdjustmentType.stairs ? _floors : null,
-          evidenceReference: _type == AdjustmentType.tollParking ? _reference.text.trim() : null,
-        ));
+      await ref
+          .read(jobAdjustmentsProvider(widget.bookingId).notifier)
+          .create(
+            NewAdjustmentInput(
+              type: _type,
+              reason: _reason.text.trim(),
+              amountMinor: amount,
+              scopeItem: _effectiveItem,
+              helpers: _type == AdjustmentType.extraHelper ? _helpers : null,
+              floors: _type == AdjustmentType.stairs ? _floors : null,
+              evidenceReference: _type == AdjustmentType.tollParking
+                  ? _reference.text.trim()
+                  : null,
+            ),
+          );
       messenger.showSnackBar(SnackBar(content: Text(l10n.dadjSent)));
       if (navigator.mounted) navigator.pop();
     } on Object catch (e) {
@@ -313,20 +359,35 @@ class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Padding(
-      padding: EdgeInsetsDirectional.only(start: AppSpacing.md, end: AppSpacing.md, bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.md),
+      padding: EdgeInsetsDirectional.only(
+        start: AppSpacing.md,
+        end: AppSpacing.md,
+        bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.md,
+      ),
       child: SingleChildScrollView(
         child: Column(
           key: const Key('adjustment-form'),
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(l10n.dadjRequest, style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              l10n.dadjRequest,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: AppSpacing.sm,
               children: [
-                for (final t in widget.scoped ? AdjustmentType.scopedChoices : AdjustmentType.choices)
-                  ChoiceChip(key: Key('adj-type-${t.value}'), label: Text(_typeText(l10n, t)), selected: _type == t, onSelected: (_) => setState(() => _type = t)),
+                for (final t
+                    in widget.scoped
+                        ? AdjustmentType.scopedChoices
+                        : AdjustmentType.choices)
+                  ChoiceChip(
+                    key: Key('adj-type-${t.value}'),
+                    label: Text(_typeText(l10n, t)),
+                    selected: _type == t,
+                    onSelected: (_) => setState(() => _type = t),
+                  ),
               ],
             ),
             if (widget.scoped && _items.length > 1) ...[
@@ -373,17 +434,47 @@ class _NewAdjustmentSheetState extends ConsumerState<_NewAdjustmentSheet> {
             TextField(
               key: const Key('adj-amount'),
               controller: _amount,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+              ],
               textDirection: TextDirection.ltr,
-              decoration: InputDecoration(labelText: l10n.dadjAmount, helperText: _type == AdjustmentType.waiting ? l10n.dadjWaitingHelp : null),
+              decoration: InputDecoration(
+                labelText: l10n.dadjAmount,
+                helperText: _type == AdjustmentType.waiting
+                    ? l10n.dadjWaitingHelp
+                    : null,
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            TextField(key: const Key('adj-reason'), controller: _reason, maxLength: 200, decoration: InputDecoration(labelText: l10n.dadjReason)),
-            Text(l10n.dadjCustomerApproves, style: Theme.of(context).textTheme.bodySmall),
-            if (_error != null) Padding(padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs), child: Text(_error!, key: const Key('adj-error'), style: TextStyle(color: Theme.of(context).colorScheme.error))),
+            TextField(
+              key: const Key('adj-reason'),
+              controller: _reason,
+              maxLength: 200,
+              decoration: InputDecoration(labelText: l10n.dadjReason),
+            ),
+            Text(
+              l10n.dadjCustomerApproves,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            if (_error != null)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
+                child: Text(
+                  _error!,
+                  key: const Key('adj-error'),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
             const SizedBox(height: AppSpacing.sm),
-            AppButton(key: const Key('adj-send'), label: l10n.dadjSend, loading: _busy, onPressed: _send),
+            AppButton(
+              key: const Key('adj-send'),
+              label: l10n.dadjSend,
+              loading: _busy,
+              onPressed: _send,
+            ),
           ],
         ),
       ),

@@ -20,10 +20,14 @@ List<MyOffer> sortMyOffers(List<MyOffer> offers) {
     for (final o in offers)
       if (o.isPending) o,
   ]..sort((a, b) => a.expiresAt.compareTo(b.expiresAt));
-  final closed = [
-    for (final o in offers)
-      if (!o.isPending) o,
-  ]..sort((a, b) => (b.closedAt ?? b.expiresAt).compareTo(a.closedAt ?? a.expiresAt));
+  final closed =
+      [
+        for (final o in offers)
+          if (!o.isPending) o,
+      ]..sort(
+        (a, b) =>
+            (b.closedAt ?? b.expiresAt).compareTo(a.closedAt ?? a.expiresAt),
+      );
   return [...pending, ...closed];
 }
 
@@ -119,7 +123,9 @@ class _OfferTileState extends ConsumerState<OfferTile> {
               children: [
                 Expanded(
                   child: Text(
-                    offer.amount == null ? '-' : formatter.format(offer.amount!),
+                    offer.amount == null
+                        ? '-'
+                        : formatter.format(offer.amount!),
                     style: theme.textTheme.headlineSmall,
                   ),
                 ),

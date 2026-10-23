@@ -79,10 +79,15 @@ abstract final class Routes {
   static String bookingChat(String id) => '/booking/$id/chat';
   static String bookingAppeal(String id) => '/booking/$id/appeal';
   static String bookingReceipt(String id) => '/booking/$id/receipt';
-  static String bookingSupport(String id, String code) => '/support/new?booking=$id&code=$code';
+  static String bookingSupport(String id, String code) =>
+      '/support/new?booking=$id&code=$code';
 
   /// A question about one payment (ticket with `payment_id`).
-  static String paymentSupport(String bookingId, String code, String? paymentId) =>
+  static String paymentSupport(
+    String bookingId,
+    String code,
+    String? paymentId,
+  ) =>
       '/support/new?booking=$bookingId&code=$code${paymentId == null ? '' : '&payment=$paymentId'}';
 }
 
@@ -136,7 +141,9 @@ const _readyOnly = {
 
 /// Pure redirect rules (unit tested). Returns null to stay.
 String? computeRedirect({required String location, required AuthStage stage}) {
-  if (_readyOnly.contains(location) || location.startsWith('/booking/') || location.startsWith('/safety/')) {
+  if (_readyOnly.contains(location) ||
+      location.startsWith('/booking/') ||
+      location.startsWith('/safety/')) {
     if (stage == AuthStage.ready) return null;
     return stage == AuthStage.signedOut ? Routes.splash : routeForStage(stage);
   }
@@ -215,18 +222,37 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.notificationSettings,
         builder: (_, _) => const NotificationSettingsScreen(),
       ),
-      GoRoute(path: Routes.wallet, builder: (_, _) => const WalletScreen(showBack: true)),
-      GoRoute(path: Routes.paymentMethods, builder: (_, _) => const PaymentMethodsScreen()),
+      GoRoute(
+        path: Routes.wallet,
+        builder: (_, _) => const WalletScreen(showBack: true),
+      ),
+      GoRoute(
+        path: Routes.paymentMethods,
+        builder: (_, _) => const PaymentMethodsScreen(),
+      ),
       GoRoute(path: Routes.referral, builder: (_, _) => const ReferralScreen()),
       GoRoute(path: Routes.credits, builder: (_, _) => const CreditsScreen()),
       GoRoute(path: Routes.loyalty, builder: (_, _) => const LoyaltyScreen()),
-      GoRoute(path: Routes.safetyContacts, builder: (_, _) => const SafetyContactsScreen()),
+      GoRoute(
+        path: Routes.safetyContacts,
+        builder: (_, _) => const SafetyContactsScreen(),
+      ),
       GoRoute(
         path: Routes.safetyIncidents,
         builder: (_, _) => const SafetyIncidentsScreen(),
-        routes: [GoRoute(path: ':id', builder: (_, state) => SafetyIncidentScreen(incidentId: state.pathParameters['id']!))],
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder: (_, state) =>
+                SafetyIncidentScreen(incidentId: state.pathParameters['id']!),
+          ),
+        ],
       ),
-      GoRoute(path: '/safety/report/:bookingId', builder: (_, state) => SafetyReportScreen(bookingId: state.pathParameters['bookingId']!)),
+      GoRoute(
+        path: '/safety/report/:bookingId',
+        builder: (_, state) =>
+            SafetyReportScreen(bookingId: state.pathParameters['bookingId']!),
+      ),
       GoRoute(
         path: Routes.support,
         builder: (_, _) => const TicketsScreen(),

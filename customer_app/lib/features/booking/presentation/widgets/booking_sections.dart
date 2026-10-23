@@ -8,7 +8,8 @@ import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../catalog/presentation/providers/catalog_providers.dart';
 import '../../../map/domain/place_selection.dart';
-import '../../../payments/presentation/screens/receipt_screen.dart' show receiptPaymentStatusText;
+import '../../../payments/presentation/screens/receipt_screen.dart'
+    show receiptPaymentStatusText;
 import '../../../map/presentation/providers/map_providers.dart';
 import '../../domain/entities/booking_entities.dart';
 import '../providers/booking_providers.dart';
@@ -141,7 +142,10 @@ class BookingTimelineSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.bkTimelineTitle, style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          l10n.bkTimelineTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Timeline(
           steps: [
@@ -177,7 +181,12 @@ class ReceiptSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     Widget row(String label, Widget value) => Padding(
       padding: const EdgeInsetsDirectional.only(top: AppSpacing.xs),
-      child: Row(children: [Expanded(child: Text(label)), value]),
+      child: Row(
+        children: [
+          Expanded(child: Text(label)),
+          value,
+        ],
+      ),
     );
     return Card(
       key: const Key('receipt-card'),
@@ -187,7 +196,10 @@ class ReceiptSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.bkReceiptTitle, style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              l10n.bkReceiptTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             row(l10n.bkReceiptCode, Text(receipt.bookingCode)),
             if (receipt.agreedFare != null)
               row(
@@ -203,18 +215,32 @@ class ReceiptSection extends StatelessWidget {
                 l10n.bkReceiptTotal,
                 MoneyText(money: receipt.finalFare!, formatter: formatter),
               ),
-            if (receipt.couponApplied && receipt.discount != null && !receipt.discount!.isZero)
+            if (receipt.couponApplied &&
+                receipt.discount != null &&
+                !receipt.discount!.isZero)
               row(
                 l10n.rcpDiscount,
-                IsolatedText('-${formatter.format(receipt.discount!)}', key: const Key('receipt-discount')),
+                IsolatedText(
+                  '-${formatter.format(receipt.discount!)}',
+                  key: const Key('receipt-discount'),
+                ),
               ),
             if (receipt.customerPayable != null)
               row(
                 l10n.rcpTotal,
-                MoneyText(money: receipt.customerPayable!, formatter: formatter),
+                MoneyText(
+                  money: receipt.customerPayable!,
+                  formatter: formatter,
+                ),
               ),
-            row(l10n.bkReceiptPayment, Text(_method(l10n, receipt.paymentMethod))),
-            row(l10n.bkReceiptPaymentStatus, Text(_payment(l10n, receipt.paymentStatus))),
+            row(
+              l10n.bkReceiptPayment,
+              Text(_method(l10n, receipt.paymentMethod)),
+            ),
+            row(
+              l10n.bkReceiptPaymentStatus,
+              Text(_payment(l10n, receipt.paymentStatus)),
+            ),
             if (receipt.durationSeconds != null)
               row(
                 l10n.bkReceiptDuration,
@@ -225,7 +251,10 @@ class ReceiptSection extends StatelessWidget {
                 l10n.bkReceiptDistance,
                 Text(
                   l10n.bkKilometres(
-                    formatter.number(receipt.plannedDistanceMeters! / 1000, fractionDigits: 1),
+                    formatter.number(
+                      receipt.plannedDistanceMeters! / 1000,
+                      fractionDigits: 1,
+                    ),
                   ),
                 ),
               ),
@@ -245,15 +274,15 @@ class ReceiptSection extends StatelessWidget {
     );
   }
 
-  String _method(AppLocalizations l10n, PaymentMethodType t) =>
-      switch (t) {
-        PaymentMethodType.cash => l10n.bkPaymentCash,
-        PaymentMethodType.card => l10n.pmCard,
-        PaymentMethodType.mobileWallet => l10n.pmWallet,
-        _ => l10n.bkPaymentOther,
-      };
+  String _method(AppLocalizations l10n, PaymentMethodType t) => switch (t) {
+    PaymentMethodType.cash => l10n.bkPaymentCash,
+    PaymentMethodType.card => l10n.pmCard,
+    PaymentMethodType.mobileWallet => l10n.pmWallet,
+    _ => l10n.bkPaymentOther,
+  };
 
-  String _payment(AppLocalizations l10n, PaymentStatus s) => receiptPaymentStatusText(l10n, s);
+  String _payment(AppLocalizations l10n, PaymentStatus s) =>
+      receiptPaymentStatusText(l10n, s);
 }
 
 /// Shows a failure of a user action as a snackbar (ARB text).
@@ -274,7 +303,9 @@ void rebookFrom(BuildContext context, WidgetRef ref, Booking booking) {
   );
   final endpoints = ref.read(tripEndpointsProvider.notifier);
   endpoints.setPickup(select(booking.pickup));
-  if (booking.dropoff != null) endpoints.setDestination(select(booking.dropoff!));
+  if (booking.dropoff != null) {
+    endpoints.setDestination(select(booking.dropoff!));
+  }
   ref.read(selectedCategoryIdProvider.notifier).select(booking.serviceId);
   ref.read(bookingDraftProvider.notifier)
     ..reset()

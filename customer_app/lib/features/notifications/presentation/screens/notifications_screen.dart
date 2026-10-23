@@ -26,13 +26,18 @@ class NotificationsScreen extends ConsumerWidget {
     final route = link == null ? null : customerRouteFor(link);
     if (route == null || route == Routes.notifications) return;
     try {
-      if (link!.id != null && (link.type == NotificationLinkType.booking || link.type == NotificationLinkType.chat || link.type == NotificationLinkType.support)) {
+      if (link!.id != null &&
+          (link.type == NotificationLinkType.booking ||
+              link.type == NotificationLinkType.chat ||
+              link.type == NotificationLinkType.support)) {
         await ref.read(pushCoordinatorProvider).links.validate(link);
       }
       router.push(route);
     } on ApiException catch (e) {
       if (e.statusCode == 404 || e.statusCode == 403) {
-        messenger.showSnackBar(SnackBar(content: Text(l10n.notificationUnavailable)));
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.notificationUnavailable)),
+        );
       } else {
         router.push(route);
       }
@@ -92,13 +97,19 @@ class NotificationsScreen extends ConsumerWidget {
                   key: Key('notification-${item.id}'),
                   minTileHeight: context.density.minTouchTarget,
                   leading: Icon(
-                    item.read ? Icons.notifications_none : Icons.notifications_active,
-                    color: item.read ? null : Theme.of(context).colorScheme.primary,
+                    item.read
+                        ? Icons.notifications_none
+                        : Icons.notifications_active,
+                    color: item.read
+                        ? null
+                        : Theme.of(context).colorScheme.primary,
                   ),
                   title: Text(
                     item.title,
                     style: TextStyle(
-                      fontWeight: item.read ? FontWeight.normal : FontWeight.w700,
+                      fontWeight: item.read
+                          ? FontWeight.normal
+                          : FontWeight.w700,
                     ),
                   ),
                   subtitle: Text(

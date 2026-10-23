@@ -21,7 +21,9 @@ class JobScopeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scope = job.scope;
-    final lines = scope.agreedSummary.isNotEmpty ? scope.agreedSummary : scope.requestedSummary;
+    final lines = scope.agreedSummary.isNotEmpty
+        ? scope.agreedSummary
+        : scope.requestedSummary;
     if (lines.isEmpty) return const SizedBox.shrink();
     return Card(
       key: const Key('job-scope'),
@@ -29,7 +31,9 @@ class JobScopeSection extends StatelessWidget {
         padding: const EdgeInsetsDirectional.all(AppSpacing.md),
         child: ScopeSummaryList(
           lines: lines,
-          scope: scope.agreedSummary.isNotEmpty ? scope.agreed : scope.requested,
+          scope: scope.agreedSummary.isNotEmpty
+              ? scope.agreed
+              : scope.requested,
           strings: scopeStrings(l10n),
         ),
       ),
@@ -59,13 +63,17 @@ class JobLoadSection extends ConsumerWidget {
           children: [
             Text(l10n.dlLoadTitle, style: theme.textTheme.labelLarge),
             const SizedBox(height: AppSpacing.xs),
-            if (load.weightKg != null) Text(l10n.dlLoadWeight('${load.weightKg}')),
-            if (load.volumeM3 != null) Text(l10n.dlLoadVolume('${load.volumeM3}')),
+            if (load.weightKg != null)
+              Text(l10n.dlLoadWeight('${load.weightKg}')),
+            if (load.volumeM3 != null)
+              Text(l10n.dlLoadVolume('${load.volumeM3}')),
             if (load.windowStart != null)
               Text(
                 l10n.jbPickupWindow(
                   formatDateTime(context, load.windowStart!),
-                  load.windowEnd == null ? '' : formatDateTime(context, load.windowEnd!),
+                  load.windowEnd == null
+                      ? ''
+                      : formatDateTime(context, load.windowEnd!),
                 ),
               ),
             for (final item in load.items)
@@ -74,7 +82,8 @@ class JobLoadSection extends ConsumerWidget {
                 child: Text(
                   [
                     '${item.quantity} × ${item.label}',
-                    if (item.hasDimensions) '${item.length}×${item.width}×${item.height} ${l10n.dlCm}',
+                    if (item.hasDimensions)
+                      '${item.length}×${item.width}×${item.height} ${l10n.dlCm}',
                     if (item.weightKg != null) '${item.weightKg} ${l10n.dlKg}',
                     if (item.note != null && item.note!.isNotEmpty) item.note!,
                   ].join(' · '),
@@ -105,7 +114,11 @@ class _Attachments extends ConsumerWidget {
         error: (e, _) => Row(
           children: [
             Expanded(child: Text(jobErrorText(l10n, e))),
-            TextButton(onPressed: () => ref.invalidate(jobAttachmentsProvider(bookingId)), child: Text(l10n.actionRetry)),
+            TextButton(
+              onPressed: () =>
+                  ref.invalidate(jobAttachmentsProvider(bookingId)),
+              child: Text(l10n.actionRetry),
+            ),
           ],
         ),
         data: (list) => Wrap(
@@ -117,14 +130,21 @@ class _Attachments extends ConsumerWidget {
               if (f.isImage && f.url != null)
                 SecureImage(
                   cacheKey: 'att-${f.id}',
-                  load: () => ref.read(deliveryRepositoryProvider).fileBytes(f.url!),
+                  load: () =>
+                      ref.read(deliveryRepositoryProvider).fileBytes(f.url!),
                   errorLabel: l10n.dlProofLoadError,
                   size: 96,
                 )
               else
                 Chip(
-                  avatar: Icon(f.kind == 'video' ? Icons.videocam_outlined : Icons.description_outlined),
-                  label: Text(f.kind == 'video' ? l10n.dlFileVideo : l10n.dlFileDocument),
+                  avatar: Icon(
+                    f.kind == 'video'
+                        ? Icons.videocam_outlined
+                        : Icons.description_outlined,
+                  ),
+                  label: Text(
+                    f.kind == 'video' ? l10n.dlFileVideo : l10n.dlFileDocument,
+                  ),
                 ),
           ],
         ),
@@ -171,10 +191,19 @@ class JobContactsSection extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(_role(l10n, c.role), style: theme.textTheme.bodySmall),
-                          Text(c.name ?? l10n.jbCustomerUnknown, style: theme.textTheme.titleMedium),
+                          Text(
+                            _role(l10n, c.role),
+                            style: theme.textTheme.bodySmall,
+                          ),
+                          Text(
+                            c.name ?? l10n.jbCustomerUnknown,
+                            style: theme.textTheme.titleMedium,
+                          ),
                           if (c.phone == null && c.phoneMasked != null)
-                            Text(l10n.jbContactMasked, style: theme.textTheme.bodySmall),
+                            Text(
+                              l10n.jbContactMasked,
+                              style: theme.textTheme.bodySmall,
+                            ),
                         ],
                       ),
                     ),
@@ -211,11 +240,26 @@ class JobStopsList extends StatelessWidget {
     final theme = Theme.of(context);
     final heading = job.status == BookingStatus.inProgress;
     final rows = <({String label, JobPlace place, IconData icon, bool next})>[
-      (label: l10n.jbPickup, place: job.pickup, icon: Icons.my_location, next: !heading),
+      (
+        label: l10n.jbPickup,
+        place: job.pickup,
+        icon: Icons.my_location,
+        next: !heading,
+      ),
       for (var i = 0; i < job.stops.length; i++)
-        (label: l10n.dlStopNumber(i + 1), place: job.stops[i], icon: Icons.more_vert, next: false),
+        (
+          label: l10n.dlStopNumber(i + 1),
+          place: job.stops[i],
+          icon: Icons.more_vert,
+          next: false,
+        ),
       if (job.dropoff != null)
-        (label: l10n.jbDropoff, place: job.dropoff!, icon: Icons.flag_outlined, next: heading),
+        (
+          label: l10n.jbDropoff,
+          place: job.dropoff!,
+          icon: Icons.flag_outlined,
+          next: heading,
+        ),
     ];
     return Card(
       key: const Key('job-stops'),
@@ -231,22 +275,32 @@ class JobStopsList extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(rows[i].icon, color: rows[i].next ? theme.colorScheme.primary : null),
+                    Icon(
+                      rows[i].icon,
+                      color: rows[i].next ? theme.colorScheme.primary : null,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            rows[i].next ? '${rows[i].label} · ${l10n.dlNextStop}' : rows[i].label,
+                            rows[i].next
+                                ? '${rows[i].label} · ${l10n.dlNextStop}'
+                                : rows[i].label,
                             style: theme.textTheme.bodySmall,
                           ),
-                          Text(rows[i].place.label ?? '${rows[i].place.lat}, ${rows[i].place.lng}', style: theme.textTheme.titleMedium),
+                          Text(
+                            rows[i].place.label ??
+                                '${rows[i].place.lat}, ${rows[i].place.lng}',
+                            style: theme.textTheme.titleMedium,
+                          ),
                           if (rows[i].place.contact?.name != null)
                             Text(
                               [
                                 rows[i].place.contact!.name!,
-                                if (rows[i].place.contact!.note != null) rows[i].place.contact!.note!,
+                                if (rows[i].place.contact!.note != null)
+                                  rows[i].place.contact!.note!,
                               ].join(' · '),
                             ),
                         ],
@@ -258,7 +312,8 @@ class JobStopsList extends StatelessWidget {
                           key: Key('stop-navigate-$i'),
                           iconSize: 28,
                           tooltip: l10n.jbNavigatePickup,
-                          onPressed: () => openNavigation(context, rows[i].place),
+                          onPressed: () =>
+                              openNavigation(context, rows[i].place),
                           icon: const Icon(Icons.navigation_outlined),
                         ),
                         if (rows[i].place.contact?.phone != null)
@@ -266,7 +321,10 @@ class JobStopsList extends StatelessWidget {
                             key: Key('stop-call-$i'),
                             iconSize: 28,
                             tooltip: l10n.jbCallCustomer,
-                            onPressed: () => callCustomer(context, rows[i].place.contact!.phone!),
+                            onPressed: () => callCustomer(
+                              context,
+                              rows[i].place.contact!.phone!,
+                            ),
                             icon: const Icon(Icons.call),
                           ),
                       ],
@@ -332,16 +390,24 @@ class _JobDeliverySectionState extends ConsumerState<JobDeliverySection> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (delivery.custody.isKnown) CustodyTimelineView(delivery: delivery, strings: strings),
+            if (delivery.custody.isKnown)
+              CustodyTimelineView(delivery: delivery, strings: strings),
             if (delivery.recipientOtp != null) ...[
               RecipientOtpCard(state: delivery.recipientOtp!, strings: strings),
               const SizedBox(height: AppSpacing.sm),
-              if (job.can(JobAction.verifyRecipientOtp) && !delivery.recipientOtp!.verified)
+              if (job.can(JobAction.verifyRecipientOtp) &&
+                  !delivery.recipientOtp!.verified)
                 AppButton(
                   key: const Key('delivery-otp'),
-                  label: delivery.recipientOtp!.locked ? l10n.dlOtpLockedButton : l10n.dlOtpEnter,
-                  icon: delivery.recipientOtp!.locked ? Icons.lock : Icons.pin_outlined,
-                  onPressed: delivery.recipientOtp!.locked ? null : () => showRecipientOtpSheet(context, job),
+                  label: delivery.recipientOtp!.locked
+                      ? l10n.dlOtpLockedButton
+                      : l10n.dlOtpEnter,
+                  icon: delivery.recipientOtp!.locked
+                      ? Icons.lock
+                      : Icons.pin_outlined,
+                  onPressed: delivery.recipientOtp!.locked
+                      ? null
+                      : () => showRecipientOtpSheet(context, job),
                 ),
             ],
             if (canUpload || pending.isNotEmpty || missing.isNotEmpty) ...[
@@ -349,13 +415,19 @@ class _JobDeliverySectionState extends ConsumerState<JobDeliverySection> {
               Text(strings.proofsTitle, style: theme.textTheme.titleMedium),
               const SizedBox(height: AppSpacing.xs),
               if (delivery.proofs.currentStage != null)
-                Text(strings.proofStage(delivery.proofs.currentStage!), style: theme.textTheme.bodySmall),
-              for (final p in pending) _PendingProofTile(item: p, strings: strings),
+                Text(
+                  strings.proofStage(delivery.proofs.currentStage!),
+                  style: theme.textTheme.bodySmall,
+                ),
+              for (final p in pending)
+                _PendingProofTile(item: p, strings: strings),
               if (canUpload)
                 for (final t in missing)
                   if (!pending.any((p) => p.type == t))
                     Padding(
-                      padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
+                      padding: const EdgeInsetsDirectional.only(
+                        top: AppSpacing.sm,
+                      ),
                       child: AppButton(
                         key: Key('delivery-proof-${t.value}'),
                         label: l10n.dlAddProof(proofTypeText(l10n, t)),
@@ -366,31 +438,40 @@ class _JobDeliverySectionState extends ConsumerState<JobDeliverySection> {
                           _ => Icons.photo_camera_outlined,
                         },
                         secondary: true,
-                        onPressed: () => showProofCaptureSheet(context, job.id, t),
+                        onPressed: () =>
+                            showProofCaptureSheet(context, job.id, t),
                       ),
                     ),
             ],
             const SizedBox(height: AppSpacing.sm),
             if (job.can(JobAction.markInTransit))
               Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+                padding: const EdgeInsetsDirectional.only(
+                  bottom: AppSpacing.sm,
+                ),
                 child: AppButton(
                   key: const Key('delivery-in-transit'),
                   label: l10n.dlMarkInTransit,
                   icon: Icons.local_shipping_outlined,
                   loading: _busy == CustodyStatus.inTransit.value,
-                  onPressed: _busy != null ? null : () => _custody(CustodyStatus.inTransit),
+                  onPressed: _busy != null
+                      ? null
+                      : () => _custody(CustodyStatus.inTransit),
                 ),
               ),
             if (job.can(JobAction.arrivedDropoff))
               Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+                padding: const EdgeInsetsDirectional.only(
+                  bottom: AppSpacing.sm,
+                ),
                 child: AppButton(
                   key: const Key('delivery-arrived-dropoff'),
                   label: l10n.dlArrivedDropoff,
                   icon: Icons.flag_outlined,
                   loading: _busy == CustodyStatus.arrivedDropoff.value,
-                  onPressed: _busy != null ? null : () => _custody(CustodyStatus.arrivedDropoff),
+                  onPressed: _busy != null
+                      ? null
+                      : () => _custody(CustodyStatus.arrivedDropoff),
                 ),
               ),
             if (job.can(JobAction.reportDeliveryAttempt))
@@ -419,9 +500,12 @@ class _JobDeliverySectionState extends ConsumerState<JobDeliverySection> {
               TextButton(
                 key: const Key('delivery-toggle-proofs'),
                 onPressed: () => setState(() => _showProofs = !_showProofs),
-                child: Text(_showProofs ? l10n.dlHideProofs : l10n.dlShowProofs),
+                child: Text(
+                  _showProofs ? l10n.dlHideProofs : l10n.dlShowProofs,
+                ),
               ),
-              if (_showProofs) _ProofViewer(bookingId: job.id, strings: strings),
+              if (_showProofs)
+                _ProofViewer(bookingId: job.id, strings: strings),
             ],
           ],
         ),
@@ -445,7 +529,10 @@ class _ProofViewer extends ConsumerWidget {
       error: (e, _) => Row(
         children: [
           Expanded(child: Text(jobErrorText(l10n, e))),
-          TextButton(onPressed: () => ref.invalidate(jobProofsProvider(bookingId)), child: Text(l10n.actionRetry)),
+          TextButton(
+            onPressed: () => ref.invalidate(jobProofsProvider(bookingId)),
+            child: Text(l10n.actionRetry),
+          ),
         ],
       ),
       data: (list) => ProofGallery(
@@ -476,7 +563,9 @@ class _PendingProofTile extends ConsumerWidget {
         key: Key('pending-proof-${item.id}'),
         padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: failed ? Theme.of(context).colorScheme.errorContainer : Theme.of(context).colorScheme.secondaryContainer,
+          color: failed
+              ? Theme.of(context).colorScheme.errorContainer
+              : Theme.of(context).colorScheme.secondaryContainer,
           borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
         child: Row(

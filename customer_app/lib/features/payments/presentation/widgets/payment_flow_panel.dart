@@ -53,7 +53,9 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
   PayWith _pay() => PayWith(
     paymentMethodId: _savedId,
     method: _savedId == null ? widget.method : null,
-    walletPhone: _isWallet && _savedId == null && _phone.text.trim().isNotEmpty ? _phone.text.trim() : null,
+    walletPhone: _isWallet && _savedId == null && _phone.text.trim().isNotEmpty
+        ? _phone.text.trim()
+        : null,
   );
 
   Future<void> _open(String url) async {
@@ -74,7 +76,9 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
         notifier.consumeUrl();
         _open(url);
       }
-      if (previous?.phase != PayPhase.paid && next.phase == PayPhase.paid) widget.onPaid?.call();
+      if (previous?.phase != PayPhase.paid && next.phase == PayPhase.paid) {
+        widget.onPaid?.call();
+      }
     });
 
     switch (flow.phase) {
@@ -101,7 +105,11 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
             ),
             if (_launchFailed) ...[
               const SizedBox(height: AppSpacing.sm),
-              Text(l10n.payLaunchFailed, key: const Key('pay-launch-failed'), style: TextStyle(color: theme.colorScheme.error)),
+              Text(
+                l10n.payLaunchFailed,
+                key: const Key('pay-launch-failed'),
+                style: TextStyle(color: theme.colorScheme.error),
+              ),
             ],
             const SizedBox(height: AppSpacing.sm),
             AppButton(
@@ -112,7 +120,12 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
             ),
             if (url != null) ...[
               const SizedBox(height: AppSpacing.sm),
-              AppButton(key: const Key('pay-reopen'), label: l10n.payOpenAgain, secondary: true, onPressed: () => _open(url)),
+              AppButton(
+                key: const Key('pay-reopen'),
+                label: l10n.payOpenAgain,
+                secondary: true,
+                onPressed: () => _open(url),
+              ),
             ],
           ],
         );
@@ -134,7 +147,11 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
                 label: l10n.payContactSupport,
                 secondary: true,
                 onPressed: () => context.push(
-                  Routes.paymentSupport(widget.bookingId!, widget.bookingCode ?? '', flow.payment?.id),
+                  Routes.paymentSupport(
+                    widget.bookingId!,
+                    widget.bookingCode ?? '',
+                    flow.payment?.id,
+                  ),
                 ),
               ),
             ],
@@ -152,7 +169,11 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
               body: paymentFailureText(l10n, flow.payment?.failureCode),
             ),
             const SizedBox(height: AppSpacing.sm),
-            AppButton(key: const Key('pay-try-again'), label: l10n.payTryAgain, onPressed: notifier.reset),
+            AppButton(
+              key: const Key('pay-try-again'),
+              label: l10n.payTryAgain,
+              onPressed: notifier.reset,
+            ),
           ],
         );
       case PayPhase.idle:
@@ -162,9 +183,19 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
     }
   }
 
-  Widget _chooser(BuildContext context, AppLocalizations l10n, ThemeData theme, PayFlowState flow, PaymentFlowNotifier notifier) {
-    final methods = ref.watch(paymentMethodsProvider).value ?? const <SavedPaymentMethod>[];
-    final saved = [for (final m in methods) if (m.isActive && m.type == widget.method) m];
+  Widget _chooser(
+    BuildContext context,
+    AppLocalizations l10n,
+    ThemeData theme,
+    PayFlowState flow,
+    PaymentFlowNotifier notifier,
+  ) {
+    final methods =
+        ref.watch(paymentMethodsProvider).value ?? const <SavedPaymentMethod>[];
+    final saved = [
+      for (final m in methods)
+        if (m.isActive && m.type == widget.method) m,
+    ];
     final starting = flow.phase == PayPhase.starting;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -180,7 +211,9 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
                     key: Key('pay-saved-${m.id}'),
                     contentPadding: EdgeInsets.zero,
                     value: m.id,
-                    title: Text('${m.brand ?? l10n.pmCard} ${ltrIsolate('•••• ${m.last4 ?? ''}')}'),
+                    title: Text(
+                      '${m.brand ?? l10n.pmCard} ${ltrIsolate('•••• ${m.last4 ?? ''}')}',
+                    ),
                   ),
                 RadioListTile<String?>(
                   key: const Key('pay-new-method'),
@@ -197,14 +230,21 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
             controller: _phone,
             keyboardType: TextInputType.phone,
             textDirection: TextDirection.ltr,
-            decoration: InputDecoration(labelText: l10n.payWalletPhone, helperText: l10n.payWalletPhoneHelp),
+            decoration: InputDecoration(
+              labelText: l10n.payWalletPhone,
+              helperText: l10n.payWalletPhoneHelp,
+            ),
           ),
           const SizedBox(height: AppSpacing.sm),
         ],
         if (flow.error != null)
           Padding(
             padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
-            child: Text(paymentErrorText(l10n, flow.error!), key: const Key('pay-error'), style: TextStyle(color: theme.colorScheme.error)),
+            child: Text(
+              paymentErrorText(l10n, flow.error!),
+              key: const Key('pay-error'),
+              style: TextStyle(color: theme.colorScheme.error),
+            ),
           ),
         AppButton(
           key: const Key('pay-start'),
@@ -214,14 +254,25 @@ class _PaymentFlowPanelState extends ConsumerState<PaymentFlowPanel> {
           onPressed: () => notifier.start(_pay()),
         ),
         const SizedBox(height: AppSpacing.xs),
-        Text(l10n.paySecureNote, style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
+        Text(
+          l10n.paySecureNote,
+          style: theme.textTheme.bodySmall,
+          textAlign: TextAlign.center,
+        ),
       ],
     );
   }
 }
 
 class _Banner extends StatelessWidget {
-  const _Banner({super.key, required this.icon, required this.color, required this.title, required this.body, this.busy = false});
+  const _Banner({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.body,
+    this.busy = false,
+  });
 
   final IconData icon;
   final Color color;
@@ -235,13 +286,21 @@ class _Banner extends StatelessWidget {
     return Semantics(
       liveRegion: true,
       child: DecoratedBox(
-        decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.md)),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
         child: Padding(
           padding: const EdgeInsetsDirectional.all(AppSpacing.md),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              busy ? const SizedBox.square(dimension: 24, child: CircularProgressIndicator(strokeWidth: 2.5)) : Icon(icon, color: color),
+              busy
+                  ? const SizedBox.square(
+                      dimension: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    )
+                  : Icon(icon, color: color),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(

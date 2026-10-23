@@ -153,9 +153,7 @@ class _JobViewState extends ConsumerState<JobView> {
       );
     }
     if (job.can(JobAction.complete)) {
-      primary.add(
-        big('job-complete', l10n.jbComplete, Icons.flag, _complete),
-      );
+      primary.add(big('job-complete', l10n.jbComplete, Icons.flag, _complete));
     }
 
     return Column(
@@ -285,7 +283,10 @@ class _JobViewState extends ConsumerState<JobView> {
                       job.customer.ratingCount > 0)
                     Text(
                       l10n.jbCustomerRating(
-                        formatter.number(job.customer.ratingAverage!, fractionDigits: 1),
+                        formatter.number(
+                          job.customer.ratingAverage!,
+                          fractionDigits: 1,
+                        ),
                         job.customer.ratingCount,
                       ),
                     ),
@@ -343,13 +344,16 @@ class _JobViewState extends ConsumerState<JobView> {
               const SizedBox(height: AppSpacing.sm),
               if (!job.isFinished)
                 Padding(
-                  padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+                  padding: const EdgeInsetsDirectional.only(
+                    bottom: AppSpacing.sm,
+                  ),
                   child: AppButton(
                     key: const Key('job-safety'),
                     label: l10n.sfTitle,
                     icon: Icons.shield_outlined,
                     secondary: true,
-                    onPressed: () => showSafetySheet(context, bookingId: job.id),
+                    onPressed: () =>
+                        showSafetySheet(context, bookingId: job.id),
                   ),
                 ),
               Row(
@@ -396,14 +400,16 @@ class _JobViewState extends ConsumerState<JobView> {
                         onPressed: () => context.push(Routes.jobChat(job.id)),
                       ),
                     ),
-                  if (job.can(JobAction.chat)) const SizedBox(width: AppSpacing.sm),
+                  if (job.can(JobAction.chat))
+                    const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: AppButton(
                       key: const Key('job-help'),
                       label: l10n.supportHelpAboutTrip,
                       icon: Icons.support_agent_outlined,
                       secondary: true,
-                      onPressed: () => context.push(Routes.jobSupport(job.id, job.code)),
+                      onPressed: () =>
+                          context.push(Routes.jobSupport(job.id, job.code)),
                     ),
                   ),
                 ],

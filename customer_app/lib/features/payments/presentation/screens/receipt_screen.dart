@@ -57,13 +57,24 @@ class _ReceiptBody extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(l10n.rcpNumber(r.number), style: theme.textTheme.titleMedium, key: const Key('receipt-number')),
-                if (r.issuedAt != null) Text(formatFinanceTime(context, r.issuedAt), style: theme.textTheme.bodySmall),
+                Text(
+                  l10n.rcpNumber(r.number),
+                  style: theme.textTheme.titleMedium,
+                  key: const Key('receipt-number'),
+                ),
+                if (r.issuedAt != null)
+                  Text(
+                    formatFinanceTime(context, r.issuedAt),
+                    style: theme.textTheme.bodySmall,
+                  ),
                 const SizedBox(height: AppSpacing.sm),
                 AmountRow(label: l10n.bkReceiptCode, value: r.bookingCode),
-                if (r.counterpartName != null) AmountRow(label: l10n.rcpDriver, value: r.counterpartName!),
-                if (r.pickup != null && r.pickup!.isNotEmpty) AmountRow(label: l10n.rcpFrom, value: r.pickup!),
-                if (r.dropoff != null && r.dropoff!.isNotEmpty) AmountRow(label: l10n.rcpTo, value: r.dropoff!),
+                if (r.counterpartName != null)
+                  AmountRow(label: l10n.rcpDriver, value: r.counterpartName!),
+                if (r.pickup != null && r.pickup!.isNotEmpty)
+                  AmountRow(label: l10n.rcpFrom, value: r.pickup!),
+                if (r.dropoff != null && r.dropoff!.isNotEmpty)
+                  AmountRow(label: l10n.rcpTo, value: r.dropoff!),
               ],
             ),
           ),
@@ -81,22 +92,56 @@ class _ReceiptBody extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.xs),
                 AmountRow(label: l10n.bkAgreedFare, value: money(r.agreed)),
                 for (final a in r.adjustments)
-                  AmountRow(label: l10n.rcpAdjustment(a.reason.isEmpty ? a.type : a.reason), value: money(a.amount)),
-                if (r.adjustments.isNotEmpty) AmountRow(label: l10n.rcpSubtotal, value: money(r.subtotal)),
+                  AmountRow(
+                    label: l10n.rcpAdjustment(
+                      a.reason.isEmpty ? a.type : a.reason,
+                    ),
+                    value: money(a.amount),
+                  ),
+                if (r.adjustments.isNotEmpty)
+                  AmountRow(label: l10n.rcpSubtotal, value: money(r.subtotal)),
                 if (r.discount != null && !r.discount!.isZero)
-                  AmountRow(label: l10n.rcpDiscount, value: '-${money(r.discount!)}', color: AppColors.success),
-                if (r.customerFee != null && !r.customerFee!.isZero) AmountRow(label: l10n.rcpServiceFee, value: money(r.customerFee!)),
+                  AmountRow(
+                    label: l10n.rcpDiscount,
+                    value: '-${money(r.discount!)}',
+                    color: AppColors.success,
+                  ),
+                if (r.customerFee != null && !r.customerFee!.isZero)
+                  AmountRow(
+                    label: l10n.rcpServiceFee,
+                    value: money(r.customerFee!),
+                  ),
                 if (r.tax != null && !r.tax!.isZero)
                   AmountRow(
-                    label: r.taxRateBp == null ? l10n.rcpTax : l10n.rcpTaxRate((r.taxRateBp! / 100).toStringAsFixed(r.taxRateBp! % 100 == 0 ? 0 : 2)),
+                    label: r.taxRateBp == null
+                        ? l10n.rcpTax
+                        : l10n.rcpTaxRate(
+                            (r.taxRateBp! / 100).toStringAsFixed(
+                              r.taxRateBp! % 100 == 0 ? 0 : 2,
+                            ),
+                          ),
                     value: money(r.tax!),
                   ),
-                if (r.tip != null && !r.tip!.isZero) AmountRow(label: l10n.rcpTip, value: money(r.tip!)),
+                if (r.tip != null && !r.tip!.isZero)
+                  AmountRow(label: l10n.rcpTip, value: money(r.tip!)),
                 const Divider(),
-                if (r.total != null) AmountRow(label: l10n.rcpTotal, value: money(r.total!), bold: true),
+                if (r.total != null)
+                  AmountRow(
+                    label: l10n.rcpTotal,
+                    value: money(r.total!),
+                    bold: true,
+                  ),
                 const SizedBox(height: AppSpacing.xs),
-                AmountRow(label: l10n.bkReceiptPayment, value: r.paymentMethod == PaymentMethodType.cash ? l10n.bkPaymentCash : l10n.bkPaymentOther),
-                AmountRow(label: l10n.bkReceiptPaymentStatus, value: receiptPaymentStatusText(l10n, r.paymentStatus)),
+                AmountRow(
+                  label: l10n.bkReceiptPayment,
+                  value: r.paymentMethod == PaymentMethodType.cash
+                      ? l10n.bkPaymentCash
+                      : l10n.bkPaymentOther,
+                ),
+                AmountRow(
+                  label: l10n.bkReceiptPaymentStatus,
+                  value: receiptPaymentStatusText(l10n, r.paymentStatus),
+                ),
               ],
             ),
           ),
@@ -116,14 +161,18 @@ class _ReceiptBody extends ConsumerWidget {
   }
 }
 
-String receiptPaymentStatusText(AppLocalizations l10n, PaymentStatus s) => switch (s) {
-  PaymentStatus.cashDue => l10n.bkPaymentStatusCashDue,
-  PaymentStatus.paid || PaymentStatus.cashCollected => l10n.bkPaymentStatusPaid,
-  PaymentStatus.pending || PaymentStatus.requiresAction || PaymentStatus.authorized => l10n.bkPaymentStatusPending,
-  PaymentStatus.failed => l10n.payStatusFailed,
-  PaymentStatus.refunded => l10n.payStatusRefunded,
-  PaymentStatus.partiallyRefunded => l10n.payStatusPartRefunded,
-  PaymentStatus.notRequired => l10n.payStatusNotRequired,
-  PaymentStatus.reconciliationRequired => l10n.payStatusReview,
-  PaymentStatus.unknown => l10n.bkPaymentStatusOther,
-};
+String receiptPaymentStatusText(AppLocalizations l10n, PaymentStatus s) =>
+    switch (s) {
+      PaymentStatus.cashDue => l10n.bkPaymentStatusCashDue,
+      PaymentStatus.paid ||
+      PaymentStatus.cashCollected => l10n.bkPaymentStatusPaid,
+      PaymentStatus.pending ||
+      PaymentStatus.requiresAction ||
+      PaymentStatus.authorized => l10n.bkPaymentStatusPending,
+      PaymentStatus.failed => l10n.payStatusFailed,
+      PaymentStatus.refunded => l10n.payStatusRefunded,
+      PaymentStatus.partiallyRefunded => l10n.payStatusPartRefunded,
+      PaymentStatus.notRequired => l10n.payStatusNotRequired,
+      PaymentStatus.reconciliationRequired => l10n.payStatusReview,
+      PaymentStatus.unknown => l10n.bkPaymentStatusOther,
+    };

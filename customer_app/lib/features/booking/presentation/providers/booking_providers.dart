@@ -27,7 +27,8 @@ Duration? _noAutoRetry(int retryCount, Object error) => null;
 const pollWhenOffline = Duration(seconds: 5);
 const pollWhenLive = Duration(seconds: 20);
 
-bool _isBookingEvent(RealtimeEvent e) => e.name.startsWith('booking.') || e.name == 'payment.status_changed';
+bool _isBookingEvent(RealtimeEvent e) =>
+    e.name.startsWith('booking.') || e.name == 'payment.status_changed';
 
 String? _eventBooking(RealtimeEvent e) => e.data['booking_uuid'] as String?;
 
@@ -158,7 +159,16 @@ class BookingDraftNotifier extends Notifier<BookingDraft> {
       request.couponCode,
       request.bookingType.value,
       request.restrictedGoodsPolicyVersion,
-      [for (final s in request.stops) [s.place.lat, s.place.lng, s.contactName, s.contactPhone, s.contactNote]],
+      [
+        for (final s in request.stops)
+          [
+            s.place.lat,
+            s.place.lng,
+            s.contactName,
+            s.contactPhone,
+            s.contactNote,
+          ],
+      ],
       jsonEncode(request.serviceDetails, toEncodable: (o) => '$o'),
     ]);
     if (fingerprint != _fingerprint || _key == null) {
@@ -417,11 +427,10 @@ List<Offer> sortOffers(List<Offer> offers, OfferSort sort) {
   sorted.sort(switch (sort) {
     OfferSort.price => (a, b) => cmpNullable(a.amount?.minor, b.amount?.minor),
     OfferSort.eta => (a, b) => cmpNullable(a.etaSeconds, b.etaSeconds),
-    OfferSort.rating =>
-      (a, b) => cmpNullable(
-        b.provider?.ratingAverage,
-        a.provider?.ratingAverage,
-      ),
+    OfferSort.rating => (a, b) => cmpNullable(
+      b.provider?.ratingAverage,
+      a.provider?.ratingAverage,
+    ),
   });
   return sorted;
 }
@@ -626,7 +635,8 @@ class BookingActions {
       );
       _keys.remove(intent);
     } on ApiException catch (e) {
-      if (e.kind != ApiFailureKind.network && e.kind != ApiFailureKind.timeout) {
+      if (e.kind != ApiFailureKind.network &&
+          e.kind != ApiFailureKind.timeout) {
         _keys.remove(intent);
       }
       rethrow;
@@ -650,7 +660,8 @@ class BookingActions {
       );
       _keys.remove(intent);
     } on ApiException catch (e) {
-      if (e.kind != ApiFailureKind.network && e.kind != ApiFailureKind.timeout) {
+      if (e.kind != ApiFailureKind.network &&
+          e.kind != ApiFailureKind.timeout) {
         _keys.remove(intent);
       }
       rethrow;

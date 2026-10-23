@@ -40,7 +40,9 @@ class OfferTile extends StatelessWidget {
     final facts = <String>[
       if (eta != null) l10n.bkOfferEta((eta / 60).ceil()),
       if (offer.distanceMeters != null)
-        l10n.bkOfferDistance(formatter.number(offer.distanceMeters! / 1000, fractionDigits: 1)),
+        l10n.bkOfferDistance(
+          formatter.number(offer.distanceMeters! / 1000, fractionDigits: 1),
+        ),
       if (provider != null && provider.completedJobs > 0)
         l10n.bkOfferTrips(provider.completedJobs),
     ];
@@ -77,7 +79,9 @@ class OfferTile extends StatelessWidget {
                   label: offer.isCounterOffer
                       ? l10n.bkOfferCounter
                       : l10n.bkOfferAcceptsFare,
-                  tone: offer.isCounterOffer ? ChipTone.warning : ChipTone.success,
+                  tone: offer.isCounterOffer
+                      ? ChipTone.warning
+                      : ChipTone.success,
                 ),
               ],
             ),
@@ -96,60 +100,67 @@ class OfferTile extends StatelessWidget {
               ),
             ],
           ),
-        ).withDetails(
-          context,
-          [
-            if (provider != null && provider.ratingCount > 0)
-              Row(
-                children: [
-                  const Icon(Icons.star_rounded, size: 18, color: AppColors.accent),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    provider.ratingProvisional
-                        ? l10n.bkOfferRatingNew(
-                            formatter.number(provider.ratingAverage, fractionDigits: 1),
-                            provider.ratingCount,
-                          )
-                        : l10n.bkOfferRating(
-                            formatter.number(provider.ratingAverage, fractionDigits: 1),
-                            provider.ratingCount,
+        ).withDetails(context, [
+          if (provider != null && provider.ratingCount > 0)
+            Row(
+              children: [
+                const Icon(
+                  Icons.star_rounded,
+                  size: 18,
+                  color: AppColors.accent,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  provider.ratingProvisional
+                      ? l10n.bkOfferRatingNew(
+                          formatter.number(
+                            provider.ratingAverage,
+                            fractionDigits: 1,
                           ),
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            if (facts.isNotEmpty)
-              Text(facts.join(' · '), style: theme.textTheme.bodySmall),
-            if (offer.scopeSummary.isNotEmpty)
-              Container(
-                key: Key('offer-scope-${offer.id}'),
-                padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                          provider.ratingCount,
+                        )
+                      : l10n.bkOfferRating(
+                          formatter.number(
+                            provider.ratingAverage,
+                            fractionDigits: 1,
+                          ),
+                          provider.ratingCount,
+                        ),
+                  style: theme.textTheme.bodySmall,
                 ),
-                child: ScopeSummaryList(
-                  lines: offer.scopeSummary,
-                  scope: offer.scope,
-                  strings: scopeStrings(l10n),
-                  dense: true,
-                ),
+              ],
+            ),
+          if (facts.isNotEmpty)
+            Text(facts.join(' · '), style: theme.textTheme.bodySmall),
+          if (offer.scopeSummary.isNotEmpty)
+            Container(
+              key: Key('offer-scope-${offer.id}'),
+              padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
-            if (offer.note != null && offer.note!.isNotEmpty)
-              Text(offer.note!, style: theme.textTheme.bodyMedium),
-            Text(
-              expired
-                  ? l10n.bkOfferExpired
-                  : l10n.bkOfferExpiresIn(formatClock(left)),
-              key: Key('offer-expiry-${offer.id}'),
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: expired || left.inSeconds < 15
-                    ? theme.colorScheme.error
-                    : null,
+              child: ScopeSummaryList(
+                lines: offer.scopeSummary,
+                scope: offer.scope,
+                strings: scopeStrings(l10n),
+                dense: true,
               ),
             ),
-          ],
-        );
+          if (offer.note != null && offer.note!.isNotEmpty)
+            Text(offer.note!, style: theme.textTheme.bodyMedium),
+          Text(
+            expired
+                ? l10n.bkOfferExpired
+                : l10n.bkOfferExpiresIn(formatClock(left)),
+            key: Key('offer-expiry-${offer.id}'),
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: expired || left.inSeconds < 15
+                  ? theme.colorScheme.error
+                  : null,
+            ),
+          ),
+        ]);
       },
     );
   }
@@ -170,7 +181,10 @@ extension on Widget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final d in details) ...[d, const SizedBox(height: AppSpacing.xs)],
+            for (final d in details) ...[
+              d,
+              const SizedBox(height: AppSpacing.xs),
+            ],
           ],
         ),
       ),

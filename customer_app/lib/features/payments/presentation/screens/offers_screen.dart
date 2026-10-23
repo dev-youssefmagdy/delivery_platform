@@ -7,7 +7,8 @@ import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../../core/async_state_view.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
-import '../../../booking/presentation/widgets/booking_sections.dart' show formatDateTime;
+import '../../../booking/presentation/widgets/booking_sections.dart'
+    show formatDateTime;
 import '../providers/payments_providers.dart';
 
 /// The Offers tab: automatic offers the customer can use now (applied by the
@@ -70,17 +71,22 @@ class _OffersBody extends ConsumerWidget {
                 subtitle: Text(
                   [
                     if (c.summary != null) c.summary!,
-                    if (c.endsAt != null) l10n.cpnValidUntil(formatDateTime(context, c.endsAt)),
+                    if (c.endsAt != null)
+                      l10n.cpnValidUntil(formatDateTime(context, c.endsAt)),
                   ].join(' - '),
                 ),
                 childrenPadding: const EdgeInsetsDirectional.all(AppSpacing.md),
                 expandedCrossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (!c.description.isEmpty) Text(c.description.resolve(language)),
+                  if (!c.description.isEmpty)
+                    Text(c.description.resolve(language)),
                   if (!c.terms.isEmpty) ...[
                     const SizedBox(height: AppSpacing.sm),
                     Text(l10n.cpnTerms, style: theme.textTheme.labelLarge),
-                    Text(c.terms.resolve(language), style: theme.textTheme.bodySmall),
+                    Text(
+                      c.terms.resolve(language),
+                      style: theme.textTheme.bodySmall,
+                    ),
                   ],
                   const SizedBox(height: AppSpacing.sm),
                   Text(l10n.cpnAutoNote, style: theme.textTheme.bodySmall),
@@ -98,14 +104,21 @@ class _OffersBody extends ConsumerWidget {
               key: Key('usage-${u.id}'),
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.confirmation_number_outlined),
-              title: Text(u.title.resolve(language).isEmpty ? (u.code ?? '') : u.title.resolve(language)),
+              title: Text(
+                u.title.resolve(language).isEmpty
+                    ? (u.code ?? '')
+                    : u.title.resolve(language),
+              ),
               subtitle: Text(formatDateTime(context, u.reservedAt)),
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   IsolatedText(formatter.format(u.discount)),
-                  StatusChip(label: usageStatusText(l10n, u.status), tone: _usageTone(u.status)),
+                  StatusChip(
+                    label: usageStatusText(l10n, u.status),
+                    tone: _usageTone(u.status),
+                  ),
                 ],
               ),
             ),
@@ -121,10 +134,11 @@ ChipTone _usageTone(String status) => switch (status) {
   _ => ChipTone.neutral,
 };
 
-String usageStatusText(AppLocalizations l10n, String status) => switch (status) {
-  'committed' => l10n.cpnUsedStatus,
-  'reserved' => l10n.cpnReservedStatus,
-  'released' => l10n.cpnReleasedStatus,
-  'reversed' => l10n.cpnReversedStatus,
-  _ => l10n.cpnUnknownStatus,
-};
+String usageStatusText(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'committed' => l10n.cpnUsedStatus,
+      'reserved' => l10n.cpnReservedStatus,
+      'released' => l10n.cpnReleasedStatus,
+      'reversed' => l10n.cpnReversedStatus,
+      _ => l10n.cpnUnknownStatus,
+    };

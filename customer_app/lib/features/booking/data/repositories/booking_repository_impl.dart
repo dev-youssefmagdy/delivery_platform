@@ -35,7 +35,8 @@ class BookingRepositoryImpl implements BookingRepository {
       'service_category_id': request.serviceCategoryId,
       'booking_type': request.bookingType.value,
       'pickup': BookingDto.placeBody(request.pickup),
-      if (request.dropoff != null) 'dropoff': BookingDto.placeBody(request.dropoff!),
+      if (request.dropoff != null)
+        'dropoff': BookingDto.placeBody(request.dropoff!),
       if (request.stops.isNotEmpty)
         'stops': [for (final s in request.stops) s.toBody()],
       'restricted_goods_policy_version': ?request.restrictedGoodsPolicyVersion,
@@ -44,7 +45,8 @@ class BookingRepositoryImpl implements BookingRepository {
       'proposed_fare_minor': request.proposedFareMinor,
       'currency': ?request.currency,
       'payment_method': request.paymentMethod.value,
-      if (request.couponCode != null && request.couponCode!.isNotEmpty) 'coupon_code': request.couponCode,
+      if (request.couponCode != null && request.couponCode!.isNotEmpty)
+        'coupon_code': request.couponCode,
     };
     return BookingDto.booking(
       (await _remote.create(body, idempotencyKey)).data,
@@ -188,7 +190,8 @@ class BookingRepositoryImpl implements BookingRepository {
     await _remote.rate(bookingId, {
       'stars': stars,
       'tags': tags,
-      if (comment != null && comment.trim().isNotEmpty) 'comment': comment.trim(),
+      if (comment != null && comment.trim().isNotEmpty)
+        'comment': comment.trim(),
     }, idempotencyKey);
   }
 

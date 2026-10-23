@@ -45,8 +45,12 @@ class TripsScreen extends ConsumerWidget {
           if (state.items.isEmpty) {
             return EmptyState(
               icon: Icons.history,
-              title: filter.isEmpty ? l10n.tripsEmptyTitle : l10n.tripsEmptyFilteredTitle,
-              message: filter.isEmpty ? l10n.tripsEmptyBody : l10n.tripsEmptyFilteredBody,
+              title: filter.isEmpty
+                  ? l10n.tripsEmptyTitle
+                  : l10n.tripsEmptyFilteredTitle,
+              message: filter.isEmpty
+                  ? l10n.tripsEmptyBody
+                  : l10n.tripsEmptyFilteredBody,
               actionLabel: filter.isEmpty ? null : l10n.tripsClearFilters,
               onAction: filter.isEmpty
                   ? null
@@ -70,7 +74,9 @@ class TripsScreen extends ConsumerWidget {
                   if (i >= state.items.length) {
                     return state.loadMoreFailed
                         ? TextButton(
-                            onPressed: ref.read(tripsProvider.notifier).loadMore,
+                            onPressed: ref
+                                .read(tripsProvider.notifier)
+                                .loadMore,
                             child: Text(l10n.actionRetry),
                           )
                         : const Padding(
@@ -142,7 +148,10 @@ class _TripTile extends ConsumerWidget {
 
 /// Status groups offered in the filter (server statuses behind each).
 const _statusGroups = <(String, List<BookingStatus>)>[
-  ('completed', [BookingStatus.completed, BookingStatus.completedPendingPayment]),
+  (
+    'completed',
+    [BookingStatus.completed, BookingStatus.completedPendingPayment],
+  ),
   (
     'cancelled',
     [
@@ -187,7 +196,8 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
     _to = f.to;
     _group = null;
     for (final g in _statusGroups) {
-      if (f.statuses.isNotEmpty && g.$2.length == f.statuses.length &&
+      if (f.statuses.isNotEmpty &&
+          g.$2.length == f.statuses.length &&
           g.$2.every(f.statuses.contains)) {
         _group = g.$1;
       }
@@ -226,9 +236,15 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.tripsFilter, style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              l10n.tripsFilter,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: AppSpacing.md),
-            Text(l10n.tripsFilterStatus, style: Theme.of(context).textTheme.titleSmall),
+            Text(
+              l10n.tripsFilterStatus,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             Wrap(
               spacing: AppSpacing.sm,
               children: [
@@ -237,7 +253,8 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                     key: Key('trips-status-${g.$1}'),
                     label: Text(_groupLabel(l10n, g.$1)),
                     selected: _group == g.$1,
-                    onSelected: (on) => setState(() => _group = on ? g.$1 : null),
+                    onSelected: (on) =>
+                        setState(() => _group = on ? g.$1 : null),
                   ),
               ],
             ),
@@ -271,7 +288,8 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                     child: Text(
                       _from == null
                           ? l10n.tripsFilterFrom
-                          : MaterialLocalizations.of(context).formatShortDate(_from!),
+                          : MaterialLocalizations.of(context)
+                                .formatShortDate(_from!),
                     ),
                   ),
                 ),
@@ -283,7 +301,8 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                     child: Text(
                       _to == null
                           ? l10n.tripsFilterTo
-                          : MaterialLocalizations.of(context).formatShortDate(_to!),
+                          : MaterialLocalizations.of(context)
+                                .formatShortDate(_to!),
                     ),
                   ),
                 ),
@@ -297,14 +316,16 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
                 final statuses = _group == null
                     ? const <BookingStatus>[]
                     : _statusGroups.firstWhere((g) => g.$1 == _group).$2;
-                ref.read(tripFilterProvider.notifier).set(
-                  TripFilter(
-                    serviceCategoryId: _service,
-                    statuses: statuses,
-                    from: _from,
-                    to: _to,
-                  ),
-                );
+                ref
+                    .read(tripFilterProvider.notifier)
+                    .set(
+                      TripFilter(
+                        serviceCategoryId: _service,
+                        statuses: statuses,
+                        from: _from,
+                        to: _to,
+                      ),
+                    );
                 Navigator.of(context).pop();
               },
             ),

@@ -13,21 +13,23 @@ String custodyText(AppLocalizations l10n, CustodyStatus s) => switch (s) {
   CustodyStatus.unknown => l10n.dcCustodyUnknown,
 };
 
-String attemptOutcomeText(AppLocalizations l10n, AttemptOutcome o) => switch (o) {
-  AttemptOutcome.recipientUnavailable => l10n.dcOutUnavailable,
-  AttemptOutcome.recipientRefused => l10n.dcOutRefused,
-  AttemptOutcome.wrongAddress => l10n.dcOutWrongAddress,
-  AttemptOutcome.otpFailed => l10n.dcOutOtpFailed,
-  AttemptOutcome.restrictedItem => l10n.dcOutRestricted,
-  AttemptOutcome.other || AttemptOutcome.unknown => l10n.dcOutOther,
-};
+String attemptOutcomeText(AppLocalizations l10n, AttemptOutcome o) =>
+    switch (o) {
+      AttemptOutcome.recipientUnavailable => l10n.dcOutUnavailable,
+      AttemptOutcome.recipientRefused => l10n.dcOutRefused,
+      AttemptOutcome.wrongAddress => l10n.dcOutWrongAddress,
+      AttemptOutcome.otpFailed => l10n.dcOutOtpFailed,
+      AttemptOutcome.restrictedItem => l10n.dcOutRestricted,
+      AttemptOutcome.other || AttemptOutcome.unknown => l10n.dcOutOther,
+    };
 
-String resolutionText(AppLocalizations l10n, AttemptResolution r) => switch (r) {
-  AttemptResolution.retry => l10n.dcResRetry,
-  AttemptResolution.returnToSender => l10n.dcResReturn,
-  AttemptResolution.operations => l10n.dcResOperations,
-  AttemptResolution.unknown => l10n.dcResUnknown,
-};
+String resolutionText(AppLocalizations l10n, AttemptResolution r) =>
+    switch (r) {
+      AttemptResolution.retry => l10n.dcResRetry,
+      AttemptResolution.returnToSender => l10n.dcResReturn,
+      AttemptResolution.operations => l10n.dcResOperations,
+      AttemptResolution.unknown => l10n.dcResUnknown,
+    };
 
 String proofTypeText(AppLocalizations l10n, ProofType t) => switch (t) {
   ProofType.photo => l10n.dcProofPhoto,
@@ -91,7 +93,8 @@ DeliveryStrings deliveryStrings(AppLocalizations l10n) => DeliveryStrings(
   proofStage: (s) => proofStageText(l10n, s),
   noProofs: l10n.dcNoProofs,
   proofLoadError: l10n.dcProofLoadError,
-  checklistItem: (code, checked) => '${checked ? '✓' : '✗'} ${checklistCodeText(l10n, code)}',
+  checklistItem: (code, checked) =>
+      '${checked ? '✓' : '✗'} ${checklistCodeText(l10n, code)}',
   weightValue: l10n.dcWeightValue,
   attemptsTitle: l10n.dcAttemptsTitle,
   attemptNumber: l10n.dcAttemptNumber,

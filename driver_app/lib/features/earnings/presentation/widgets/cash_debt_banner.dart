@@ -27,7 +27,10 @@ class CashDebtBanner extends ConsumerWidget {
       liveRegion: true,
       child: DecoratedBox(
         key: const Key('cash-debt-banner'),
-        decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.md)),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
         child: Padding(
           padding: const EdgeInsetsDirectional.all(AppSpacing.md),
           child: Column(
@@ -35,14 +38,24 @@ class CashDebtBanner extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Icon(blocked ? Icons.block : Icons.warning_amber_rounded, color: color),
+                  Icon(
+                    blocked ? Icons.block : Icons.warning_amber_rounded,
+                    color: color,
+                  ),
                   const SizedBox(width: AppSpacing.sm),
-                  Expanded(child: Text(l10n.cashDebtTitle(f.format(position.cashDebt)), style: theme.textTheme.titleMedium)),
+                  Expanded(
+                    child: Text(
+                      l10n.cashDebtTitle(f.format(position.cashDebt)),
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                blocked ? l10n.cashDebtBlocked(f.format(position.cashDebtLimit)) : l10n.cashDebtWarning(f.format(position.cashDebtLimit)),
+                blocked
+                    ? l10n.cashDebtBlocked(f.format(position.cashDebtLimit))
+                    : l10n.cashDebtWarning(f.format(position.cashDebtLimit)),
                 key: Key(blocked ? 'cash-debt-blocked' : 'cash-debt-warning'),
               ),
               const SizedBox(height: AppSpacing.xs),

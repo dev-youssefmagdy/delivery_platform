@@ -13,18 +13,25 @@ import '../../../booking/presentation/providers/booking_providers.dart';
 Duration? _noAutoRetry(int retryCount, Object error) => null;
 
 final paymentsRepositoryProvider = Provider<PaymentsRepository>(
-  (ref) => ApiPaymentsRepository(PaymentsRemoteDataSource(ref.watch(apiClientProvider))),
+  (ref) => ApiPaymentsRepository(
+    PaymentsRemoteDataSource(ref.watch(apiClientProvider)),
+  ),
 );
 
 final adjustmentsRepositoryProvider = Provider<AdjustmentsRepository>(
-  (ref) => ApiAdjustmentsRepository(ref.watch(apiClientProvider), bookingPrefix: '/bookings'),
+  (ref) => ApiAdjustmentsRepository(
+    ref.watch(apiClientProvider),
+    bookingPrefix: '/bookings',
+  ),
 );
 
 /// Opens the gateway page. Overridden in tests; the default uses the browser.
 final gatewayLauncherProvider = Provider<Future<bool> Function(String url)>(
   (ref) => (url) async {
     final uri = Uri.tryParse(url);
-    if (uri == null || !(uri.isScheme('https') || uri.isScheme('http'))) return false;
+    if (uri == null || !(uri.isScheme('https') || uri.isScheme('http'))) {
+      return false;
+    }
     try {
       return await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
     } on Object {
@@ -102,23 +109,30 @@ String paymentErrorText(AppLocalizations l10n, Object error) {
 }
 
 /// Why the gateway declined, for a failed payment; unknown codes get the generic text.
-String paymentFailureText(AppLocalizations l10n, String? code) => switch (code) {
-  'insufficient_funds' => l10n.payFailInsufficient,
-  'card_expired' => l10n.payFailExpired,
-  'authentication_failed' || '3ds_failed' => l10n.payFailAuth,
-  'cancelled' || 'canceled' || 'user_cancelled' => l10n.payFailCancelled,
-  'timeout' || 'expired' => l10n.payFailTimeout,
-  _ => l10n.payFailDeclined,
-};
+String paymentFailureText(AppLocalizations l10n, String? code) =>
+    switch (code) {
+      'insufficient_funds' => l10n.payFailInsufficient,
+      'card_expired' => l10n.payFailExpired,
+      'authentication_failed' || '3ds_failed' => l10n.payFailAuth,
+      'cancelled' || 'canceled' || 'user_cancelled' => l10n.payFailCancelled,
+      'timeout' || 'expired' => l10n.payFailTimeout,
+      _ => l10n.payFailDeclined,
+    };
 
 /// The explanation of a coupon decision (`reason_code`); the server message is the fallback for unknown codes.
-String couponReasonText(AppLocalizations l10n, String code, {String? fallback}) => switch (code) {
+String couponReasonText(
+  AppLocalizations l10n,
+  String code, {
+  String? fallback,
+}) => switch (code) {
   'eligible' => l10n.cpnReasonEligible,
   'not_found' => l10n.cpnReasonNotFound,
   'not_active' => l10n.cpnReasonNotActive,
   'not_started' => l10n.cpnReasonNotStarted,
   'expired' => l10n.cpnReasonExpired,
-  'exhausted' || 'global_limit_reached' || 'budget_exhausted' => l10n.cpnReasonExhausted,
+  'exhausted' ||
+  'global_limit_reached' ||
+  'budget_exhausted' => l10n.cpnReasonExhausted,
   'category_not_eligible' ||
   'service_family_not_covered' ||
   'service_category_not_covered' ||
@@ -164,7 +178,12 @@ class WalletState {
     return wallets.first;
   }
 
-  WalletState copyWith({List<WalletLine>? lines, int? page, bool? hasMore, bool? loadingMore}) => WalletState(
+  WalletState copyWith({
+    List<WalletLine>? lines,
+    int? page,
+    bool? hasMore,
+    bool? loadingMore,
+  }) => WalletState(
     wallets: wallets,
     lines: lines ?? this.lines,
     page: page ?? this.page,
@@ -181,7 +200,10 @@ class WalletNotifier extends AsyncNotifier<WalletState> {
     final hub = ref.watch(customerEventsProvider);
     final subs = <StreamSubscription<Object?>>[
       hub.events.listen((e) {
-        if (e.name == 'payment.status_changed' || e.name == 'booking.adjustment_changed') unawaited(refresh());
+        if (e.name == 'payment.status_changed' ||
+            e.name == 'booking.adjustment_changed') {
+          unawaited(refresh());
+        }
       }),
       hub.reconnected.listen((_) => unawaited(refresh())),
     ];
@@ -228,9 +250,16 @@ class WalletNotifier extends AsyncNotifier<WalletState> {
     if (current == null || !current.hasMore || current.loadingMore) return;
     state = AsyncData(current.copyWith(loadingMore: true));
     try {
-      final next = await ref.read(paymentsRepositoryProvider).walletLines(page: current.page + 1);
+      final next = await ref
+          .read(paymentsRepositoryProvider)
+          .walletLines(page: current.page + 1);
       state = AsyncData(
-        current.copyWith(lines: [...current.lines, ...next.items], page: next.currentPage, hasMore: next.hasMore, loadingMore: false),
+        current.copyWith(
+          lines: [...current.lines, ...next.items],
+          page: next.currentPage,
+          hasMore: next.hasMore,
+          loadingMore: false,
+        ),
       );
     } on Object {
       state = AsyncData(current.copyWith(loadingMore: false));
@@ -238,7 +267,10 @@ class WalletNotifier extends AsyncNotifier<WalletState> {
   }
 }
 
-final walletProvider = AsyncNotifierProvider<WalletNotifier, WalletState>(WalletNotifier.new, retry: _noAutoRetry);
+final walletProvider = AsyncNotifierProvider<WalletNotifier, WalletState>(
+  WalletNotifier.new,
+  retry: _noAutoRetry,
+);
 
 // ---------------------------------------------------------------------------
 // Saved payment methods
@@ -279,7 +311,9 @@ class PaymentMethodsNotifier extends AsyncNotifier<List<SavedPaymentMethod>> {
       _setupType = type;
       _setupKey = newIdempotencyKey();
     }
-    final result = await ref.read(paymentsRepositoryProvider).setupMethod(type, key: _setupKey!);
+    final result = await ref
+        .read(paymentsRepositoryProvider)
+        .setupMethod(type, key: _setupKey!);
     _setupKey = null;
     _setupType = null;
     await refresh();
@@ -291,14 +325,20 @@ class PaymentMethodsNotifier extends AsyncNotifier<List<SavedPaymentMethod>> {
     await ref.read(paymentsRepositoryProvider).deleteMethod(id, key: key);
     _deleteKeys.remove(id);
     final current = state.value;
-    if (current != null) state = AsyncData([for (final m in current) if (m.id != id) m]);
+    if (current != null) {
+      state = AsyncData([
+        for (final m in current)
+          if (m.id != id) m,
+      ]);
+    }
   }
 }
 
-final paymentMethodsProvider = AsyncNotifierProvider<PaymentMethodsNotifier, List<SavedPaymentMethod>>(
-  PaymentMethodsNotifier.new,
-  retry: _noAutoRetry,
-);
+final paymentMethodsProvider =
+    AsyncNotifierProvider<PaymentMethodsNotifier, List<SavedPaymentMethod>>(
+      PaymentMethodsNotifier.new,
+      retry: _noAutoRetry,
+    );
 
 // ---------------------------------------------------------------------------
 // Coupons
@@ -310,7 +350,12 @@ final myCouponsProvider = FutureProvider.autoDispose<MyCoupons>((ref) {
 
 /// The booking form's coupon check: a server quote, nothing reserved.
 class CouponCheck {
-  const CouponCheck({this.code = '', this.checking = false, this.quote, this.error});
+  const CouponCheck({
+    this.code = '',
+    this.checking = false,
+    this.quote,
+    this.error,
+  });
 
   final String code;
   final bool checking;
@@ -324,11 +369,14 @@ class CouponCheckNotifier extends Notifier<CouponCheck> {
   @override
   CouponCheck build() => const CouponCheck();
 
-  void setCode(String code) => state = CouponCheck(code: code.trim().toUpperCase());
+  void setCode(String code) =>
+      state = CouponCheck(code: code.trim().toUpperCase());
 
   /// A different fare, method or route makes the quote stale; the code stays.
   void invalidateQuote() {
-    if (state.quote != null || state.error != null) state = CouponCheck(code: state.code);
+    if (state.quote != null || state.error != null) {
+      state = CouponCheck(code: state.code);
+    }
   }
 
   void clear() => state = const CouponCheck();
@@ -361,7 +409,9 @@ class CouponCheckNotifier extends Notifier<CouponCheck> {
   }
 }
 
-final couponCheckProvider = NotifierProvider<CouponCheckNotifier, CouponCheck>(CouponCheckNotifier.new);
+final couponCheckProvider = NotifierProvider<CouponCheckNotifier, CouponCheck>(
+  CouponCheckNotifier.new,
+);
 
 // ---------------------------------------------------------------------------
 // Paying: trip, tip and wallet debt
@@ -370,8 +420,11 @@ enum PayKind { trip, tip, debt }
 
 @immutable
 class PayArgs {
-  const PayArgs.trip(String this.bookingId) : kind = PayKind.trip, tipMinor = null;
-  const PayArgs.tip(String this.bookingId, int this.tipMinor) : kind = PayKind.tip;
+  const PayArgs.trip(String this.bookingId)
+    : kind = PayKind.trip,
+      tipMinor = null;
+  const PayArgs.tip(String this.bookingId, int this.tipMinor)
+    : kind = PayKind.tip;
   const PayArgs.debt() : kind = PayKind.debt, bookingId = null, tipMinor = null;
 
   final PayKind kind;
@@ -380,7 +433,10 @@ class PayArgs {
 
   @override
   bool operator ==(Object other) =>
-      other is PayArgs && other.kind == kind && other.bookingId == bookingId && other.tipMinor == tipMinor;
+      other is PayArgs &&
+      other.kind == kind &&
+      other.bookingId == bookingId &&
+      other.tipMinor == tipMinor;
 
   @override
   int get hashCode => Object.hash(kind, bookingId, tipMinor);
@@ -410,7 +466,13 @@ enum PayPhase {
 }
 
 class PayFlowState {
-  const PayFlowState({this.phase = PayPhase.idle, this.payment, this.error, this.openUrl, this.checking = false});
+  const PayFlowState({
+    this.phase = PayPhase.idle,
+    this.payment,
+    this.error,
+    this.openUrl,
+    this.checking = false,
+  });
 
   final PayPhase phase;
   final PaymentInfo? payment;
@@ -420,14 +482,21 @@ class PayFlowState {
   final String? openUrl;
   final bool checking;
 
-  PayFlowState copyWith({PayPhase? phase, PaymentInfo? payment, ApiException? error, String? openUrl, bool? checking, bool clearUrl = false, bool clearError = false}) =>
-      PayFlowState(
-        phase: phase ?? this.phase,
-        payment: payment ?? this.payment,
-        error: clearError ? null : (error ?? this.error),
-        openUrl: clearUrl ? null : (openUrl ?? this.openUrl),
-        checking: checking ?? this.checking,
-      );
+  PayFlowState copyWith({
+    PayPhase? phase,
+    PaymentInfo? payment,
+    ApiException? error,
+    String? openUrl,
+    bool? checking,
+    bool clearUrl = false,
+    bool clearError = false,
+  }) => PayFlowState(
+    phase: phase ?? this.phase,
+    payment: payment ?? this.payment,
+    error: clearError ? null : (error ?? this.error),
+    openUrl: clearUrl ? null : (openUrl ?? this.openUrl),
+    checking: checking ?? this.checking,
+  );
 }
 
 /// One payment intent: start (idempotent per intent), open the gateway page,
@@ -455,7 +524,9 @@ class PaymentFlowNotifier extends Notifier<PayFlowState> {
       hub.events.listen((e) {
         if (e.name != 'payment.status_changed') return;
         final booking = e.data['booking_uuid'];
-        if (args.bookingId == null || booking == args.bookingId) unawaited(check());
+        if (args.bookingId == null || booking == args.bookingId) {
+          unawaited(check());
+        }
       }),
       hub.reconnected.listen((_) => unawaited(check())),
     ];
@@ -468,7 +539,8 @@ class PaymentFlowNotifier extends Notifier<PayFlowState> {
     return const PayFlowState();
   }
 
-  String _fingerprint(PayWith pay) => '${args.kind.name}|${args.bookingId}|${args.tipMinor}|${pay.paymentMethodId}|${pay.method?.value}|${pay.walletPhone}';
+  String _fingerprint(PayWith pay) =>
+      '${args.kind.name}|${args.bookingId}|${args.tipMinor}|${pay.paymentMethodId}|${pay.method?.value}|${pay.walletPhone}';
 
   /// Creates (or resumes) the payment. [openGateway] false only re-reads the
   /// state of an attempt that may already be paid (screen reopened).
@@ -479,11 +551,24 @@ class PaymentFlowNotifier extends Notifier<PayFlowState> {
       _key = newIdempotencyKey();
       _keyFor = fingerprint;
     }
-    state = state.copyWith(phase: PayPhase.starting, clearError: true, clearUrl: true);
+    state = state.copyWith(
+      phase: PayPhase.starting,
+      clearError: true,
+      clearUrl: true,
+    );
     try {
       final payment = switch (args.kind) {
-        PayKind.trip => await _repo.startPayment(args.bookingId!, key: _key!, pay: pay),
-        PayKind.tip => await _repo.tip(args.bookingId!, key: _key!, amountMinor: args.tipMinor!, pay: pay),
+        PayKind.trip => await _repo.startPayment(
+          args.bookingId!,
+          key: _key!,
+          pay: pay,
+        ),
+        PayKind.tip => await _repo.tip(
+          args.bookingId!,
+          key: _key!,
+          amountMinor: args.tipMinor!,
+          pay: pay,
+        ),
         PayKind.debt => await _repo.settleDebt(key: _key!, pay: pay),
       };
       _apply(payment, openGateway: openGateway);
@@ -507,13 +592,19 @@ class PaymentFlowNotifier extends Notifier<PayFlowState> {
       state = PayFlowState(phase: PayPhase.review, payment: payment);
     } else {
       final url = openGateway ? payment.action?.url : null;
-      state = PayFlowState(phase: PayPhase.awaiting, payment: payment, openUrl: url);
+      state = PayFlowState(
+        phase: PayPhase.awaiting,
+        payment: payment,
+        openUrl: url,
+      );
       _schedulePoll();
     }
   }
 
   void _afterPaid() {
-    if (args.bookingId != null) ref.invalidate(bookingTrackerProvider(args.bookingId!));
+    if (args.bookingId != null) {
+      ref.invalidate(bookingTrackerProvider(args.bookingId!));
+    }
     ref.invalidate(walletProvider);
   }
 
@@ -554,7 +645,10 @@ class PaymentFlowNotifier extends Notifier<PayFlowState> {
   }
 }
 
-final paymentFlowProvider = NotifierProvider.autoDispose.family<PaymentFlowNotifier, PayFlowState, PayArgs>(PaymentFlowNotifier.new);
+final paymentFlowProvider = NotifierProvider.autoDispose
+    .family<PaymentFlowNotifier, PayFlowState, PayArgs>(
+      PaymentFlowNotifier.new,
+    );
 
 // ---------------------------------------------------------------------------
 // Adjustments of one booking
@@ -571,11 +665,17 @@ class AdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
     final hub = ref.watch(customerEventsProvider);
     final subs = <StreamSubscription<Object?>>[
       hub.events.listen((e) {
-        if (e.name == 'booking.adjustment_changed' && e.data['booking_uuid'] == bookingId) unawaited(refresh());
+        if (e.name == 'booking.adjustment_changed' &&
+            e.data['booking_uuid'] == bookingId) {
+          unawaited(refresh());
+        }
       }),
       hub.reconnected.listen((_) => unawaited(refresh())),
     ];
-    final timer = Timer.periodic(const Duration(seconds: 30), (_) => unawaited(refresh()));
+    final timer = Timer.periodic(
+      const Duration(seconds: 30),
+      (_) => unawaited(refresh()),
+    );
     ref.onDispose(() {
       timer.cancel();
       for (final s in subs) {
@@ -592,7 +692,9 @@ class AdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
 
   Future<void> refresh() async {
     try {
-      state = AsyncData(await ref.read(adjustmentsRepositoryProvider).list(bookingId));
+      state = AsyncData(
+        await ref.read(adjustmentsRepositoryProvider).list(bookingId),
+      );
     } on Object {
       // Keep what is shown.
     }
@@ -605,13 +707,17 @@ class AdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
         'new:${input.type.value}:${input.scopeItem}:${input.helpers}:${input.floors}:${input.amountMinor}:${input.reason}';
     final key = _keys.putIfAbsent(intent, newIdempotencyKey);
     try {
-      final saved = await ref.read(adjustmentsRepositoryProvider).create(bookingId, input, key: key);
+      final saved = await ref
+          .read(adjustmentsRepositoryProvider)
+          .create(bookingId, input, key: key);
       _keys.remove(intent);
       final current = state.value ?? const <Adjustment>[];
       state = AsyncData([saved, ...current]);
       return saved;
     } on ApiException catch (e) {
-      if (!(e.isOffline || e.kind == ApiFailureKind.server || e.kind == ApiFailureKind.rateLimited)) {
+      if (!(e.isOffline ||
+          e.kind == ApiFailureKind.server ||
+          e.kind == ApiFailureKind.rateLimited)) {
         _keys.remove(intent);
       }
       rethrow;
@@ -619,7 +725,11 @@ class AdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
   }
 
   /// Approves or rejects. One key per (adjustment, verb) intent, reused on retry.
-  Future<void> answer(Adjustment adjustment, {required bool approve, String? note}) async {
+  Future<void> answer(
+    Adjustment adjustment, {
+    required bool approve,
+    String? note,
+  }) async {
     final verb = approve ? 'approve' : 'reject';
     final key = _keys.putIfAbsent('${adjustment.id}:$verb', newIdempotencyKey);
     final repo = ref.read(adjustmentsRepositoryProvider);
@@ -629,18 +739,24 @@ class AdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
     _keys.remove('${adjustment.id}:$verb');
     final current = state.value;
     if (current != null) {
-      state = AsyncData([for (final a in current) a.id == saved.id ? saved : a]);
+      state = AsyncData([
+        for (final a in current) a.id == saved.id ? saved : a,
+      ]);
     }
     ref.invalidate(bookingTrackerProvider(bookingId));
   }
 }
 
-final adjustmentsProvider = AsyncNotifierProvider.autoDispose.family<AdjustmentsNotifier, List<Adjustment>, String>(
-  AdjustmentsNotifier.new,
-  retry: _noAutoRetry,
-);
+final adjustmentsProvider = AsyncNotifierProvider.autoDispose
+    .family<AdjustmentsNotifier, List<Adjustment>, String>(
+      AdjustmentsNotifier.new,
+      retry: _noAutoRetry,
+    );
 
-final receiptProvider = FutureProvider.autoDispose.family<TripReceipt, String>((ref, bookingId) {
+final receiptProvider = FutureProvider.autoDispose.family<TripReceipt, String>((
+  ref,
+  bookingId,
+) {
   ref.watch(sessionStatusProvider);
   return ref.read(adjustmentsRepositoryProvider).receipt(bookingId);
 }, retry: _noAutoRetry);

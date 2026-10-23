@@ -24,13 +24,19 @@ class WalletScreen extends ConsumerWidget {
     final wallet = ref.watch(walletProvider);
     final notifier = ref.read(walletProvider.notifier);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.walTitle), automaticallyImplyLeading: showBack),
+      appBar: AppBar(
+        title: Text(l10n.walTitle),
+        automaticallyImplyLeading: showBack,
+      ),
       body: SafeArea(
         child: AsyncStateView<WalletState>(
           value: wallet,
           onRetry: notifier.reload,
           onSignIn: () => context.go(Routes.auth),
-          builder: (context, data) => RefreshIndicator(onRefresh: notifier.refresh, child: _WalletBody(state: data)),
+          builder: (context, data) => RefreshIndicator(
+            onRefresh: notifier.refresh,
+            child: _WalletBody(state: data),
+          ),
         ),
       ),
     );
@@ -52,7 +58,8 @@ class _WalletBody extends ConsumerWidget {
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-      itemCount: 3 + (lines.isEmpty ? 1 : lines.length) + (state.hasMore ? 1 : 0),
+      itemCount:
+          3 + (lines.isEmpty ? 1 : lines.length) + (state.hasMore ? 1 : 0),
       itemBuilder: (context, i) {
         if (i == 0) {
           return Card(
@@ -73,7 +80,8 @@ class _WalletBody extends ConsumerWidget {
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: primary.inDebt ? AppColors.danger : null,
-                      )),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -90,7 +98,10 @@ class _WalletBody extends ConsumerWidget {
         }
         if (i == 2) {
           return Padding(
-            padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm, bottom: AppSpacing.sm),
+            padding: const EdgeInsetsDirectional.only(
+              top: AppSpacing.sm,
+              bottom: AppSpacing.sm,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -111,8 +122,15 @@ class _WalletBody extends ConsumerWidget {
         final index = i - 3;
         if (lines.isEmpty) {
           return Padding(
-            padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.lg),
-            child: EmptyState(key: const Key('wallet-empty'), icon: Icons.receipt_long_outlined, title: l10n.walEmptyTitle, message: l10n.walEmptyBody),
+            padding: const EdgeInsetsDirectional.symmetric(
+              vertical: AppSpacing.lg,
+            ),
+            child: EmptyState(
+              key: const Key('wallet-empty'),
+              icon: Icons.receipt_long_outlined,
+              title: l10n.walEmptyTitle,
+              message: l10n.walEmptyBody,
+            ),
           );
         }
         if (index >= lines.length) {
@@ -127,7 +145,11 @@ class _WalletBody extends ConsumerWidget {
                   ),
           );
         }
-        return WalletLineTile(line: lines[index], formatter: formatter, balanceLabel: l10n.walBalanceAfter);
+        return WalletLineTile(
+          line: lines[index],
+          formatter: formatter,
+          balanceLabel: l10n.walBalanceAfter,
+        );
       },
     );
   }
@@ -161,16 +183,28 @@ class _DebtCardState extends ConsumerState<_DebtCard> {
           children: [
             Row(
               children: [
-                const Icon(Icons.warning_amber_rounded, color: AppColors.danger),
+                const Icon(
+                  Icons.warning_amber_rounded,
+                  color: AppColors.danger,
+                ),
                 const SizedBox(width: AppSpacing.sm),
-                Expanded(child: Text(l10n.walDebtTitle, style: theme.textTheme.titleMedium)),
+                Expanded(
+                  child: Text(
+                    l10n.walDebtTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(l10n.walDebtBody(formatter.format(widget.debt))),
             const SizedBox(height: AppSpacing.sm),
             if (!_open)
-              AppButton(key: const Key('wallet-settle'), label: l10n.walSettleDebt, onPressed: () => setState(() => _open = true))
+              AppButton(
+                key: const Key('wallet-settle'),
+                label: l10n.walSettleDebt,
+                onPressed: () => setState(() => _open = true),
+              )
             else
               PaymentFlowPanel(
                 args: const PayArgs.debt(),

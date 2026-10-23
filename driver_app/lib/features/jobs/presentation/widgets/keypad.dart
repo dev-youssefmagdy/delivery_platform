@@ -21,7 +21,10 @@ class BigKeypad extends StatelessWidget {
   final String? backspaceLabel;
   final String? decimalLabel;
 
-  Widget _key(BuildContext context, String label, VoidCallback? onTap, {
+  Widget _key(
+    BuildContext context,
+    String label,
+    VoidCallback? onTap, {
     Key? key,
     IconData? icon,
     String? semantics,
@@ -52,7 +55,8 @@ class BigKeypad extends StatelessWidget {
                     ? Icon(icon, size: 30)
                     : IsolatedText(
                         label,
-                        style: theme.textTheme.headlineMedium),
+                        style: theme.textTheme.headlineMedium,
+                      ),
               ),
             ),
           ),

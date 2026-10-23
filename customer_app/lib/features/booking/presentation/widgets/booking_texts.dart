@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:platform_core/platform_core.dart';
 
 import '../../../../app/l10n/generated/app_localizations.dart';
-import '../../../payments/presentation/providers/payments_providers.dart' show couponReasonText;
+import '../../../payments/presentation/providers/payments_providers.dart'
+    show couponReasonText;
 import '../../domain/entities/booking_entities.dart';
 
 /// Booking status as ARB text (the server label is only a fallback).
@@ -32,8 +33,8 @@ String bookingStatusText(
 };
 
 ChipTone bookingStatusTone(BookingStatus status) => switch (status) {
-  BookingStatus.completed || BookingStatus.completedPendingPayment =>
-    ChipTone.success,
+  BookingStatus.completed ||
+  BookingStatus.completedPendingPayment => ChipTone.success,
   BookingStatus.cancelledByCustomer ||
   BookingStatus.cancelledByProvider ||
   BookingStatus.cancelledByOperations ||
@@ -67,19 +68,18 @@ String reportCategoryText(AppLocalizations l10n, ReportCategory c) =>
       ReportCategory.other => l10n.bkReportOther,
     };
 
-String ratingTagText(AppLocalizations l10n, ProviderRatingTag t) =>
-    switch (t) {
-      ProviderRatingTag.professional => l10n.bkTagProfessional,
-      ProviderRatingTag.cleanVehicle => l10n.bkTagCleanVehicle,
-      ProviderRatingTag.safeDriving => l10n.bkTagSafeDriving,
-      ProviderRatingTag.goodCommunication => l10n.bkTagGoodCommunication,
-      ProviderRatingTag.onTime => l10n.bkTagOnTime,
-      ProviderRatingTag.carefulWithItems => l10n.bkTagCarefulWithItems,
-      ProviderRatingTag.late => l10n.bkTagLate,
-      ProviderRatingTag.unsafeDriving => l10n.bkTagUnsafeDriving,
-      ProviderRatingTag.rude => l10n.bkTagRude,
-      ProviderRatingTag.dirtyVehicle => l10n.bkTagDirtyVehicle,
-    };
+String ratingTagText(AppLocalizations l10n, ProviderRatingTag t) => switch (t) {
+  ProviderRatingTag.professional => l10n.bkTagProfessional,
+  ProviderRatingTag.cleanVehicle => l10n.bkTagCleanVehicle,
+  ProviderRatingTag.safeDriving => l10n.bkTagSafeDriving,
+  ProviderRatingTag.goodCommunication => l10n.bkTagGoodCommunication,
+  ProviderRatingTag.onTime => l10n.bkTagOnTime,
+  ProviderRatingTag.carefulWithItems => l10n.bkTagCarefulWithItems,
+  ProviderRatingTag.late => l10n.bkTagLate,
+  ProviderRatingTag.unsafeDriving => l10n.bkTagUnsafeDriving,
+  ProviderRatingTag.rude => l10n.bkTagRude,
+  ProviderRatingTag.dirtyVehicle => l10n.bkTagDirtyVehicle,
+};
 
 String priceFactorText(AppLocalizations l10n, PriceFactor f) =>
     switch (f.code) {
@@ -219,7 +219,11 @@ String bookingErrorText(AppLocalizations l10n, Object error) {
   }
   if (error.code.startsWith('coupon_')) {
     final reason = error.meta['reason_code'];
-    return couponReasonText(l10n, reason is String ? reason : error.code.substring(7), fallback: error.message);
+    return couponReasonText(
+      l10n,
+      reason is String ? reason : error.code.substring(7),
+      fallback: error.message,
+    );
   }
   return error.message ?? l10n.errorGenericBody;
 }

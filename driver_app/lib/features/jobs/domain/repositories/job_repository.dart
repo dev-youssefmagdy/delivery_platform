@@ -1,4 +1,5 @@
 import 'package:platform_core/platform_core.dart';
+
 import '../entities/job_entities.dart';
 
 /// Everything the driver does with requests, offers and jobs. Every write

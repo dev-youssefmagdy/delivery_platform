@@ -16,13 +16,18 @@ class PayoutMethodsScreen extends ConsumerStatefulWidget {
   const PayoutMethodsScreen({super.key});
 
   @override
-  ConsumerState<PayoutMethodsScreen> createState() => _PayoutMethodsScreenState();
+  ConsumerState<PayoutMethodsScreen> createState() =>
+      _PayoutMethodsScreenState();
 }
 
 class _PayoutMethodsScreenState extends ConsumerState<PayoutMethodsScreen> {
   String? _busyId;
 
-  Future<void> _run(String id, Future<void> Function() action, {String? done}) async {
+  Future<void> _run(
+    String id,
+    Future<void> Function() action, {
+    String? done,
+  }) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busyId = id);
@@ -47,7 +52,11 @@ class _PayoutMethodsScreenState extends ConsumerState<PayoutMethodsScreen> {
       destructive: true,
     );
     if (!ok || !mounted) return;
-    await _run(m.id, () => ref.read(payoutMethodsProvider.notifier).delete(m.id), done: l10n.pomDeleted);
+    await _run(
+      m.id,
+      () => ref.read(payoutMethodsProvider.notifier).delete(m.id),
+      done: l10n.pomDeleted,
+    );
   }
 
   @override
@@ -74,32 +83,79 @@ class _PayoutMethodsScreenState extends ConsumerState<PayoutMethodsScreen> {
             child: list.isEmpty
                 ? ListView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    children: [Padding(padding: const EdgeInsetsDirectional.only(top: AppSpacing.xl), child: EmptyState(key: const Key('methods-empty'), icon: Icons.account_balance_outlined, title: l10n.pomEmptyTitle, message: l10n.pomEmptyBody))],
+                    children: [
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(
+                          top: AppSpacing.xl,
+                        ),
+                        child: EmptyState(
+                          key: const Key('methods-empty'),
+                          icon: Icons.account_balance_outlined,
+                          title: l10n.pomEmptyTitle,
+                          message: l10n.pomEmptyBody,
+                        ),
+                      ),
+                    ],
                   )
                 : ListView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsetsDirectional.fromSTEB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 96),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      96,
+                    ),
                     children: [
                       for (final m in list)
                         Card(
-                          margin: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+                          margin: const EdgeInsetsDirectional.only(
+                            bottom: AppSpacing.sm,
+                          ),
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+                            padding: const EdgeInsetsDirectional.all(
+                              AppSpacing.md,
+                            ),
                             child: Column(
                               key: Key('pm-${m.id}'),
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
-                                    Icon(m.kind == PayoutMethodKind.mobileWallet ? Icons.phone_android : Icons.account_balance),
+                                    Icon(
+                                      m.kind == PayoutMethodKind.mobileWallet
+                                          ? Icons.phone_android
+                                          : Icons.account_balance,
+                                    ),
                                     const SizedBox(width: AppSpacing.sm),
-                                    Expanded(child: Text(m.label, style: theme.textTheme.titleMedium)),
-                                    StatusChip(label: m.verified ? l10n.pomVerified : l10n.pomUnverified, tone: m.verified ? ChipTone.success : ChipTone.warning),
+                                    Expanded(
+                                      child: Text(
+                                        m.label,
+                                        style: theme.textTheme.titleMedium,
+                                      ),
+                                    ),
+                                    StatusChip(
+                                      label: m.verified
+                                          ? l10n.pomVerified
+                                          : l10n.pomUnverified,
+                                      tone: m.verified
+                                          ? ChipTone.success
+                                          : ChipTone.warning,
+                                    ),
                                   ],
                                 ),
-                                Text('${m.kindLabel}${m.last4 == null ? '' : ' ${ltrIsolate('•••• ${m.last4}')}'}'),
-                                if (m.isDefault) Text(l10n.pomDefault, style: theme.textTheme.bodySmall),
-                                if (!m.verified) Text(l10n.pomUnverifiedNote, style: theme.textTheme.bodySmall),
+                                Text(
+                                  '${m.kindLabel}${m.last4 == null ? '' : ' ${ltrIsolate('•••• ${m.last4}')}'}',
+                                ),
+                                if (m.isDefault)
+                                  Text(
+                                    l10n.pomDefault,
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                if (!m.verified)
+                                  Text(
+                                    l10n.pomUnverifiedNote,
+                                    style: theme.textTheme.bodySmall,
+                                  ),
                                 const SizedBox(height: AppSpacing.xs),
                                 if (_busyId == m.id)
                                   const LinearProgressIndicator()
@@ -110,11 +166,26 @@ class _PayoutMethodsScreenState extends ConsumerState<PayoutMethodsScreen> {
                                       if (!m.isDefault)
                                         TextButton(
                                           key: Key('pm-default-${m.id}'),
-                                          onPressed: () => _run(m.id, () => notifier.makeDefault(m.id), done: l10n.pomDefaultSet),
+                                          onPressed: () => _run(
+                                            m.id,
+                                            () => notifier.makeDefault(m.id),
+                                            done: l10n.pomDefaultSet,
+                                          ),
                                           child: Text(l10n.pomMakeDefault),
                                         ),
-                                      TextButton(key: Key('pm-edit-${m.id}'), onPressed: () => context.push(Routes.payoutMethodNew, extra: m), child: Text(l10n.pomEdit)),
-                                      TextButton(key: Key('pm-delete-${m.id}'), onPressed: () => _delete(m), child: Text(l10n.pomDelete)),
+                                      TextButton(
+                                        key: Key('pm-edit-${m.id}'),
+                                        onPressed: () => context.push(
+                                          Routes.payoutMethodNew,
+                                          extra: m,
+                                        ),
+                                        child: Text(l10n.pomEdit),
+                                      ),
+                                      TextButton(
+                                        key: Key('pm-delete-${m.id}'),
+                                        onPressed: () => _delete(m),
+                                        child: Text(l10n.pomDelete),
+                                      ),
                                     ],
                                   ),
                               ],

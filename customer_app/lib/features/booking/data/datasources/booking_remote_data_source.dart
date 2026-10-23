@@ -50,7 +50,8 @@ class BookingRemoteDataSource {
     },
   );
 
-  Future<ApiResult<Object?>> offers(String id) => _api.get('/bookings/$id/offers');
+  Future<ApiResult<Object?>> offers(String id) =>
+      _api.get('/bookings/$id/offers');
 
   Future<ApiResult<Object?>> accept(String id, String offerId, String key) =>
       _api.post('/bookings/$id/offers/$offerId/accept', idempotencyKey: key);

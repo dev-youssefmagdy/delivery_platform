@@ -137,9 +137,8 @@ class _CancelJobScreenState extends ConsumerState<CancelJobScreen> {
       body: SafeArea(
         child: AsyncStateView<Job>(
           value: job,
-          onRetry: () => ref
-              .read(jobTrackerProvider(widget.bookingId).notifier)
-              .reload(),
+          onRetry: () =>
+              ref.read(jobTrackerProvider(widget.bookingId).notifier).reload(),
           onSignIn: () => ref.read(authActionsProvider).logout(),
           builder: (context, data) {
             if (!data.can(JobAction.cancel)) {
@@ -217,7 +216,9 @@ class _CancelJobScreenState extends ConsumerState<CancelJobScreen> {
                           Text(
                             preview.free || preview.fee == null
                                 ? l10n.jbCancelFree
-                                : l10n.jbCancelFee(formatter.format(preview.fee!)),
+                                : l10n.jbCancelFee(
+                                    formatter.format(preview.fee!),
+                                  ),
                             style: theme.textTheme.titleMedium,
                           ),
                           if (preview.message != null &&

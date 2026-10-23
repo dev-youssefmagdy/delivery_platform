@@ -13,21 +13,23 @@ String custodyText(AppLocalizations l10n, CustodyStatus s) => switch (s) {
   CustodyStatus.unknown => l10n.dlCustodyUnknown,
 };
 
-String attemptOutcomeText(AppLocalizations l10n, AttemptOutcome o) => switch (o) {
-  AttemptOutcome.recipientUnavailable => l10n.dlOutUnavailable,
-  AttemptOutcome.recipientRefused => l10n.dlOutRefused,
-  AttemptOutcome.wrongAddress => l10n.dlOutWrongAddress,
-  AttemptOutcome.otpFailed => l10n.dlOutOtpFailed,
-  AttemptOutcome.restrictedItem => l10n.dlOutRestricted,
-  AttemptOutcome.other || AttemptOutcome.unknown => l10n.dlOutOther,
-};
+String attemptOutcomeText(AppLocalizations l10n, AttemptOutcome o) =>
+    switch (o) {
+      AttemptOutcome.recipientUnavailable => l10n.dlOutUnavailable,
+      AttemptOutcome.recipientRefused => l10n.dlOutRefused,
+      AttemptOutcome.wrongAddress => l10n.dlOutWrongAddress,
+      AttemptOutcome.otpFailed => l10n.dlOutOtpFailed,
+      AttemptOutcome.restrictedItem => l10n.dlOutRestricted,
+      AttemptOutcome.other || AttemptOutcome.unknown => l10n.dlOutOther,
+    };
 
-String resolutionText(AppLocalizations l10n, AttemptResolution r) => switch (r) {
-  AttemptResolution.retry => l10n.dlResRetry,
-  AttemptResolution.returnToSender => l10n.dlResReturn,
-  AttemptResolution.operations => l10n.dlResOperations,
-  AttemptResolution.unknown => l10n.dlResUnknown,
-};
+String resolutionText(AppLocalizations l10n, AttemptResolution r) =>
+    switch (r) {
+      AttemptResolution.retry => l10n.dlResRetry,
+      AttemptResolution.returnToSender => l10n.dlResReturn,
+      AttemptResolution.operations => l10n.dlResOperations,
+      AttemptResolution.unknown => l10n.dlResUnknown,
+    };
 
 String proofTypeText(AppLocalizations l10n, ProofType t) => switch (t) {
   ProofType.photo => l10n.dlProofPhoto,

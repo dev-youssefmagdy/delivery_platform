@@ -77,7 +77,8 @@ abstract final class BookingDto {
       durationSeconds: _int(m['duration_s']) ?? 0,
       polyline: '${m['polyline'] ?? ''}',
       guidance: guidance(m['price_guidance']),
-      guidanceUnavailableReason: m['price_guidance_unavailable_reason'] as String?,
+      guidanceUnavailableReason:
+          m['price_guidance_unavailable_reason'] as String?,
     );
   }
 
@@ -287,8 +288,7 @@ abstract final class BookingDto {
   static CancellationPreview cancellationPreview(Map<String, dynamic> meta) {
     final c = _map(meta['cancellation']);
     return CancellationPreview(
-      fee:
-          money(c['fee']) ?? const Money(minor: 0, currency: 'EGP'),
+      fee: money(c['fee']) ?? const Money(minor: 0, currency: 'EGP'),
       free: c['free'] == true,
       message: c['message'] as String?,
       stageLabel: c['stage_label'] as String?,

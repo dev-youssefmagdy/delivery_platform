@@ -40,7 +40,9 @@ class _LiveTripViewState extends ConsumerState<LiveTripView> {
     final l10n = AppLocalizations.of(context);
     setState(() => _sharing = true);
     try {
-      final link = await ref.read(bookingActionsProvider).startShare(booking.id);
+      final link = await ref
+          .read(bookingActionsProvider)
+          .startShare(booking.id);
       if (!mounted) return;
       setState(() => _shared = true);
       await SharePlus.instance.share(
@@ -95,8 +97,7 @@ class _LiveTripViewState extends ConsumerState<LiveTripView> {
             ),
           ),
         ),
-        if (trip.providerLocationVisible)
-          _LocationFreshness(fix: fix),
+        if (trip.providerLocationVisible) _LocationFreshness(fix: fix),
         const SizedBox(height: AppSpacing.sm),
         if (trip.supportFlagged)
           _Notice(
@@ -147,7 +148,11 @@ class _LiveTripViewState extends ConsumerState<LiveTripView> {
         ],
         if (booking.isAssigned) ...[
           const SizedBox(height: AppSpacing.md),
-          AdjustmentsSection(bookingId: booking.id, scoped: booking.scope.agreed != null, canRequest: booking.can(BookingAction.requestAdjustment)),
+          AdjustmentsSection(
+            bookingId: booking.id,
+            scoped: booking.scope.agreed != null,
+            canRequest: booking.can(BookingAction.requestAdjustment),
+          ),
         ],
         const SizedBox(height: AppSpacing.md),
         _StatusTimeline(booking: booking),
@@ -241,7 +246,9 @@ class _LocationFreshness extends StatelessWidget {
               ? _Notice(
                   key: const Key('stale-location-banner'),
                   icon: Icons.signal_cellular_connected_no_internet_0_bar,
-                  text: l10n.bkLocationStale(age.inMinutes < 1 ? 1 : age.inMinutes),
+                  text: l10n.bkLocationStale(
+                    age.inMinutes < 1 ? 1 : age.inMinutes,
+                  ),
                 )
               : Text(
                   l10n.bkLocationUpdated(age.inSeconds < 0 ? 0 : age.inSeconds),
@@ -335,7 +342,10 @@ class _ProviderCard extends StatelessWidget {
                   if (provider.ratingCount > 0)
                     Text(
                       l10n.bkOfferRating(
-                        formatter.number(provider.ratingAverage, fractionDigits: 1),
+                        formatter.number(
+                          provider.ratingAverage,
+                          fractionDigits: 1,
+                        ),
                         provider.ratingCount,
                       ),
                       style: theme.textTheme.bodySmall,
@@ -391,17 +401,18 @@ class _PinCard extends StatelessWidget {
         padding: const EdgeInsetsDirectional.all(AppSpacing.md),
         child: Column(
           children: [
-            Text(l10n.bkPinTitle, style: Theme.of(context).textTheme.titleSmall),
+            Text(
+              l10n.bkPinTitle,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             const SizedBox(height: AppSpacing.xs),
             Directionality(
               textDirection: TextDirection.ltr,
               child: Text(
                 pin,
                 key: const Key('trip-pin'),
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                  letterSpacing: 8,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.displayMedium
+                    ?.copyWith(letterSpacing: 8, fontWeight: FontWeight.w700),
               ),
             ),
             Text(
@@ -434,7 +445,10 @@ class _StatusTimeline extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.bkTimelineTitle, style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          l10n.bkTimelineTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Timeline(
           steps: [

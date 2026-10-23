@@ -40,12 +40,22 @@ class EarningsTab extends ConsumerWidget {
             SegmentedButton<EarningsPeriod>(
               key: const Key('earnings-period'),
               segments: [
-                ButtonSegment(value: EarningsPeriod.day, label: Text(l10n.ernDay)),
-                ButtonSegment(value: EarningsPeriod.week, label: Text(l10n.ernWeek)),
-                ButtonSegment(value: EarningsPeriod.month, label: Text(l10n.ernMonth)),
+                ButtonSegment(
+                  value: EarningsPeriod.day,
+                  label: Text(l10n.ernDay),
+                ),
+                ButtonSegment(
+                  value: EarningsPeriod.week,
+                  label: Text(l10n.ernWeek),
+                ),
+                ButtonSegment(
+                  value: EarningsPeriod.month,
+                  label: Text(l10n.ernMonth),
+                ),
               ],
               selected: {period},
-              onSelectionChanged: (s) => ref.read(earningsPeriodProvider.notifier).select(s.first),
+              onSelectionChanged: (s) =>
+                  ref.read(earningsPeriodProvider.notifier).select(s.first),
             ),
             const SizedBox(height: AppSpacing.md),
             _TotalsCard(summary: data),
@@ -123,15 +133,34 @@ class _TotalsCard extends ConsumerWidget {
             IsolatedText(
               f.format(summary.earned),
               key: const Key('earnings-total'),
-              style: theme.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w700)),
+              style: theme.textTheme.displaySmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             Text(l10n.ernJobs(summary.jobs)),
             const Divider(),
             AmountRow(label: l10n.ernGross, value: f.format(summary.gross)),
-            AmountRow(label: l10n.ernCommission, value: '-${f.format(summary.commission)}'),
-            if (!summary.discountProvider.isZero) AmountRow(label: l10n.ernProviderDiscount, value: '-${f.format(summary.discountProvider)}'),
-            if (!summary.tips.isZero) AmountRow(label: l10n.ernTips, value: f.format(summary.tips)),
-            AmountRow(label: l10n.ernNet, value: f.format(summary.net), bold: true),
-            if (!summary.cashCollected.isZero) AmountRow(label: l10n.ernCash, value: f.format(summary.cashCollected)),
+            AmountRow(
+              label: l10n.ernCommission,
+              value: '-${f.format(summary.commission)}',
+            ),
+            if (!summary.discountProvider.isZero)
+              AmountRow(
+                label: l10n.ernProviderDiscount,
+                value: '-${f.format(summary.discountProvider)}',
+              ),
+            if (!summary.tips.isZero)
+              AmountRow(label: l10n.ernTips, value: f.format(summary.tips)),
+            AmountRow(
+              label: l10n.ernNet,
+              value: f.format(summary.net),
+              bold: true,
+            ),
+            if (!summary.cashCollected.isZero)
+              AmountRow(
+                label: l10n.ernCash,
+                value: f.format(summary.cashCollected),
+              ),
           ],
         ),
       ),
@@ -149,7 +178,10 @@ class _SeriesChart extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final f = ref.watch(moneyFormatterProvider);
-    final peak = summary.series.fold<int>(0, (m, d) => d.earnings.minor > m ? d.earnings.minor : m);
+    final peak = summary.series.fold<int>(
+      0,
+      (m, d) => d.earnings.minor > m ? d.earnings.minor : m,
+    );
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
@@ -173,9 +205,14 @@ class _SeriesChart extends ConsumerWidget {
                           child: Align(
                             alignment: Alignment.bottomCenter,
                             child: FractionallySizedBox(
-                              heightFactor: peak == 0 ? 0.02 : (d.earnings.minor / peak).clamp(0.02, 1.0),
+                              heightFactor: peak == 0
+                                  ? 0.02
+                                  : (d.earnings.minor / peak).clamp(0.02, 1.0),
                               child: DecoratedBox(
-                                decoration: BoxDecoration(color: AppColors.brand, borderRadius: BorderRadius.circular(3)),
+                                decoration: BoxDecoration(
+                                  color: AppColors.brand,
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
                               ),
                             ),
                           ),
@@ -219,9 +256,16 @@ class _CategoriesCard extends ConsumerWidget {
               for (final c in summary.byCategory)
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(c.name.resolve(language).isEmpty ? (c.code ?? '') : c.name.resolve(language)),
+                  title: Text(
+                    c.name.resolve(language).isEmpty
+                        ? (c.code ?? '')
+                        : c.name.resolve(language),
+                  ),
                   subtitle: Text(l10n.ernJobs(c.jobs)),
-                  trailing: IsolatedText(f.format(c.earnings), style: theme.textTheme.titleMedium),
+                  trailing: IsolatedText(
+                    f.format(c.earnings),
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ),
           ],
         ),
@@ -252,8 +296,16 @@ class _WalletCard extends ConsumerWidget {
             Text(l10n.walLedgerTitle, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppSpacing.xs),
             AmountRow(label: l10n.ernWalletBalance, value: f.format(w.balance)),
-            if (!w.reserved.isZero) AmountRow(label: l10n.ernWalletReserved, value: f.format(w.reserved)),
-            AmountRow(label: l10n.ernWalletAvailable, value: f.format(w.available), bold: true),
+            if (!w.reserved.isZero)
+              AmountRow(
+                label: l10n.ernWalletReserved,
+                value: f.format(w.reserved),
+              ),
+            AmountRow(
+              label: l10n.ernWalletAvailable,
+              value: f.format(w.available),
+              bold: true,
+            ),
           ],
         ),
       ),

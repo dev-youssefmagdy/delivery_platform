@@ -111,7 +111,9 @@ class ClosedView extends ConsumerWidget {
                     )
                   else
                     Text(l10n.bkCancelledNoFee),
-                  if (cancellation.fee != null && !cancellation.fee!.isZero && booking.status == BookingStatus.cancelledByCustomer) ...[
+                  if (cancellation.fee != null &&
+                      !cancellation.fee!.isZero &&
+                      booking.status == BookingStatus.cancelledByCustomer) ...[
                     const SizedBox(height: AppSpacing.xs),
                     Text(l10n.walFeeDebtNote, style: theme.textTheme.bodySmall),
                     TextButton(
@@ -135,7 +137,8 @@ class ClosedView extends ConsumerWidget {
           ReceiptSection(
             receipt: booking.receipt!,
             formatter: formatter,
-            onOpenFull: booking.can(BookingAction.viewReceipt) || booking.isFinished
+            onOpenFull:
+                booking.can(BookingAction.viewReceipt) || booking.isFinished
                 ? () => context.push(Routes.bookingReceipt(booking.id))
                 : null,
           ),
@@ -171,7 +174,8 @@ class ClosedView extends ConsumerWidget {
               key: const Key('trip-help-button'),
               icon: const Icon(Icons.support_agent_outlined),
               label: Text(l10n.supportHelpAboutTrip),
-              onPressed: () => context.push(Routes.bookingSupport(booking.id, booking.code)),
+              onPressed: () =>
+                  context.push(Routes.bookingSupport(booking.id, booking.code)),
             ),
             if (booking.can(BookingAction.report))
               OutlinedButton.icon(
@@ -180,9 +184,7 @@ class ClosedView extends ConsumerWidget {
                 label: Text(l10n.bkReportIssue),
                 onPressed: () => context.push(Routes.bookingReport(booking.id)),
               ),
-            if (!noProvider &&
-                (booking.isFinished ||
-                    booking.isCancelled))
+            if (!noProvider && (booking.isFinished || booking.isCancelled))
               FilledButton.icon(
                 key: const Key('rebook-button'),
                 icon: const Icon(Icons.replay),

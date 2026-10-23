@@ -39,7 +39,8 @@ class TicketsScreen extends ConsumerWidget {
             hasMore: data.hasMore,
             loadingMore: data.loadingMore,
             strings: supportStrings(l10n),
-            onFilter: (value) => ref.read(ticketFilterProvider.notifier).select(value),
+            onFilter: (value) =>
+                ref.read(ticketFilterProvider.notifier).select(value),
             onLoadMore: () => ref.read(ticketsProvider.notifier).loadMore(),
             onRefresh: () async => ref.invalidate(ticketsProvider),
             onOpen: (ticket) => context.push(Routes.supportTicket(ticket.id)),

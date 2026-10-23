@@ -80,7 +80,7 @@ plain per-minute cron is enough. **Dispatch waves and search expiry are delayed 
 (`QUEUE_CONNECTION=redis`). The `sync` driver ignores delays, so a booking created with it would chain all waves immediately
 (the PHPUnit suite fakes these jobs for that reason).**
 
-Production process management (supervisor/systemd), TLS and reverse proxy are documented in P6.4.
+Production process management, TLS and reverse proxy: `docs/DEPLOYMENT.md`.
 
 ## 4. Flutter apps
 

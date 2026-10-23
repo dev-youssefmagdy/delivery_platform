@@ -38,7 +38,7 @@
 | P4.2 | Furniture moving & freight backend (scoped offers) | P1 | 🟡 | 2026-11-07 |
 | P4.3 | Flutter courier/moving/freight flows | P1 | 🟡 | 2026-11-08 |
 | P4.4 | Admin & E2E for non-ride services | P1 | 🟡 | 2026-11-09 |
-| P5.1 | Safety center, SOS, trusted contacts | P1 | ❌ | — |
+| P5.1 | Safety center, SOS, trusted contacts | P1 | 🟡 | 2026-11-10 (gate not run) |
 | P5.2 | Reviews moderation & risk signals | P1 | 🟡 | gate not run (2026-11-11) |
 | P5.3 | Operations dashboard, reports, exports | P1 | 🟡 | gate not run (see section) |
 | P5.4 | CMS | P1 | 🟡 | gate not run (see section) |
@@ -48,9 +48,14 @@
 | P6.1 | Security, IDOR, race & webhook review | P0 | 🟡 | 2026-11-17 (gate not run) |
 | P6.2 | Performance, indexes, retention | P0 | 🟡 | 2026-11-18 (gate not run) |
 | P6.3 | Localization, RTL & accessibility review | P0 | 🟡 | 2026-11-19 (gate not run) |
-| P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
+| P6.4 | CI, deployment, backups, release report | P0 | 🟡 | 2026-11-20 (gate not run) |
 
 ---
+
+## P6.4 — CI, deployment, backups, release report · 🟡 2026-11-20 (gate NOT run)
+
+Committed directly on `main`. **By user instruction nothing was executed: no test, lint, analysis, build, backup or restore.** Built: `.github/workflows/{backend,flutter,scanners}.yml`, `scripts/verify-all.sh` (+ `make verify-all`), `docs/DEPLOYMENT.md`, extended `docs/OPERATIONS.md` (backups, restore procedure marked never test-restored, monitoring, runbooks, incidents), `backend/.env.production.example`, `README.md`, `docs/RELEASE_REPORT.md` (readiness, credentials and first-run checklists, limitations, verification commands, MISSED_TESTS order). `LOG_SLACK_LEVEL` added so the pager channel no longer inherits `LOG_LEVEL`. Corrected the stale P5.1 table row to 🟡.
+Checks run: `python yaml.safe_load` on the workflows, `bash -n` on `verify-all.sh`, `php -l` on `config/logging.php`, grep audits (RELEASE_REPORT section 8). Every milestone P2.4 to P6.4 is 🟡; P2.9 is not built.
 
 ## P4.1 — Courier/parcel backend · 🟡 2026-11-07 (gate NOT run)
 

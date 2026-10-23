@@ -47,8 +47,15 @@ final class SecurityHeaders
             'Permissions-Policy' => 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
             'Cross-Origin-Opener-Policy' => 'same-origin',
             'Referrer-Policy' => $profile === 'website' ? 'strict-origin-when-cross-origin' : 'no-referrer',
-            'Content-Security-Policy' => $this->policy($profile, $nonce),
         ];
+
+        // CSP_MODE: `enforce` (default), `report-only` (the browser logs violations but blocks nothing, for a first rollout or a
+        // suspected false positive) or `off`.
+        $mode = (string) config('website.csp_mode', 'enforce');
+
+        if ($mode !== 'off') {
+            $headers[$mode === 'report-only' ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy'] = $this->policy($profile, $nonce);
+        }
 
         if ($request->isSecure() && ! app()->environment(['local', 'testing'])) {
             $headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains';

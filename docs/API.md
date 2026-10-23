@@ -115,6 +115,8 @@ The `idempotent` middleware (`App\Http\Middleware\Idempotency`, table `idempoten
 
 ## 7a. Rate limits
 
+**Response headers and CORS (P6.1).** Every API response carries `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `Content-Security-Policy: default-src 'none'; frame-ancestors 'none'`, a Permissions-Policy and (over HTTPS, outside local) `Strict-Transport-Security`. CORS allows no browser origin unless `CORS_ALLOWED_ORIGINS` lists it (the mobile apps do not need CORS); allowed request headers are `Accept`, `Accept-Language`, `Authorization`, `Content-Type`, `Idempotency-Key`, `X-App`, `X-Request-Id`, `X-Requested-With`; `Idempotent-Replayed` and `X-Request-Id` are exposed. The per-route inventory (guard, token ability, active-account check, idempotency, throttle, signed) is `docs/ROUTE_INVENTORY.md`.
+
 Named limiters (`App\Enums\Common\RateLimiterName`, limits in `config/rate_limits.php` / `RATE_LIMIT_*` env): `api`
 (120/min per user or IP, applied to the whole `api` group), `otp-request` (3/min and 10/h per phone **and** per IP),
 `otp-verify` (5/min per phone+IP), `location` (30/min per user), `offers` (20/min per user), `public-forms` (5/min per IP),

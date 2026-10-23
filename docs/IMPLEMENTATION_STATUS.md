@@ -45,7 +45,7 @@
 | P5.5 | Public website | P1 | 🟡 | gate not run (see section) |
 | P5.6 | Integration health, app versions, feature flags, system pages | P1 | 🟡 | gate not run (see section) |
 | P5.7 | Referrals, loyalty, provider incentives | P2 | 🟡 | gate not run (see section) |
-| P6.1 | Security, IDOR, race & webhook review | P0 | ❌ | — |
+| P6.1 | Security, IDOR, race & webhook review | P0 | 🟡 | 2026-11-17 (gate not run) |
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
 | P6.4 | CI, deployment, backups, release report | P0 | ❌ | — |
@@ -1203,3 +1203,18 @@ No browser or device pass (RTL layout, share sheet, clipboard, the Account / Ear
 
 ### Next (Phase 6)
 Add a website `/r/{code}` landing that opens the app / store, push notifications for rewards (`NotificationEvent`s), an install-referrer or deep-link capture of the code in both apps, then run the deferred backlog (P5.1 to P5.7 lists). Turn the three flags on per city / percentage in Admin > Feature flags to roll out; watch Risk signals of type `referral_abuse`.
+
+## P6.1 — Security, IDOR, race & webhook review · 🟡 2026-11-17 (gate NOT run)
+
+Committed directly on `main`. ADR-203..206. **By user instruction no test, pint, phpstan, `php artisan test`, flutter, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; the automated checks that should exist (API route guard, IDOR matrix, headers / CORS / allowlist tests, extended concurrency suite) are in `MISSED_TESTS.md` (P6.1). Full report: `docs/SECURITY_REVIEW.md`; route inventory: `docs/ROUTE_INVENTORY.md` (`scripts/route-inventory.php`).
+
+### Done
+- **Audit by reading** of routes (167 API, 548 admin, website, channels, webhook), IDOR for every resource type, signed URLs, uploads, offer selection / expiry, coupon reservation, payout reservation and state machine, ledger lock ordering, webhook dedupe, idempotency middleware, settlement hooks, sessions, MFA, secrets, dependencies, logs. No exploitable authorization or race defect found in the money paths.
+- **Fixed**: 19 admin routes with authorization only inside their FormRequest now carry route-level `can:` (the P1.1 guard test would have failed); security headers + CSP (`SecurityHeaders`, `CSP_MODE`, `CSP_EXTRA_IMG_SRC`); strict CORS (`CORS_ALLOWED_ORIGINS`); `TRUSTED_PROXIES`; secure session cookie default in production; `APP_DEBUG` refused in production; local disk `/storage` route off; PII / coordinate redaction in logs; Android backup off; **admin IP allowlist** (typed setting `admin_ip_allowlist`, default off, refuses a list that excludes the saver); **`admin:sync-role-permissions`** with ledger table `admin_role_permission_grants` (carry-over: stored roles lacking new permissions).
+- **Checks run**: `php -l`, `route:list --json` script, in-process header probes, rolled-back HTTP as an MFA-enrolled super admin (settings, allowlist validation), `migrate`, permission sync (17 grants then 0), secret regex sweep (tree + history), `composer audit` (clean), `npm audit` (dev-only vitest advisory), `flutter pub outdated`.
+
+### Known gaps (details in SECURITY_REVIEW.md section 3)
+CSP never seen in a browser (admin keeps `unsafe-eval` for Alpine; start with `CSP_MODE=report-only`); idempotency lock window and ledger replay under REPEATABLE READ (no double posting possible); webhook reject rows unpruned (P6.2); SOS skips the API limiter by design; MFA is by role not permission; credit usage restrictions at spend time not enforced and no push for rewards (carry-over, documented); gitleaks not installed (regex sweep used).
+
+### Next (P6.2)
+Indexes for the hot paths named in the review (`admin_role_permission_grants` is tiny; `gateway_webhook_events` rejected rows, login events, sessions need retention), then P6.3 / P6.4: run the deferred test backlog (all MISSED_TESTS sections), a browser pass with the CSP, `composer install --no-dev` images, `TRUSTED_PROXIES`, run `admin:sync-role-permissions` on every deploy.

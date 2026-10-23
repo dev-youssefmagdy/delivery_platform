@@ -1040,3 +1040,25 @@ No real attempt-resolution, proof-picture or attachment stream was exercised (no
 
 ### Next (P5)
 The safety center can link its cases to this tab; reuse the signed-and-audited stream pattern for SOS evidence. Run the deferred test backlog before Phase 5 closes.
+
+
+---
+
+## P5.1 — Safety center, SOS, trusted contacts · 🟡 2026-11-10 (gate NOT run)
+
+Committed directly on `main`. ADR-167..172. **By user instruction no test, pint, phpstan, `php artisan test`, `flutter test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P5.1).
+
+### Built
+- **Backend**: tables `trusted_contacts` (encrypted phone, three consent flags), `safety_incidents` (encrypted narrative / callback / location, severity, priority, status, SLA, assignment, escalation, outcome, legal hold), `safety_incident_events` (append-only, encrypted bodies), `safety_incident_attachments` (restricted), `trusted_contact_actions`. Services: reporting (SOS / report, repeat-press join, honest action list), follow-up (updates, files), staff (acknowledge, assign, notes, message the person, triage, escalate, resolve with outcome and reason, reopen, legal hold, evidence view / stream / bundle, SLA flagging, retention), trusted contacts, trip share to contacts. API `/safety/*` (docs/API.md), `safety` block in `/config/app` (emergency numbers), notifications `safety.case_update` (link type `safety`) and `safety.incident_raised`, realtime `operations.safety_incident`, `safety:maintain` schedule, customer / provider deletion scrub with legal hold, personal-data export section.
+- **Admin Safety Center**: queue (Yajra, collapsed filters card with severity / status / category / officer / SLA / date and more, quick scopes urgent / mine / unassigned, SLA column, live refresh on the operations feed, restricted CSV export), case screen (details, linked records, timeline without texts, Evidence tab audited per load with map, files through signed audited stream, contact records, actions with Precognition forms and mandatory reasons, evidence bundle download). Booking "Safety" tab now lists cases (no more delivery / proof duplication); Bookings filter "has incident" uses cases; menu entry; ar + en (`lang/*/safety.php`).
+- **Flutter**: `platform_core/safety` (models, repository with offline-cached numbers, notifiers, `SosHoldButton`, safety sheet body, incident report form with photos, cases list / detail with updates and files, trusted contacts with consent, trip share sheet) used by both apps through thin screens; customer safety sheet replaced (no placeholder), driver job page gets a Safety button; routes `/safety/*`, deep link type `safety` (falls back to a support ticket on 404); account / menu entries; ARB `sf*` in ar + en for both apps.
+
+### Checks run (compile / sanity only)
+`php -l` on all changed files; `migrate` (applied locally); `route:list`; `view:cache`; container resolution of the new services and data table; rolled-back tinker flow (trusted contact, SOS, repeat press joins, acknowledge, evidence audit entry, resolve) and in-process rendering of the case page, evidence tab, booking tab and DataTable JSON; `npm run build` (realtime.js / live-refresh.js changed); `flutter gen-l10n` and `dart analyze lib` in both apps and on `platform_core/lib/src/safety` (clean).
+
+### Known gaps
+No real SMS gateway, push, signed-file or device run (GPS, haptics, TalkBack long-press untested); the admin pages were not opened in a browser (the session / MFA middleware blocked the in-process HTTP calls, views were rendered directly); attachments from the app are images only; the old ARB `bkSafety*` keys remain unused; the SOS texts the contacts synchronously (up to five gateway calls); no per-contact "stop alerts" link for the contact; evidence retention purge has no admin report yet.
+
+### Next (P5.2)
+Reviews moderation can reuse the append-only event + audited evidence pattern; run the deferred test backlog (P5.1 list first: access separation, audited evidence, SOS under the rate limit) before Phase 5 closes.
+

@@ -929,3 +929,34 @@ Discovered while wiring this: the framework's default middleware priority list n
 
 **Decision.** `ProviderDeletionService::approve` calls the same `SupportTicketRepository::scrubOfUser` and `BookingMessageRepository::scrubSentBy` the customer path uses and deletes their files after commit; the audit meta counts removed files.
 **Why.** Closes the P3.7 gap: a deleted driver left ticket subjects, messages and chat images behind.
+
+
+## ADR-167 — The SOS is never refused; repeated presses join the open case · 2026-11-10 · Accepted
+
+**Decision.** `POST /safety/incidents` with `trigger=sos` has no Idempotency-Key requirement and is exempt from the per-minute API limiter. Abuse is bounded in the service instead: while an SOS of the same person on the same booking is still open, another press adds a `repeat_sos` event and a fresher position and does not create a second case or notify again. Non-urgent reports are limited per hour (`safety.reports.per_hour`). Missing GPS never blocks the alert; the answer says no position was sent.
+**Why.** SRS 13.2 wants abuse limits that never stop an urgent first report; a header or a 429 in a panic is the wrong failure mode.
+
+## ADR-168 — Honest response, no automatic dispatch · 2026-11-10 · Accepted
+
+**Decision.** The SOS answer lists what the platform actually did (`incident_recorded`, `location_captured`, `safety_team` done or queued, `trusted_contacts` per real SMS outcomes, `emergency_services` always `not_contacted`) and the local emergency numbers (`config/safety.php`, also in `/config/app`, cached on the device). `emergency_dispatch` is `false` in the config. Trusted-contact SMS are sent synchronously after the case is stored so the answer reports real outcomes; a failing gateway is recorded as failed.
+**Why.** SRS 13.1 / 13.2: never claim emergency dispatch the platform does not perform.
+
+## ADR-169 — Evidence is separate from the case · 2026-11-10 · Accepted
+
+**Decision.** `incidents.view` shows the queue and the case structure (category, severity, status, SLA, linked booking, timeline without texts). The narrative, callback phone, location snapshot, note and message bodies, files and trusted-contact records are evidence: `incidents.view_evidence`, loaded by their own route (Evidence tab), each load and each signed file stream (5 minutes) writes an audit `viewed` entry; the evidence bundle and the queue export need `incidents.export_restricted` (the export has no narrative, phone or location). Support agents hold none of the incident permissions. Narrative, phone, location, event bodies are encrypted at rest.
+**Why.** SRS 16.10: permission separation and audit of every sensitive view; an overview must not leak what the evidence tab protects.
+
+## ADR-170 — Trusted contacts: consent flags and records · 2026-11-10 · Accepted
+
+**Decision.** A contact needs the person's confirmation that the contact agreed, plus three flags: SOS alert, trip link, and the GPS point inside the SOS text (off by default). The phone is encrypted, only the masked form is returned. Every message (or skip, with the reason) is a `trusted_contact_actions` row with the masked phone only. Sharing a trip reuses the one-live-link `ShareLinkService` (`issue`), so it replaces an earlier link of the booking; an SOS text never includes a link for that reason.
+**Why.** SRS 13.2 "only according to consent and policy"; one link per booking is the existing share-link rule.
+
+## ADR-171 — Legal hold overrides deletion and retention · 2026-11-10 · Accepted
+
+**Decision.** `legal_hold` (set and released with a reason, audited) keeps a case whole. Account deletion (customer and provider) deletes trusted contacts, strips names and phones from action records, and for cases WITHOUT a hold removes narrative, callback phone, location, the person's own messages and files; held cases are untouched and counted in the audit meta. `safety:maintain` (every minute) flags overdue acknowledgements and purges evidence of cases resolved longer than `safety.retention_days` ago without a hold.
+**Why.** SRS 13.3: holds may override deletion with restricted access and audit.
+
+## ADR-172 — Safety notifications and the booking tab · 2026-11-10 · Accepted
+
+**Decision.** Staff are told through a new admin event `safety.incident_raised` (in-app) and `operations.safety_incident` on the operations channel (the Safety Center queue reloads on it; the channel is gated by `bookings.view`, which the officer role holds). The person gets `SafetyCaseUpdate` through `PartyNotifier` on acknowledgement, a message from staff and resolution; its link type is `safety`. The booking "Safety" tab no longer repeats the delivery summary and proofs (they live in "Delivery and load"); it lists the safety cases of the booking and keeps the PIN status, and the Bookings filter "has incident" now means a safety case (or a support flag).
+**Why.** Closes the P4.4 duplication and links bookings to cases.

@@ -809,3 +809,21 @@ Client notes: attachment ids of videos go into the same `photos` field of the fo
 ## P4.4 — Contract addition (ADR-165)
 
 `delivery.proofs.checklist_items` (list of strings, e.g. `package_sealed`, `package_undamaged`, `label_matches`, `recipient_checked`) is now part of the `delivery` block of a booking in both apps: the codes a checklist proof may carry, read from `config/courier.php`. Apps should render these instead of a hard-coded list; unknown codes keep being refused with the existing proof validation error. No other API change: the admin screens (contacts reveal, proof and attachment streams, attempt resolution) are admin routes, not API.
+
+
+## P5.1 — Safety (ADR-167..172)
+
+Both apps (`customer` and `provider` tokens), reachable by an account in any standing. Responses use the usual envelope; error texts are localized by the server.
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/api/v1/safety/incidents` | Body `booking_id` (uuid), `trigger` `sos`\|`report`, `category` (required for a report; an SOS defaults to `emergency`), `narrative` (required for a report), `lat`, `lng`, `accuracy_m`, `captured_at`, `callback_phone`, `notify_trusted_contacts` (default true). **No Idempotency-Key** and exempt from the per-minute limiter for an SOS: a repeated press joins the open case (`joined_existing: true`). A report is limited per hour (`429 safety_report_rate_limited`). `201 data` = the case plus `actions [{code, status, message}]` (what was done: `incident_recorded`, `location_captured`, `safety_team`, `trusted_contacts`, `emergency_services` with status `not_contacted`) and `emergency_numbers [{key, label, number}]`, `emergency_notice`. Errors: `sos_not_available` (no assigned provider or job finished), `report_not_available`. |
+| GET | `/safety/incidents`, `/safety/incidents/{id}` | The person's own cases of this app. Detail adds `narrative`, public `timeline`, `trusted_contacts` (name, status), `attachments` (signed URLs), `actions`, `emergency_numbers`. Staff notes, severity and priority are never returned. |
+| POST | `/safety/incidents/{id}/updates` | `{body}`; Idempotency-Key. |
+| POST | `/safety/incidents/{id}/attachments` | multipart `file` (jpeg, png, webp, pdf, max `safety.attachments.max_kilobytes`); Idempotency-Key; `422 safety_too_many_attachments`, `document_*`, `503 file_scanner_unavailable`. |
+| GET | `/safety/incidents/{id}/attachments/{attachment}` | signed; uploader only. |
+| GET / POST | `/safety/trusted-contacts` | `{items [{id, name, phone_masked, relationship, notify_on_sos, share_trip, share_location_on_sos, consent_confirmed_at}], max}`. POST body `name`, `phone` (E.164), `relationship?`, `consent_confirmed` (must be true), the three flags; Idempotency-Key. Errors `trusted_contact_consent_required | _phone_invalid | _is_self | _duplicate`, `trusted_contacts_limit_reached`. |
+| PATCH / DELETE | `/safety/trusted-contacts/{id}` | A changed phone resets the consent time. |
+| POST / DELETE | `/safety/bookings/{booking}/share` | Send the trip link to the contacts with `share_trip`, or revoke it. `201 {url, expires_at, contacts {total, sent, failed, skipped}}`; `422 trusted_contacts_none_for_trip`, `409 share_not_available`, `429 safety_trip_share_rate_limited`. Either side of the booking. |
+
+`GET /config/app` gains `safety {emergency_numbers [{key, number}], sos_hold_seconds, trusted_contacts_max, emergency_dispatch: false}` (numbers by market country from `config/safety.php`; labels are the apps' own). Notifications: `safety.case_update` now has `link_type = safety` (`link_id` = case uuid; older safety-ticket notices still carry a ticket uuid, the apps fall back to the ticket on 404); admins get `safety.incident_raised` (`link_type = incident`) and a realtime `operations.safety_incident` hint on `private-admin.operations`.

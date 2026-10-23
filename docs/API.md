@@ -841,3 +841,15 @@ Both apps (`customer` and `provider` tokens), reachable by an account in any sta
 | GET | `/api/v1/ratings/appeals` | `{items: [appeal ...]}` the person's appeals in this app. The staff reason is internal and never returned. |
 
 `RatingResource` (response of the existing rating endpoints) gains `moderation_status`. Risk signals have no API: they are internal (SRS 15).
+
+## P5.3 — Admin reporting endpoints (ADR-178..181)
+
+No `/api/v1` endpoint changes. Admin (session) endpoints added:
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/admin/dashboard?filters[range][from]=&filters[range][to]=&filters[timezone]=&filters[currency]=&filters[city_ids][]=` | Full page; with `X-Requested-With` returns only the widgets partial; with `Precognition: true` returns 204 or 422 (`filters.range.to`). Needs `dashboard.view`; each KPI / chart needs the permission of its drill-down listing. |
+| GET | `/admin/reports` | Hub of the reports the admin may open (`reports.view` + the report's own permission). |
+| GET | `/admin/reports/{report}` | Page and, for the table, the Yajra JSON (`data`, `recordsTotal`, `chart`). Reports: booking-funnel, supply-demand, fares, provider-acceptance, completion, cancellation, coupon-roi, provider-earnings, commissions, payout-ageing, payment-reconciliation, support-sla, safety-trends, document-expiry, retention, referral (placeholder). Filters: `range`, `timezone`, `currency`, `city_ids`, `zone_ids`, `category_ids`, `group_by` (date, city, zone, category). |
+| POST | `/admin/reports/{report}/export` | Queues the CSV (`reports.export`); audited; `pii` stored only when the admin holds `reports.export_pii`; poll `admin/exports/{uuid}` as for every export. |
+

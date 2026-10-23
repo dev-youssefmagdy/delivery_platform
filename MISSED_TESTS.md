@@ -952,3 +952,34 @@ By user instruction no test was written or run for P5.2. These are the tests tha
 ### Manual / live
 - Open the Reviews and Risk pages in a browser (ar and en): filters card stays collapsed with the badge, tabs lazy-load, Precognition errors show inline in the hide / suspend modals and block the submit, suspension expiry picker works in the admin timezone.
 - With real ratings: hide one and watch the provider's public score change in the app; appeal it from a device once the app screens exist.
+
+
+## P5.3 — Operations dashboard, reports, exports
+
+### Backend Feature
+- `Reporting/MetricsAggregationIdempotentTest` (`tests/Feature/Reporting`): seed bookings across two cities with different timezones, offers, dispatch recipients, payments, refunds, settlement journal entries and coupon redemptions; run `MetricsAggregationService::aggregateRange` twice: identical row counts and sums, no duplicated rows; changing a source row and rerunning updates the same row; two overlapping runs (hourly + nightly) end with one row per (day, city, zone, category, currency); the hourly run touches only today and yesterday.
+- `Reporting/MarketDayWindowTest`: a booking at 21:30 UTC counts on the next day for Africa/Cairo and on the same day for UTC; a daylight-saving day has a 23 / 25 hour window; the window never overlaps the neighbour day.
+- `Reporting/BookingMetricsFixtureTest`: fixtures with known outcomes (requests with and without offers, selected, completed, cancelled by each side, expired, no-show reasons, drafts) give the exact `requests`, `with_offers`, `selected`, `completed`, `cancelled_*`, `expired`, `no_show`, fare sums, offers, notified / responded counts and response seconds; drafts are excluded.
+- `Reporting/FinanceMetricsFixtureTest`: paid / cash-collected / refunded payments count as paid, failed as failed, other kinds (tip, debt) excluded; commission = net credits of `platform_revenue` of settlement entries (reversal of a settlement nets out); wallet movement from `provider_wallet`; refunds only when completed; coupon sums only committed redemptions; nothing reads `ledger_accounts.balance_minor`.
+- `Reporting/OperationsMetricsFixtureTest`: tickets opened / resolved / breached / first-response seconds, incidents (urgent = high + critical), new customers and providers, active customers per day and timezone.
+- `Reporting/KpiCalculationsTest`: the dashboard service over seeded metrics returns the expected requests, request-to-offer, offer-to-selection, completion, cancellation, no-show rate, average response time, GMV, commission, payment success rate (null when no attempts, never 0), change vs the previous period (percent for counts, points for rates), currency choice (filter, else most used).
+- `Reporting/DashboardPermissionTest`: for each `KpiKey`, an admin without its permission gets no tile and no chart built from it (bookings only: no finance tile, no payments chart; finance only: no bookings tile); guest redirected; no `dashboard.view` -> 403; the page and the AJAX partial contain no phone, name or narrative.
+- `Reporting/DashboardFilterRequestTest`: invalid or reversed range, range over 366 days, unknown timezone -> 422 on the precognitive GET with the error under `filters.range.to`; valid -> 204; the AJAX partial returns widgets only.
+- `Reporting/DrillDownLinksTest`: every tile href points to an existing route, carries `filters[...]`, and the target listing's filter DTO honours each key (`FilterData::fromRequest` round trip) and its DataTable JSON returns only matching rows.
+- `Reporting/ReportAccessTest`: each `ReportKey`: no `reports.view` -> 403; `reports.view` without the data permission (e.g. commissions without `finance.view`) -> 403 on page, DataTable JSON and export; the hub lists only allowed reports; the referral page is an honest placeholder with no table and no export.
+- `Reporting/ReportQueriesTest` (one case per report and grouping): columns equal `ReportKey::columns()`; sums and rates against fixtures; null rates for zero denominators; the currency filter; city / zone / category / timezone filters; supply and demand hour bucket with the timezone offset; payout ageing buckets; document expiry buckets; retention cohorts M+1..M+3.
+- `Reporting/ReportsDataTableTest`: JSON honours the range, ordering is allowlisted (unknown column ignored), `chart` is present on the first page and absent on later pages, money cells carry the row currency.
+- `Reporting/ReportExportAuditTest`: POST export without `reports.export` -> 403; with it, one `admin_exports` row with `report` in its filters, one `exported` audit entry with the filters, a queued `GenerateAdminExport`; the generated CSV has headings and rows equal to the table, starts with the BOM and neutralises formula cells; another admin cannot download it (owner-scoped signed link).
+- `Reporting/ReportPiiColumnsTest`: without `reports.export_pii` the provider earnings table and CSV have no `provider_name` column even if `filters[pii]=1` is sent; with it the column is present, the export stores `pii=1`, and the audit meta shows it; replay in the queue uses the stored flag.
+- `Console/AggregateDailyMetricsCommandTest`: `metrics:aggregate-daily` (default, `--nightly`, `--days`, `--from/--to`, `--city`, `--queue`) behaves as documented and writes `metrics_aggregation_state`.
+- `Console/ScheduleTest`: `metrics:aggregate-daily` is scheduled hourly and nightly without overlap.
+- `Admin/ArabicRtlViewsTest`: the new views and components have no physical direction utilities.
+
+### Frontend (vitest)
+- `charts.test.js`: payload to Chart.js config for line, bar, donut: RTL reverses the x axis and moves the y axis right, money values formatted by currency and exponent, slices past the eighth fold into "Other", legend and table rendered, empty payload shows the empty state, `admin:chart-update` redraws the bound chart.
+- `dashboard.test.js`: invalid Precognition response (422) shows the inline error and requests no partial; valid loads the partial and updates the URL; presets set the range.
+
+### Manual / live
+- Open the dashboard and a few reports in a browser (ar and en, light and dark class): charts legible, Arabic axis labels and digits, tooltips and the info popovers keyboard-reachable, filters card collapsed with the badge, chart redraws with the table, export toast and download.
+- With real volume: compare dashboard totals against the bookings, payments and ledger listings for the same range; check the hourly job duration.
+

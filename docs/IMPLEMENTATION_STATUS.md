@@ -40,7 +40,7 @@
 | P4.4 | Admin & E2E for non-ride services | P1 | 🟡 | 2026-11-09 |
 | P5.1 | Safety center, SOS, trusted contacts | P1 | ❌ | — |
 | P5.2 | Reviews moderation & risk signals | P1 | 🟡 | gate not run (2026-11-11) |
-| P5.3 | Operations dashboard, reports, exports | P1 | ❌ | — |
+| P5.3 | Operations dashboard, reports, exports | P1 | 🟡 | gate not run (see section) |
 | P5.4 | CMS | P1 | ❌ | — |
 | P5.5 | Public website | P1 | ❌ | — |
 | P5.6 | Integration health, app versions, feature flags, system pages | P1 | ❌ | — |
@@ -1084,3 +1084,26 @@ No Flutter screens for report / appeal (endpoints only); no browser run; provide
 
 ### Next (P5.3)
 Reviews and risk counts (open reports, open appeals, active signals) are cheap repository calls for dashboard widgets; add the moderation backlog and risk queue size to the operations dashboard. Run the deferred backlog (P5.1 and P5.2 lists) before Phase 5 closes.
+
+
+---
+
+## P5.3 — Operations dashboard, reports, exports · 🟡 2026-11-12 (gate NOT run)
+
+Committed directly on `main`. ADR-178..181. **By user instruction no test, pint, phpstan, `php artisan test`, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P5.3).
+
+### Built
+- **Metrics**: migration `2026_11_12_090000` (`metrics_daily_bookings` by market day / city / zone / category / currency, `metrics_daily_finance` by day / city / category / currency, `metrics_daily_operations` by day / timezone, `metrics_aggregation_state` = "data as of"). `MetricsAggregationService` rebuilds a (day, city) by REPLACING its rows (idempotent) with the day window in the city's own timezone; `metrics:aggregate-daily` (`--nightly`, `--days`, `--from/--to`, `--city`, `--queue`), job `AggregateDailyMetrics`, scheduled hourly (today + yesterday) and nightly (7 days). Finance facts come from payment records and ledger lines only.
+- **Dashboard** (`/admin/dashboard`): 21 KPIs (SRS 16.1), each permission-gated by its drill-down listing, with a definition popover (numerator, denominator, time basis, freshness), live / aggregated marker, comparison with the previous period and a drill-down link with `?filters[...]` pre-applied (all target filters already existed); five charts; date range, presets, timezone, currency and city filter validated by Precognition then loaded over AJAX; freshness indicator (amber when the aggregation is late). Live counters reuse the P5.2 counters (reports, appeals, risk signals, incidents).
+- **Charts**: `x-admin.chart.line|bar|donut` (shared frame: HTML legend, tooltip, "as table" view readable by assistive technology, empty state), `x-admin.kpi-tile`, `x-admin.freshness`, `charts.js` (validated categorical slots `--viz-1..8` light / dark, 2px lines, 4px rounded bar ends, RTL axes, locale digits, redraw on theme change).
+- **Reports** (`/admin/reports`): hub plus 15 reports of SRS 16.14 (booking funnel, supply and demand, fares, provider acceptance, completion, cancellation and no-show, coupon ROI, provider earnings, commissions, payout ageing, payment reconciliation, support SLAs, safety trends, document expiry, retention) and the referral placeholder page. Each: collapsed filters card, chart that refreshes from the table JSON, Yajra table, queued CSV export (`reports.export`, audited `exported`, PII column only with the new `reports.export_pii`).
+- ar + en (`lang/*/reporting.php`), menu entry, `ReportPolicy`.
+
+### Checks run (compile / sanity only)
+`php -l`; `migrate`, `migrate:rollback --step=1`, `migrate`; `route:list`; `view:cache`; `metrics:aggregate-daily --days=30` run twice (same row counts, idempotent); every report query with every grouping run in tinker; in-process authenticated HTTP calls (rolled back): dashboard full page and AJAX partial, Precognition 422 / 204, hub, all 16 report pages, every report DataTable JSON, export request + generated CSV + audit entry, and a restricted admin (bookings, support only) seeing only its tiles, charts and reports with 403 on finance reports and export; `npm run build`.
+
+### Known gaps
+No browser pass (charts, popovers, RTL layout not seen); the dev database has almost no data (2 bookings), so ratios were checked only for plumbing; single-currency KPI tiles (one currency chosen at a time); the timezone filter selects cities of that timezone, it does not re-bucket days; supply and demand and retention use the UTC offset at the range start (daylight-saving edge hours approximate); referral report waits for P5.7; provider earnings is the ledger wallet movement, not gross earnings (cash trips are negative while commission is owed).
+
+### Next (P5.4)
+CMS pages can show the freshness and chart components as is. Run the deferred backlog (P5.1, P5.2, P5.3 lists) before Phase 5 closes.

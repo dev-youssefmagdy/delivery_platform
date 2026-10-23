@@ -166,6 +166,8 @@ return [
     ],
 
     'errors' => [
+        'lead_transition_invalid' => 'This lead cannot move to that status from its current status.',
+        'lead_reason_required' => 'A reason is required for this change.',
         'chat_forbidden' => 'You are not part of this booking conversation.',
         'chat_closed' => 'The conversation for this booking is closed.',
         'chat_empty' => 'Write a message or attach an image.',

@@ -989,6 +989,7 @@ return [
         'review.hidden' => 'Review hidden',
         'review.appeal_decided' => 'Review appeal decided',
         'risk.signal_raised' => 'Risk signal raised (staff)',
+        'lead.received' => 'Onboarding lead received (staff)',
     ],
 
     'content_workflow_status' => [

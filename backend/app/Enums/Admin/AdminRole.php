@@ -58,7 +58,7 @@ enum AdminRole: string implements HasLabel
                 $p::OffersView, $p::OffersModerate,
                 $p::ServicesManage, $p::VehicleCategoriesManage, $p::ServiceAreasManage, $p::FarePoliciesManage, $p::CancellationPoliciesManage, $p::PoliciesManage,
                 $p::SupportView, $p::IncidentsView, $p::ReportsView,
-                $p::ReviewsView, $p::ReviewsModerate, $p::RiskView, $p::RiskManage,
+                $p::ReviewsView, $p::ReviewsModerate, $p::RiskView, $p::RiskManage, $p::LeadsView, $p::LeadsManage,
             ],
             self::DispatchAgent => [
                 $p::DashboardView, $p::BookingsView, $p::BookingsManage, $p::BookingsCancel, $p::OffersView, $p::DriversView, $p::CustomersView,
@@ -83,7 +83,7 @@ enum AdminRole: string implements HasLabel
             self::MarketingCouponManager => [
                 $p::CouponsView, $p::CouponsManage, $p::CouponsExport, $p::CampaignsManage, $p::PushCampaignsManage, $p::ReportsView,
             ],
-            self::ContentCmsEditor => [$p::ContentManage, $p::TranslationsManage, $p::LeadsView],
+            self::ContentCmsEditor => [$p::ContentManage, $p::TranslationsManage, $p::LeadsView, $p::LeadsManage],
             self::ReadOnlyAuditor => array_values(array_filter(
                 AdminPermission::cases(),
                 static fn (AdminPermission $permission): bool => $permission->action() === 'view' && ! in_array($permission->group(), ['demo_items', 'otp_challenges'], true),

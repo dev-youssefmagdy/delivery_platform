@@ -113,6 +113,7 @@ return [
     'review.hidden' => ['title' => 'تم إخفاء تقييمك', 'body' => 'تم إخفاء تقييم كتبته بواسطة الإشراف. يمكنك الاعتراض من التطبيق.'],
     'review.appeal_decided' => ['title' => 'تم البت في اعتراضك', 'body' => 'تم البت في اعتراضك: {outcome}.'],
     'risk.signal_raised' => ['title' => 'تنبيهات مخاطر جديدة', 'body' => '{count} تنبيه جديد من نوع {type} يحتاج إلى مراجعة.'],
+    'lead.received' => ['title' => 'طلب انضمام جديد', 'body' => 'وصل طلب انضمام جديد {reference} من الموقع.'],
 
     'marketing.campaign' => ['title' => '{title}', 'body' => '{body}'],
 

@@ -572,6 +572,15 @@ return [
             'permission' => App\Enums\Admin\AdminPermission::ContentManage,
         ],
         [
+            'key' => 'leads',
+            'group' => 'content',
+            'label' => 'leads.menu',
+            'route' => 'admin.leads.index',
+            'active' => 'admin.leads.*',
+            'icon' => 'users',
+            'permission' => App\Enums\Admin\AdminPermission::LeadsView,
+        ],
+        [
             'key' => 'content_banners',
             'group' => 'marketing',
             'label' => 'content.menu.banners',

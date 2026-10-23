@@ -88,6 +88,7 @@ enum AdminPermission: string implements HasLabel
     case ContentPublish = 'content.publish';
     case TranslationsManage = 'translations.manage';
     case LeadsView = 'leads.view';
+    case LeadsManage = 'leads.manage';
     case NotificationsManage = 'notifications.manage';
     case PushCampaignsManage = 'push_campaigns.manage';
     case ReportsView = 'reports.view';

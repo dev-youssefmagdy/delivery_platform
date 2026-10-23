@@ -78,6 +78,7 @@ enum NotificationEvent: string implements HasLabel
     case ReviewHidden = 'review.hidden';
     case ReviewAppealDecided = 'review.appeal_decided';
     case RiskSignalRaised = 'risk.signal_raised';
+    case LeadReceived = 'lead.received';
 
     case MarketingCampaign = 'marketing.campaign';
 
@@ -102,7 +103,7 @@ enum NotificationEvent: string implements HasLabel
             self::SupportHelpMessage, self::SupportReply, self::SupportDisputeUpdate => NotificationCategory::Support,
             self::SafetyCaseUpdate, self::SafetyIncidentRaised => NotificationCategory::Safety,
             self::ReviewHidden, self::ReviewAppealDecided => NotificationCategory::Support,
-            self::RiskSignalRaised => NotificationCategory::System,
+            self::RiskSignalRaised, self::LeadReceived => NotificationCategory::System,
             self::MarketingCampaign => NotificationCategory::Marketing,
             self::AdminExportReady, self::AdminExportFailed => NotificationCategory::System,
         };
@@ -120,7 +121,7 @@ enum NotificationEvent: string implements HasLabel
             self::DeliveryPickedUp, self::DeliveryArrivedDropoff, self::DeliveryDelivered, self::DeliveryAttemptFailed, self::DeliveryReturned,
             self::PaymentPending, self::PaymentSucceeded, self::PaymentFailed, self::PaymentRefunded,
             self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::SupportHelpMessage => NotificationAudience::Customer,
-            self::AdminExportReady, self::AdminExportFailed, self::SafetyIncidentRaised, self::RiskSignalRaised => NotificationAudience::Admin,
+            self::AdminExportReady, self::AdminExportFailed, self::SafetyIncidentRaised, self::RiskSignalRaised, self::LeadReceived => NotificationAudience::Admin,
             default => NotificationAudience::Both,
         };
     }
@@ -171,6 +172,7 @@ enum NotificationEvent: string implements HasLabel
             self::AdminExportReady, self::AdminExportFailed => ['file'],
             self::ReviewAppealDecided => ['outcome'],
             self::RiskSignalRaised => ['type', 'count'],
+            self::LeadReceived => ['reference'],
             self::ProviderApplicationSubmitted, self::ProviderApplicationMoreInfo, self::ProviderApplicationApproved, self::ProviderApplicationRejected,
             self::ProviderSuspended, self::ProviderReactivated, self::SupportHelpMessage, self::SupportReply, self::SupportDisputeUpdate,
             self::SafetyCaseUpdate, self::RequestNew, self::ReviewHidden => [],
@@ -192,6 +194,7 @@ enum NotificationEvent: string implements HasLabel
             self::SafetyIncidentRaised => NotificationLinkType::Incident,
             self::ReviewHidden, self::ReviewAppealDecided => NotificationLinkType::Inbox,
             self::RiskSignalRaised => NotificationLinkType::Risk,
+            self::LeadReceived => NotificationLinkType::Lead,
             self::BookingMessageReceived => NotificationLinkType::Chat,
             self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::MarketingCampaign => NotificationLinkType::Inbox,
             self::AdminExportReady, self::AdminExportFailed => NotificationLinkType::Export,

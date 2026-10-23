@@ -202,6 +202,7 @@ class AppServiceProvider extends ServiceProvider
             'rating_report' => \App\Models\RatingReport::class,
             'rating_appeal' => \App\Models\RatingAppeal::class,
             'risk_signal' => \App\Models\RiskSignal::class,
+            'lead' => \App\Models\Lead::class,
             'content_page' => \App\Models\ContentPage::class,
             'content_article' => \App\Models\ContentArticle::class,
             'content_faq' => \App\Models\ContentFaq::class,

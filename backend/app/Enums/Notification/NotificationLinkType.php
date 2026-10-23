@@ -28,4 +28,6 @@ enum NotificationLinkType: string
     case Incident = 'incident';
     /** Admin only: opens the risk signals queue. */
     case Risk = 'risk';
+    /** Admin only: opens the onboarding lead (link id: lead uuid). */
+    case Lead = 'lead';
 }

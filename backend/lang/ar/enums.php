@@ -989,6 +989,7 @@ return [
         'review.hidden' => 'تم إخفاء تقييم',
         'review.appeal_decided' => 'تم البت في اعتراض على تقييم',
         'risk.signal_raised' => 'تنبيه مخاطر (للفريق)',
+        'lead.received' => 'طلب انضمام جديد (للفريق)',
     ],
 
     'content_workflow_status' => [

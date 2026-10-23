@@ -54,6 +54,8 @@ Schedule::command('model:prune', ['--model' => [AppNotification::class]])->daily
 
 Schedule::command('chat:purge-expired')->dailyAt('03:45')->withoutOverlapping();
 
+Schedule::command('retention:run')->dailyAt('04:30')->withoutOverlapping(120);
+
 Schedule::command('support:maintain')->everyFiveMinutes()->withoutOverlapping();
 
 Schedule::command('safety:maintain')->everyMinute()->withoutOverlapping();

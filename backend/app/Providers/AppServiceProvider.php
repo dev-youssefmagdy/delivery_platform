@@ -122,6 +122,13 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::shouldBeStrict(! $this->app->isProduction());
 
+        // Public catalog cache (P6.2): any change to a catalog model orphans every cached read.
+        foreach ([\App\Models\ServiceFamily::class, \App\Models\ServiceCategory::class, \App\Models\ServiceCategoryVersion::class, \App\Models\VehicleCategory::class, \App\Models\ZoneServiceCategory::class] as $catalogModel) {
+            $bump = fn () => $this->app->make(\App\Support\Catalog\CatalogCache::class)->bump();
+            $catalogModel::saved($bump);
+            $catalogModel::deleted($bump);
+        }
+
         // Debug pages print environment values, stack frames and queries: never allowed in production (P6.1).
         if ($this->app->isProduction() && config('app.debug') === true && ! $this->app->runningInConsole()) {
             throw new \RuntimeException('APP_DEBUG must be false when APP_ENV=production.');

@@ -78,6 +78,7 @@ final class ServiceCategoryRepository extends BaseRepository implements ServiceC
     {
         /** @var array{attached: list<int>, detached: list<int>, updated: list<int>} $changes */
         $changes = $category->vehicleCategories()->sync($vehicleCategoryIds);
+        app(\App\Support\Catalog\CatalogCache::class)->bump(); // pivot writes fire no model events
 
         return ['attached' => array_map('intval', $changes['attached']), 'detached' => array_map('intval', $changes['detached'])];
     }

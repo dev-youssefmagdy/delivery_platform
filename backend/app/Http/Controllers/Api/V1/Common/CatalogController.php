@@ -9,6 +9,7 @@ use App\Http\Resources\Api\V1\Catalog\ServiceCategoryResource;
 use App\Http\Resources\Api\V1\Catalog\ServiceFamilyResource;
 use App\Http\Resources\Api\V1\Catalog\VehicleCategoryResource;
 use App\Services\Catalog\CatalogReadService;
+use App\Support\Catalog\CatalogCache;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
@@ -17,15 +18,25 @@ use Illuminate\Http\JsonResponse;
  */
 final class CatalogController extends Controller
 {
-    public function __construct(private readonly CatalogReadService $catalog) {}
+    public function __construct(private readonly CatalogReadService $catalog, private readonly CatalogCache $cache) {}
 
     public function families(): JsonResponse
     {
-        return ApiResponse::success(data: ServiceFamilyResource::collection($this->catalog->families()));
+        return ApiResponse::success(data: $this->cached(
+            'families.'.app()->getLocale(),
+            fn (): string => ServiceFamilyResource::collection($this->catalog->families())->toJson(),
+        ));
     }
 
     public function categories(ListServiceCategoriesRequest $request): JsonResponse
     {
+        if ($request->point() === null) {
+            return ApiResponse::success(data: $this->cached(
+                'categories.'.app()->getLocale().'.'.($request->bookingType()?->value ?? 'all').'.'.($request->familyId() ?? 'all'),
+                fn (): string => ServiceCategoryResource::collection($this->catalog->categories($request->bookingType(), $request->familyId())->categories)->toJson(),
+            ));
+        }
+
         $listing = $this->catalog->categories($request->bookingType(), $request->familyId(), $request->point());
 
         return ApiResponse::success(
@@ -41,6 +52,20 @@ final class CatalogController extends Controller
 
     public function vehicleCategories(ListVehicleCategoriesRequest $request): JsonResponse
     {
-        return ApiResponse::success(data: VehicleCategoryResource::collection($this->catalog->vehicleCategories($request->serviceCategoryId())));
+        return ApiResponse::success(data: $this->cached(
+            'vehicle-categories.'.app()->getLocale().'.'.($request->serviceCategoryId() ?? 'all'),
+            fn (): string => VehicleCategoryResource::collection($this->catalog->vehicleCategories($request->serviceCategoryId()))->toJson(),
+        ));
+    }
+
+    /**
+     * Cached as the finished (localized) JSON text: `cache.serializable_classes` is false, so neither models nor the stdClass
+     * objects of empty translation maps can live in the cache.
+     *
+     * @param \Closure(): string $build
+     */
+    private function cached(string $name, \Closure $build): mixed
+    {
+        return json_decode((string) $this->cache->remember($name, $build));
     }
 }

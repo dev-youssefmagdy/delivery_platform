@@ -11,6 +11,16 @@ use Illuminate\Database\Eloquent\Builder;
 
 final class GatewayWebhookEventRepository implements GatewayWebhookEventRepositoryInterface
 {
+    /** Every column except the raw `payload` JSON, which can be large and is only read on the detail page. */
+    private const LISTING_COLUMNS = [
+        'gateway_webhook_events.id', 'gateway_webhook_events.uuid', 'gateway_webhook_events.gateway', 'gateway_webhook_events.event_id',
+        'gateway_webhook_events.kind', 'gateway_webhook_events.signature_valid', 'gateway_webhook_events.payload_hash',
+        'gateway_webhook_events.gateway_reference', 'gateway_webhook_events.payment_id', 'gateway_webhook_events.occurred_at',
+        'gateway_webhook_events.received_at', 'gateway_webhook_events.processed_at', 'gateway_webhook_events.outcome',
+        'gateway_webhook_events.error', 'gateway_webhook_events.attempts', 'gateway_webhook_events.reprocessed_by_id',
+        'gateway_webhook_events.reprocess_reason', 'gateway_webhook_events.created_at', 'gateway_webhook_events.updated_at',
+    ];
+
     public function find(int $id): ?GatewayWebhookEvent
     {
         return GatewayWebhookEvent::query()->find($id);
@@ -58,7 +68,7 @@ final class GatewayWebhookEventRepository implements GatewayWebhookEventReposito
         $values = static fn (array $cases): array => array_map(static fn ($case): string => $case->value, $cases);
 
         return GatewayWebhookEvent::query()
-            ->select('gateway_webhook_events.*')
+            ->select(self::LISTING_COLUMNS)
             ->with('payment:id,uuid')
             ->when($filters->outcomes !== [], static fn (Builder $query) => $query->whereIn('outcome', $values($filters->outcomes)))
             ->when($filters->gateways !== [], static fn (Builder $query) => $query->whereIn('gateway', $values($filters->gateways)))

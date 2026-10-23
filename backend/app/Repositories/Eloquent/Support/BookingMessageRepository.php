@@ -81,6 +81,7 @@ final class BookingMessageRepository extends BaseRepository implements BookingMe
                 ->select('booking_id')
                 ->whereNotNull('booking_id')
                 ->whereIn('status', array_map(static fn (TicketStatus $status): string => $status->value, TicketStatus::activeCases())))
+            ->whereNotIn('booking_id', DB::table('safety_incidents')->select('booking_id')->where('legal_hold', true)->whereNotNull('booking_id'))
             ->orderBy('id')
             ->limit($limit)
             ->get()

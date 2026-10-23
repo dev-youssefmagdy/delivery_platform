@@ -25,7 +25,7 @@ use Spatie\Translatable\HasTranslations;
  * @property int $width
  * @property int $height
  * @property string|null $alt translated in the current locale; raw JSON {ar, en}
- * @property array<string, string>|null $variants
+ * @property array<int|string, string>|null $variants
  * @property Carbon $created_at
  */
 class ContentMedia extends Model implements TranslatedContent

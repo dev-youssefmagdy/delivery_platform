@@ -64,6 +64,9 @@ final class CouponReservationRepository extends BaseRepository implements Coupon
         return CouponRedemption::query()->create($attributes);
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function updateRedemption(CouponRedemption $redemption, array $attributes): CouponRedemption
     {
         $redemption->forceFill($attributes)->save();

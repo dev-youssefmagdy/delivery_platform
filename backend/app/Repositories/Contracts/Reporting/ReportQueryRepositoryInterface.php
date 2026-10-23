@@ -17,14 +17,14 @@ use Illuminate\Support\Collection;
 interface ReportQueryRepositoryInterface
 {
     /**
-     * @return Builder<Model>
+     * @return Builder<covariant Model>
      */
     public function datatableQuery(ReportKey $report, ReportFilterData $filters, bool $includePii = false): Builder;
 
     /**
      * Rows for the chart (time ordered for time series, the biggest buckets otherwise); never more than 400.
      *
-     * @return Collection<int, Model|object>
+     * @return Collection<int, mixed>
      */
     public function chartRows(ReportKey $report, ReportFilterData $filters): Collection;
 }

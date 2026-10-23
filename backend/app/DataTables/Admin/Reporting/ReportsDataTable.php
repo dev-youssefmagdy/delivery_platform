@@ -81,7 +81,7 @@ class ReportsDataTable extends AdminDataTable
     }
 
     /**
-     * @return Builder<Model>
+     * @return Builder<covariant Model>
      */
     public function query(): Builder
     {

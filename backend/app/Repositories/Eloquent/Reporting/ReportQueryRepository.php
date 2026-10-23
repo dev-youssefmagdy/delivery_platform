@@ -151,6 +151,9 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
         return $this->bucketed($query, $filters->grouping, $measures, true, false);
     }
 
+    /**
+     * @return Builder<covariant Model>
+     */
     private function commissions(ReportFilterData $filters): Builder
     {
         return $this->financeBucketed($filters, [
@@ -163,9 +166,11 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
     /**
      * Adds the bucket (date / city / zone / category) with its label to a metrics query.
      *
-     * @param Builder<covariant Model> $query
+     * @template TModel of Model
+     *
+     * @param Builder<TModel> $query
      * @param list<string> $measures
-     * @return Builder<covariant Model>
+     * @return Builder<TModel>
      */
     private function bucketed(Builder $query, ReportGrouping $grouping, array $measures, bool $withCurrency, bool $hasZones): Builder
     {
@@ -207,6 +212,9 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
             ->groupBy('m.metric_date')->orderBy('bucket');
     }
 
+    /**
+     * @return Builder<covariant Model>
+     */
     private function supplyDemand(ReportFilterData $filters): Builder
     {
         [$start, $end, $timezone] = $this->window($filters);
@@ -233,6 +241,9 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
             ->orderByDesc('requests');
     }
 
+    /**
+     * @return Builder<covariant Model>
+     */
     private function couponRoi(ReportFilterData $filters): Builder
     {
         [$start, $end] = $this->window($filters);
@@ -250,6 +261,9 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
             ->orderByDesc('redemptions');
     }
 
+    /**
+     * @return Builder<covariant Model>
+     */
     private function providerEarnings(ReportFilterData $filters, bool $includePii): Builder
     {
         [$start, $end] = $this->window($filters);
@@ -272,6 +286,9 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
             ->orderByDesc('earnings_minor');
     }
 
+    /**
+     * @return Builder<covariant Model>
+     */
     private function payoutAgeing(ReportFilterData $filters): Builder
     {
         $open = array_map(static fn (PayoutStatus $status): string => $status->value, PayoutStatus::open());
@@ -286,6 +303,9 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
             ->orderByDesc('oldest_days');
     }
 
+    /**
+     * @return Builder<covariant Model>
+     */
     private function paymentReconciliation(ReportFilterData $filters): Builder
     {
         [$start, $end] = $this->window($filters);
@@ -296,6 +316,9 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
             ->orderByDesc('r.ran_at');
     }
 
+    /**
+     * @return Builder<covariant Model>
+     */
     private function documentExpiry(): Builder
     {
         $today = now((string) config('admin.display_timezone', 'UTC'))->toDateString();
@@ -318,6 +341,8 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
     /**
      * Referral outcomes per campaign for referrals created inside the range: referrals, milestone reached, rewarded, under review,
      * rejected, conversion (rewarded / referrals) and the money spent from the campaign budget (all time, it is the campaign's own counter).
+     *
+     * @return Builder<covariant Model>
      */
     private function referralOutcomes(ReportFilterData $filters): Builder
     {
@@ -336,6 +361,9 @@ final class ReportQueryRepository implements ReportQueryRepositoryInterface
             ->orderByDesc('referrals');
     }
 
+    /**
+     * @return Builder<covariant Model>
+     */
     private function retention(ReportFilterData $filters): Builder
     {
         [$start, $end, $timezone] = $this->window($filters);

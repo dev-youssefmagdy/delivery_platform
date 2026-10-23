@@ -40,6 +40,9 @@ interface CouponReservationRepositoryInterface extends BaseRepositoryInterface
      */
     public function createRedemption(array $attributes): CouponRedemption;
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function updateRedemption(CouponRedemption $redemption, array $attributes): CouponRedemption;
 
     public function addFunding(int $couponId, int $redemptionId, int $bookingId, DiscountFunding $funder, string $kind, int $amountMinor, string $currency): void;

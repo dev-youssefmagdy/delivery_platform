@@ -60,6 +60,9 @@ abstract class ContentRepository extends BaseRepository
             ->when($filters->updatedTo, static fn (Builder $query, $to) => $query->where('updated_at', '<=', $to->endOfDay()));
     }
 
+    /**
+     * @return list<int>
+     */
     public function dueScheduledIds(CarbonInterface $now): array
     {
         /** @var list<int> $ids */
@@ -75,6 +78,9 @@ abstract class ContentRepository extends BaseRepository
         return $ids;
     }
 
+    /**
+     * @param list<string> $relations
+     */
     public function loadRelations(Model $model, array $relations): Model
     {
         return $model->loadMissing($relations);

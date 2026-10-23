@@ -22,6 +22,7 @@ use App\Repositories\Contracts\Reporting\MetricsAggregationRepositoryInterface;
 use Carbon\CarbonInterface;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 /**
  * Query-builder reads of the source tables and replace-writes of the metrics tables (ADR-178). The reads are plain aggregates over
@@ -240,7 +241,7 @@ final class MetricsAggregationRepository implements MetricsAggregationRepository
     /**
      * Full-outer merge of grouped result sets on the dimension keys (missing measures stay 0).
      *
-     * @param list<\Illuminate\Support\Collection<int, object>> $sets
+     * @param list<\Illuminate\Support\Collection<int, stdClass>> $sets
      * @param list<string> $keys
      * @return list<array<string, mixed>>
      */

@@ -306,6 +306,9 @@ final class PersonalDataExporter
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function booking(Booking $booking): array
     {
         return [

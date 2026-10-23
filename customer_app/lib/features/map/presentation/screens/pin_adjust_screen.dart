@@ -130,26 +130,32 @@ class _PinAdjustScreenState extends ConsumerState<PinAdjustScreen> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                FlutterMap(
-                  mapController: _controller,
-                  options: MapOptions(
-                    initialCenter: widget.args.initial,
-                    initialZoom: 16,
-                    interactionOptions: const InteractionOptions(
-                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                Semantics(
+                  container: true,
+                  label: l10n.pinInstruction,
+                  child: FlutterMap(
+                    mapController: _controller,
+                    options: MapOptions(
+                      initialCenter: widget.args.initial,
+                      initialZoom: 16,
+                      interactionOptions: const InteractionOptions(
+                        flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                      ),
+                      onPositionChanged: _onMoved,
                     ),
-                    onPositionChanged: _onMoved,
+                    children: [
+                      TileLayer(
+                        urlTemplate: env.mapTileUrl,
+                        userAgentPackageName: 'com.example.customer_app',
+                        tileProvider: ref.watch(mapTileProviderProvider),
+                      ),
+                      RichAttributionWidget(
+                        attributions: [
+                          TextSourceAttribution(env.mapAttribution),
+                        ],
+                      ),
+                    ],
                   ),
-                  children: [
-                    TileLayer(
-                      urlTemplate: env.mapTileUrl,
-                      userAgentPackageName: 'com.example.customer_app',
-                      tileProvider: ref.watch(mapTileProviderProvider),
-                    ),
-                    RichAttributionWidget(
-                      attributions: [TextSourceAttribution(env.mapAttribution)],
-                    ),
-                  ],
                 ),
                 // The pin's tip is the map center.
                 IgnorePointer(

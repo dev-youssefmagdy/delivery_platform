@@ -185,6 +185,14 @@ use App\Repositories\Contracts\Reporting\MetricsAggregationRepositoryInterface;
 use App\Repositories\Contracts\Reporting\ReportingRepositoryInterface;
 use App\Repositories\Contracts\Reporting\ReportQueryRepositoryInterface;
 use App\Repositories\Contracts\Lead\LeadRepositoryInterface;
+use App\Repositories\Contracts\System\AppVersionRepositoryInterface;
+use App\Repositories\Contracts\System\FailedJobRepositoryInterface;
+use App\Repositories\Contracts\System\FeatureFlagRepositoryInterface;
+use App\Repositories\Contracts\System\WebhookFailureRepositoryInterface;
+use App\Repositories\Eloquent\System\AppVersionRepository;
+use App\Repositories\Eloquent\System\FailedJobRepository;
+use App\Repositories\Eloquent\System\FeatureFlagRepository;
+use App\Repositories\Eloquent\System\WebhookFailureRepository;
 use App\Repositories\Contracts\Risk\RiskDataRepositoryInterface;
 use App\Repositories\Contracts\Risk\RiskSignalRepositoryInterface;
 use App\Repositories\Contracts\Safety\IncidentThreadRepositoryInterface;
@@ -286,6 +294,10 @@ class RepositoryServiceProvider extends ServiceProvider
         RatingModerationRepositoryInterface::class => RatingModerationRepository::class,
         RiskSignalRepositoryInterface::class => RiskSignalRepository::class,
         LeadRepositoryInterface::class => LeadRepository::class,
+        AppVersionRepositoryInterface::class => AppVersionRepository::class,
+        FeatureFlagRepositoryInterface::class => FeatureFlagRepository::class,
+        FailedJobRepositoryInterface::class => FailedJobRepository::class,
+        WebhookFailureRepositoryInterface::class => WebhookFailureRepository::class,
         RiskDataRepositoryInterface::class => RiskDataRepository::class,
         MetricsAggregationRepositoryInterface::class => MetricsAggregationRepository::class,
         ReportingRepositoryInterface::class => ReportingRepository::class,

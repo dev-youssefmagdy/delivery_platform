@@ -37,5 +37,22 @@
             role="application"
             aria-label="{{ __('admin.operations.title') }}"
         ></div>
+        <details class="border-t border-slate-100 px-5 py-3 text-sm" data-ops-list>
+            <summary class="cursor-pointer font-medium text-slate-700">{{ __('admin.operations.list.title') }}</summary>
+            <p class="mt-2 text-xs text-slate-500">{{ __('admin.operations.list.hint') }}</p>
+            <div class="mt-3 grid gap-6 lg:grid-cols-2">
+                @foreach (['providers', 'bookings'] as $group)
+                    <table class="w-full text-start" data-ops-table="{{ $group }}">
+                        <caption class="mb-1 text-start font-semibold text-slate-800">{{ __('admin.operations.layers.'.$group) }}</caption>
+                        <thead><tr class="text-xs text-slate-500">
+                            <th scope="col" class="py-1 text-start font-medium">{{ __('admin.operations.list.id') }}</th>
+                            <th scope="col" class="py-1 text-start font-medium">{{ __('admin.operations.list.category') }}</th>
+                            <th scope="col" class="py-1 text-start font-medium">{{ __('admin.operations.list.status') }}</th>
+                        </tr></thead>
+                        <tbody></tbody>
+                    </table>
+                @endforeach
+            </div>
+        </details>
     </x-admin.card>
 </x-admin.layouts.app>

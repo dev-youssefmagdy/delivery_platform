@@ -37,6 +37,12 @@ html {
     scroll-padding-top: 5rem;
 }
 
+/* Every focusable element shows a visible ring for keyboard users (links, buttons, summary) unless a component styles its own. */
+:focus-visible {
+    outline: 2px solid var(--color-brand-700);
+    outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;

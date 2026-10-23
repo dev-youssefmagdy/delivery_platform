@@ -27,7 +27,7 @@
         <div class="flex items-start gap-3">
             <input id="{{ $id }}" name="{{ $name }}" type="checkbox" value="1" @checked((bool) $current) aria-describedby="{{ $describedBy }}" @required($required)
                 data-msg-required="{{ __('site.forms.client.required_check') }}" data-msg-invalid="{{ __('site.forms.client.required_check') }}"
-                {{ $attributes->class(['mt-1 size-5 rounded border-slate-400 text-brand-700 focus:outline-2 focus:outline-brand-600']) }}>
+                {{ $attributes->class(['mt-1 size-5 rounded border-field text-brand-700 focus:outline-2 focus:outline-brand-600']) }}>
             <div class="text-sm leading-6 text-slate-700">{{ $slot }}</div>
         </div>
     @else

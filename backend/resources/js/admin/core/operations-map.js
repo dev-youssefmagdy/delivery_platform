@@ -82,7 +82,23 @@ export async function initOperationsMap(root = document) {
         }
     }
 
+    // The list is only rendered while it is open, and at most once a second.
+    let listTimer = null;
+    const scheduleList = () => {
+        if (!document.querySelector('[data-ops-list]')?.open || listTimer) {
+            return;
+        }
+
+        listTimer = window.setTimeout(() => {
+            listTimer = null;
+            renderLists();
+        }, 1000);
+    };
+
+    document.querySelector('[data-ops-list]')?.addEventListener('toggle', renderLists);
+
     function counters() {
+        scheduleList();
         const values = {
             providers: providers.size,
             busy: [...providers.values()].filter((p) => p.data.busy).length,
@@ -91,6 +107,32 @@ export async function initOperationsMap(root = document) {
         };
 
         Object.entries(values).forEach(([key, value]) => document.querySelectorAll(`[data-stat="${key}"]`).forEach((node) => { node.textContent = String(value); }));
+    }
+
+    // Keyboard / screen reader alternative to the markers: the same items as plain table rows (text only, no colour coding).
+    function renderLists() {
+        const fill = (group, rows) => {
+            const body = document.querySelector(`[data-ops-table="${group}"] tbody`);
+
+            if (!body) {
+                return;
+            }
+
+            body.replaceChildren(...(rows.length === 0 ? [[t('operations.none'), '', '']] : rows).map((cells) => {
+                const tr = document.createElement('tr');
+                cells.forEach((text) => {
+                    const td = document.createElement('td');
+                    td.className = 'py-1 pe-3';
+                    td.textContent = text;
+                    tr.append(td);
+                });
+
+                return tr;
+            }));
+        };
+
+        fill('providers', [...providers.values()].map(({ data: p }) => [short(p.id), p.category ?? '—', p.busy ? t('operations.busy') : t('operations.available')]));
+        fill('bookings', [...bookings.values()].map(({ data: b }) => [b.code ?? short(b.id), b.category ?? '—', b.status_label ?? labels[b.status] ?? b.status]));
     }
 
     function apply(snapshot) {
@@ -155,6 +197,7 @@ export async function initOperationsMap(root = document) {
             if (known) {
                 upsertProvider({ id: payload.uuid, lat: payload.lat, lng: payload.lng, busy: payload.busy });
                 counters();
+                renderLists();
             }
         } else if (type === 'provider_changed') {
             if (payload.online) {

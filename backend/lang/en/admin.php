@@ -158,6 +158,7 @@ return [
             'booking' => 'Booking',
             'busy' => 'on a job',
             'available' => 'available',
+            'none' => 'Nothing to show.',
             'updated_age' => ':count s ago',
         ],
         'common' => [
@@ -2944,6 +2945,14 @@ return [
         'layers' => [
             'providers' => 'Providers',
             'bookings' => 'Bookings',
+        ],
+        'list' => [
+            'title' => 'Show the same items as a list',
+            'hint' => 'Keyboard and screen reader alternative to the map markers. Updates with the map.',
+            'id' => 'Reference',
+            'category' => 'Category',
+            'status' => 'Status',
+            'none' => 'Nothing to show.',
         ],
         'privacy' => 'No names or phone numbers on the map.',
         'updated' => 'Updated',

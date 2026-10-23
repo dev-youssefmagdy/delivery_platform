@@ -6,6 +6,7 @@ use App\DTOs\Reviews\ModerationQueueFilterData;
 use App\Models\ModerationAction;
 use App\Models\RatingAppeal;
 use App\Models\RatingReport;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -101,4 +102,19 @@ interface RatingModerationRepositoryInterface
      * @return Collection<int, RatingAppeal>
      */
     public function appealsOfUser(int $userId): Collection;
+
+    /**
+     * The account behind a rating party (`customer` = users.id, `provider` = provider_profiles.id).
+     */
+    public function userOfParty(string $partyType, int $partyId): ?User;
+
+    /**
+     * Display name of a rating party for the admin (customer name or provider display name), or null when unknown.
+     */
+    public function partyName(string $partyType, int $partyId): ?string;
+
+    /**
+     * The party id of an account in the given app (customer: user id, provider: profile id), or null for a provider without profile.
+     */
+    public function partyIdOfUser(User $user, string $app): ?int;
 }

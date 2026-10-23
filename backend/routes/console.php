@@ -3,6 +3,7 @@
 use App\Jobs\Customers\ReactivateExpiredSuspensions;
 use App\Jobs\Provider\ReactivateExpiredProviderSuspensions;
 use App\Jobs\Provider\SweepStaleProviders;
+use App\Jobs\Risk\EvaluateRiskSignals;
 use App\Models\AdminExport;
 use App\Models\AppNotification;
 use App\Models\IdempotencyKey;
@@ -55,3 +56,5 @@ Schedule::command('chat:purge-expired')->dailyAt('03:45')->withoutOverlapping();
 Schedule::command('support:maintain')->everyFiveMinutes()->withoutOverlapping();
 
 Schedule::command('safety:maintain')->everyMinute()->withoutOverlapping();
+
+Schedule::job(new EvaluateRiskSignals)->name('risk:evaluate')->hourlyAt(10)->withoutOverlapping();

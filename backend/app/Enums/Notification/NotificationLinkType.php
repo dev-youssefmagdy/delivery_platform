@@ -26,4 +26,6 @@ enum NotificationLinkType: string
     case Safety = 'safety';
     /** Admin only: opens the case in the Safety Center. */
     case Incident = 'incident';
+    /** Admin only: opens the risk signals queue. */
+    case Risk = 'risk';
 }

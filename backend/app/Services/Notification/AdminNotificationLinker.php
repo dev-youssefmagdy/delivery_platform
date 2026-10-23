@@ -23,6 +23,10 @@ final class AdminNotificationLinker
             return route('admin.safety-incidents.show', $notification->link_id);
         }
 
+        if ($notification->link_type === NotificationLinkType::Risk->value) {
+            return $notification->link_id === null ? route('admin.risk-signals.index') : route('admin.risk-signals.show', $notification->link_id);
+        }
+
         if ($notification->link_type !== NotificationLinkType::Export->value || $notification->link_id === null) {
             return null;
         }

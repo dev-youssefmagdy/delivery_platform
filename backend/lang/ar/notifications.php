@@ -110,6 +110,10 @@ return [
 
     'safety.incident_raised' => ['title' => 'بلاغ سلامة جديد', 'body' => 'بلاغ السلامة {code} يحتاج إلى مسؤول سلامة.'],
 
+    'review.hidden' => ['title' => 'تم إخفاء تقييمك', 'body' => 'تم إخفاء تقييم كتبته بواسطة الإشراف. يمكنك الاعتراض من التطبيق.'],
+    'review.appeal_decided' => ['title' => 'تم البت في اعتراضك', 'body' => 'تم البت في اعتراضك: {outcome}.'],
+    'risk.signal_raised' => ['title' => 'تنبيهات مخاطر جديدة', 'body' => '{count} تنبيه جديد من نوع {type} يحتاج إلى مراجعة.'],
+
     'marketing.campaign' => ['title' => '{title}', 'body' => '{body}'],
 
     'admin.export_ready' => [

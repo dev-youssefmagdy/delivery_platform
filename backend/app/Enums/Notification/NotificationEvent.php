@@ -75,6 +75,10 @@ enum NotificationEvent: string implements HasLabel
     case SafetyCaseUpdate = 'safety.case_update';
     case SafetyIncidentRaised = 'safety.incident_raised';
 
+    case ReviewHidden = 'review.hidden';
+    case ReviewAppealDecided = 'review.appeal_decided';
+    case RiskSignalRaised = 'risk.signal_raised';
+
     case MarketingCampaign = 'marketing.campaign';
 
     case AdminExportReady = 'admin.export_ready';
@@ -97,6 +101,8 @@ enum NotificationEvent: string implements HasLabel
             self::PayoutRequested, self::PayoutApproved, self::PayoutRejected, self::PayoutPaid, self::PayoutFailed => NotificationCategory::Payouts,
             self::SupportHelpMessage, self::SupportReply, self::SupportDisputeUpdate => NotificationCategory::Support,
             self::SafetyCaseUpdate, self::SafetyIncidentRaised => NotificationCategory::Safety,
+            self::ReviewHidden, self::ReviewAppealDecided => NotificationCategory::Support,
+            self::RiskSignalRaised => NotificationCategory::System,
             self::MarketingCampaign => NotificationCategory::Marketing,
             self::AdminExportReady, self::AdminExportFailed => NotificationCategory::System,
         };
@@ -114,7 +120,7 @@ enum NotificationEvent: string implements HasLabel
             self::DeliveryPickedUp, self::DeliveryArrivedDropoff, self::DeliveryDelivered, self::DeliveryAttemptFailed, self::DeliveryReturned,
             self::PaymentPending, self::PaymentSucceeded, self::PaymentFailed, self::PaymentRefunded,
             self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::SupportHelpMessage => NotificationAudience::Customer,
-            self::AdminExportReady, self::AdminExportFailed, self::SafetyIncidentRaised => NotificationAudience::Admin,
+            self::AdminExportReady, self::AdminExportFailed, self::SafetyIncidentRaised, self::RiskSignalRaised => NotificationAudience::Admin,
             default => NotificationAudience::Both,
         };
     }
@@ -163,9 +169,11 @@ enum NotificationEvent: string implements HasLabel
             self::CouponApplied, self::CouponRejected, self::CouponExpiring => ['coupon'],
             self::MarketingCampaign => ['title', 'body'],
             self::AdminExportReady, self::AdminExportFailed => ['file'],
+            self::ReviewAppealDecided => ['outcome'],
+            self::RiskSignalRaised => ['type', 'count'],
             self::ProviderApplicationSubmitted, self::ProviderApplicationMoreInfo, self::ProviderApplicationApproved, self::ProviderApplicationRejected,
             self::ProviderSuspended, self::ProviderReactivated, self::SupportHelpMessage, self::SupportReply, self::SupportDisputeUpdate,
-            self::SafetyCaseUpdate, self::RequestNew => [],
+            self::SafetyCaseUpdate, self::RequestNew, self::ReviewHidden => [],
             default => ['code'],
         };
     }
@@ -182,6 +190,8 @@ enum NotificationEvent: string implements HasLabel
             self::SupportReply, self::SupportDisputeUpdate => NotificationLinkType::Support,
             self::SafetyCaseUpdate => NotificationLinkType::Safety,
             self::SafetyIncidentRaised => NotificationLinkType::Incident,
+            self::ReviewHidden, self::ReviewAppealDecided => NotificationLinkType::Inbox,
+            self::RiskSignalRaised => NotificationLinkType::Risk,
             self::BookingMessageReceived => NotificationLinkType::Chat,
             self::CouponApplied, self::CouponRejected, self::CouponExpiring, self::MarketingCampaign => NotificationLinkType::Inbox,
             self::AdminExportReady, self::AdminExportFailed => NotificationLinkType::Export,
@@ -206,6 +216,8 @@ enum NotificationEvent: string implements HasLabel
             'title' => __('admin.notification_templates.sample.title'),
             'body' => __('admin.notification_templates.sample.body'),
             'file' => 'bookings-export.csv',
+            'type' => 'cancellation_rate',
+            'count' => '3',
         ];
 
         return array_intersect_key($samples, array_flip($this->variables()));

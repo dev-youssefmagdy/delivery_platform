@@ -3,10 +3,13 @@
 namespace App\Repositories\Eloquent\Reviews;
 
 use App\DTOs\Reviews\ModerationQueueFilterData;
+use App\Enums\Common\ActorType;
 use App\Enums\Reviews\RatingReportStatus;
 use App\Models\ModerationAction;
 use App\Models\RatingAppeal;
+use App\Models\ProviderProfile;
 use App\Models\RatingReport;
+use App\Models\User;
 use App\Repositories\Contracts\Reviews\RatingModerationRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -146,5 +149,32 @@ final class RatingModerationRepository implements RatingModerationRepositoryInte
     public function appealsOfUser(int $userId): Collection
     {
         return RatingAppeal::query()->where('appellant_user_id', $userId)->orderBy('id')->get();
+    }
+
+    public function userOfParty(string $partyType, int $partyId): ?User
+    {
+        if ($partyType === ActorType::Provider->value) {
+            return ProviderProfile::query()->with('user')->find($partyId)?->user;
+        }
+
+        return User::query()->withTrashed()->find($partyId);
+    }
+
+    public function partyName(string $partyType, int $partyId): ?string
+    {
+        $name = $this->userOfParty($partyType, $partyId)?->name;
+
+        return is_string($name) && $name !== '' ? $name : null;
+    }
+
+    public function partyIdOfUser(User $user, string $app): ?int
+    {
+        if ($app === ActorType::Provider->value) {
+            $profile = ProviderProfile::query()->where('user_id', $user->id)->first();
+
+            return $profile?->id;
+        }
+
+        return $user->id;
     }
 }

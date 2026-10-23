@@ -110,6 +110,10 @@ return [
 
     'safety.incident_raised' => ['title' => 'New safety case', 'body' => 'Safety case {code} needs a safety officer.'],
 
+    'review.hidden' => ['title' => 'Your review was hidden', 'body' => 'A review you wrote was hidden by moderation. You can appeal from the app.'],
+    'review.appeal_decided' => ['title' => 'Appeal decided', 'body' => 'Your appeal was decided: {outcome}.'],
+    'risk.signal_raised' => ['title' => 'New risk signals', 'body' => '{count} new {type} signal(s) need a review.'],
+
     'marketing.campaign' => ['title' => '{title}', 'body' => '{body}'],
 
     'admin.export_ready' => [

@@ -12,6 +12,13 @@ return [
     // Hard cap of signals written per detector run (protects the queue from a bad threshold).
     'max_per_run' => (int) env('RISK_MAX_PER_RUN', 500),
 
+    'reviews' => [
+        // A person may appeal a moderation outcome or a low rating within this many days.
+        'appeal_window_days' => (int) env('REVIEWS_APPEAL_WINDOW_DAYS', 30),
+        // Ratings up to this many stars count as "low" and can be appealed by the person they are about.
+        'low_rating_max_stars' => (int) env('REVIEWS_LOW_RATING_MAX_STARS', 2),
+    ],
+
     'cancellation_rate' => [
         'min_bookings' => (int) env('RISK_CANCELLATION_MIN_BOOKINGS', 5),
         'min_rate_percent' => (int) env('RISK_CANCELLATION_MIN_RATE', 50),

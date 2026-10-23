@@ -985,6 +985,9 @@ return [
         'safety.incident_raised' => 'Safety case raised (staff)',
         'admin.export_ready' => 'Export ready',
         'admin.export_failed' => 'Export failed',
+        'review.hidden' => 'Review hidden',
+        'review.appeal_decided' => 'Review appeal decided',
+        'risk.signal_raised' => 'Risk signal raised (staff)',
     ],
 
     // @admin-module:enums

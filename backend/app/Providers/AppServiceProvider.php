@@ -99,6 +99,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProviderGeoIndex::class, static fn (Application $app): ProviderGeoIndex => config('location.index') === 'redis'
             ? $app->make(RedisGeoIndex::class)
             : $app->make(DatabaseGeoIndex::class));
+
+        // Risk detectors (P5.2): one tag, the evaluation service runs them all. A new detector is added to this list only.
+        $this->app->tag([
+            \App\Services\Risk\Detectors\CancellationRateDetector::class,
+            \App\Services\Risk\Detectors\NoShowDetector::class,
+            \App\Services\Risk\Detectors\OfferSpamDetector::class,
+            \App\Services\Risk\Detectors\LocationAnomalyDetector::class,
+            \App\Services\Risk\Detectors\ReferralAbuseDetector::class,
+            \App\Services\Risk\Detectors\AccountFarmDetector::class,
+            \App\Services\Risk\Detectors\PaymentDisputeDetector::class,
+        ], 'risk.detectors');
+        $this->app->when(\App\Services\Risk\RiskSignalEvaluationService::class)->needs('$detectors')->giveTagged('risk.detectors');
     }
 
     /**
@@ -184,6 +196,10 @@ class AppServiceProvider extends ServiceProvider
             'support_macro' => \App\Models\SupportMacro::class,
             'safety_incident' => \App\Models\SafetyIncident::class,
             'trusted_contact' => \App\Models\TrustedContact::class,
+            'booking_rating' => \App\Models\BookingRating::class,
+            'rating_report' => \App\Models\RatingReport::class,
+            'rating_appeal' => \App\Models\RatingAppeal::class,
+            'risk_signal' => \App\Models\RiskSignal::class,
             // @admin-module:morph-map
         ]);
 

@@ -985,6 +985,9 @@ return [
         'safety.incident_raised' => 'بلاغ سلامة جديد (للفريق)',
         'admin.export_ready' => 'التصدير جاهز',
         'admin.export_failed' => 'فشل التصدير',
+        'review.hidden' => 'تم إخفاء تقييم',
+        'review.appeal_decided' => 'تم البت في اعتراض على تقييم',
+        'risk.signal_raised' => 'تنبيه مخاطر (للفريق)',
     ],
 
     // @admin-module:enums

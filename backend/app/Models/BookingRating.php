@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use LogicException;
 
 /**
  * One side's rating of a completed booking (SRS §15). The rater is the customer (`users.id`) or the provider
@@ -36,6 +37,13 @@ class BookingRating extends Model
     {
         static::creating(static function (self $rating): void {
             $rating->uuid ??= (string) Str::uuid();
+        });
+
+        // What a person wrote is never rewritten after it was submitted: moderation changes visibility only (SRS §16.12, ADR-173).
+        static::updating(static function (self $rating): void {
+            if ($rating->isDirty(['stars', 'tags', 'comment'])) {
+                throw new LogicException('A submitted review cannot be edited; hide or restore it instead.');
+            }
         });
     }
 

@@ -72,6 +72,13 @@ interface IncentiveRepositoryInterface
     public function createAward(array $attributes): IncentiveAward;
 
     /**
+     * Progress rows stopped by an empty budget (retried when the budget is raised).
+     *
+     * @return Collection<int, IncentiveProgress>
+     */
+    public function exhausted(int $limit): Collection;
+
+    /**
      * @return Collection<int, IncentiveProgress>
      */
     public function held(): Collection;

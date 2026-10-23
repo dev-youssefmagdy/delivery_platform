@@ -65,3 +65,8 @@ Schedule::command('metrics:aggregate-daily')->hourlyAt(20)->withoutOverlapping(3
 Schedule::command('metrics:aggregate-daily', ['--nightly' => true])->dailyAt('01:40')->withoutOverlapping(60);
 
 Schedule::job(new PublishScheduledContent)->name('content:publish-scheduled')->everyMinute()->withoutOverlapping();
+
+// Growth (P5.7): expire promotional credits and retry rewards that waited for budget. Both are idempotent and do nothing while the
+// growth feature flags are off (there are no credits or waiting rewards then).
+Schedule::command('growth:expire-credits')->hourly()->withoutOverlapping();
+Schedule::command('growth:settle')->everyTenMinutes()->withoutOverlapping();

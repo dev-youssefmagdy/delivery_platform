@@ -6,7 +6,9 @@ use App\Enums\Booking\BookingStatus;
 use App\Enums\Finance\EntrySide;
 use App\Enums\Risk\RiskSignalStatus;
 use App\Enums\Risk\RiskSubjectType;
+use App\Models\ProviderProfile;
 use App\Models\RiskSignal;
+use App\Models\User;
 use App\Repositories\Contracts\Growth\GrowthDataRepositoryInterface;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\DB;
@@ -55,6 +57,21 @@ final class GrowthDataRepository implements GrowthDataRepositoryInterface
             ->where('journal_entries.posted_at', '>=', $since)
             ->when($exceptTypes !== [], static fn ($query) => $query->whereNotIn('journal_entries.type', $exceptTypes))
             ->sum('journal_lines.amount_minor');
+    }
+
+    public function user(int $id): ?User
+    {
+        return User::query()->find($id);
+    }
+
+    public function providerProfile(int $id): ?ProviderProfile
+    {
+        return ProviderProfile::query()->find($id);
+    }
+
+    public function userOfProvider(int $providerProfileId): ?User
+    {
+        return User::query()->whereHas('providerProfile', static fn ($query) => $query->whereKey($providerProfileId))->first();
     }
 
     public function completedBookingsOfCustomer(int $customerId): int

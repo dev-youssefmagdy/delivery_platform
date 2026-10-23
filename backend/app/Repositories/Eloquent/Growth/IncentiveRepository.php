@@ -103,6 +103,11 @@ final class IncentiveRepository implements IncentiveRepositoryInterface
         return IncentiveAward::query()->create($attributes);
     }
 
+    public function exhausted(int $limit): Collection
+    {
+        return IncentiveProgress::query()->where('status', IncentiveProgressStatus::Exhausted->value)->orderBy('id')->limit($limit)->get();
+    }
+
     public function held(): Collection
     {
         return IncentiveProgress::query()->where('status', IncentiveProgressStatus::Held->value)->get();

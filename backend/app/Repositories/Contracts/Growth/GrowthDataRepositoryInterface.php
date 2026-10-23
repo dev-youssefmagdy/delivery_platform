@@ -3,6 +3,8 @@
 namespace App\Repositories\Contracts\Growth;
 
 use App\Enums\Risk\RiskSubjectType;
+use App\Models\ProviderProfile;
+use App\Models\User;
 use Carbon\CarbonInterface;
 
 /**
@@ -42,6 +44,12 @@ interface GrowthDataRepositoryInterface
      * @param list<string> $exceptTypes JournalEntryType values
      */
     public function walletDebitedMinor(int $ledgerAccountId, CarbonInterface $since, array $exceptTypes): int;
+
+    public function user(int $id): ?User;
+
+    public function providerProfile(int $id): ?ProviderProfile;
+
+    public function userOfProvider(int $providerProfileId): ?User;
 
     public function completedBookingsOfCustomer(int $customerId): int;
 }

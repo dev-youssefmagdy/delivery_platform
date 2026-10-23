@@ -1,0 +1,73 @@
+# Backend CI. Mirrors scripts/verify-all.sh (backend part). NEVER RUN YET: see docs/RELEASE_REPORT.md.
+name: backend
+on:
+  push: { branches: [main] }
+  pull_request:
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+permissions: { contents: read }
+
+jobs:
+  backend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults: { run: { working-directory: backend } }
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: delivery_platform_testing
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot" --health-interval=10s --health-timeout=5s --health-retries=10
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: delivery_platform_testing
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      REDIS_HOST: 127.0.0.1
+      REDIS_CLIENT: phpredis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: bcmath, intl, mbstring, pdo_mysql, redis, gd, sodium, zip, pcntl
+          tools: composer:v2
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('backend/composer.lock') }}
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: cp .env.example .env && php artisan key:generate
+      - name: Pint
+        run: vendor/bin/pint --test
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+      - name: Tests (MySQL + Redis)
+        run: php artisan config:clear && php artisan test --parallel
+      - run: npm ci
+      - name: Vite build
+        run: npm run build
+      - name: Vitest
+        run: npm test
+      - name: Contrast scanner
+        run: node ../scripts/check-contrast.mjs
+        working-directory: backend
+      - name: Production install sanity (no dev packages)
+        run: composer install --no-dev --no-interaction --no-progress --dry-run

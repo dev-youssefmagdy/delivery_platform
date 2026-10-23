@@ -136,3 +136,9 @@ Workers: add the `notifications` queue (`--queue=critical,default,notifications,
 - Logs as JSON: set `LOG_STACK=json` (files) or `LOG_STACK=stderr_json` (containers) in `.env`. Every line carries `extra.request_id`; send the same id in `X-Request-Id` to follow a request.
 - Error tracking is off. To enable Sentry set `SENTRY_DSN` (and optionally `SENTRY_ENVIRONMENT`, `SENTRY_RELEASE`, `SENTRY_SAMPLE_RATE`); check the "Error tracking" row on Admin > Integration health.
 - The health page needs the scheduler (`schedule:run` every minute, heartbeat) and a queue worker; failed jobs are retried from Admin > Failed jobs with a reason. Run `php artisan migrate` for the `app_versions` and `feature_flags` tables, then add the store links in Admin > App versions.
+
+## Growth: referrals, loyalty, incentives (P5.7)
+
+- Run `php artisan migrate` (tables `referral_*`, `loyalty_*`, `incentive_*`, `growth_processed_bookings`) and `php artisan db:seed --class=PermissionSeeder` (new permissions `referrals.*`, `loyalty.*`, `incentives.*`; grant them to existing roles in Admin > Roles, new installs get role defaults from `RoleSeeder`).
+- Everything is OFF until the flags `referrals`, `loyalty`, `incentives` are switched on in Admin > Feature flags. Then create a referral campaign (Marketing > Referral campaigns), loyalty levels and incentive campaigns and activate them (the budget must cover the rewards).
+- The queue worker must run (the completed-booking hook is queued) and the scheduler must run for `growth:expire-credits` and `growth:settle`.

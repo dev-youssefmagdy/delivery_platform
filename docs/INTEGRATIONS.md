@@ -108,3 +108,10 @@ Never commit credentials. `.env`, service-account JSON, keystores, `*.p12`, prov
 - Optional environment (`config/health.php`): `HEALTH_QUEUES` (default `default,critical`), `HEALTH_QUEUE_DEGRADED_DEPTH`, `HEALTH_FAILED_JOBS_DEGRADED`, `HEALTH_ADAPTER_FAILURE_WINDOW`, `HEALTH_WEBHOOK_WINDOW_HOURS`, `HEALTH_WEBHOOK_DEGRADED`, `HEALTH_SOCKET_TIMEOUT`. Reverb is probed with a TCP connect to `REVERB_SERVER_HOST:REVERB_SERVER_PORT` when `BROADCAST_CONNECTION=reverb`.
 - Structured logs: `LOG_STACK=json` (daily `storage/logs/laravel.json.log`) or `LOG_STACK=stderr_json`; one JSON line per record with `extra.request_id`; keys that look like secrets are replaced by `[redacted]`.
 - Error tracker (off by default): `SENTRY_DSN` (https DSN), optional `SENTRY_ENVIRONMENT`, `SENTRY_RELEASE`, `SENTRY_SAMPLE_RATE`. Sent after the response: exception class, trimmed message, frames, release, environment, `request_id` tag. No request body, headers, cookies or user data. Failures show on the health page as `Error tracking`.
+
+
+## Growth: referrals, loyalty, incentives (P5.7)
+- No external service. Everything is switched on by the feature flags `referrals`, `loyalty`, `incentives` (admin > System > Feature flags), all off by default.
+- Optional environment (`config/growth.php`): `GROWTH_CODE_LENGTH` (referral code length, default 8), `GROWTH_LINK_BASE` (base of the shared link, default `APP_URL/r`; the website has no `/r` page yet, so the link is only a stable address until one is added), `GROWTH_VELOCITY_MAX` / `GROWTH_VELOCITY_WINDOW_HOURS` (more referrals than this by one referrer inside the window is a review flag), `GROWTH_PHONE_PATTERN_DIGITS`, `GROWTH_EXPIRY_BATCH`, `RISK_REFERRAL_ABUSE_ENABLED` (default on).
+- Scheduled: `growth:expire-credits` hourly, `growth:settle` every ten minutes (both idempotent, both skip features whose flag is off). A queue worker must run the listener `ApplyGrowthRulesOnBookingCompleted`.
+- Money moves only through the ledger (`promo_expense` account); no gateway is involved.

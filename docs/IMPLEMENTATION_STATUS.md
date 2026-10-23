@@ -44,7 +44,7 @@
 | P5.4 | CMS | P1 | 🟡 | gate not run (see section) |
 | P5.5 | Public website | P1 | 🟡 | gate not run (see section) |
 | P5.6 | Integration health, app versions, feature flags, system pages | P1 | 🟡 | gate not run (see section) |
-| P5.7 | Referrals, loyalty, provider incentives | P2 | ❌ | — |
+| P5.7 | Referrals, loyalty, provider incentives | P2 | 🟡 | gate not run (see section) |
 | P6.1 | Security, IDOR, race & webhook review | P0 | ❌ | — |
 | P6.2 | Performance, indexes, retention | P0 | ❌ | — |
 | P6.3 | Localization, RTL & accessibility review | P0 | ❌ | — |
@@ -1176,3 +1176,30 @@ No browser pass; the Flutter forced-update screen does not read `store_url` / `p
 
 ### Next (P5.7)
 Use `FeatureFlagService::isEnabled(FeatureFlagKey::Referrals|Loyalty, new FlagContext(app, cityId, userUuid))` to gate referral and loyalty endpoints (both default off). Any new adapter should call `IntegrationStatusStore::failed/succeeded` and add a `HealthArea` case.
+
+## P5.7 — Referrals, loyalty, provider incentives · 🟡 2026-11-16 (gate NOT run)
+
+Committed directly on `main`. ADR-197..202. **By user instruction no test, pint, phpstan, `php artisan test`, flutter test / analyze suites, vitest, browser smoke or `scripts/check.sh` was written or run, so the milestone is not marked done**; every test that should exist is in `MISSED_TESTS.md` (P5.7).
+
+### Built
+- **Schema** (`2026_11_16_090000_create_growth_tables`): `referral_campaigns`, `referral_codes`, `referral_relationships`, `referral_rewards`, `loyalty_levels`, `loyalty_members`, `loyalty_awards`, `incentive_campaigns`, `incentive_progress`, `incentive_awards`, `incentive_customer_jobs`, `growth_processed_bookings`. Money in integer minor units; every payout references its ledger entry and idempotency key.
+- **Flags**: `FeatureFlagKey::Incentives` added; `GrowthFeatures` gates the hook, the API and the read service (all default OFF, `404 feature_disabled`).
+- **Referrals**: code per user and audience, apply (idempotent, new people only, once per audience, cap, active campaign), milestone by qualifying jobs (minimum order / service / city), rewards for both sides through the ledger (customer credit expires, provider reward does not), budget and cap under row locks, waiting rewards retried by `growth:settle`.
+- **Fraud**: device / shared-device accounts / phone pattern / saved card / velocity flags move a referral to `under_review`; held reward; `ReferralAbuseDetector` is now enabled and turns flagged referrals and held quest progress into `referral_abuse` risk signals (review task), closed when a person decides. Nothing restricts an account.
+- **Loyalty**: levels by completed jobs, one-time expiring credit per level, `LoyaltyService::statusFor`.
+- **Provider incentives**: quest campaigns (eligibility, window, target, bonus, max awards, budget, per-customer cap), progress per provider, bonus ledger posting, `exhausted` / `held` states, review release / reject.
+- **Credit expiry**: `CreditPositionService` (promotional credit is spent first, oldest first) and `CreditExpiryService` (`growth:expire-credits` hourly) reclaim only unspent credit with a compensating `credit_expiry` entry.
+- **Hook**: queued listener `ApplyGrowthRulesOnBookingCompleted` -> `GrowthCompletionService` (once per booking via the marker table, in one transaction with the effects).
+- **Admin** (Marketing menu): Referral campaigns, Referrals (relationships with review actions), Referral rewards, Loyalty levels, Provider incentive campaigns (with the progress table and release / reject). Collapsed filters cards, Precognition forms, Yajra tables, policies, `AdminPermission` entries + role defaults, mandatory reasons and audit for pause / archive / budget adjustment / reject / release / deactivate. The referral outcomes report replaces the P5.3 placeholder.
+- **API** (docs/API.md 8.30): `GET /me/referral`, `POST /me/referral/apply`, `GET /me/credits`, `GET /me/loyalty`, `GET /provider/incentives`.
+- **Apps**: platform_core `growth` models / repository / views / strings and the shared `FeatureFlags` helper (same crc32 bucket as the server); customer app Account tiles + Referral, Credits, Loyalty screens; driver app Earnings tiles + Referral and Incentives screens; every entry and screen only while the server flag is on. ARB ar + en, RTL-safe widgets, Riverpod notifiers -> repository contract -> remote data source -> `ApiClient`, all states via `AsyncStateView`.
+- **P5.6 carry-over**: the forced-update screen reads `store_url` from `apps.<app>.platforms.<platform>` (old top-level keys still work) with an "Update now" button (https only) and keeps "Check again"; both apps evaluate `features` / `flags` through `FeatureFlags` / `AppConfig.featureEnabled`. DTOs and l10n regenerated and committed.
+
+### Checks run (compile / sanity only)
+`php -l` on every new file; `migrate` / `migrate:rollback --step=1` / `migrate`; `route:list` (29 admin, 5 API routes); `schedule:list`; `event:list`; `view:cache`; container resolution of the four repositories; rolled-back tinker scripts: referral apply (idempotent, cap, self, bad code), reward posting with both wallets and `promo_expense` (ledger net zero), second run no-op, expiry after 31 days with the wallet back to zero and net zero, fraud flag holding a reward until approval, quest bonus at the target, cap on repeated customer, budget exhaustion and settle after raising the budget, held payout with an open risk signal and release, risk evaluation creating and closing a `referral_abuse` signal; rolled-back in-process HTTP as a fully permitted admin (all pages 200, datatable JSON, create / status / budget / loyalty actions, missing reason 422, Precognition 422 / 204, 403 without permission, relationship review approve / reject, report page and JSON) and as customer / provider tokens (404 with flags off, payloads with flags on, apply, bad code 422, ability 403); `dart analyze` on platform_core `lib` (only 4 pre-existing infos) and on the changed dirs of both apps (no issues); `flutter gen-l10n`; `build_runner` in both apps; the Dart crc32 matches PHP for three samples.
+
+### Known gaps
+No browser or device pass (RTL layout, share sheet, clipboard, the Account / Earnings tiles were not seen); credit usage restrictions are not enforced at spend time (wallet money is fungible, ADR-198); the shared link `GROWTH_LINK_BASE/<code>` has no website page yet and the code is not read from an install deep link, so a new user types or pastes it; no push notification when a reward is paid (only the screens show it); one campaign per audience is used for new referrals (overlap not prevented); the provider referral reward goes to the provider wallet, so a referrer without a provider profile gets nothing; roles stored in a database do not get the new permissions automatically; the referral report ignores the zone / category filters; incentive progress counts jobs at completion only (a later refund or dispute does not take a counted job back).
+
+### Next (Phase 6)
+Add a website `/r/{code}` landing that opens the app / store, push notifications for rewards (`NotificationEvent`s), an install-referrer or deep-link capture of the code in both apps, then run the deferred backlog (P5.1 to P5.7 lists). Turn the three flags on per city / percentage in Admin > Feature flags to roll out; watch Risk signals of type `referral_abuse`.

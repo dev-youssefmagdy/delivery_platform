@@ -44,6 +44,10 @@ class AppGate extends ConsumerWidget {
           if (config?.minVersion != null)
             l10n.forceUpdateRequiredVersion(config!.minVersion!),
         ],
+        primaryActionLabel: config?.storeUrl == null ? null : l10n.actionUpdateNow,
+        onPrimaryAction: config?.storeUrl == null
+            ? null
+            : () => ref.read(storeLauncherProvider)(config!.storeUrl!),
         actionLabel: l10n.actionCheckAgain,
         onAction: checkAgain,
       ),

@@ -6583,6 +6583,264 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'جهات الاتصال الموثوقة والسلامة'**
   String get sfSettingsTile;
+
+  /// No description provided for @actionUpdateNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدّث الآن'**
+  String get actionUpdateNow;
+
+  /// No description provided for @refTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ادعُ أصدقاءك'**
+  String get refTitle;
+
+  /// No description provided for @refYourCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز الإحالة الخاص بك'**
+  String get refYourCode;
+
+  /// No description provided for @refCopy.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ الرمز'**
+  String get refCopy;
+
+  /// No description provided for @refCopied.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم نسخ الرمز'**
+  String get refCopied;
+
+  /// No description provided for @refShare.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة'**
+  String get refShare;
+
+  /// No description provided for @refNoOffer.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد عرض إحالة حاليا. يمكنك مشاركة رمزك على أي حال.'**
+  String get refNoOffer;
+
+  /// No description provided for @refOfferTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'العرض'**
+  String get refOfferTitle;
+
+  /// No description provided for @refOfferLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحصل على {referrer}، ويحصل صديقك على {referee}.'**
+  String refOfferLine(String referrer, String referee);
+
+  /// No description provided for @refMilestone.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُدفع بعد أن يُتم صديقك {jobs} طلب(ات).'**
+  String refMilestone(int jobs);
+
+  /// No description provided for @refValidity.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرصيد صالح لمدة {days} يوما.'**
+  String refValidity(int days);
+
+  /// No description provided for @refHaveCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك رمز من صديق؟'**
+  String get refHaveCode;
+
+  /// No description provided for @refCodeHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل الرمز'**
+  String get refCodeHint;
+
+  /// No description provided for @refApply.
+  ///
+  /// In ar, this message translates to:
+  /// **'تطبيق الرمز'**
+  String get refApply;
+
+  /// No description provided for @refApplied.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تطبيق الرمز. تصلك المكافأة بعد أول طلب مكتمل.'**
+  String get refApplied;
+
+  /// No description provided for @refStatReferred.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت دعوتهم'**
+  String get refStatReferred;
+
+  /// No description provided for @refStatRewarded.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت مكافأتهم'**
+  String get refStatRewarded;
+
+  /// No description provided for @refStatPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد التقدم'**
+  String get refStatPending;
+
+  /// No description provided for @refListTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'دعواتك'**
+  String get refListTitle;
+
+  /// No description provided for @refListEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يستخدم أحد رمزك بعد.'**
+  String get refListEmpty;
+
+  /// No description provided for @refStatusPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد التقدم'**
+  String get refStatusPending;
+
+  /// No description provided for @refStatusRewarded.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت المكافأة'**
+  String get refStatusRewarded;
+
+  /// No description provided for @refStatusClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'مغلقة'**
+  String get refStatusClosed;
+
+  /// No description provided for @refErrInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الرمز غير صالح.'**
+  String get refErrInvalid;
+
+  /// No description provided for @refErrSelf.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكنك استخدام رمزك الخاص.'**
+  String get refErrSelf;
+
+  /// No description provided for @refErrNotNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرموز مخصصة لمن لم يُتم أي طلب بعد.'**
+  String get refErrNotNew;
+
+  /// No description provided for @refErrUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد عرض إحالة حاليا.'**
+  String get refErrUnavailable;
+
+  /// No description provided for @refErrCap.
+  ///
+  /// In ar, this message translates to:
+  /// **'بلغ هذا الرمز حده الأقصى.'**
+  String get refErrCap;
+
+  /// No description provided for @refErrApplied.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تطبيق رمز على حسابك مسبقا.'**
+  String get refErrApplied;
+
+  /// No description provided for @refErrGeneric.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر تطبيق الرمز. حاول مرة أخرى.'**
+  String get refErrGeneric;
+
+  /// No description provided for @refTile.
+  ///
+  /// In ar, this message translates to:
+  /// **'ادعُ سائقا'**
+  String get refTile;
+
+  /// No description provided for @incTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحوافز'**
+  String get incTitle;
+
+  /// No description provided for @incTile.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحوافز والمهام'**
+  String get incTile;
+
+  /// No description provided for @incNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد حملات حوافز مفتوحة حاليا.'**
+  String get incNone;
+
+  /// No description provided for @incQuestLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'أتمّ {jobs} طلبات واكسب {bonus}'**
+  String incQuestLine(int jobs, String bonus);
+
+  /// No description provided for @incProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'{done} من {target} طلبات'**
+  String incProgress(int done, int target);
+
+  /// No description provided for @incEndsOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنتهي {date}'**
+  String incEndsOn(String date);
+
+  /// No description provided for @incAwards.
+  ///
+  /// In ar, this message translates to:
+  /// **'المكافآت المكتسبة: {earned} من {max}'**
+  String incAwards(int earned, int max);
+
+  /// No description provided for @incStateInProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد التقدم'**
+  String get incStateInProgress;
+
+  /// No description provided for @incStateCompleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'مكتملة'**
+  String get incStateCompleted;
+
+  /// No description provided for @incStatePending.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد التحقق'**
+  String get incStatePending;
+
+  /// No description provided for @incStateClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'مغلقة'**
+  String get incStateClosed;
+
+  /// No description provided for @incMinRating.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحد الأدنى للتقييم {rating}'**
+  String incMinRating(String rating);
 }
 
 class _AppLocalizationsDelegate

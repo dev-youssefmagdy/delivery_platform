@@ -41,6 +41,7 @@ _AppConfigDto _$AppConfigDtoFromJson(
         (k, e) => MapEntry(k, e as bool),
       ) ??
       const <String, bool>{},
+  flags: json['flags'] as Map<String, dynamic>? ?? const <String, dynamic>{},
 );
 
 Map<String, dynamic> _$AppConfigDtoToJson(_AppConfigDto instance) =>
@@ -55,6 +56,7 @@ Map<String, dynamic> _$AppConfigDtoToJson(_AppConfigDto instance) =>
       'apps': instance.apps,
       'policies': instance.policies,
       'features': instance.features,
+      'flags': instance.flags,
     };
 
 _CountryDto _$CountryDtoFromJson(Map<String, dynamic> json) => _CountryDto(
@@ -104,12 +106,37 @@ _AppVersionRuleDto _$AppVersionRuleDtoFromJson(Map<String, dynamic> json) =>
     _AppVersionRuleDto(
       minVersion: json['min_version'] as String?,
       forceUpdate: json['force_update'] as bool? ?? false,
+      platforms:
+          (json['platforms'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(
+              k,
+              PlatformRuleDto.fromJson(e as Map<String, dynamic>),
+            ),
+          ) ??
+          const <String, PlatformRuleDto>{},
     );
 
 Map<String, dynamic> _$AppVersionRuleDtoToJson(_AppVersionRuleDto instance) =>
     <String, dynamic>{
       'min_version': instance.minVersion,
       'force_update': instance.forceUpdate,
+      'platforms': instance.platforms,
+    };
+
+_PlatformRuleDto _$PlatformRuleDtoFromJson(Map<String, dynamic> json) =>
+    _PlatformRuleDto(
+      minVersion: json['min_version'] as String?,
+      latestVersion: json['latest_version'] as String?,
+      forceUpdate: json['force_update'] as bool? ?? false,
+      storeUrl: json['store_url'] as String?,
+    );
+
+Map<String, dynamic> _$PlatformRuleDtoToJson(_PlatformRuleDto instance) =>
+    <String, dynamic>{
+      'min_version': instance.minVersion,
+      'latest_version': instance.latestVersion,
+      'force_update': instance.forceUpdate,
+      'store_url': instance.storeUrl,
     };
 
 _PolicyVersionDto _$PolicyVersionDtoFromJson(Map<String, dynamic> json) =>

@@ -24,6 +24,9 @@ abstract class AppConfigDto with _$AppConfigDto {
     @Default(<String, PolicyVersionDto>{})
     Map<String, PolicyVersionDto> policies,
     @Default(<String, bool>{}) Map<String, bool> features,
+
+    /// Targeting of the server flags (apps, cities, rollout percentage).
+    @Default(<String, dynamic>{}) Map<String, dynamic> flags,
   }) = _AppConfigDto;
 
   factory AppConfigDto.fromJson(Map<String, dynamic> json) =>
@@ -70,10 +73,26 @@ abstract class AppVersionRuleDto with _$AppVersionRuleDto {
   const factory AppVersionRuleDto({
     @JsonKey(name: 'min_version') String? minVersion,
     @JsonKey(name: 'force_update') @Default(false) bool forceUpdate,
+
+    /// Per-platform rules (`android`, `ios`) with the store page to open.
+    @Default(<String, PlatformRuleDto>{}) Map<String, PlatformRuleDto> platforms,
   }) = _AppVersionRuleDto;
 
   factory AppVersionRuleDto.fromJson(Map<String, dynamic> json) =>
       _$AppVersionRuleDtoFromJson(json);
+}
+
+@freezed
+abstract class PlatformRuleDto with _$PlatformRuleDto {
+  const factory PlatformRuleDto({
+    @JsonKey(name: 'min_version') String? minVersion,
+    @JsonKey(name: 'latest_version') String? latestVersion,
+    @JsonKey(name: 'force_update') @Default(false) bool forceUpdate,
+    @JsonKey(name: 'store_url') String? storeUrl,
+  }) = _PlatformRuleDto;
+
+  factory PlatformRuleDto.fromJson(Map<String, dynamic> json) =>
+      _$PlatformRuleDtoFromJson(json);
 }
 
 @freezed

@@ -3505,4 +3505,150 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sfSettingsTile => 'جهات الاتصال الموثوقة والسلامة';
+
+  @override
+  String get actionUpdateNow => 'حدّث الآن';
+
+  @override
+  String get refTitle => 'ادعُ أصدقاءك';
+
+  @override
+  String get refYourCode => 'رمز الإحالة الخاص بك';
+
+  @override
+  String get refCopy => 'نسخ الرمز';
+
+  @override
+  String get refCopied => 'تم نسخ الرمز';
+
+  @override
+  String get refShare => 'مشاركة';
+
+  @override
+  String get refNoOffer =>
+      'لا يوجد عرض إحالة حاليا. يمكنك مشاركة رمزك على أي حال.';
+
+  @override
+  String get refOfferTitle => 'العرض';
+
+  @override
+  String refOfferLine(String referrer, String referee) {
+    return 'تحصل على $referrer، ويحصل صديقك على $referee.';
+  }
+
+  @override
+  String refMilestone(int jobs) {
+    return 'تُدفع بعد أن يُتم صديقك $jobs طلب(ات).';
+  }
+
+  @override
+  String refValidity(int days) {
+    return 'الرصيد صالح لمدة $days يوما.';
+  }
+
+  @override
+  String get refHaveCode => 'لديك رمز من صديق؟';
+
+  @override
+  String get refCodeHint => 'أدخل الرمز';
+
+  @override
+  String get refApply => 'تطبيق الرمز';
+
+  @override
+  String get refApplied => 'تم تطبيق الرمز. تصلك المكافأة بعد أول طلب مكتمل.';
+
+  @override
+  String get refStatReferred => 'تمت دعوتهم';
+
+  @override
+  String get refStatRewarded => 'تمت مكافأتهم';
+
+  @override
+  String get refStatPending => 'قيد التقدم';
+
+  @override
+  String get refListTitle => 'دعواتك';
+
+  @override
+  String get refListEmpty => 'لم يستخدم أحد رمزك بعد.';
+
+  @override
+  String get refStatusPending => 'قيد التقدم';
+
+  @override
+  String get refStatusRewarded => 'تمت المكافأة';
+
+  @override
+  String get refStatusClosed => 'مغلقة';
+
+  @override
+  String get refErrInvalid => 'هذا الرمز غير صالح.';
+
+  @override
+  String get refErrSelf => 'لا يمكنك استخدام رمزك الخاص.';
+
+  @override
+  String get refErrNotNew => 'الرموز مخصصة لمن لم يُتم أي طلب بعد.';
+
+  @override
+  String get refErrUnavailable => 'لا يوجد عرض إحالة حاليا.';
+
+  @override
+  String get refErrCap => 'بلغ هذا الرمز حده الأقصى.';
+
+  @override
+  String get refErrApplied => 'تم تطبيق رمز على حسابك مسبقا.';
+
+  @override
+  String get refErrGeneric => 'تعذّر تطبيق الرمز. حاول مرة أخرى.';
+
+  @override
+  String get refTile => 'ادعُ سائقا';
+
+  @override
+  String get incTitle => 'الحوافز';
+
+  @override
+  String get incTile => 'الحوافز والمهام';
+
+  @override
+  String get incNone => 'لا توجد حملات حوافز مفتوحة حاليا.';
+
+  @override
+  String incQuestLine(int jobs, String bonus) {
+    return 'أتمّ $jobs طلبات واكسب $bonus';
+  }
+
+  @override
+  String incProgress(int done, int target) {
+    return '$done من $target طلبات';
+  }
+
+  @override
+  String incEndsOn(String date) {
+    return 'تنتهي $date';
+  }
+
+  @override
+  String incAwards(int earned, int max) {
+    return 'المكافآت المكتسبة: $earned من $max';
+  }
+
+  @override
+  String get incStateInProgress => 'قيد التقدم';
+
+  @override
+  String get incStateCompleted => 'مكتملة';
+
+  @override
+  String get incStatePending => 'قيد التحقق';
+
+  @override
+  String get incStateClosed => 'مغلقة';
+
+  @override
+  String incMinRating(String rating) {
+    return 'الحد الأدنى للتقييم $rating';
+  }
 }

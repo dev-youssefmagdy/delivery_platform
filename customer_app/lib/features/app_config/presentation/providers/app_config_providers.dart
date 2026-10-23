@@ -1,5 +1,7 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:platform_core/platform_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/providers.dart';
 import '../../data/datasources/app_config_local_data_source.dart';
@@ -26,6 +28,20 @@ Duration? _noAutoRetry(int retryCount, Object error) => null;
 @Riverpod(keepAlive: true, retry: _noAutoRetry)
 Future<AppConfig> appConfig(Ref ref) =>
     ref.watch(appConfigRepositoryProvider).fetch();
+
+/// Opens the store page of the forced-update screen (https only, checked again
+/// here). Overridden in tests; the default uses the system browser / store app.
+final storeLauncherProvider = Provider<Future<bool> Function(String url)>(
+  (ref) => (url) async {
+    final safe = safeStoreUrl(url);
+    if (safe == null) return false;
+    try {
+      return await launchUrl(Uri.parse(safe), mode: LaunchMode.externalApplication);
+    } on Object {
+      return false;
+    }
+  },
+);
 
 /// Installed app version (`pubspec` version without the build number).
 /// Overridden in tests.

@@ -3107,4 +3107,181 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sfSettingsTile => 'Trusted contacts and safety';
+
+  @override
+  String get actionUpdateNow => 'Update now';
+
+  @override
+  String get refTitle => 'Invite friends';
+
+  @override
+  String get refYourCode => 'Your referral code';
+
+  @override
+  String get refCopy => 'Copy code';
+
+  @override
+  String get refCopied => 'Code copied';
+
+  @override
+  String get refShare => 'Share';
+
+  @override
+  String get refNoOffer =>
+      'There is no referral offer right now. You can still share your code.';
+
+  @override
+  String get refOfferTitle => 'The offer';
+
+  @override
+  String refOfferLine(String referrer, String referee) {
+    return 'You get $referrer, your friend gets $referee.';
+  }
+
+  @override
+  String refMilestone(int jobs) {
+    return 'Paid after your friend completes $jobs job(s).';
+  }
+
+  @override
+  String refValidity(int days) {
+    return 'Credit is valid for $days days.';
+  }
+
+  @override
+  String get refHaveCode => 'Got a code from a friend?';
+
+  @override
+  String get refCodeHint => 'Enter the code';
+
+  @override
+  String get refApply => 'Apply code';
+
+  @override
+  String get refApplied =>
+      'Code applied. Your reward arrives after your first completed job.';
+
+  @override
+  String get refStatReferred => 'Invited';
+
+  @override
+  String get refStatRewarded => 'Rewarded';
+
+  @override
+  String get refStatPending => 'In progress';
+
+  @override
+  String get refListTitle => 'Your invitations';
+
+  @override
+  String get refListEmpty => 'Nobody used your code yet.';
+
+  @override
+  String get refStatusPending => 'In progress';
+
+  @override
+  String get refStatusRewarded => 'Rewarded';
+
+  @override
+  String get refStatusClosed => 'Closed';
+
+  @override
+  String get refErrInvalid => 'This code is not valid.';
+
+  @override
+  String get refErrSelf => 'You cannot use your own code.';
+
+  @override
+  String get refErrNotNew =>
+      'Codes are only for people who have not completed a job yet.';
+
+  @override
+  String get refErrUnavailable => 'There is no referral offer right now.';
+
+  @override
+  String get refErrCap => 'This code has reached its limit.';
+
+  @override
+  String get refErrApplied => 'A code was already applied to your account.';
+
+  @override
+  String get refErrGeneric => 'Could not apply the code. Please try again.';
+
+  @override
+  String get refTile => 'Invite friends';
+
+  @override
+  String get credTitle => 'My credits';
+
+  @override
+  String get credAvailable => 'Available credit';
+
+  @override
+  String get credNone => 'No credits yet.';
+
+  @override
+  String get credSourceReferral => 'Referral reward';
+
+  @override
+  String get credSourceLoyalty => 'Loyalty reward';
+
+  @override
+  String get credStateActive => 'Active';
+
+  @override
+  String get credStateExpired => 'Expired';
+
+  @override
+  String get credStateReversed => 'Reversed';
+
+  @override
+  String credExpiresOn(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String credRemaining(String amount) {
+    return 'Left: $amount';
+  }
+
+  @override
+  String get credHistory => 'Credits';
+
+  @override
+  String get loyTitle => 'Loyalty';
+
+  @override
+  String loyCompletedJobs(int jobs) {
+    return '$jobs completed jobs';
+  }
+
+  @override
+  String get loyCurrent => 'Your level';
+
+  @override
+  String get loyNone => 'No level yet';
+
+  @override
+  String loyToNext(int jobs, String level) {
+    return '$jobs more jobs to reach $level';
+  }
+
+  @override
+  String get loyTop => 'You reached the top level';
+
+  @override
+  String get loyLevels => 'Levels';
+
+  @override
+  String loyLevelJobs(int jobs) {
+    return '$jobs jobs';
+  }
+
+  @override
+  String loyLevelReward(String amount) {
+    return 'Credit: $amount';
+  }
+
+  @override
+  String get loyReached => 'Reached';
 }

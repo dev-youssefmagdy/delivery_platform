@@ -17,6 +17,10 @@ class AppConfig {
     this.minVersion,
     this.forceUpdate = false,
     this.policies = const {},
+    this.features = const {},
+    this.storeUrl,
+    this.flags = FeatureFlags.none,
+    this.appKey = 'provider',
     this.fromCache = false,
   });
 
@@ -44,6 +48,27 @@ class AppConfig {
 
   /// Current published policy version per policy type (`terms`, `privacy` …).
   final Map<String, PolicyRef> policies;
+
+  /// Server feature flags (`features`): for example `wallet`, `offers`. A
+  /// missing key means the feature is off.
+  final Map<String, bool> features;
+
+  /// The https store page to open on the forced-update screen (this install's
+  /// platform), when the server has one.
+  final String? storeUrl;
+
+  /// The server flags (master switches + targeting) evaluated by one shared
+  /// helper in platform_core. Use [featureEnabled] for a decision.
+  final FeatureFlags flags;
+
+  /// Key of this app in the server's `apps` map and in flag targeting.
+  final String appKey;
+
+  /// Whether a server feature is on for this app. [cityId] and [subject] (the
+  /// signed-in user's id) are needed only by city / percentage targeting; a
+  /// feature the server did not mention is off.
+  bool featureEnabled(String key, {int? cityId, String? subject}) =>
+      flags.isEnabled(key, app: appKey, cityId: cityId, subject: subject);
 
   /// True when the server could not be reached and the last good copy is used.
   final bool fromCache;

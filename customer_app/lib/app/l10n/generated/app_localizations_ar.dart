@@ -3058,4 +3058,179 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sfSettingsTile => 'جهات الاتصال الموثوقة والسلامة';
+
+  @override
+  String get actionUpdateNow => 'حدّث الآن';
+
+  @override
+  String get refTitle => 'ادعُ أصدقاءك';
+
+  @override
+  String get refYourCode => 'رمز الإحالة الخاص بك';
+
+  @override
+  String get refCopy => 'نسخ الرمز';
+
+  @override
+  String get refCopied => 'تم نسخ الرمز';
+
+  @override
+  String get refShare => 'مشاركة';
+
+  @override
+  String get refNoOffer =>
+      'لا يوجد عرض إحالة حاليا. يمكنك مشاركة رمزك على أي حال.';
+
+  @override
+  String get refOfferTitle => 'العرض';
+
+  @override
+  String refOfferLine(String referrer, String referee) {
+    return 'تحصل على $referrer، ويحصل صديقك على $referee.';
+  }
+
+  @override
+  String refMilestone(int jobs) {
+    return 'تُدفع بعد أن يُتم صديقك $jobs طلب(ات).';
+  }
+
+  @override
+  String refValidity(int days) {
+    return 'الرصيد صالح لمدة $days يوما.';
+  }
+
+  @override
+  String get refHaveCode => 'لديك رمز من صديق؟';
+
+  @override
+  String get refCodeHint => 'أدخل الرمز';
+
+  @override
+  String get refApply => 'تطبيق الرمز';
+
+  @override
+  String get refApplied => 'تم تطبيق الرمز. تصلك المكافأة بعد أول طلب مكتمل.';
+
+  @override
+  String get refStatReferred => 'تمت دعوتهم';
+
+  @override
+  String get refStatRewarded => 'تمت مكافأتهم';
+
+  @override
+  String get refStatPending => 'قيد التقدم';
+
+  @override
+  String get refListTitle => 'دعواتك';
+
+  @override
+  String get refListEmpty => 'لم يستخدم أحد رمزك بعد.';
+
+  @override
+  String get refStatusPending => 'قيد التقدم';
+
+  @override
+  String get refStatusRewarded => 'تمت المكافأة';
+
+  @override
+  String get refStatusClosed => 'مغلقة';
+
+  @override
+  String get refErrInvalid => 'هذا الرمز غير صالح.';
+
+  @override
+  String get refErrSelf => 'لا يمكنك استخدام رمزك الخاص.';
+
+  @override
+  String get refErrNotNew => 'الرموز مخصصة لمن لم يُتم أي طلب بعد.';
+
+  @override
+  String get refErrUnavailable => 'لا يوجد عرض إحالة حاليا.';
+
+  @override
+  String get refErrCap => 'بلغ هذا الرمز حده الأقصى.';
+
+  @override
+  String get refErrApplied => 'تم تطبيق رمز على حسابك مسبقا.';
+
+  @override
+  String get refErrGeneric => 'تعذّر تطبيق الرمز. حاول مرة أخرى.';
+
+  @override
+  String get refTile => 'ادعُ أصدقاءك';
+
+  @override
+  String get credTitle => 'رصيدي الترويجي';
+
+  @override
+  String get credAvailable => 'الرصيد المتاح';
+
+  @override
+  String get credNone => 'لا يوجد رصيد بعد.';
+
+  @override
+  String get credSourceReferral => 'مكافأة إحالة';
+
+  @override
+  String get credSourceLoyalty => 'مكافأة ولاء';
+
+  @override
+  String get credStateActive => 'نشط';
+
+  @override
+  String get credStateExpired => 'منتهي';
+
+  @override
+  String get credStateReversed => 'معكوس';
+
+  @override
+  String credExpiresOn(String date) {
+    return 'ينتهي $date';
+  }
+
+  @override
+  String credRemaining(String amount) {
+    return 'المتبقي: $amount';
+  }
+
+  @override
+  String get credHistory => 'الأرصدة';
+
+  @override
+  String get loyTitle => 'الولاء';
+
+  @override
+  String loyCompletedJobs(int jobs) {
+    return '$jobs طلب مكتمل';
+  }
+
+  @override
+  String get loyCurrent => 'مستواك';
+
+  @override
+  String get loyNone => 'لا يوجد مستوى بعد';
+
+  @override
+  String loyToNext(int jobs, String level) {
+    return '$jobs طلب إضافي للوصول إلى $level';
+  }
+
+  @override
+  String get loyTop => 'وصلت إلى أعلى مستوى';
+
+  @override
+  String get loyLevels => 'المستويات';
+
+  @override
+  String loyLevelJobs(int jobs) {
+    return '$jobs طلب';
+  }
+
+  @override
+  String loyLevelReward(String amount) {
+    return 'رصيد: $amount';
+  }
+
+  @override
+  String get loyReached => 'تم بلوغه';
 }

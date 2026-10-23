@@ -3577,4 +3577,152 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sfSettingsTile => 'Trusted contacts and safety';
+
+  @override
+  String get actionUpdateNow => 'Update now';
+
+  @override
+  String get refTitle => 'Invite friends';
+
+  @override
+  String get refYourCode => 'Your referral code';
+
+  @override
+  String get refCopy => 'Copy code';
+
+  @override
+  String get refCopied => 'Code copied';
+
+  @override
+  String get refShare => 'Share';
+
+  @override
+  String get refNoOffer =>
+      'There is no referral offer right now. You can still share your code.';
+
+  @override
+  String get refOfferTitle => 'The offer';
+
+  @override
+  String refOfferLine(String referrer, String referee) {
+    return 'You get $referrer, your friend gets $referee.';
+  }
+
+  @override
+  String refMilestone(int jobs) {
+    return 'Paid after your friend completes $jobs job(s).';
+  }
+
+  @override
+  String refValidity(int days) {
+    return 'Credit is valid for $days days.';
+  }
+
+  @override
+  String get refHaveCode => 'Got a code from a friend?';
+
+  @override
+  String get refCodeHint => 'Enter the code';
+
+  @override
+  String get refApply => 'Apply code';
+
+  @override
+  String get refApplied =>
+      'Code applied. Your reward arrives after your first completed job.';
+
+  @override
+  String get refStatReferred => 'Invited';
+
+  @override
+  String get refStatRewarded => 'Rewarded';
+
+  @override
+  String get refStatPending => 'In progress';
+
+  @override
+  String get refListTitle => 'Your invitations';
+
+  @override
+  String get refListEmpty => 'Nobody used your code yet.';
+
+  @override
+  String get refStatusPending => 'In progress';
+
+  @override
+  String get refStatusRewarded => 'Rewarded';
+
+  @override
+  String get refStatusClosed => 'Closed';
+
+  @override
+  String get refErrInvalid => 'This code is not valid.';
+
+  @override
+  String get refErrSelf => 'You cannot use your own code.';
+
+  @override
+  String get refErrNotNew =>
+      'Codes are only for people who have not completed a job yet.';
+
+  @override
+  String get refErrUnavailable => 'There is no referral offer right now.';
+
+  @override
+  String get refErrCap => 'This code has reached its limit.';
+
+  @override
+  String get refErrApplied => 'A code was already applied to your account.';
+
+  @override
+  String get refErrGeneric => 'Could not apply the code. Please try again.';
+
+  @override
+  String get refTile => 'Refer a driver';
+
+  @override
+  String get incTitle => 'Incentives';
+
+  @override
+  String get incTile => 'Incentives and quests';
+
+  @override
+  String get incNone => 'No incentive campaigns are open right now.';
+
+  @override
+  String incQuestLine(int jobs, String bonus) {
+    return 'Complete $jobs jobs and earn $bonus';
+  }
+
+  @override
+  String incProgress(int done, int target) {
+    return '$done of $target jobs';
+  }
+
+  @override
+  String incEndsOn(String date) {
+    return 'Ends $date';
+  }
+
+  @override
+  String incAwards(int earned, int max) {
+    return 'Bonuses earned: $earned of $max';
+  }
+
+  @override
+  String get incStateInProgress => 'In progress';
+
+  @override
+  String get incStateCompleted => 'Completed';
+
+  @override
+  String get incStatePending => 'Being checked';
+
+  @override
+  String get incStateClosed => 'Closed';
+
+  @override
+  String incMinRating(String rating) {
+    return 'Minimum rating $rating';
+  }
 }

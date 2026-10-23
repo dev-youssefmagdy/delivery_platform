@@ -1527,5 +1527,92 @@
       "time": {"type": "String"}
     }
   },
-  "sfSettingsTile": "Trusted contacts and safety"
+  "sfSettingsTile": "Trusted contacts and safety",
+  "actionUpdateNow": "Update now",
+  "refTitle": "Invite friends",
+  "refYourCode": "Your referral code",
+  "refCopy": "Copy code",
+  "refCopied": "Code copied",
+  "refShare": "Share",
+  "refNoOffer": "There is no referral offer right now. You can still share your code.",
+  "refOfferTitle": "The offer",
+  "refOfferLine": "You get {referrer}, your friend gets {referee}.",
+  "@refOfferLine": {
+    "placeholders": {
+      "referrer": {"type": "String"},
+      "referee": {"type": "String"}
+    }
+  },
+  "refMilestone": "Paid after your friend completes {jobs} job(s).",
+  "@refMilestone": {
+    "placeholders": {
+      "jobs": {"type": "int"}
+    }
+  },
+  "refValidity": "Credit is valid for {days} days.",
+  "@refValidity": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "refHaveCode": "Got a code from a friend?",
+  "refCodeHint": "Enter the code",
+  "refApply": "Apply code",
+  "refApplied": "Code applied. Your reward arrives after your first completed job.",
+  "refStatReferred": "Invited",
+  "refStatRewarded": "Rewarded",
+  "refStatPending": "In progress",
+  "refListTitle": "Your invitations",
+  "refListEmpty": "Nobody used your code yet.",
+  "refStatusPending": "In progress",
+  "refStatusRewarded": "Rewarded",
+  "refStatusClosed": "Closed",
+  "refErrInvalid": "This code is not valid.",
+  "refErrSelf": "You cannot use your own code.",
+  "refErrNotNew": "Codes are only for people who have not completed a job yet.",
+  "refErrUnavailable": "There is no referral offer right now.",
+  "refErrCap": "This code has reached its limit.",
+  "refErrApplied": "A code was already applied to your account.",
+  "refErrGeneric": "Could not apply the code. Please try again.",
+  "refTile": "Refer a driver",
+  "incTitle": "Incentives",
+  "incTile": "Incentives and quests",
+  "incNone": "No incentive campaigns are open right now.",
+  "incQuestLine": "Complete {jobs} jobs and earn {bonus}",
+  "@incQuestLine": {
+    "placeholders": {
+      "jobs": {"type": "int"},
+      "bonus": {"type": "String"}
+    }
+  },
+  "incProgress": "{done} of {target} jobs",
+  "@incProgress": {
+    "placeholders": {
+      "done": {"type": "int"},
+      "target": {"type": "int"}
+    }
+  },
+  "incEndsOn": "Ends {date}",
+  "@incEndsOn": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "incAwards": "Bonuses earned: {earned} of {max}",
+  "@incAwards": {
+    "placeholders": {
+      "earned": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "incStateInProgress": "In progress",
+  "incStateCompleted": "Completed",
+  "incStatePending": "Being checked",
+  "incStateClosed": "Closed",
+  "incMinRating": "Minimum rating {rating}",
+  "@incMinRating": {
+    "placeholders": {
+      "rating": {"type": "String"}
+    }
+  }
 }

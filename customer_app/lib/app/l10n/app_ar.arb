@@ -1540,5 +1540,104 @@
       "time": {"type": "String"}
     }
   },
-  "sfSettingsTile": "جهات الاتصال الموثوقة والسلامة"
+  "sfSettingsTile": "جهات الاتصال الموثوقة والسلامة",
+  "actionUpdateNow": "حدّث الآن",
+  "refTitle": "ادعُ أصدقاءك",
+  "refYourCode": "رمز الإحالة الخاص بك",
+  "refCopy": "نسخ الرمز",
+  "refCopied": "تم نسخ الرمز",
+  "refShare": "مشاركة",
+  "refNoOffer": "لا يوجد عرض إحالة حاليا. يمكنك مشاركة رمزك على أي حال.",
+  "refOfferTitle": "العرض",
+  "refOfferLine": "تحصل على {referrer}، ويحصل صديقك على {referee}.",
+  "@refOfferLine": {
+    "placeholders": {
+      "referrer": {"type": "String"},
+      "referee": {"type": "String"}
+    }
+  },
+  "refMilestone": "تُدفع بعد أن يُتم صديقك {jobs} طلب(ات).",
+  "@refMilestone": {
+    "placeholders": {
+      "jobs": {"type": "int"}
+    }
+  },
+  "refValidity": "الرصيد صالح لمدة {days} يوما.",
+  "@refValidity": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "refHaveCode": "لديك رمز من صديق؟",
+  "refCodeHint": "أدخل الرمز",
+  "refApply": "تطبيق الرمز",
+  "refApplied": "تم تطبيق الرمز. تصلك المكافأة بعد أول طلب مكتمل.",
+  "refStatReferred": "تمت دعوتهم",
+  "refStatRewarded": "تمت مكافأتهم",
+  "refStatPending": "قيد التقدم",
+  "refListTitle": "دعواتك",
+  "refListEmpty": "لم يستخدم أحد رمزك بعد.",
+  "refStatusPending": "قيد التقدم",
+  "refStatusRewarded": "تمت المكافأة",
+  "refStatusClosed": "مغلقة",
+  "refErrInvalid": "هذا الرمز غير صالح.",
+  "refErrSelf": "لا يمكنك استخدام رمزك الخاص.",
+  "refErrNotNew": "الرموز مخصصة لمن لم يُتم أي طلب بعد.",
+  "refErrUnavailable": "لا يوجد عرض إحالة حاليا.",
+  "refErrCap": "بلغ هذا الرمز حده الأقصى.",
+  "refErrApplied": "تم تطبيق رمز على حسابك مسبقا.",
+  "refErrGeneric": "تعذّر تطبيق الرمز. حاول مرة أخرى.",
+  "refTile": "ادعُ أصدقاءك",
+  "credTitle": "رصيدي الترويجي",
+  "credAvailable": "الرصيد المتاح",
+  "credNone": "لا يوجد رصيد بعد.",
+  "credSourceReferral": "مكافأة إحالة",
+  "credSourceLoyalty": "مكافأة ولاء",
+  "credStateActive": "نشط",
+  "credStateExpired": "منتهي",
+  "credStateReversed": "معكوس",
+  "credExpiresOn": "ينتهي {date}",
+  "@credExpiresOn": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "credRemaining": "المتبقي: {amount}",
+  "@credRemaining": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "credHistory": "الأرصدة",
+  "loyTitle": "الولاء",
+  "loyCompletedJobs": "{jobs} طلب مكتمل",
+  "@loyCompletedJobs": {
+    "placeholders": {
+      "jobs": {"type": "int"}
+    }
+  },
+  "loyCurrent": "مستواك",
+  "loyNone": "لا يوجد مستوى بعد",
+  "loyToNext": "{jobs} طلب إضافي للوصول إلى {level}",
+  "@loyToNext": {
+    "placeholders": {
+      "jobs": {"type": "int"},
+      "level": {"type": "String"}
+    }
+  },
+  "loyTop": "وصلت إلى أعلى مستوى",
+  "loyLevels": "المستويات",
+  "loyLevelJobs": "{jobs} طلب",
+  "@loyLevelJobs": {
+    "placeholders": {
+      "jobs": {"type": "int"}
+    }
+  },
+  "loyLevelReward": "رصيد: {amount}",
+  "@loyLevelReward": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "loyReached": "تم بلوغه"
 }

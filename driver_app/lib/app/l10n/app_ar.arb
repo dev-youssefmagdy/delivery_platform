@@ -1711,5 +1711,92 @@
       "time": {"type": "String"}
     }
   },
-  "sfSettingsTile": "جهات الاتصال الموثوقة والسلامة"
+  "sfSettingsTile": "جهات الاتصال الموثوقة والسلامة",
+  "actionUpdateNow": "حدّث الآن",
+  "refTitle": "ادعُ أصدقاءك",
+  "refYourCode": "رمز الإحالة الخاص بك",
+  "refCopy": "نسخ الرمز",
+  "refCopied": "تم نسخ الرمز",
+  "refShare": "مشاركة",
+  "refNoOffer": "لا يوجد عرض إحالة حاليا. يمكنك مشاركة رمزك على أي حال.",
+  "refOfferTitle": "العرض",
+  "refOfferLine": "تحصل على {referrer}، ويحصل صديقك على {referee}.",
+  "@refOfferLine": {
+    "placeholders": {
+      "referrer": {"type": "String"},
+      "referee": {"type": "String"}
+    }
+  },
+  "refMilestone": "تُدفع بعد أن يُتم صديقك {jobs} طلب(ات).",
+  "@refMilestone": {
+    "placeholders": {
+      "jobs": {"type": "int"}
+    }
+  },
+  "refValidity": "الرصيد صالح لمدة {days} يوما.",
+  "@refValidity": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "refHaveCode": "لديك رمز من صديق؟",
+  "refCodeHint": "أدخل الرمز",
+  "refApply": "تطبيق الرمز",
+  "refApplied": "تم تطبيق الرمز. تصلك المكافأة بعد أول طلب مكتمل.",
+  "refStatReferred": "تمت دعوتهم",
+  "refStatRewarded": "تمت مكافأتهم",
+  "refStatPending": "قيد التقدم",
+  "refListTitle": "دعواتك",
+  "refListEmpty": "لم يستخدم أحد رمزك بعد.",
+  "refStatusPending": "قيد التقدم",
+  "refStatusRewarded": "تمت المكافأة",
+  "refStatusClosed": "مغلقة",
+  "refErrInvalid": "هذا الرمز غير صالح.",
+  "refErrSelf": "لا يمكنك استخدام رمزك الخاص.",
+  "refErrNotNew": "الرموز مخصصة لمن لم يُتم أي طلب بعد.",
+  "refErrUnavailable": "لا يوجد عرض إحالة حاليا.",
+  "refErrCap": "بلغ هذا الرمز حده الأقصى.",
+  "refErrApplied": "تم تطبيق رمز على حسابك مسبقا.",
+  "refErrGeneric": "تعذّر تطبيق الرمز. حاول مرة أخرى.",
+  "refTile": "ادعُ سائقا",
+  "incTitle": "الحوافز",
+  "incTile": "الحوافز والمهام",
+  "incNone": "لا توجد حملات حوافز مفتوحة حاليا.",
+  "incQuestLine": "أتمّ {jobs} طلبات واكسب {bonus}",
+  "@incQuestLine": {
+    "placeholders": {
+      "jobs": {"type": "int"},
+      "bonus": {"type": "String"}
+    }
+  },
+  "incProgress": "{done} من {target} طلبات",
+  "@incProgress": {
+    "placeholders": {
+      "done": {"type": "int"},
+      "target": {"type": "int"}
+    }
+  },
+  "incEndsOn": "تنتهي {date}",
+  "@incEndsOn": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "incAwards": "المكافآت المكتسبة: {earned} من {max}",
+  "@incAwards": {
+    "placeholders": {
+      "earned": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "incStateInProgress": "قيد التقدم",
+  "incStateCompleted": "مكتملة",
+  "incStatePending": "قيد التحقق",
+  "incStateClosed": "مغلقة",
+  "incMinRating": "الحد الأدنى للتقييم {rating}",
+  "@incMinRating": {
+    "placeholders": {
+      "rating": {"type": "String"}
+    }
+  }
 }

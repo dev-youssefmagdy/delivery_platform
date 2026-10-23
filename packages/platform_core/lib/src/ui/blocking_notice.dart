@@ -14,6 +14,8 @@ class BlockingNotice extends StatelessWidget {
     this.details = const [],
     this.actionLabel,
     this.onAction,
+    this.primaryActionLabel,
+    this.onPrimaryAction,
   });
 
   final IconData icon;
@@ -24,6 +26,10 @@ class BlockingNotice extends StatelessWidget {
   final List<String> details;
   final String? actionLabel;
   final VoidCallback? onAction;
+
+  /// Main action shown first (the forced-update screen's "Update now").
+  final String? primaryActionLabel;
+  final VoidCallback? onPrimaryAction;
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +66,17 @@ class BlockingNotice extends StatelessWidget {
                     ),
                   ),
                 ],
-                if (actionLabel != null && onAction != null) ...[
+                if (primaryActionLabel != null && onPrimaryAction != null) ...[
                   const SizedBox(height: AppSpacing.lg),
+                  AppButton(
+                    key: const Key('blocking-primary-action'),
+                    label: primaryActionLabel!,
+                    onPressed: onPrimaryAction,
+                    expand: false,
+                  ),
+                ],
+                if (actionLabel != null && onAction != null) ...[
+                  SizedBox(height: primaryActionLabel != null ? AppSpacing.sm : AppSpacing.lg),
                   AppButton(
                     label: actionLabel!,
                     onPressed: onAction,

@@ -1530,5 +1530,104 @@
       "time": {"type": "String"}
     }
   },
-  "sfSettingsTile": "Trusted contacts and safety"
+  "sfSettingsTile": "Trusted contacts and safety",
+  "actionUpdateNow": "Update now",
+  "refTitle": "Invite friends",
+  "refYourCode": "Your referral code",
+  "refCopy": "Copy code",
+  "refCopied": "Code copied",
+  "refShare": "Share",
+  "refNoOffer": "There is no referral offer right now. You can still share your code.",
+  "refOfferTitle": "The offer",
+  "refOfferLine": "You get {referrer}, your friend gets {referee}.",
+  "@refOfferLine": {
+    "placeholders": {
+      "referrer": {"type": "String"},
+      "referee": {"type": "String"}
+    }
+  },
+  "refMilestone": "Paid after your friend completes {jobs} job(s).",
+  "@refMilestone": {
+    "placeholders": {
+      "jobs": {"type": "int"}
+    }
+  },
+  "refValidity": "Credit is valid for {days} days.",
+  "@refValidity": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "refHaveCode": "Got a code from a friend?",
+  "refCodeHint": "Enter the code",
+  "refApply": "Apply code",
+  "refApplied": "Code applied. Your reward arrives after your first completed job.",
+  "refStatReferred": "Invited",
+  "refStatRewarded": "Rewarded",
+  "refStatPending": "In progress",
+  "refListTitle": "Your invitations",
+  "refListEmpty": "Nobody used your code yet.",
+  "refStatusPending": "In progress",
+  "refStatusRewarded": "Rewarded",
+  "refStatusClosed": "Closed",
+  "refErrInvalid": "This code is not valid.",
+  "refErrSelf": "You cannot use your own code.",
+  "refErrNotNew": "Codes are only for people who have not completed a job yet.",
+  "refErrUnavailable": "There is no referral offer right now.",
+  "refErrCap": "This code has reached its limit.",
+  "refErrApplied": "A code was already applied to your account.",
+  "refErrGeneric": "Could not apply the code. Please try again.",
+  "refTile": "Invite friends",
+  "credTitle": "My credits",
+  "credAvailable": "Available credit",
+  "credNone": "No credits yet.",
+  "credSourceReferral": "Referral reward",
+  "credSourceLoyalty": "Loyalty reward",
+  "credStateActive": "Active",
+  "credStateExpired": "Expired",
+  "credStateReversed": "Reversed",
+  "credExpiresOn": "Expires {date}",
+  "@credExpiresOn": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "credRemaining": "Left: {amount}",
+  "@credRemaining": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "credHistory": "Credits",
+  "loyTitle": "Loyalty",
+  "loyCompletedJobs": "{jobs} completed jobs",
+  "@loyCompletedJobs": {
+    "placeholders": {
+      "jobs": {"type": "int"}
+    }
+  },
+  "loyCurrent": "Your level",
+  "loyNone": "No level yet",
+  "loyToNext": "{jobs} more jobs to reach {level}",
+  "@loyToNext": {
+    "placeholders": {
+      "jobs": {"type": "int"},
+      "level": {"type": "String"}
+    }
+  },
+  "loyTop": "You reached the top level",
+  "loyLevels": "Levels",
+  "loyLevelJobs": "{jobs} jobs",
+  "@loyLevelJobs": {
+    "placeholders": {
+      "jobs": {"type": "int"}
+    }
+  },
+  "loyLevelReward": "Credit: {amount}",
+  "@loyLevelReward": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "loyReached": "Reached"
 }

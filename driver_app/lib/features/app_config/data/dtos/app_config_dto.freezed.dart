@@ -18,7 +18,8 @@ mixin _$AppConfigDto {
 
 @JsonKey(name: 'default_locale') String? get defaultLocale; List<String> get locales; CountryDto? get country; CurrencyDto? get currency;@JsonKey(name: 'digits_preference') String? get digitsPreference; SupportDto? get support; bool get maintenance;/// Per-app version rules keyed by app: `customer`, `provider`.
  Map<String, AppVersionRuleDto> get apps;/// Current published policy version per policy type.
- Map<String, PolicyVersionDto> get policies; Map<String, bool> get features;
+ Map<String, PolicyVersionDto> get policies; Map<String, bool> get features;/// Targeting of the server flags (apps, cities, rollout percentage).
+ Map<String, dynamic> get flags;
 /// Create a copy of AppConfigDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -32,20 +33,20 @@ $AppConfigDtoCopyWith<AppConfigDto> get copyWith => _$AppConfigDtoCopyWithImpl<A
 @override
 bool operator ==(Object other) {
   final _this = this as AppConfigDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppConfigDto&&(identical(other.defaultLocale, _this.defaultLocale) || other.defaultLocale == _this.defaultLocale)&&const DeepCollectionEquality().equals(other.locales, _this.locales)&&(identical(other.country, _this.country) || other.country == _this.country)&&(identical(other.currency, _this.currency) || other.currency == _this.currency)&&(identical(other.digitsPreference, _this.digitsPreference) || other.digitsPreference == _this.digitsPreference)&&(identical(other.support, _this.support) || other.support == _this.support)&&(identical(other.maintenance, _this.maintenance) || other.maintenance == _this.maintenance)&&const DeepCollectionEquality().equals(other.apps, _this.apps)&&const DeepCollectionEquality().equals(other.policies, _this.policies)&&const DeepCollectionEquality().equals(other.features, _this.features));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppConfigDto&&(identical(other.defaultLocale, _this.defaultLocale) || other.defaultLocale == _this.defaultLocale)&&const DeepCollectionEquality().equals(other.locales, _this.locales)&&(identical(other.country, _this.country) || other.country == _this.country)&&(identical(other.currency, _this.currency) || other.currency == _this.currency)&&(identical(other.digitsPreference, _this.digitsPreference) || other.digitsPreference == _this.digitsPreference)&&(identical(other.support, _this.support) || other.support == _this.support)&&(identical(other.maintenance, _this.maintenance) || other.maintenance == _this.maintenance)&&const DeepCollectionEquality().equals(other.apps, _this.apps)&&const DeepCollectionEquality().equals(other.policies, _this.policies)&&const DeepCollectionEquality().equals(other.features, _this.features)&&const DeepCollectionEquality().equals(other.flags, _this.flags));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as AppConfigDto;
-  return Object.hash(runtimeType,_this.defaultLocale,const DeepCollectionEquality().hash(_this.locales),_this.country,_this.currency,_this.digitsPreference,_this.support,_this.maintenance,const DeepCollectionEquality().hash(_this.apps),const DeepCollectionEquality().hash(_this.policies),const DeepCollectionEquality().hash(_this.features));
+  return Object.hash(runtimeType,_this.defaultLocale,const DeepCollectionEquality().hash(_this.locales),_this.country,_this.currency,_this.digitsPreference,_this.support,_this.maintenance,const DeepCollectionEquality().hash(_this.apps),const DeepCollectionEquality().hash(_this.policies),const DeepCollectionEquality().hash(_this.features),const DeepCollectionEquality().hash(_this.flags));
 }
 
 @override
 String toString() {
   final _this = this as AppConfigDto;
-  return 'AppConfigDto(defaultLocale: ${_this.defaultLocale}, locales: ${_this.locales}, country: ${_this.country}, currency: ${_this.currency}, digitsPreference: ${_this.digitsPreference}, support: ${_this.support}, maintenance: ${_this.maintenance}, apps: ${_this.apps}, policies: ${_this.policies}, features: ${_this.features})';
+  return 'AppConfigDto(defaultLocale: ${_this.defaultLocale}, locales: ${_this.locales}, country: ${_this.country}, currency: ${_this.currency}, digitsPreference: ${_this.digitsPreference}, support: ${_this.support}, maintenance: ${_this.maintenance}, apps: ${_this.apps}, policies: ${_this.policies}, features: ${_this.features}, flags: ${_this.flags})';
 }
 
 
@@ -56,7 +57,7 @@ abstract mixin class $AppConfigDtoCopyWith<$Res>  {
   factory $AppConfigDtoCopyWith(AppConfigDto value, $Res Function(AppConfigDto) _then) = _$AppConfigDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'default_locale') String? defaultLocale, List<String> locales, CountryDto? country, CurrencyDto? currency,@JsonKey(name: 'digits_preference') String? digitsPreference, SupportDto? support, bool maintenance, Map<String, AppVersionRuleDto> apps, Map<String, PolicyVersionDto> policies, Map<String, bool> features
+@JsonKey(name: 'default_locale') String? defaultLocale, List<String> locales, CountryDto? country, CurrencyDto? currency,@JsonKey(name: 'digits_preference') String? digitsPreference, SupportDto? support, bool maintenance, Map<String, AppVersionRuleDto> apps, Map<String, PolicyVersionDto> policies, Map<String, bool> features, Map<String, dynamic> flags
 });
 
 
@@ -73,7 +74,7 @@ class _$AppConfigDtoCopyWithImpl<$Res>
 
 /// Create a copy of AppConfigDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? defaultLocale = freezed,Object? locales = null,Object? country = freezed,Object? currency = freezed,Object? digitsPreference = freezed,Object? support = freezed,Object? maintenance = null,Object? apps = null,Object? policies = null,Object? features = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? defaultLocale = freezed,Object? locales = null,Object? country = freezed,Object? currency = freezed,Object? digitsPreference = freezed,Object? support = freezed,Object? maintenance = null,Object? apps = null,Object? policies = null,Object? features = null,Object? flags = null,}) {
   return _then(AppConfigDto(
 defaultLocale: freezed == defaultLocale ? _self.defaultLocale : defaultLocale // ignore: cast_nullable_to_non_nullable
 as String?,locales: null == locales ? _self.locales : locales // ignore: cast_nullable_to_non_nullable
@@ -85,7 +86,8 @@ as SupportDto?,maintenance: null == maintenance ? _self.maintenance : maintenanc
 as bool,apps: null == apps ? _self.apps : apps // ignore: cast_nullable_to_non_nullable
 as Map<String, AppVersionRuleDto>,policies: null == policies ? _self.policies : policies // ignore: cast_nullable_to_non_nullable
 as Map<String, PolicyVersionDto>,features: null == features ? _self.features : features // ignore: cast_nullable_to_non_nullable
-as Map<String, bool>,
+as Map<String, bool>,flags: null == flags ? _self.flags : flags // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
   ));
 }
 /// Create a copy of AppConfigDto
@@ -206,10 +208,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'default_locale')  String? defaultLocale,  List<String> locales,  CountryDto? country,  CurrencyDto? currency, @JsonKey(name: 'digits_preference')  String? digitsPreference,  SupportDto? support,  bool maintenance,  Map<String, AppVersionRuleDto> apps,  Map<String, PolicyVersionDto> policies,  Map<String, bool> features)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'default_locale')  String? defaultLocale,  List<String> locales,  CountryDto? country,  CurrencyDto? currency, @JsonKey(name: 'digits_preference')  String? digitsPreference,  SupportDto? support,  bool maintenance,  Map<String, AppVersionRuleDto> apps,  Map<String, PolicyVersionDto> policies,  Map<String, bool> features,  Map<String, dynamic> flags)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppConfigDto() when $default != null:
-return $default(_that.defaultLocale,_that.locales,_that.country,_that.currency,_that.digitsPreference,_that.support,_that.maintenance,_that.apps,_that.policies,_that.features);case _:
+return $default(_that.defaultLocale,_that.locales,_that.country,_that.currency,_that.digitsPreference,_that.support,_that.maintenance,_that.apps,_that.policies,_that.features,_that.flags);case _:
   return orElse();
 
 }
@@ -227,10 +229,10 @@ return $default(_that.defaultLocale,_that.locales,_that.country,_that.currency,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'default_locale')  String? defaultLocale,  List<String> locales,  CountryDto? country,  CurrencyDto? currency, @JsonKey(name: 'digits_preference')  String? digitsPreference,  SupportDto? support,  bool maintenance,  Map<String, AppVersionRuleDto> apps,  Map<String, PolicyVersionDto> policies,  Map<String, bool> features)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'default_locale')  String? defaultLocale,  List<String> locales,  CountryDto? country,  CurrencyDto? currency, @JsonKey(name: 'digits_preference')  String? digitsPreference,  SupportDto? support,  bool maintenance,  Map<String, AppVersionRuleDto> apps,  Map<String, PolicyVersionDto> policies,  Map<String, bool> features,  Map<String, dynamic> flags)  $default,) {final _that = this;
 switch (_that) {
 case _AppConfigDto():
-return $default(_that.defaultLocale,_that.locales,_that.country,_that.currency,_that.digitsPreference,_that.support,_that.maintenance,_that.apps,_that.policies,_that.features);case _:
+return $default(_that.defaultLocale,_that.locales,_that.country,_that.currency,_that.digitsPreference,_that.support,_that.maintenance,_that.apps,_that.policies,_that.features,_that.flags);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -247,10 +249,10 @@ return $default(_that.defaultLocale,_that.locales,_that.country,_that.currency,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'default_locale')  String? defaultLocale,  List<String> locales,  CountryDto? country,  CurrencyDto? currency, @JsonKey(name: 'digits_preference')  String? digitsPreference,  SupportDto? support,  bool maintenance,  Map<String, AppVersionRuleDto> apps,  Map<String, PolicyVersionDto> policies,  Map<String, bool> features)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'default_locale')  String? defaultLocale,  List<String> locales,  CountryDto? country,  CurrencyDto? currency, @JsonKey(name: 'digits_preference')  String? digitsPreference,  SupportDto? support,  bool maintenance,  Map<String, AppVersionRuleDto> apps,  Map<String, PolicyVersionDto> policies,  Map<String, bool> features,  Map<String, dynamic> flags)?  $default,) {final _that = this;
 switch (_that) {
 case _AppConfigDto() when $default != null:
-return $default(_that.defaultLocale,_that.locales,_that.country,_that.currency,_that.digitsPreference,_that.support,_that.maintenance,_that.apps,_that.policies,_that.features);case _:
+return $default(_that.defaultLocale,_that.locales,_that.country,_that.currency,_that.digitsPreference,_that.support,_that.maintenance,_that.apps,_that.policies,_that.features,_that.flags);case _:
   return null;
 
 }
@@ -262,7 +264,7 @@ return $default(_that.defaultLocale,_that.locales,_that.country,_that.currency,_
 @JsonSerializable()
 
 class _AppConfigDto implements AppConfigDto {
-  const _AppConfigDto({@JsonKey(name: 'default_locale') this.defaultLocale,  List<String> locales = const <String>[], this.country, this.currency, @JsonKey(name: 'digits_preference') this.digitsPreference, this.support, this.maintenance = false,  Map<String, AppVersionRuleDto> apps = const <String, AppVersionRuleDto>{},  Map<String, PolicyVersionDto> policies = const <String, PolicyVersionDto>{},  Map<String, bool> features = const <String, bool>{}}): _locales = locales,_apps = apps,_policies = policies,_features = features;
+  const _AppConfigDto({@JsonKey(name: 'default_locale') this.defaultLocale,  List<String> locales = const <String>[], this.country, this.currency, @JsonKey(name: 'digits_preference') this.digitsPreference, this.support, this.maintenance = false,  Map<String, AppVersionRuleDto> apps = const <String, AppVersionRuleDto>{},  Map<String, PolicyVersionDto> policies = const <String, PolicyVersionDto>{},  Map<String, bool> features = const <String, bool>{},  Map<String, dynamic> flags = const <String, dynamic>{}}): _locales = locales,_apps = apps,_policies = policies,_features = features,_flags = flags;
   factory _AppConfigDto.fromJson(Map<String, dynamic> json) => _$AppConfigDtoFromJson(json);
 
 @override@JsonKey(name: 'default_locale') final  String? defaultLocale;
@@ -303,6 +305,15 @@ class _AppConfigDto implements AppConfigDto {
   return EqualUnmodifiableMapView(_features);
 }
 
+/// Targeting of the server flags (apps, cities, rollout percentage).
+ final  Map<String, dynamic> _flags;
+/// Targeting of the server flags (apps, cities, rollout percentage).
+@override@JsonKey() Map<String, dynamic> get flags {
+  if (_flags is EqualUnmodifiableMapView) return _flags;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_flags);
+}
+
 
 /// Create a copy of AppConfigDto
 /// with the given fields replaced by the non-null parameter values.
@@ -317,18 +328,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppConfigDto&&(identical(other.defaultLocale, defaultLocale) || other.defaultLocale == defaultLocale)&&const DeepCollectionEquality().equals(other.locales, _locales)&&(identical(other.country, country) || other.country == country)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.digitsPreference, digitsPreference) || other.digitsPreference == digitsPreference)&&(identical(other.support, support) || other.support == support)&&(identical(other.maintenance, maintenance) || other.maintenance == maintenance)&&const DeepCollectionEquality().equals(other.apps, _apps)&&const DeepCollectionEquality().equals(other.policies, _policies)&&const DeepCollectionEquality().equals(other.features, _features));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppConfigDto&&(identical(other.defaultLocale, defaultLocale) || other.defaultLocale == defaultLocale)&&const DeepCollectionEquality().equals(other.locales, _locales)&&(identical(other.country, country) || other.country == country)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.digitsPreference, digitsPreference) || other.digitsPreference == digitsPreference)&&(identical(other.support, support) || other.support == support)&&(identical(other.maintenance, maintenance) || other.maintenance == maintenance)&&const DeepCollectionEquality().equals(other.apps, _apps)&&const DeepCollectionEquality().equals(other.policies, _policies)&&const DeepCollectionEquality().equals(other.features, _features)&&const DeepCollectionEquality().equals(other.flags, _flags));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,defaultLocale,const DeepCollectionEquality().hash(_locales),country,currency,digitsPreference,support,maintenance,const DeepCollectionEquality().hash(_apps),const DeepCollectionEquality().hash(_policies),const DeepCollectionEquality().hash(_features));
+    return Object.hash(runtimeType,defaultLocale,const DeepCollectionEquality().hash(_locales),country,currency,digitsPreference,support,maintenance,const DeepCollectionEquality().hash(_apps),const DeepCollectionEquality().hash(_policies),const DeepCollectionEquality().hash(_features),const DeepCollectionEquality().hash(_flags));
 }
 
 @override
 String toString() {
-    return 'AppConfigDto(defaultLocale: $defaultLocale, locales: $locales, country: $country, currency: $currency, digitsPreference: $digitsPreference, support: $support, maintenance: $maintenance, apps: $apps, policies: $policies, features: $features)';
+    return 'AppConfigDto(defaultLocale: $defaultLocale, locales: $locales, country: $country, currency: $currency, digitsPreference: $digitsPreference, support: $support, maintenance: $maintenance, apps: $apps, policies: $policies, features: $features, flags: $flags)';
 }
 
 
@@ -339,7 +350,7 @@ abstract mixin class _$AppConfigDtoCopyWith<$Res> implements $AppConfigDtoCopyWi
   factory _$AppConfigDtoCopyWith(_AppConfigDto value, $Res Function(_AppConfigDto) _then) = __$AppConfigDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'default_locale') String? defaultLocale, List<String> locales, CountryDto? country, CurrencyDto? currency,@JsonKey(name: 'digits_preference') String? digitsPreference, SupportDto? support, bool maintenance, Map<String, AppVersionRuleDto> apps, Map<String, PolicyVersionDto> policies, Map<String, bool> features
+@JsonKey(name: 'default_locale') String? defaultLocale, List<String> locales, CountryDto? country, CurrencyDto? currency,@JsonKey(name: 'digits_preference') String? digitsPreference, SupportDto? support, bool maintenance, Map<String, AppVersionRuleDto> apps, Map<String, PolicyVersionDto> policies, Map<String, bool> features, Map<String, dynamic> flags
 });
 
 
@@ -356,7 +367,7 @@ class __$AppConfigDtoCopyWithImpl<$Res>
 
 /// Create a copy of AppConfigDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? defaultLocale = freezed,Object? locales = null,Object? country = freezed,Object? currency = freezed,Object? digitsPreference = freezed,Object? support = freezed,Object? maintenance = null,Object? apps = null,Object? policies = null,Object? features = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? defaultLocale = freezed,Object? locales = null,Object? country = freezed,Object? currency = freezed,Object? digitsPreference = freezed,Object? support = freezed,Object? maintenance = null,Object? apps = null,Object? policies = null,Object? features = null,Object? flags = null,}) {
   return _then(_AppConfigDto(
 defaultLocale: freezed == defaultLocale ? _self.defaultLocale : defaultLocale // ignore: cast_nullable_to_non_nullable
 as String?,locales: null == locales ? _self._locales : locales // ignore: cast_nullable_to_non_nullable
@@ -368,7 +379,8 @@ as SupportDto?,maintenance: null == maintenance ? _self.maintenance : maintenanc
 as bool,apps: null == apps ? _self._apps : apps // ignore: cast_nullable_to_non_nullable
 as Map<String, AppVersionRuleDto>,policies: null == policies ? _self._policies : policies // ignore: cast_nullable_to_non_nullable
 as Map<String, PolicyVersionDto>,features: null == features ? _self._features : features // ignore: cast_nullable_to_non_nullable
-as Map<String, bool>,
+as Map<String, bool>,flags: null == flags ? _self._flags : flags // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
   ));
 }
 
@@ -1252,7 +1264,8 @@ as String?,
 /// @nodoc
 mixin _$AppVersionRuleDto {
 
-@JsonKey(name: 'min_version') String? get minVersion;@JsonKey(name: 'force_update') bool get forceUpdate;
+@JsonKey(name: 'min_version') String? get minVersion;@JsonKey(name: 'force_update') bool get forceUpdate;/// Per-platform rules (`android`, `ios`) with the store page to open.
+ Map<String, PlatformRuleDto> get platforms;
 /// Create a copy of AppVersionRuleDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1266,20 +1279,20 @@ $AppVersionRuleDtoCopyWith<AppVersionRuleDto> get copyWith => _$AppVersionRuleDt
 @override
 bool operator ==(Object other) {
   final _this = this as AppVersionRuleDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppVersionRuleDto&&(identical(other.minVersion, _this.minVersion) || other.minVersion == _this.minVersion)&&(identical(other.forceUpdate, _this.forceUpdate) || other.forceUpdate == _this.forceUpdate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppVersionRuleDto&&(identical(other.minVersion, _this.minVersion) || other.minVersion == _this.minVersion)&&(identical(other.forceUpdate, _this.forceUpdate) || other.forceUpdate == _this.forceUpdate)&&const DeepCollectionEquality().equals(other.platforms, _this.platforms));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as AppVersionRuleDto;
-  return Object.hash(runtimeType,_this.minVersion,_this.forceUpdate);
+  return Object.hash(runtimeType,_this.minVersion,_this.forceUpdate,const DeepCollectionEquality().hash(_this.platforms));
 }
 
 @override
 String toString() {
   final _this = this as AppVersionRuleDto;
-  return 'AppVersionRuleDto(minVersion: ${_this.minVersion}, forceUpdate: ${_this.forceUpdate})';
+  return 'AppVersionRuleDto(minVersion: ${_this.minVersion}, forceUpdate: ${_this.forceUpdate}, platforms: ${_this.platforms})';
 }
 
 
@@ -1290,7 +1303,7 @@ abstract mixin class $AppVersionRuleDtoCopyWith<$Res>  {
   factory $AppVersionRuleDtoCopyWith(AppVersionRuleDto value, $Res Function(AppVersionRuleDto) _then) = _$AppVersionRuleDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'min_version') String? minVersion,@JsonKey(name: 'force_update') bool forceUpdate
+@JsonKey(name: 'min_version') String? minVersion,@JsonKey(name: 'force_update') bool forceUpdate, Map<String, PlatformRuleDto> platforms
 });
 
 
@@ -1307,11 +1320,12 @@ class _$AppVersionRuleDtoCopyWithImpl<$Res>
 
 /// Create a copy of AppVersionRuleDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? minVersion = freezed,Object? forceUpdate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? minVersion = freezed,Object? forceUpdate = null,Object? platforms = null,}) {
   return _then(AppVersionRuleDto(
 minVersion: freezed == minVersion ? _self.minVersion : minVersion // ignore: cast_nullable_to_non_nullable
 as String?,forceUpdate: null == forceUpdate ? _self.forceUpdate : forceUpdate // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,platforms: null == platforms ? _self.platforms : platforms // ignore: cast_nullable_to_non_nullable
+as Map<String, PlatformRuleDto>,
   ));
 }
 
@@ -1396,10 +1410,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'min_version')  String? minVersion, @JsonKey(name: 'force_update')  bool forceUpdate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'min_version')  String? minVersion, @JsonKey(name: 'force_update')  bool forceUpdate,  Map<String, PlatformRuleDto> platforms)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppVersionRuleDto() when $default != null:
-return $default(_that.minVersion,_that.forceUpdate);case _:
+return $default(_that.minVersion,_that.forceUpdate,_that.platforms);case _:
   return orElse();
 
 }
@@ -1417,10 +1431,10 @@ return $default(_that.minVersion,_that.forceUpdate);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'min_version')  String? minVersion, @JsonKey(name: 'force_update')  bool forceUpdate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'min_version')  String? minVersion, @JsonKey(name: 'force_update')  bool forceUpdate,  Map<String, PlatformRuleDto> platforms)  $default,) {final _that = this;
 switch (_that) {
 case _AppVersionRuleDto():
-return $default(_that.minVersion,_that.forceUpdate);case _:
+return $default(_that.minVersion,_that.forceUpdate,_that.platforms);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1437,10 +1451,10 @@ return $default(_that.minVersion,_that.forceUpdate);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'min_version')  String? minVersion, @JsonKey(name: 'force_update')  bool forceUpdate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'min_version')  String? minVersion, @JsonKey(name: 'force_update')  bool forceUpdate,  Map<String, PlatformRuleDto> platforms)?  $default,) {final _that = this;
 switch (_that) {
 case _AppVersionRuleDto() when $default != null:
-return $default(_that.minVersion,_that.forceUpdate);case _:
+return $default(_that.minVersion,_that.forceUpdate,_that.platforms);case _:
   return null;
 
 }
@@ -1452,11 +1466,20 @@ return $default(_that.minVersion,_that.forceUpdate);case _:
 @JsonSerializable()
 
 class _AppVersionRuleDto implements AppVersionRuleDto {
-  const _AppVersionRuleDto({@JsonKey(name: 'min_version') this.minVersion, @JsonKey(name: 'force_update') this.forceUpdate = false});
+  const _AppVersionRuleDto({@JsonKey(name: 'min_version') this.minVersion, @JsonKey(name: 'force_update') this.forceUpdate = false,  Map<String, PlatformRuleDto> platforms = const <String, PlatformRuleDto>{}}): _platforms = platforms;
   factory _AppVersionRuleDto.fromJson(Map<String, dynamic> json) => _$AppVersionRuleDtoFromJson(json);
 
 @override@JsonKey(name: 'min_version') final  String? minVersion;
 @override@JsonKey(name: 'force_update') final  bool forceUpdate;
+/// Per-platform rules (`android`, `ios`) with the store page to open.
+ final  Map<String, PlatformRuleDto> _platforms;
+/// Per-platform rules (`android`, `ios`) with the store page to open.
+@override@JsonKey() Map<String, PlatformRuleDto> get platforms {
+  if (_platforms is EqualUnmodifiableMapView) return _platforms;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_platforms);
+}
+
 
 /// Create a copy of AppVersionRuleDto
 /// with the given fields replaced by the non-null parameter values.
@@ -1471,18 +1494,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppVersionRuleDto&&(identical(other.minVersion, minVersion) || other.minVersion == minVersion)&&(identical(other.forceUpdate, forceUpdate) || other.forceUpdate == forceUpdate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppVersionRuleDto&&(identical(other.minVersion, minVersion) || other.minVersion == minVersion)&&(identical(other.forceUpdate, forceUpdate) || other.forceUpdate == forceUpdate)&&const DeepCollectionEquality().equals(other.platforms, _platforms));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,minVersion,forceUpdate);
+    return Object.hash(runtimeType,minVersion,forceUpdate,const DeepCollectionEquality().hash(_platforms));
 }
 
 @override
 String toString() {
-    return 'AppVersionRuleDto(minVersion: $minVersion, forceUpdate: $forceUpdate)';
+    return 'AppVersionRuleDto(minVersion: $minVersion, forceUpdate: $forceUpdate, platforms: $platforms)';
 }
 
 
@@ -1493,7 +1516,7 @@ abstract mixin class _$AppVersionRuleDtoCopyWith<$Res> implements $AppVersionRul
   factory _$AppVersionRuleDtoCopyWith(_AppVersionRuleDto value, $Res Function(_AppVersionRuleDto) _then) = __$AppVersionRuleDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'min_version') String? minVersion,@JsonKey(name: 'force_update') bool forceUpdate
+@JsonKey(name: 'min_version') String? minVersion,@JsonKey(name: 'force_update') bool forceUpdate, Map<String, PlatformRuleDto> platforms
 });
 
 
@@ -1510,11 +1533,291 @@ class __$AppVersionRuleDtoCopyWithImpl<$Res>
 
 /// Create a copy of AppVersionRuleDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? minVersion = freezed,Object? forceUpdate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? minVersion = freezed,Object? forceUpdate = null,Object? platforms = null,}) {
   return _then(_AppVersionRuleDto(
 minVersion: freezed == minVersion ? _self.minVersion : minVersion // ignore: cast_nullable_to_non_nullable
 as String?,forceUpdate: null == forceUpdate ? _self.forceUpdate : forceUpdate // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,platforms: null == platforms ? _self._platforms : platforms // ignore: cast_nullable_to_non_nullable
+as Map<String, PlatformRuleDto>,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$PlatformRuleDto {
+
+@JsonKey(name: 'min_version') String? get minVersion;@JsonKey(name: 'latest_version') String? get latestVersion;@JsonKey(name: 'force_update') bool get forceUpdate;@JsonKey(name: 'store_url') String? get storeUrl;
+/// Create a copy of PlatformRuleDto
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PlatformRuleDtoCopyWith<PlatformRuleDto> get copyWith => _$PlatformRuleDtoCopyWithImpl<PlatformRuleDto>(this as PlatformRuleDto, _$identity);
+
+  /// Serializes this PlatformRuleDto to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as PlatformRuleDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlatformRuleDto&&(identical(other.minVersion, _this.minVersion) || other.minVersion == _this.minVersion)&&(identical(other.latestVersion, _this.latestVersion) || other.latestVersion == _this.latestVersion)&&(identical(other.forceUpdate, _this.forceUpdate) || other.forceUpdate == _this.forceUpdate)&&(identical(other.storeUrl, _this.storeUrl) || other.storeUrl == _this.storeUrl));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as PlatformRuleDto;
+  return Object.hash(runtimeType,_this.minVersion,_this.latestVersion,_this.forceUpdate,_this.storeUrl);
+}
+
+@override
+String toString() {
+  final _this = this as PlatformRuleDto;
+  return 'PlatformRuleDto(minVersion: ${_this.minVersion}, latestVersion: ${_this.latestVersion}, forceUpdate: ${_this.forceUpdate}, storeUrl: ${_this.storeUrl})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PlatformRuleDtoCopyWith<$Res>  {
+  factory $PlatformRuleDtoCopyWith(PlatformRuleDto value, $Res Function(PlatformRuleDto) _then) = _$PlatformRuleDtoCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: 'min_version') String? minVersion,@JsonKey(name: 'latest_version') String? latestVersion,@JsonKey(name: 'force_update') bool forceUpdate,@JsonKey(name: 'store_url') String? storeUrl
+});
+
+
+
+
+}
+/// @nodoc
+class _$PlatformRuleDtoCopyWithImpl<$Res>
+    implements $PlatformRuleDtoCopyWith<$Res> {
+  _$PlatformRuleDtoCopyWithImpl(this._self, this._then);
+
+  final PlatformRuleDto _self;
+  final $Res Function(PlatformRuleDto) _then;
+
+/// Create a copy of PlatformRuleDto
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? minVersion = freezed,Object? latestVersion = freezed,Object? forceUpdate = null,Object? storeUrl = freezed,}) {
+  return _then(PlatformRuleDto(
+minVersion: freezed == minVersion ? _self.minVersion : minVersion // ignore: cast_nullable_to_non_nullable
+as String?,latestVersion: freezed == latestVersion ? _self.latestVersion : latestVersion // ignore: cast_nullable_to_non_nullable
+as String?,forceUpdate: null == forceUpdate ? _self.forceUpdate : forceUpdate // ignore: cast_nullable_to_non_nullable
+as bool,storeUrl: freezed == storeUrl ? _self.storeUrl : storeUrl // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [PlatformRuleDto].
+extension PlatformRuleDtoPatterns on PlatformRuleDto {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PlatformRuleDto value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PlatformRuleDto() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PlatformRuleDto value)  $default,){
+final _that = this;
+switch (_that) {
+case _PlatformRuleDto():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PlatformRuleDto value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PlatformRuleDto() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'min_version')  String? minVersion, @JsonKey(name: 'latest_version')  String? latestVersion, @JsonKey(name: 'force_update')  bool forceUpdate, @JsonKey(name: 'store_url')  String? storeUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PlatformRuleDto() when $default != null:
+return $default(_that.minVersion,_that.latestVersion,_that.forceUpdate,_that.storeUrl);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'min_version')  String? minVersion, @JsonKey(name: 'latest_version')  String? latestVersion, @JsonKey(name: 'force_update')  bool forceUpdate, @JsonKey(name: 'store_url')  String? storeUrl)  $default,) {final _that = this;
+switch (_that) {
+case _PlatformRuleDto():
+return $default(_that.minVersion,_that.latestVersion,_that.forceUpdate,_that.storeUrl);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'min_version')  String? minVersion, @JsonKey(name: 'latest_version')  String? latestVersion, @JsonKey(name: 'force_update')  bool forceUpdate, @JsonKey(name: 'store_url')  String? storeUrl)?  $default,) {final _that = this;
+switch (_that) {
+case _PlatformRuleDto() when $default != null:
+return $default(_that.minVersion,_that.latestVersion,_that.forceUpdate,_that.storeUrl);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _PlatformRuleDto implements PlatformRuleDto {
+  const _PlatformRuleDto({@JsonKey(name: 'min_version') this.minVersion, @JsonKey(name: 'latest_version') this.latestVersion, @JsonKey(name: 'force_update') this.forceUpdate = false, @JsonKey(name: 'store_url') this.storeUrl});
+  factory _PlatformRuleDto.fromJson(Map<String, dynamic> json) => _$PlatformRuleDtoFromJson(json);
+
+@override@JsonKey(name: 'min_version') final  String? minVersion;
+@override@JsonKey(name: 'latest_version') final  String? latestVersion;
+@override@JsonKey(name: 'force_update') final  bool forceUpdate;
+@override@JsonKey(name: 'store_url') final  String? storeUrl;
+
+/// Create a copy of PlatformRuleDto
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PlatformRuleDtoCopyWith<_PlatformRuleDto> get copyWith => __$PlatformRuleDtoCopyWithImpl<_PlatformRuleDto>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$PlatformRuleDtoToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlatformRuleDto&&(identical(other.minVersion, minVersion) || other.minVersion == minVersion)&&(identical(other.latestVersion, latestVersion) || other.latestVersion == latestVersion)&&(identical(other.forceUpdate, forceUpdate) || other.forceUpdate == forceUpdate)&&(identical(other.storeUrl, storeUrl) || other.storeUrl == storeUrl));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,minVersion,latestVersion,forceUpdate,storeUrl);
+}
+
+@override
+String toString() {
+    return 'PlatformRuleDto(minVersion: $minVersion, latestVersion: $latestVersion, forceUpdate: $forceUpdate, storeUrl: $storeUrl)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PlatformRuleDtoCopyWith<$Res> implements $PlatformRuleDtoCopyWith<$Res> {
+  factory _$PlatformRuleDtoCopyWith(_PlatformRuleDto value, $Res Function(_PlatformRuleDto) _then) = __$PlatformRuleDtoCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: 'min_version') String? minVersion,@JsonKey(name: 'latest_version') String? latestVersion,@JsonKey(name: 'force_update') bool forceUpdate,@JsonKey(name: 'store_url') String? storeUrl
+});
+
+
+
+
+}
+/// @nodoc
+class __$PlatformRuleDtoCopyWithImpl<$Res>
+    implements _$PlatformRuleDtoCopyWith<$Res> {
+  __$PlatformRuleDtoCopyWithImpl(this._self, this._then);
+
+  final _PlatformRuleDto _self;
+  final $Res Function(_PlatformRuleDto) _then;
+
+/// Create a copy of PlatformRuleDto
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? minVersion = freezed,Object? latestVersion = freezed,Object? forceUpdate = null,Object? storeUrl = freezed,}) {
+  return _then(_PlatformRuleDto(
+minVersion: freezed == minVersion ? _self.minVersion : minVersion // ignore: cast_nullable_to_non_nullable
+as String?,latestVersion: freezed == latestVersion ? _self.latestVersion : latestVersion // ignore: cast_nullable_to_non_nullable
+as String?,forceUpdate: null == forceUpdate ? _self.forceUpdate : forceUpdate // ignore: cast_nullable_to_non_nullable
+as bool,storeUrl: freezed == storeUrl ? _self.storeUrl : storeUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

@@ -56,10 +56,14 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
         message: null,
       );
     }
-    return _toEntity(dto, fromCache: fromCache);
+    return _toEntity(dto, raw, fromCache: fromCache);
   }
 
-  AppConfig _toEntity(AppConfigDto dto, {required bool fromCache}) {
+  AppConfig _toEntity(
+    AppConfigDto dto,
+    Map<String, dynamic> raw, {
+    required bool fromCache,
+  }) {
     final languages = dto.locales
         .where(supportedLanguageCodes.contains)
         .toList(growable: false);
@@ -67,7 +71,11 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
         ? dto.defaultLocale!
         : defaultLanguageCode;
     final symbols = dto.currency?.symbol;
-    final rule = dto.apps[appKey];
+    final apps = raw['apps'];
+    final rule = AppUpdateRule.fromJson(
+      apps is Map ? apps[appKey] : null,
+      platform: currentPlatformKey(),
+    );
     return AppConfig(
       defaultLanguageCode: defaultLanguage,
       languageCodes: languages.isEmpty ? supportedLanguageCodes : languages,
@@ -93,8 +101,9 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
         whatsapp: dto.support?.whatsapp,
       ),
       maintenance: dto.maintenance,
-      minVersion: rule?.minVersion,
-      forceUpdate: rule?.forceUpdate ?? false,
+      minVersion: rule.minVersion,
+      forceUpdate: rule.forceUpdate,
+      storeUrl: rule.storeUrl,
       policies: {
         for (final e in dto.policies.entries)
           e.key: PolicyRef(
@@ -104,6 +113,8 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
           ),
       },
       features: dto.features,
+      flags: FeatureFlags.fromJson(features: dto.features, flags: dto.flags),
+      appKey: appKey,
       fromCache: fromCache,
     );
   }

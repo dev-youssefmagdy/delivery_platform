@@ -13,6 +13,7 @@ enum TicketSource: string implements HasLabel
     case Report = 'report';
     case Appeal = 'appeal';
     case Admin = 'admin';
+    case Website = 'website';
 
     public function label(): string
     {

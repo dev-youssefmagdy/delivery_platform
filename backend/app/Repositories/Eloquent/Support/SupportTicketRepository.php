@@ -5,9 +5,12 @@ namespace App\Repositories\Eloquent\Support;
 use App\DTOs\Support\TicketFilterData;
 use App\DTOs\Support\TicketVisibilityScope;
 use App\Enums\Identity\ClientApp;
+use App\Enums\Identity\UserStatus;
 use App\Enums\Support\TicketGroup;
+use App\Enums\Support\TicketSource;
 use App\Enums\Support\TicketStatus;
 use App\Models\SupportTicket;
+use App\Models\User;
 use App\Repositories\Contracts\Support\SupportTicketRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use Carbon\CarbonInterface;
@@ -59,6 +62,25 @@ final class SupportTicketRepository extends BaseRepository implements SupportTic
     public function countCreatedSince(int $userId, CarbonInterface $since): int
     {
         return $this->query()->where('user_id', $userId)->where('created_at', '>=', $since)->count();
+    }
+
+    public function websiteContactUserId(): int
+    {
+        $email = (string) config('website.contact.placeholder_email');
+        $user = User::query()->withTrashed()->where('email', $email)->first();
+
+        if (! $user instanceof User) {
+            $user = new User(['name' => 'Website contact form', 'email' => $email, 'preferred_locale' => 'ar']);
+            // Never active and without a phone: it cannot sign in or receive anything; it only owns website tickets.
+            $user->forceFill(['status' => UserStatus::Suspended, 'status_reason' => 'system placeholder for website tickets'])->save();
+        }
+
+        return $user->id;
+    }
+
+    public function countWebsiteSince(string $emailHash, CarbonInterface $since): int
+    {
+        return $this->query()->where('source', TicketSource::Website->value)->where('context->email_hash', $emailHash)->where('created_at', '>=', $since)->count();
     }
 
     public function findForBookingAndSource(int $bookingId, int $userId, string $source): ?SupportTicket

@@ -4,6 +4,7 @@ namespace App\Services\Support;
 
 use App\DTOs\Support\OpenTicketData;
 use App\DTOs\Support\TicketReplyData;
+use App\DTOs\Support\WebsiteContactData;
 use App\Enums\Booking\ReportCategory;
 use App\Enums\Common\ActorType;
 use App\Enums\Identity\ClientApp;
@@ -66,6 +67,48 @@ final class TicketService
         $checked = $this->attachments->inspectAll($data->attachments);
 
         return $this->create($user, $app, $data->category, TicketSource::App, trim($data->subject), trim($data->body), $bookingId, $paymentId, $payoutId, null, $checked);
+    }
+
+    /**
+     * The public website contact form (SRS 17.3): a visitor without an account. The ticket belongs to the reserved placeholder
+     * account, the visitor's contact details are in the ticket context (staff reply by email: the notification platform has no
+     * recipient for them), and one email may open a limited number a day. No attachments, no booking, payment or payout links.
+     *
+     * @throws BusinessRuleViolation `ticket_category_not_allowed`, `ticket_rate_limited`
+     */
+    public function openFromWebsite(WebsiteContactData $data): SupportTicket
+    {
+        if (! in_array($data->category, TicketCategory::forWebsite(), true)) {
+            throw BusinessRuleViolation::make('ticket_category_not_allowed', 'category');
+        }
+
+        $emailHash = hash('sha256', mb_strtolower($data->email));
+        $max = (int) config('website.contact.max_per_email_per_day', 3);
+
+        if ($this->tickets->countWebsiteSince($emailHash, CarbonImmutable::now()->subDay()) >= $max) {
+            throw BusinessRuleViolation::make('ticket_rate_limited', 'email', ['max' => $max]);
+        }
+
+        $user = new User;
+        $user->id = $this->tickets->websiteContactUserId();
+
+        return $this->create(
+            $user,
+            ClientApp::Customer,
+            $data->category,
+            TicketSource::Website,
+            trim($data->subject),
+            trim($data->message),
+            null,
+            null,
+            null,
+            [
+                'contact' => ['name' => $data->name, 'email' => $data->email, 'phone' => $data->phone, 'locale' => $data->locale],
+                'email_hash' => $emailHash,
+                'ip_hash' => $data->ip === null ? null : hash_hmac('sha256', $data->ip, (string) config('app.key')),
+            ],
+            [],
+        );
     }
 
     /**

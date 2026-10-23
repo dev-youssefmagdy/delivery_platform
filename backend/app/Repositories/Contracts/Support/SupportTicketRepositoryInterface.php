@@ -37,6 +37,16 @@ interface SupportTicketRepositoryInterface extends BaseRepositoryInterface
     public function countCreatedSince(int $userId, CarbonInterface $since): int;
 
     /**
+     * The reserved, non-login placeholder account that owns tickets opened from the public website contact form.
+     */
+    public function websiteContactUserId(): int;
+
+    /**
+     * Website tickets opened by the same email (hash) since a time: the per-visitor daily cap.
+     */
+    public function countWebsiteSince(string $emailHash, CarbonInterface $since): int;
+
+    /**
      * An existing ticket of this source for the booking and person (one appeal per booking).
      */
     public function findForBookingAndSource(int $bookingId, int $userId, string $source): ?SupportTicket;

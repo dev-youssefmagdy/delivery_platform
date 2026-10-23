@@ -1345,7 +1345,7 @@ return [
 
     'ticket_visibility' => ['public' => 'Visible to the user', 'internal' => 'Internal note'],
 
-    'ticket_source' => ['app' => 'App', 'report' => 'Booking report', 'appeal' => 'Fee appeal', 'admin' => 'Admin'],
+    'ticket_source' => ['app' => 'App', 'report' => 'Booking report', 'appeal' => 'Fee appeal', 'admin' => 'Admin', 'website' => 'Website contact form'],
 
     'ticket_event_type' => [
         'created' => 'Ticket created',

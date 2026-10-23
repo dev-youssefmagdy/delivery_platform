@@ -76,12 +76,22 @@
                     <x-admin.detail-list.item :label="__('admin.support_tickets.fields.group')" :value="$ticket->group->label()" />
                     <x-admin.detail-list.item :label="__('admin.support_tickets.fields.assignee')" :value="$ticket->assignedAdmin?->name" />
                     <x-admin.detail-list.item :label="__('admin.support_tickets.fields.requester')">
-                        @can('view', $owner)
-                            <a class="text-brand-700 hover:underline" href="{{ route('admin.customers.show', $owner->uuid) }}">{{ $owner->name }}</a>
+                        @if ($ticket->source === \App\Enums\Support\TicketSource::Website)
+                            {{ $ticket->context['contact']['name'] ?? '—' }}
+                            @if (! empty($ticket->context['contact']['email']))
+                                · <a dir="ltr" class="text-brand-700 hover:underline" href="mailto:{{ $ticket->context['contact']['email'] }}">{{ $ticket->context['contact']['email'] }}</a>
+                            @endif
+                            @if (! empty($ticket->context['contact']['phone']))
+                                · <span dir="ltr">{{ $ticket->context['contact']['phone'] }}</span>
+                            @endif
                         @else
-                            {{ $owner->name }}
-                        @endcan
-                        · {{ $ticket->app->label() }}
+                            @can('view', $owner)
+                                <a class="text-brand-700 hover:underline" href="{{ route('admin.customers.show', $owner->uuid) }}">{{ $owner->name }}</a>
+                            @else
+                                {{ $owner->name }}
+                            @endcan
+                            · {{ $ticket->app->label() }}
+                        @endif
                     </x-admin.detail-list.item>
                     <x-admin.detail-list.item :label="__('admin.support_tickets.fields.source')" :value="$ticket->source->label()" />
                     <x-admin.detail-list.item :label="__('admin.support_tickets.fields.sla_due_at')">

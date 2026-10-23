@@ -3,6 +3,7 @@
 namespace App\Services\Support;
 
 use App\Enums\Notification\NotificationEvent;
+use App\Enums\Support\TicketSource;
 use App\Models\SupportTicket;
 use App\Services\Notification\PartyNotifier;
 use Throwable;
@@ -39,6 +40,11 @@ final class TicketNotifier
 
     private function send(SupportTicket $ticket, NotificationEvent $event, string $discriminator): void
     {
+        // A website ticket belongs to the placeholder account: there is nobody to notify (staff answer by email).
+        if ($ticket->source === TicketSource::Website) {
+            return;
+        }
+
         try {
             $ticket->loadMissing('user');
             $this->notifier->user($ticket->user, $ticket->app, $event, $discriminator, [], $ticket->uuid);

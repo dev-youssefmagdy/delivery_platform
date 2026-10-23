@@ -1345,7 +1345,7 @@ return [
 
     'ticket_visibility' => ['public' => 'ظاهرة للمستخدم', 'internal' => 'ملاحظة داخلية'],
 
-    'ticket_source' => ['app' => 'التطبيق', 'report' => 'بلاغ على حجز', 'appeal' => 'اعتراض على رسوم', 'admin' => 'لوحة الإدارة'],
+    'ticket_source' => ['app' => 'التطبيق', 'report' => 'بلاغ على حجز', 'appeal' => 'اعتراض على رسوم', 'admin' => 'لوحة الإدارة', 'website' => 'نموذج التواصل في الموقع'],
 
     'ticket_event_type' => [
         'created' => 'إنشاء التذكرة',

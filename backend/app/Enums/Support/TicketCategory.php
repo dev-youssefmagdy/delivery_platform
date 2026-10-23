@@ -74,4 +74,15 @@ enum TicketCategory: string implements HasLabel
 
         return array_values(array_filter(self::cases(), static fn (self $case): bool => ! in_array($case, $app === 'provider' ? $customerOnly : $providerOnly, true)));
     }
+
+    /**
+     * Categories a website visitor (no account) may choose in the contact form: general questions only. Safety, payouts and
+     * verification need an account and go through the apps.
+     *
+     * @return list<self>
+     */
+    public static function forWebsite(): array
+    {
+        return [self::Booking, self::PaymentRefund, self::Coupon, self::DriverProvider, self::Account, self::Technical, self::Other];
+    }
 }

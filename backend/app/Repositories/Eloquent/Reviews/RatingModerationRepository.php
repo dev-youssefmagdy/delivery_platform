@@ -148,7 +148,7 @@ final class RatingModerationRepository implements RatingModerationRepositoryInte
 
     public function appealsOfUser(int $userId): Collection
     {
-        return RatingAppeal::query()->where('appellant_user_id', $userId)->orderBy('id')->get();
+        return RatingAppeal::query()->with('rating:id,uuid')->where('appellant_user_id', $userId)->orderBy('id')->get();
     }
 
     public function userOfParty(string $partyType, int $partyId): ?User

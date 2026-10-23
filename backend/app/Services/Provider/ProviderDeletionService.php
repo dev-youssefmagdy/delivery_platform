@@ -22,6 +22,8 @@ use App\Repositories\Contracts\Provider\ProviderProfileRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleDocumentRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehiclePhotoRepositoryInterface;
 use App\Repositories\Contracts\Provider\VehicleRepositoryInterface;
+use App\Repositories\Contracts\Reviews\RatingModerationRepositoryInterface;
+use App\Repositories\Contracts\Risk\RiskSignalRepositoryInterface;
 use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
 use App\Repositories\Contracts\Safety\TrustedContactRepositoryInterface;
 use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
@@ -64,6 +66,8 @@ final class ProviderDeletionService
         private readonly BookingMessageRepositoryInterface $chat,
         private readonly SafetyIncidentRepositoryInterface $safetyIncidents,
         private readonly TrustedContactRepositoryInterface $trustedContacts,
+        private readonly RatingModerationRepositoryInterface $ratingModeration,
+        private readonly RiskSignalRepositoryInterface $riskSignals,
         private readonly PrivateFileStorage $storage,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -143,6 +147,9 @@ final class ProviderDeletionService
             // Safety (P5.1): same rule as customers, a legal hold keeps the case whole.
             $this->trustedContacts->purgeForUser($user->id);
             $safety = $this->safetyIncidents->scrubOfUser($user->id);
+            // Reputation (P5.2): same rule as customers (the person's report / appeal text goes, risk signal facts become a marker).
+            $reputation = $this->ratingModeration->scrubOfUser($user->id);
+            $riskScrubbed = $this->riskSignals->scrubOfSubject(\App\Enums\Risk\RiskSubjectType::Provider, $locked->id);
             $paths = [...$paths, ...$ticketFiles, ...$chatFiles, ...$safety['files']];
             $paths[] = $this->scrubber->scrub($user);
 
@@ -160,7 +167,7 @@ final class ProviderDeletionService
                 before: ['status' => $request->previous_provider_status->value ?? $locked->status->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid, 'payout_methods_purged' => $payoutMethodsPurged, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles)],
+                meta: ['deletion_request' => $request->uuid, 'payout_methods_purged' => $payoutMethodsPurged, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles), 'rating_reports_scrubbed' => $reputation['reports'], 'rating_appeals_scrubbed' => $reputation['appeals'], 'risk_signals_scrubbed' => $riskScrubbed],
             );
 
             return $request;

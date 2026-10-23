@@ -67,6 +67,7 @@
         $showWallet = \Illuminate\Support\Facades\Gate::allows('viewWallets', \App\Models\LedgerAccount::class);
         $showPayments = \Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\Payment::class);
         $showCoupons = \Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\Coupon::class);
+        $showRisk = \Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\RiskSignal::class);
         $tabs = [
             'profile' => ['label' => __('admin.customers.tabs.profile'), 'icon' => 'user'],
             'bookings' => ['label' => __('admin.customers.tabs.bookings'), 'icon' => 'clipboard'],
@@ -77,6 +78,7 @@
             'ratings' => ['label' => __('admin.customers.tabs.ratings'), 'icon' => 'star'],
             'consents' => ['label' => __('admin.customers.tabs.consents'), 'icon' => 'document'],
             'devices' => ['label' => __('admin.customers.tabs.devices'), 'icon' => 'window'],
+            ...($showRisk ? ['risk' => ['label' => __('reputation.admin.tabs.risk'), 'icon' => 'shield']] : []),
         ];
         if ($details->canRevealContact) {
             $tabs['places'] = ['label' => __('admin.customers.tabs.places'), 'icon' => 'map-pin'];
@@ -119,6 +121,9 @@
 
             <x-admin.tabs.panel id="consents" :url="route('admin.customers.tabs.consents', $customer)" />
             <x-admin.tabs.panel id="devices" :url="route('admin.customers.tabs.devices', $customer)" />
+            @if ($showRisk)
+                <x-admin.tabs.panel id="risk" :url="route('admin.customers.tabs.risk', $customer)" />
+            @endif
             @if ($details->canRevealContact)
                 <x-admin.tabs.panel id="places" :url="route('admin.customers.tabs.saved-places', $customer)" />
             @endif

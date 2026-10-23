@@ -58,6 +58,7 @@ use App\Http\Controllers\Api\V1\Provider\VehicleController;
 use App\Http\Controllers\Api\V1\Support\BookingChatController;
 use App\Http\Controllers\Api\V1\Support\SupportTicketController;
 use App\Http\Controllers\Api\V1\Webhooks\PaymentWebhookController;
+use App\Http\Controllers\Api\V1\Reviews\RatingModerationController;
 use App\Http\Controllers\Api\V1\Safety\IncidentController;
 use App\Http\Controllers\Api\V1\Safety\TrustedContactController;
 use App\Http\Controllers\Api\V1\Safety\TripShareController as SafetyTripShareController;
@@ -368,6 +369,15 @@ Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->p
 
     Route::post('bookings/{booking}/share', [SafetyTripShareController::class, 'store'])->whereUuid('booking')->name('bookings.share.store');
     Route::delete('bookings/{booking}/share', [SafetyTripShareController::class, 'destroy'])->whereUuid('booking')->name('bookings.share.destroy');
+});
+
+// Rating moderation (P5.2, SRS §15) for both apps: the person reports a rating written about them, appeals a hidden review of theirs or a
+// low rating about them, and reads where their appeals stand. Like support and safety, reachable by an account in any standing.
+Route::middleware(['auth:sanctum', 'ability:customer,provider', 'user.seen'])->prefix('ratings')->name('ratings.')->group(function (): void {
+    Route::get('appeals', [RatingModerationController::class, 'appeals'])->name('appeals.index');
+    Route::get('{rating}', [RatingModerationController::class, 'show'])->whereUuid('rating')->name('show');
+    Route::post('{rating}/report', [RatingModerationController::class, 'report'])->whereUuid('rating')->middleware(['throttle:20,60', 'idempotent'])->name('report');
+    Route::post('{rating}/appeal', [RatingModerationController::class, 'appeal'])->whereUuid('rating')->middleware(['throttle:10,60', 'idempotent'])->name('appeal');
 });
 
 // Private channel authorization for the mobile apps (ADR-07): the pusher-protocol clients post `socket_id` and

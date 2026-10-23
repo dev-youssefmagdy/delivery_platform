@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Provider\ProviderTabController;
 use App\Models\LedgerAccount;
 use App\Models\PayoutRequest;
 use App\Models\ProviderProfile;
+use App\Models\RiskSignal;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,6 +37,8 @@ Route::prefix('providers')->name('providers.')->group(function (): void {
         Route::get('payouts', 'payouts')->name('payouts')->can('view', 'provider')->can('viewAny', PayoutRequest::class);
         Route::get('wallet', 'wallet')->name('wallet')->can('view', 'provider')->can('viewWallets', LedgerAccount::class);
         Route::get('deletion-requests', 'deletionRequests')->name('deletion-requests')->can('view', 'provider');
+        Route::get('ratings', 'ratings')->name('ratings')->can('view', 'provider');
+        Route::get('risk', 'risk')->name('risk')->can('view', 'provider')->can('viewAny', RiskSignal::class);
         Route::get('audit', 'audit')->name('audit')->can('view', 'provider');
     });
 });

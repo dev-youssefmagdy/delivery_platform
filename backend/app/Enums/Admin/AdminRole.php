@@ -58,6 +58,7 @@ enum AdminRole: string implements HasLabel
                 $p::OffersView, $p::OffersModerate,
                 $p::ServicesManage, $p::VehicleCategoriesManage, $p::ServiceAreasManage, $p::FarePoliciesManage, $p::CancellationPoliciesManage, $p::PoliciesManage,
                 $p::SupportView, $p::IncidentsView, $p::ReportsView,
+                $p::ReviewsView, $p::ReviewsModerate, $p::RiskView, $p::RiskManage,
             ],
             self::DispatchAgent => [
                 $p::DashboardView, $p::BookingsView, $p::BookingsManage, $p::BookingsCancel, $p::OffersView, $p::DriversView, $p::CustomersView,

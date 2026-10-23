@@ -459,6 +459,24 @@ return [
             'icon' => 'shield',
             'permission' => App\Enums\Admin\AdminPermission::IncidentsView,
         ],
+        [
+            'key' => 'reviews',
+            'group' => 'moderation',
+            'label' => 'reputation.admin.reviews.menu',
+            'route' => 'admin.reviews.index',
+            'active' => 'admin.reviews.*',
+            'icon' => 'star',
+            'permission' => App\Enums\Admin\AdminPermission::ReviewsView,
+        ],
+        [
+            'key' => 'risk_signals',
+            'group' => 'moderation',
+            'label' => 'reputation.admin.risk.menu',
+            'route' => 'admin.risk-signals.index',
+            'active' => 'admin.risk-signals.*',
+            'icon' => 'exclamation',
+            'permission' => App\Enums\Admin\AdminPermission::RiskView,
+        ],
         // @admin-module:menu
     ],
 ];

@@ -24,6 +24,8 @@ class RatingResource extends JsonResource
             'stars' => $rating->stars,
             'tags' => array_map(static fn (string $tag): array => ['code' => $tag, 'label' => RatingTag::tryFrom($tag)?->label() ?? $tag], (array) ($rating->tags ?? [])),
             'comment' => $rating->comment,
+            // The writer sees whether moderation counts the review (visible / hidden / under_review) and can appeal a hidden one.
+            'moderation_status' => $rating->moderation_status->value,
             'created_at' => $rating->created_at->toIso8601ZuluString(),
         ];
     }

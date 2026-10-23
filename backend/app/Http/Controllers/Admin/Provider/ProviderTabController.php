@@ -7,7 +7,9 @@ use App\DataTables\Admin\Provider\ProviderDeletionRequestsDataTable;
 use App\DataTables\Admin\Provider\ProviderDocumentsDataTable;
 use App\DataTables\Admin\Provider\ProviderHistoryDataTable;
 use App\DataTables\Admin\Provider\ProviderJobsDataTable;
+use App\DataTables\Admin\Provider\ProviderRatingsDataTable;
 use App\DataTables\Admin\Provider\ProviderServicesDataTable;
+use App\DataTables\Admin\Risk\ProviderRiskSignalsDataTable;
 use App\DataTables\Admin\Provider\ProviderVehiclesDataTable;
 use App\DataTables\Admin\Finance\ProviderWalletDataTable;
 use App\Http\Controllers\Admin\AdminController;
@@ -83,6 +85,16 @@ final class ProviderTabController extends AdminController
     public function deletionRequests(ProviderDeletionRequestsDataTable $table, ProviderProfile $provider): mixed
     {
         return $table->render('admin.providers.tabs.table', ['intro' => __('admin.providers.deletion.intro')]);
+    }
+
+    public function ratings(ProviderRatingsDataTable $table, ProviderProfile $provider): mixed
+    {
+        return $table->render('admin.providers.tabs.table', ['intro' => __('admin.providers.ratings.intro')]);
+    }
+
+    public function risk(ProviderRiskSignalsDataTable $table, ProviderProfile $provider): mixed
+    {
+        return $table->render('admin.providers.tabs.table', ['intro' => __('reputation.admin.provider_risk_intro')]);
     }
 
     public function audit(ProviderAuditDataTable $table, ProviderProfile $provider): mixed

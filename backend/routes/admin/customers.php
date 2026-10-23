@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Customers\CustomerController;
 use App\Http\Controllers\Admin\Customers\CustomerTabController;
 use App\Models\LedgerAccount;
+use App\Models\RiskSignal;
 use App\Models\SupportTicket;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,7 @@ Route::prefix('customers')->name('customers.')->group(function (): void {
         Route::get('saved-places', 'savedPlaces')->withTrashed()->name('saved-places')->can('viewPii', 'customer');
         Route::get('deletion-requests', 'deletionRequests')->withTrashed()->name('deletion-requests')->can('view', 'customer');
         Route::get('messages', 'messages')->withTrashed()->name('messages')->can('view', 'customer');
+        Route::get('risk', 'risk')->withTrashed()->name('risk')->can('view', 'customer')->can('viewAny', RiskSignal::class);
         Route::get('audit', 'audit')->withTrashed()->name('audit')->can('view', 'customer');
     });
 });

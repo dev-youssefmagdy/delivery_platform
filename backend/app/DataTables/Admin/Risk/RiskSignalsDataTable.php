@@ -87,7 +87,7 @@ final class RiskSignalsDataTable extends AdminDataTable
                 $actions[] = new TableAction($signal->subject_type === RiskSubjectType::Provider ? __('reputation.admin.open_provider') : __('reputation.admin.open_customer'), $subject['url'], icon: 'user', ability: 'view', subject: $subject['model']);
             }
 
-            foreach (['restrict' => ['lock-closed', 'warning'], 'suspend' => ['pause', 'danger'], 'escalate' => ['arrow-up', 'warning'], 'dismiss' => ['x-mark', 'neutral']] as $ability => [$icon, $variant]) {
+            foreach (['restrict' => ['lock-closed', 'warning'], 'suspend' => ['pause', 'danger'], 'escalate' => ['chevron-up', 'warning'], 'dismiss' => ['x-mark', 'neutral']] as $ability => [$icon, $variant]) {
                 $actions[] = TableAction::confirm(
                     __('reputation.enums.risk_action.'.$ability),
                     route('admin.risk-signals.'.$ability, $signal),

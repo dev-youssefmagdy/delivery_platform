@@ -20,6 +20,8 @@ use App\Repositories\Contracts\Booking\RecipientOtpRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerActivityRepositoryInterface;
 use App\Repositories\Contracts\Customers\CustomerRepositoryInterface;
 use App\Repositories\Contracts\Identity\AccountDeletionRequestRepositoryInterface;
+use App\Repositories\Contracts\Reviews\RatingModerationRepositoryInterface;
+use App\Repositories\Contracts\Risk\RiskSignalRepositoryInterface;
 use App\Repositories\Contracts\Safety\SafetyIncidentRepositoryInterface;
 use App\Repositories\Contracts\Safety\TrustedContactRepositoryInterface;
 use App\Repositories\Contracts\Support\BookingMessageRepositoryInterface;
@@ -64,6 +66,8 @@ final class CustomerDeletionService
         private readonly BookingStopRepositoryInterface $stops,
         private readonly SafetyIncidentRepositoryInterface $safetyIncidents,
         private readonly TrustedContactRepositoryInterface $trustedContacts,
+        private readonly RatingModerationRepositoryInterface $ratingModeration,
+        private readonly RiskSignalRepositoryInterface $riskSignals,
         private readonly PrivateFileStorage $files,
         private readonly AuditLogger $audit,
         private readonly DatabaseManager $db,
@@ -119,6 +123,10 @@ final class CustomerDeletionService
             // callback phone, location, the person's own messages and files; a case under legal hold is kept whole (SRS §13.3).
             $contactsPurged = $this->trustedContacts->purgeForUser($locked->id);
             $safety = $this->safetyIncidents->scrubOfUser($locked->id);
+            // Reputation (P5.2): the free text of the person's rating reports and appeals goes (decisions stay for the audit trail); the facts of
+            // risk signals about the account are replaced by a marker (type, score, status and decision stay).
+            $reputation = $this->ratingModeration->scrubOfUser($locked->id);
+            $riskScrubbed = $this->riskSignals->scrubOfSubject(\App\Enums\Risk\RiskSubjectType::Customer, $locked->id);
             $supportFiles = [...$ticketFiles, ...$chatFiles, ...$proofFiles, ...$loadFiles, ...$safety['files']];
 
             $this->requests->update($request, [
@@ -135,7 +143,7 @@ final class CustomerDeletionService
                 before: ['status' => $previousStatus->value],
                 after: ['status' => UserStatus::Deleted->value, 'anonymised' => true],
                 reason: $reason,
-                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged, 'coupon_attempts_scrubbed' => $couponAttemptsScrubbed, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles), 'booking_contacts_scrubbed' => $contactsScrubbed, 'proof_files_removed' => count($proofFiles), 'booking_items_scrubbed' => $itemsScrubbed, 'stop_contacts_scrubbed' => $stopContactsScrubbed, 'load_files_removed' => count($loadFiles), 'trusted_contacts_purged' => $contactsPurged['contacts'], 'safety_incidents_scrubbed' => $safety['scrubbed'], 'safety_incidents_held' => $safety['held']],
+                meta: ['deletion_request' => $request->uuid, 'bookings_scrubbed' => $scrubbedBookings, 'payment_methods_purged' => $methodsPurged, 'coupon_attempts_scrubbed' => $couponAttemptsScrubbed, 'ticket_files_removed' => count($ticketFiles), 'chat_files_removed' => count($chatFiles), 'booking_contacts_scrubbed' => $contactsScrubbed, 'proof_files_removed' => count($proofFiles), 'booking_items_scrubbed' => $itemsScrubbed, 'stop_contacts_scrubbed' => $stopContactsScrubbed, 'load_files_removed' => count($loadFiles), 'trusted_contacts_purged' => $contactsPurged['contacts'], 'safety_incidents_scrubbed' => $safety['scrubbed'], 'safety_incidents_held' => $safety['held'], 'rating_reports_scrubbed' => $reputation['reports'], 'rating_appeals_scrubbed' => $reputation['appeals'], 'risk_signals_scrubbed' => $riskScrubbed],
             );
 
             return $request;

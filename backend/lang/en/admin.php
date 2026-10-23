@@ -1617,9 +1617,11 @@ return [
             'earnings' => 'Earnings',
             'payouts' => 'Payouts',
             'wallet' => 'Wallet',
+            'ratings' => 'Ratings',
             'data_requests' => 'Data requests',
             'audit' => 'Audit',
         ],
+        'ratings' => ['intro' => 'Ratings this provider received from customers, with moderation status. Open one in the Reviews module to moderate it.'],
         'modules' => ['jobs' => 'trip lifecycle module', 'earnings' => 'earnings and payouts module'],
         'reveal' => [
             'button' => 'Reveal contact details',

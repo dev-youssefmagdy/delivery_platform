@@ -67,6 +67,7 @@
     @php
         $showPayouts = \Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\PayoutRequest::class);
         $showWallet = \Illuminate\Support\Facades\Gate::allows('viewWallets', \App\Models\LedgerAccount::class);
+        $showRisk = \Illuminate\Support\Facades\Gate::allows('viewAny', \App\Models\RiskSignal::class);
         $tabs = [
             'profile' => ['label' => __('admin.providers.tabs.profile'), 'icon' => 'user'],
             'services' => ['label' => __('admin.providers.tabs.services'), 'icon' => 'squares'],
@@ -77,6 +78,8 @@
             'earnings' => ['label' => __('admin.providers.tabs.earnings'), 'icon' => 'banknotes'],
             ...($showPayouts ? ['payouts' => ['label' => __('admin.providers.tabs.payouts'), 'icon' => 'banknotes']] : []),
             ...($showWallet ? ['wallet' => ['label' => __('admin.providers.tabs.wallet'), 'icon' => 'banknotes']] : []),
+            'ratings' => ['label' => __('admin.providers.tabs.ratings'), 'icon' => 'star'],
+            ...($showRisk ? ['risk' => ['label' => __('reputation.admin.tabs.risk'), 'icon' => 'shield']] : []),
             'data-requests' => ['label' => __('admin.providers.tabs.data_requests'), 'icon' => 'archive'],
             'audit' => ['label' => __('admin.providers.tabs.audit'), 'icon' => 'shield'],
         ];
@@ -104,6 +107,10 @@
             @endif
             @if ($showWallet)
                 <x-admin.tabs.panel id="wallet" :url="route('admin.providers.tabs.wallet', $provider)" />
+            @endif
+            <x-admin.tabs.panel id="ratings" :url="route('admin.providers.tabs.ratings', $provider)" />
+            @if ($showRisk)
+                <x-admin.tabs.panel id="risk" :url="route('admin.providers.tabs.risk', $provider)" />
             @endif
             <x-admin.tabs.panel id="data-requests" :url="route('admin.providers.tabs.deletion-requests', $provider)" />
             <x-admin.tabs.panel id="audit" :url="route('admin.providers.tabs.audit', $provider)" />

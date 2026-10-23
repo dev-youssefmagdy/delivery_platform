@@ -81,6 +81,7 @@ final class PersonalDataExporter
         private readonly BookingAttachmentRepositoryInterface $attachments,
         private readonly SafetyIncidentRepositoryInterface $safetyIncidents,
         private readonly TrustedContactRepositoryInterface $trustedContacts,
+        private readonly \App\Repositories\Contracts\Reviews\RatingModerationRepositoryInterface $ratingModeration,
     ) {}
 
     /**
@@ -93,6 +94,7 @@ final class PersonalDataExporter
         return [
             'exported_at' => now()->toIso8601String(),
             'safety' => $this->safety($customer),
+            'reputation' => $this->reputation($customer),
             'account' => [
                 'uuid' => $customer->uuid,
                 'name' => $customer->name,
@@ -377,6 +379,32 @@ final class PersonalDataExporter
                 'status' => $action->status->value,
                 'contact' => $action->contact_name,
                 'at' => $action->created_at->toIso8601String(),
+            ])->all(),
+        ];
+    }
+
+    /**
+     * What the person submitted about ratings: the reports they filed and the appeals they made, with their own words and where each
+     * stands. Internal risk signals and staff decision notes are not part of it (SRS §15: internal indicators are never exposed).
+     *
+     * @return array<string, mixed>
+     */
+    private function reputation(User $customer): array
+    {
+        return [
+            'rating_reports' => $this->ratingModeration->reportsOfUser($customer->id)->map(static fn (\App\Models\RatingReport $report): array => [
+                'app' => $report->reporter_type,
+                'reason' => $report->reason->value,
+                'details' => $report->details,
+                'status' => $report->status->value,
+                'at' => $report->created_at->toIso8601String(),
+            ])->all(),
+            'rating_appeals' => $this->ratingModeration->appealsOfUser($customer->id)->map(static fn (\App\Models\RatingAppeal $appeal): array => [
+                'app' => $appeal->appellant_type,
+                'grounds' => $appeal->grounds->value,
+                'message' => $appeal->message === '' ? null : $appeal->message,
+                'status' => $appeal->status->value,
+                'at' => $appeal->created_at->toIso8601String(),
             ])->all(),
         ];
     }

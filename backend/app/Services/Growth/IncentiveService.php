@@ -173,7 +173,7 @@ final class IncentiveService
             $award->forceFill(['journal_entry_id' => $entry->id])->save();
             $this->incentives->updateCampaign($campaign, ['spent_minor' => $campaign->spent_minor + $campaign->bonus_minor]);
             $this->incentives->updateProgress($progress, ['awards_count' => $sequence, 'status' => IncentiveProgressStatus::InProgress]);
-            $this->audit->record(AuditAction::Created, $award, null, after: ['amount_minor' => $campaign->bonus_minor, 'sequence' => $sequence], meta: ['campaign' => $campaign->uuid]);
+            $this->audit->record(AuditAction::Created, $progress, null, after: ['award_amount_minor' => $campaign->bonus_minor, 'sequence' => $sequence], meta: ['campaign' => $campaign->uuid, 'award' => $award->uuid]);
             $paid++;
         }
 

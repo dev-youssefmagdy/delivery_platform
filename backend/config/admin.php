@@ -85,6 +85,7 @@ return [
         'content-media' => App\Support\Admin\Lookups\ContentMediaLookup::class,
         'faq-categories' => App\Support\Admin\Lookups\FaqCategoryLookup::class,
         'article-categories' => App\Support\Admin\Lookups\ArticleCategoryLookup::class,
+        'referral-campaigns' => App\Support\Admin\Lookups\ReferralCampaignLookup::class,
         // @admin-module:lookups
     ],
 

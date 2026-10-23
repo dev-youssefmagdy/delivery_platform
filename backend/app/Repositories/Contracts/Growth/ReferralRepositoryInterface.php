@@ -49,6 +49,17 @@ interface ReferralRepositoryInterface
      */
     public function campaignsQuery(CampaignFilterData $filters): Builder;
 
+    /**
+     * @return Collection<int, ReferralCampaign>
+     */
+    public function campaignLookup(string $term, int $limit): Collection;
+
+    /**
+     * @param list<int|string> $ids
+     * @return Collection<int, ReferralCampaign>
+     */
+    public function campaignsByIds(array $ids): Collection;
+
     public function relationshipOfReferee(int $refereeUserId, ReferralAudience $audience): ?ReferralRelationship;
 
     public function lockRelationship(int $id): ?ReferralRelationship;

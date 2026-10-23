@@ -80,6 +80,16 @@ final class ReferralRepository implements ReferralRepositoryInterface
             ->when($filters->to !== null, static fn (Builder $q) => $q->where('starts_at', '<=', $filters->to?->endOfDay()));
     }
 
+    public function campaignLookup(string $term, int $limit): Collection
+    {
+        return ReferralCampaign::query()->when($term !== '', static fn (Builder $q) => $q->where('name', 'like', '%'.addcslashes($term, '%_\\').'%'))->orderByDesc('id')->limit($limit)->get();
+    }
+
+    public function campaignsByIds(array $ids): Collection
+    {
+        return ReferralCampaign::query()->whereKey($ids)->get();
+    }
+
     public function relationshipOfReferee(int $refereeUserId, ReferralAudience $audience): ?ReferralRelationship
     {
         return ReferralRelationship::query()->where('referee_user_id', $refereeUserId)->where('audience', $audience->value)->first();

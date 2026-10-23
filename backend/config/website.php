@@ -19,6 +19,10 @@ return [
         'max_per_email_per_day' => (int) env('WEBSITE_CONTACT_MAX_PER_EMAIL_PER_DAY', 3),
     ],
 
+    // Extra image origins the Content-Security-Policy of the website and the admin panel allows (for example a CDN or an object storage
+    // host that serves CMS media). Comma separated origins in CSP_EXTRA_IMG_SRC; empty = the app's own origin only.
+    'csp_img_hosts' => array_values(array_filter(array_map('trim', explode(',', (string) env('CSP_EXTRA_IMG_SRC', ''))))),
+
     'social' => [
         'facebook' => env('WEBSITE_SOCIAL_FACEBOOK'),
         'instagram' => env('WEBSITE_SOCIAL_INSTAGRAM'),

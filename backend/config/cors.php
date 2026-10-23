@@ -17,17 +17,17 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['*'],
+    'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => array_values(array_filter(array_map('trim', explode(',', (string) env('CORS_ALLOWED_ORIGINS', ''))))),
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    'allowed_headers' => ['Accept', 'Accept-Language', 'Authorization', 'Content-Type', 'Idempotency-Key', 'X-App', 'X-Request-Id', 'X-Requested-With'],
 
-    'exposed_headers' => [],
+    'exposed_headers' => ['Idempotent-Replayed', 'X-Request-Id'],
 
-    'max_age' => 0,
+    'max_age' => 600,
 
     'supports_credentials' => false,
 

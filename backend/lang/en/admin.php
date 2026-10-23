@@ -585,6 +585,10 @@ return [
             'per_hour' => 'per hour',
             'basis_points' => 'basis points (1/100 of a percent)',
         ],
+        'errors' => [
+            'ip_allowlist_invalid' => "':entry' is not a valid IP address or range.",
+            'ip_allowlist_lockout' => "The list must include your own address (:ip), otherwise you would lock yourself out.",
+        ],
         'keys' => [
             'default_country' => [
                 'label' => 'Default country',
@@ -833,6 +837,10 @@ return [
             'admin_mfa_required_roles' => [
                 'label' => 'Roles that must use two-step verification',
                 'description' => 'Admins holding any of these roles must enrol before using the panel.',
+            ],
+            'admin_ip_allowlist' => [
+                'label' => 'Admin IP allowlist',
+                'description' => 'Optional. IP addresses or CIDR ranges (comma separated) that may open the admin panel. Leave empty to allow every address. Your own address must be included.',
             ],
             'admin_login_lockout_seconds' => [
                 'label' => 'Admin sign-in lock-out',

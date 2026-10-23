@@ -5,11 +5,13 @@ use App\Exceptions\DomainException;
 use App\Http\Middleware\Admin\DeclareAdminAccess;
 use App\Http\Middleware\Admin\EnforceAdminMfa;
 use App\Http\Middleware\Admin\EnsureAdminSession;
+use App\Http\Middleware\Admin\RestrictAdminIp;
 use App\Http\Middleware\Admin\UseAdminGuard;
 use App\Http\Middleware\CorrelationId;
 use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\Idempotency;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TouchLastSeen;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
@@ -34,7 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->name('api.v1.')
                 ->group(base_path('routes/api_v1.php'));
 
-            Route::middleware(['web', HandlePrecognitiveRequests::class])
+            Route::middleware(['web', RestrictAdminIp::class, HandlePrecognitiveRequests::class])
                 ->prefix(config('admin.path'))
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
@@ -43,8 +45,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(CorrelationId::class);
 
-        $middleware->api(prepend: [ForceJsonResponse::class], append: [SetLocale::class]);
-        $middleware->web(prepend: [UseAdminGuard::class], append: [SetLocale::class]);
+        // Behind a load balancer the client IP (admin allowlist, throttling, audit) and the scheme (secure cookies, HSTS) come from
+        // the forwarded headers, but only from proxies listed in TRUSTED_PROXIES (comma separated IPs / CIDR, or `*`). Empty = none trusted.
+        $trusted = array_values(array_filter(array_map('trim', explode(',', (string) env('TRUSTED_PROXIES', '')))));
+        $middleware->trustProxies(at: $trusted === ['*'] ? '*' : $trusted);
+
+        $middleware->api(prepend: [ForceJsonResponse::class], append: [SetLocale::class, SecurityHeaders::class.':api']);
+        $middleware->web(prepend: [UseAdminGuard::class], append: [SetLocale::class, SecurityHeaders::class.':auto']);
         $middleware->throttleApi();
 
         $middleware->alias([

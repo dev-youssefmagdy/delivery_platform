@@ -45,7 +45,7 @@
         <p class="mt-2 text-xs text-slate-400">{{ __('website.trip_share.privacy') }} {{ __('website.trip_share.refreshing') }}</p>
     </section>
 
-    <script>
+    <script nonce="{{ $cspNonce ?? '' }}">
         (function () {
             var url = @json(route('website.trip-share.data', ['token' => $token]));
             var openMap = @json(__('website.trip_share.open_map'));

@@ -6,6 +6,7 @@ use App\Enums\Admin\AdminRole;
 use App\Enums\Common\Locale;
 use App\Enums\Concerns\EnumHelpers;
 use App\Enums\Contracts\HasLabel;
+use App\Rules\AdminIpAllowlistRule;
 use Illuminate\Validation\Rule;
 
 /**
@@ -103,6 +104,7 @@ enum SettingKey: string implements HasLabel
     // Admin security (moved from config in P1.2)
     case AdminMfaRequiredRoles = 'admin_mfa_required_roles';
     case AdminLoginLockoutSeconds = 'admin_login_lockout_seconds';
+    case AdminIpAllowlist = 'admin_ip_allowlist';
 
     // Rate limits (moved from config in P1.2)
     case RateLimitApiPerMinute = 'rate_limit_api_per_minute';
@@ -148,7 +150,7 @@ enum SettingKey: string implements HasLabel
         return match ($this) {
             self::DefaultCountry, self::DefaultLocale, self::DefaultCurrency, self::DigitsPreference,
             self::SupportPhone, self::SupportEmail, self::SupportWhatsapp,
-            self::MinAppVersionCustomer, self::MinAppVersionDriver => SettingType::String,
+            self::MinAppVersionCustomer, self::MinAppVersionDriver, self::AdminIpAllowlist => SettingType::String,
 
             self::SupportedLocales, self::AdminMfaRequiredRoles => SettingType::StringList,
 
@@ -184,7 +186,7 @@ enum SettingKey: string implements HasLabel
             self::RidePinRequired, self::ShareLinkTtlMinutes, self::RidePinMaxAttempts, self::DirectPhoneExposure => SettingGroup::Safety,
             self::MinAppVersionCustomer, self::MinAppVersionDriver, self::ForceUpdateCustomer, self::ForceUpdateDriver,
             self::MaintenanceModeApps, self::FeatureWalletEnabled, self::FeatureOffersEnabled => SettingGroup::Apps,
-            self::AdminMfaRequiredRoles, self::AdminLoginLockoutSeconds => SettingGroup::Security,
+            self::AdminMfaRequiredRoles, self::AdminLoginLockoutSeconds, self::AdminIpAllowlist => SettingGroup::Security,
             default => SettingGroup::RateLimits,
         };
     }
@@ -199,7 +201,7 @@ enum SettingKey: string implements HasLabel
             self::DispatchRadiusStepsKm => SettingInput::NumberList,
             self::ProviderCashDebtLimitMinor, self::CustomerServiceFeeMinor, self::RefundDualApprovalThresholdMinor, self::PayoutMinAmountMinor,
             self::PayoutMaxAmountMinor, self::PayoutFeeFixedMinor, self::PayoutDualApprovalThresholdMinor, self::CustomerFeeDebtLimitMinor => SettingInput::Money,
-            self::MinAppVersionCustomer, self::MinAppVersionDriver => SettingInput::Text,
+            self::MinAppVersionCustomer, self::MinAppVersionDriver, self::AdminIpAllowlist => SettingInput::Text,
             default => $this->type() === SettingType::Boolean ? SettingInput::Toggle : SettingInput::Number,
         };
     }
@@ -209,7 +211,7 @@ enum SettingKey: string implements HasLabel
      */
     public function isNullable(): bool
     {
-        return in_array($this, [self::SupportPhone, self::SupportEmail, self::SupportWhatsapp], true);
+        return in_array($this, [self::SupportPhone, self::SupportEmail, self::SupportWhatsapp, self::AdminIpAllowlist], true);
     }
 
     /**
@@ -350,6 +352,7 @@ enum SettingKey: string implements HasLabel
                 static fn (mixed $role): bool => is_string($role) && AdminRole::tryFrom($role) !== null,
             )),
             self::AdminLoginLockoutSeconds => (int) config('admin.auth.login.lockout_seconds', 900),
+            self::AdminIpAllowlist => null,
             self::RateLimitApiPerMinute => (int) config('rate_limits.api.per_minute', 120),
             self::RateLimitOtpRequestPerMinute => (int) config('rate_limits.otp-request.per_minute', 3),
             self::RateLimitOtpRequestPerHour => (int) config('rate_limits.otp-request.per_hour', 10),
@@ -383,6 +386,7 @@ enum SettingKey: string implements HasLabel
             self::SupportPhone, self::SupportWhatsapp => ['nullable', 'string', 'max:32', 'regex:'.self::PHONE_PATTERN],
             self::SupportEmail => ['nullable', 'string', 'max:191', 'email:rfc'],
             self::MinAppVersionCustomer, self::MinAppVersionDriver => ['required', 'string', 'regex:'.self::VERSION_PATTERN],
+            self::AdminIpAllowlist => ['nullable', 'string', 'max:191', new AdminIpAllowlistRule],
             default => match ($this->type()) {
                 SettingType::Boolean => ['required', 'boolean'],
                 SettingType::Integer => ['required', 'integer', 'min:'.($bounds[0] ?? 0), 'max:'.($bounds[1] ?? PHP_INT_MAX)],

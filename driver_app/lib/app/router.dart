@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:platform_core/platform_core.dart';
 
 import '../features/auth/presentation/providers/auth_providers.dart';
+import '../features/growth/presentation/screens/growth_screens.dart';
 import '../features/earnings/presentation/screens/earning_lines_screen.dart';
 import '../features/earnings/presentation/screens/payout_detail_screen.dart';
 import '../features/earnings/presentation/screens/payout_method_form_screen.dart';
@@ -70,6 +71,10 @@ abstract final class Routes {
   static const payoutRequest = '/payouts/new';
   static const payoutMethods = '/payout-methods';
   static const payoutMethodNew = '/payout-methods/edit';
+
+  /// Growth screens (P5.7), reachable only while their server flags are on.
+  static const referral = '/referral';
+  static const incentives = '/incentives';
   static String payout(String id) => '/payouts/$id';
   static String jobReceipt(String id) => '/job/$id/receipt';
   static String payoutSupport(String id) => '/support/new?payout=$id';
@@ -110,6 +115,8 @@ bool _isJobPage(String location) =>
     location == Routes.notificationSettings ||
     location == Routes.earningLines ||
     location == Routes.walletLedger ||
+    location == Routes.referral ||
+    location == Routes.incentives ||
     location == Routes.payouts ||
     location.startsWith('${Routes.payouts}/') ||
     location.startsWith(Routes.payoutMethods) ||
@@ -192,6 +199,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.notificationSettings,
         builder: (_, _) => const NotificationSettingsScreen(),
       ),
+      GoRoute(path: Routes.referral, builder: (_, _) => const ReferralScreen()),
+      GoRoute(path: Routes.incentives, builder: (_, _) => const IncentivesScreen()),
       GoRoute(path: Routes.safetyContacts, builder: (_, _) => const SafetyContactsScreen()),
       GoRoute(
         path: Routes.safetyIncidents,

@@ -5959,6 +5959,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تم بلوغه'**
   String get loyReached;
+
+  /// No description provided for @growUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه الميزة غير متاحة.'**
+  String get growUnavailable;
 }
 
 class _AppLocalizationsDelegate

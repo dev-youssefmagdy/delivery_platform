@@ -1614,5 +1614,6 @@
     "placeholders": {
       "rating": {"type": "String"}
     }
-  }
+  },
+  "growUnavailable": "This feature is not available."
 }

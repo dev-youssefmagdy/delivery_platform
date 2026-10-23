@@ -15,6 +15,7 @@ import '../features/booking/presentation/screens/cancel_booking_screen.dart';
 import '../features/booking/presentation/screens/report_screen.dart';
 import '../features/payments/presentation/screens/payment_methods_screen.dart';
 import '../features/payments/presentation/screens/receipt_screen.dart';
+import '../features/growth/presentation/screens/growth_screens.dart';
 import '../features/payments/presentation/screens/wallet_screen.dart';
 import '../features/safety/presentation/screens/safety_screens.dart';
 import '../features/support/presentation/screens/appeal_screen.dart';
@@ -62,6 +63,11 @@ abstract final class Routes {
   /// The wallet as a full screen (also the target of wallet notifications); the Wallet tab shows the same content.
   static const wallet = '/wallet';
   static const paymentMethods = '/wallet/methods';
+
+  /// Growth screens (P5.7), reachable only while their server flags are on.
+  static const referral = '/referral';
+  static const credits = '/credits';
+  static const loyalty = '/loyalty';
 
   /// A support request (also the target of reply notifications).
   static String supportTicket(String id) => '/support/ticket/$id';
@@ -121,6 +127,9 @@ const _readyOnly = {
   Routes.notificationSettings,
   Routes.wallet,
   Routes.paymentMethods,
+  Routes.referral,
+  Routes.credits,
+  Routes.loyalty,
   Routes.safetyIncidents,
   Routes.safetyContacts,
 };
@@ -208,6 +217,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: Routes.wallet, builder: (_, _) => const WalletScreen(showBack: true)),
       GoRoute(path: Routes.paymentMethods, builder: (_, _) => const PaymentMethodsScreen()),
+      GoRoute(path: Routes.referral, builder: (_, _) => const ReferralScreen()),
+      GoRoute(path: Routes.credits, builder: (_, _) => const CreditsScreen()),
+      GoRoute(path: Routes.loyalty, builder: (_, _) => const LoyaltyScreen()),
       GoRoute(path: Routes.safetyContacts, builder: (_, _) => const SafetyContactsScreen()),
       GoRoute(
         path: Routes.safetyIncidents,

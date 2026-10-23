@@ -1798,5 +1798,6 @@
     "placeholders": {
       "rating": {"type": "String"}
     }
-  }
+  },
+  "growUnavailable": "هذه الميزة غير متاحة."
 }

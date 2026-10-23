@@ -3725,4 +3725,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String incMinRating(String rating) {
     return 'Minimum rating $rating';
   }
+
+  @override
+  String get growUnavailable => 'This feature is not available.';
 }

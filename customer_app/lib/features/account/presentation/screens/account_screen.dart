@@ -6,6 +6,7 @@ import 'package:platform_core/platform_core.dart';
 import '../../../../app/l10n/generated/app_localizations.dart';
 import '../../../../app/router.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../growth/presentation/providers/growth_providers.dart';
 import '../../../auth/presentation/widgets/auth_error_text.dart';
 import '../../../notifications/presentation/providers/notification_providers.dart';
 
@@ -58,6 +59,31 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             title: Text(l10n.homeSavedPlaces),
             onTap: () => context.push(Routes.savedPlaces),
           ),
+          // Growth features: no flag, no entry (P5.7).
+          if (ref.watch(growthFeatureProvider(GrowthFlags.referrals))) ...[
+            ListTile(
+              key: const Key('home-referral'),
+              minTileHeight: context.density.minTouchTarget,
+              leading: const Icon(Icons.card_giftcard_outlined),
+              title: Text(l10n.refTile),
+              onTap: () => context.push(Routes.referral),
+            ),
+            ListTile(
+              key: const Key('home-credits'),
+              minTileHeight: context.density.minTouchTarget,
+              leading: const Icon(Icons.savings_outlined),
+              title: Text(l10n.credTitle),
+              onTap: () => context.push(Routes.credits),
+            ),
+          ],
+          if (ref.watch(growthFeatureProvider(GrowthFlags.loyalty)))
+            ListTile(
+              key: const Key('home-loyalty'),
+              minTileHeight: context.density.minTouchTarget,
+              leading: const Icon(Icons.workspace_premium_outlined),
+              title: Text(l10n.loyTitle),
+              onTap: () => context.push(Routes.loyalty),
+            ),
           ListTile(
             key: const Key('home-safety'),
             minTileHeight: context.density.minTouchTarget,

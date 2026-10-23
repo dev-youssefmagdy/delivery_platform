@@ -3651,4 +3651,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String incMinRating(String rating) {
     return 'الحد الأدنى للتقييم $rating';
   }
+
+  @override
+  String get growUnavailable => 'هذه الميزة غير متاحة.';
 }

@@ -3233,4 +3233,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loyReached => 'تم بلوغه';
+
+  @override
+  String get growUnavailable => 'هذه الميزة غير متاحة.';
 }

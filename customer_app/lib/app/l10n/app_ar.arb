@@ -1639,5 +1639,6 @@
       "amount": {"type": "String"}
     }
   },
-  "loyReached": "تم بلوغه"
+  "loyReached": "تم بلوغه",
+  "growUnavailable": "هذه الميزة غير متاحة."
 }

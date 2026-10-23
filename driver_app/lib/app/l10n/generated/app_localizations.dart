@@ -6841,6 +6841,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الحد الأدنى للتقييم {rating}'**
   String incMinRating(String rating);
+
+  /// No description provided for @growUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه الميزة غير متاحة.'**
+  String get growUnavailable;
 }
 
 class _AppLocalizationsDelegate

@@ -3284,4 +3284,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loyReached => 'Reached';
+
+  @override
+  String get growUnavailable => 'This feature is not available.';
 }

@@ -8,13 +8,14 @@ import '../../../../app/router.dart';
 import '../../../../core/async_state_view.dart';
 import '../../../app_config/presentation/providers/app_config_providers.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../growth/presentation/providers/growth_providers.dart';
 import '../providers/earnings_providers.dart';
 import 'cash_debt_banner.dart';
 
 /// The Earnings tab: totals for a day, week or month, the split by service
 /// category, a daily chart, the wallet position and the cash-debt banner, with
 /// links to the booking-level breakdown, the wallet ledger and payouts.
-/// Incentives are not shown here until they exist (P5.7).
+/// Incentive and referral entries appear only while the server flags are on (P5.7).
 class EarningsTab extends ConsumerWidget {
   const EarningsTab({super.key});
 
@@ -78,6 +79,22 @@ class EarningsTab extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push(Routes.payouts),
             ),
+            if (ref.watch(growthFeatureProvider(GrowthFlags.incentives)))
+              ListTile(
+                key: const Key('earnings-incentives'),
+                leading: const Icon(Icons.emoji_events_outlined),
+                title: Text(l10n.incTile),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(Routes.incentives),
+              ),
+            if (ref.watch(growthFeatureProvider(GrowthFlags.referrals)))
+              ListTile(
+                key: const Key('earnings-referral'),
+                leading: const Icon(Icons.card_giftcard_outlined),
+                title: Text(l10n.refTile),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(Routes.referral),
+              ),
           ],
         ),
       ),

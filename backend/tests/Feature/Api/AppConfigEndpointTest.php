@@ -63,9 +63,12 @@ class AppConfigEndpointTest extends TestCase
                 'provider' => ['min_version' => '1.0.0', 'force_update' => false],
             ],
             'policies' => [],
-            'features' => [],
             'flags' => [],
-        ], Arr::except($response->json('data'), ['safety']));
+        ], Arr::except($response->json('data'), ['safety', 'features']));
+
+        // The master switches of the optional modules are on unless an admin turns one off.
+        $this->assertNotEmpty($response->json('data.features'));
+        $this->assertContainsOnly('bool', $response->json('data.features'));
 
         // The platform shows local emergency numbers; it never dispatches an emergency call itself (SRS 13.2).
         $this->assertFalse($response->json('data.safety.emergency_dispatch'));
@@ -73,7 +76,6 @@ class AppConfigEndpointTest extends TestCase
 
         // Empty maps are JSON objects, never lists.
         $this->assertStringContainsString('"policies":{}', (string) $response->getContent());
-        $this->assertStringContainsString('"features":{}', (string) $response->getContent());
         $this->assertStringContainsString('"flags":{}', (string) $response->getContent());
     }
 

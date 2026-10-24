@@ -22,19 +22,29 @@ abstract class PartyEvent extends RealtimeEvent
     }
 
     /**
+     * Builds the event for the customer's own channel and dispatches it (after the surrounding transaction commits).
+     *
      * @param array<string, mixed> $payload
      */
     public static function toCustomer(string $customerUuid, string $bookingUuid, int $sequence, array $payload): static
     {
-        return new static('customer.'.$customerUuid, $bookingUuid, $sequence, $payload);
+        $event = new static('customer.'.$customerUuid, $bookingUuid, $sequence, $payload);
+        event($event);
+
+        return $event;
     }
 
     /**
+     * Builds the event for the provider's own channel and dispatches it (after the surrounding transaction commits).
+     *
      * @param array<string, mixed> $payload
      */
     public static function toProvider(string $providerUuid, string $bookingUuid, int $sequence, array $payload): static
     {
-        return new static('provider.'.$providerUuid, $bookingUuid, $sequence, $payload);
+        $event = new static('provider.'.$providerUuid, $bookingUuid, $sequence, $payload);
+        event($event);
+
+        return $event;
     }
 
     /**

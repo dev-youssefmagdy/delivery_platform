@@ -309,7 +309,7 @@ final class BookingChatService
     {
         if ($side === ActorType::Customer) {
             $booking->loadMissing('customer');
-            event($event::toCustomer($booking->customer->uuid, $booking->uuid, $booking->sequence, $payload));
+            $event::toCustomer($booking->customer->uuid, $booking->uuid, $booking->sequence, $payload);
 
             return;
         }
@@ -317,7 +317,7 @@ final class BookingChatService
         $booking->loadMissing('provider');
 
         if ($booking->provider !== null) {
-            event($event::toProvider($booking->provider->uuid, $booking->uuid, $booking->sequence, $payload));
+            $event::toProvider($booking->provider->uuid, $booking->uuid, $booking->sequence, $payload);
         }
     }
 }

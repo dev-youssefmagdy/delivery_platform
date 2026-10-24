@@ -59,12 +59,25 @@ void main() {
       prefs: {'language_code': 'ar', 'onboarding_done': true},
       token: 'abc',
     );
-    expect(find.text('الرئيسية'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('حسابي'),
+      ),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('تغيير اللغة'));
     await tester.pumpAndSettle();
     expect(find.text('اختر لغتك'), findsOneWidget);
     await tester.tap(find.text('متابعة'));
     await tester.pumpAndSettle();
-    expect(find.text('الرئيسية'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('الرئيسية'),
+      ),
+      findsOneWidget,
+    );
   });
 }

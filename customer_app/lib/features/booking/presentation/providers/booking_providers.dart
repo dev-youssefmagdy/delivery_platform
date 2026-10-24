@@ -242,12 +242,14 @@ class BookingTracker extends AsyncNotifier<TrackedBooking> {
       hub.events.listen(_onEvent),
       hub.reconnected.listen((_) => refresh()),
     ];
-    final timer = Timer.periodic(pollWhenOffline, (_) {
-      final every = hub.isLive ? pollWhenLive : pollWhenOffline;
-      if (DateTime.now().difference(_lastRefresh) >= every) refresh();
-    });
+    final timer = ref.read(pollingEnabledProvider)
+        ? Timer.periodic(pollWhenOffline, (_) {
+            final every = hub.isLive ? pollWhenLive : pollWhenOffline;
+            if (DateTime.now().difference(_lastRefresh) >= every) refresh();
+          })
+        : null;
     ref.onDispose(() {
-      timer.cancel();
+      timer?.cancel();
       for (final s in subs) {
         s.cancel();
       }
@@ -366,12 +368,14 @@ class OffersNotifier extends AsyncNotifier<List<Offer>> {
       }),
       hub.reconnected.listen((_) => refresh()),
     ];
-    final timer = Timer.periodic(pollWhenOffline, (_) {
-      final every = hub.isLive ? pollWhenLive : pollWhenOffline;
-      if (DateTime.now().difference(_lastRefresh) >= every) refresh();
-    });
+    final timer = ref.read(pollingEnabledProvider)
+        ? Timer.periodic(pollWhenOffline, (_) {
+            final every = hub.isLive ? pollWhenLive : pollWhenOffline;
+            if (DateTime.now().difference(_lastRefresh) >= every) refresh();
+          })
+        : null;
     ref.onDispose(() {
-      timer.cancel();
+      timer?.cancel();
       for (final s in subs) {
         s.cancel();
       }
@@ -454,9 +458,11 @@ class ActiveBookingNotifier extends AsyncNotifier<BookingSummary?> {
       }),
       hub.reconnected.listen((_) => refresh()),
     ];
-    final timer = Timer.periodic(const Duration(seconds: 30), (_) => refresh());
+    final timer = ref.read(pollingEnabledProvider)
+        ? Timer.periodic(const Duration(seconds: 30), (_) => refresh())
+        : null;
     ref.onDispose(() {
-      timer.cancel();
+      timer?.cancel();
       for (final s in subs) {
         s.cancel();
       }

@@ -514,6 +514,13 @@ void main() {
 
   group('saved places', () {
     Future<void> openSaved(WidgetTester tester) async {
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('Account'),
+        ),
+      );
+      await tester.pumpAndSettle();
       await tester.ensureVisible(find.byKey(const Key('home-saved-places')));
       await tester.tap(find.byKey(const Key('home-saved-places')));
       await tester.pumpAndSettle();

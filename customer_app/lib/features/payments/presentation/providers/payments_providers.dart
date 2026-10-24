@@ -672,12 +672,14 @@ class AdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
       }),
       hub.reconnected.listen((_) => unawaited(refresh())),
     ];
-    final timer = Timer.periodic(
-      const Duration(seconds: 30),
-      (_) => unawaited(refresh()),
-    );
+    final timer = ref.read(pollingEnabledProvider)
+        ? Timer.periodic(
+            const Duration(seconds: 30),
+            (_) => unawaited(refresh()),
+          )
+        : null;
     ref.onDispose(() {
-      timer.cancel();
+      timer?.cancel();
       for (final s in subs) {
         s.cancel();
       }

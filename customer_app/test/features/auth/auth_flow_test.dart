@@ -70,7 +70,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(fake.accepted.single, ['pol-1', 'pol-2']);
     expect(fake.acceptedMarketing, isTrue);
-    expect(find.text('Home'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
   });
 
   testWidgets('wrong code shows a typed error and keeps the user on OTP', (
@@ -200,7 +200,7 @@ void main() {
     await tester.tap(find.byKey(const Key('cancel-deletion')));
     await tester.pumpAndSettle();
     expect(fake.cancelled, isTrue);
-    expect(find.text('Home'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
   });
 
   testWidgets('restricted account sees a notice once, then continues', (
@@ -214,7 +214,7 @@ void main() {
     expect(find.text('Account restricted'), findsOneWidget);
     await tester.tap(find.text('Continue'));
     await tester.pumpAndSettle();
-    expect(find.text('Home'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
   });
 
   testWidgets('failed /me shows a retry screen', (tester) async {
@@ -230,7 +230,7 @@ void main() {
     fake.meError = null;
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();
-    expect(find.text('Home'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
   });
 
   testWidgets('home: sign out, and account deletion uses one idempotency key', (
@@ -239,6 +239,13 @@ void main() {
     final fake = FakeIdentityRepository();
     await pumpApp(tester, prefs: _prefs, token: 'abc', identity: fake);
 
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('Account'),
+      ),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('home-delete-account')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Request deletion'));

@@ -88,12 +88,14 @@ class ProofQueueNotifier extends Notifier<List<PendingUpload>> {
     ref.listen<AsyncValue<bool>>(onlineProvider, (previous, next) {
       if (next.value == true) unawaited(_queue.flush(force: true));
     });
-    final timer = Timer.periodic(
-      const Duration(seconds: 20),
-      (_) => unawaited(_queue.flush()),
-    );
+    final timer = ref.read(pollingEnabledProvider)
+        ? Timer.periodic(
+            const Duration(seconds: 20),
+            (_) => unawaited(_queue.flush()),
+          )
+        : null;
     ref.onDispose(() {
-      timer.cancel();
+      timer?.cancel();
       _queue.removeListener(sync);
       _queue.dispose();
     });

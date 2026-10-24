@@ -47,14 +47,16 @@ void _bindRealtime(
       if (next == RealtimeConnectionState.connected) unawaited(refresh());
     },
   );
-  final timer = Timer.periodic(pollWhenOffline, (_) {
-    final every = _isLive(ref) ? pollWhenLive : pollWhenOffline;
-    if (DateTime.now().difference(lastRefresh()) >= every) {
-      unawaited(refresh());
-    }
-  });
+  final timer = ref.read(pollingEnabledProvider)
+      ? Timer.periodic(pollWhenOffline, (_) {
+          final every = _isLive(ref) ? pollWhenLive : pollWhenOffline;
+          if (DateTime.now().difference(lastRefresh()) >= every) {
+            unawaited(refresh());
+          }
+        })
+      : null;
   ref.onDispose(() {
-    timer.cancel();
+    timer?.cancel();
     sub.cancel();
   });
 }

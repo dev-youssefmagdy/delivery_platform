@@ -97,15 +97,17 @@ class ChatNotifier extends AsyncNotifier<ChatState> {
         if (next == RealtimeConnectionState.connected) unawaited(refresh());
       },
     );
-    final timer = Timer.periodic(_chatPollOffline, (_) {
-      final live =
-          ref.read(realtimeControllerProvider).connection ==
-          RealtimeConnectionState.connected;
-      final every = live ? _chatPollLive : _chatPollOffline;
-      if (DateTime.now().difference(_last) >= every) unawaited(refresh());
-    });
+    final timer = ref.read(pollingEnabledProvider)
+        ? Timer.periodic(_chatPollOffline, (_) {
+            final live =
+                ref.read(realtimeControllerProvider).connection ==
+                RealtimeConnectionState.connected;
+            final every = live ? _chatPollLive : _chatPollOffline;
+            if (DateTime.now().difference(_last) >= every) unawaited(refresh());
+          })
+        : null;
     ref.onDispose(() {
-      timer.cancel();
+      timer?.cancel();
       for (final s in subs) {
         s.cancel();
       }

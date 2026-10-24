@@ -48,6 +48,7 @@ Future<ProviderContainer> pumpApp(
       sharedPreferencesProvider.overrideWithValue(sp),
       tokenStoreProvider.overrideWithValue(store),
       splashDurationProvider.overrideWithValue(Duration.zero),
+      pollingEnabledProvider.overrideWithValue(false),
       onlineProvider.overrideWith((ref) => Stream.value(true)),
       appConfigProvider.overrideWith(
         (ref) => configBuilder != null ? configBuilder() : Future.value(config),

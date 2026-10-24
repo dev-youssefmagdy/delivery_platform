@@ -116,3 +116,6 @@ final configWaitProvider = Provider<Duration>(
 final splashDurationProvider = Provider<Duration>(
   (ref) => const Duration(milliseconds: 900),
 );
+
+/// Background polling of jobs, chats, earnings adjustments and the proof upload queue (realtime is the primary channel). Tests switch it off.
+final pollingEnabledProvider = Provider<bool>((ref) => true);

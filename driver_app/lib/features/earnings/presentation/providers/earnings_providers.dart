@@ -530,12 +530,14 @@ class JobAdjustmentsNotifier extends AsyncNotifier<List<Adjustment>> {
         unawaited(refresh());
       }
     });
-    final timer = Timer.periodic(
-      const Duration(seconds: 30),
-      (_) => unawaited(refresh()),
-    );
+    final timer = ref.read(pollingEnabledProvider)
+        ? Timer.periodic(
+            const Duration(seconds: 30),
+            (_) => unawaited(refresh()),
+          )
+        : null;
     ref.onDispose(() {
-      timer.cancel();
+      timer?.cancel();
       sub.cancel();
     });
     return ref.read(adjustmentsRepositoryProvider).list(bookingId);

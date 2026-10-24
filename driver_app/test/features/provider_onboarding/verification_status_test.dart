@@ -19,6 +19,11 @@ Future<FakeProviderRepository> _pump(
   final provider = FakeProviderRepository(application: application);
   configure?.call(provider);
   await pumpApp(tester, prefs: prefs, token: 'abc', provider: provider);
+  // An approved driver lands on the home tabs; the status screen is one tap away.
+  if (find.byKey(const Key('home-application')).evaluate().isNotEmpty) {
+    await tester.tap(find.byKey(const Key('home-application')));
+    await tester.pumpAndSettle();
+  }
   return provider;
 }
 
@@ -53,8 +58,14 @@ void main() {
     expect(find.text('Waiting for review'), findsOneWidget);
     expect(find.byKey(const Key('verification-continue')), findsNothing);
     expect(find.byKey(const Key('wizard-counter')), findsNothing);
-    expect(find.text('Call support: +201000000'), findsOneWidget);
-    expect(find.text('Email support: help@example.test'), findsOneWidget);
+    expect(
+      find.text('Call support: ${ltrIsolate('+201000000')}'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Email support: ${ltrIsolate('help@example.test')}'),
+      findsOneWidget,
+    );
   });
 
   testWidgets(
@@ -233,6 +244,9 @@ void main() {
     await tester.tap(find.byKey(const Key('onboarding-refresh')));
     await tester.pumpAndSettle();
 
+    // Approved: the driver lands on the home tabs; the status is one tap away.
+    await tester.tap(find.byKey(const Key('home-application')));
+    await tester.pumpAndSettle();
     expect(find.text('Your application is approved'), findsWidgets);
   });
 
